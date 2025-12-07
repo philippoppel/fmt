@@ -37,10 +37,13 @@ export function generateSeoMetadata({
   noIndex = false,
 }: SeoParams): Metadata {
   const baseUrl = getBaseUrl();
-  const url = `${baseUrl}${path}`;
+  // Canonical URL mit locale prefix
+  const localePath = locale === "de" ? "" : `/${locale}`;
+  const canonicalPath = `${localePath}${path || ""}` || "/";
+  const url = `${baseUrl}${canonicalPath}`;
   const ogLocale = localeMap[locale] || "de_DE";
 
-  const defaultImage = `${baseUrl}/og-image.png`;
+  const defaultImage = `${baseUrl}/og-image.svg`;
   const ogImage = image || defaultImage;
 
   return {
@@ -48,30 +51,38 @@ export function generateSeoMetadata({
     description,
     keywords: keywords.join(", "),
     authors: authors?.map((name) => ({ name })),
-    creator: "Meine App",
-    publisher: "Meine App",
+    creator: "FMT",
+    publisher: "FMT",
     formatDetection: {
       email: false,
       address: false,
       telephone: false,
     },
     metadataBase: new URL(baseUrl),
+    icons: {
+      icon: [
+        { url: "/favicon.svg", type: "image/svg+xml" },
+      ],
+      apple: [
+        { url: "/icons/icon.svg", type: "image/svg+xml" },
+      ],
+    },
     alternates: {
       canonical: url,
       languages: {
-        "de-DE": `${baseUrl}/de${path}`,
-        "en-US": `${baseUrl}/en${path}`,
-        "fr-FR": `${baseUrl}/fr${path}`,
-        "es-ES": `${baseUrl}/es${path}`,
-        "it-IT": `${baseUrl}/it${path}`,
-        "x-default": `${baseUrl}${path}`,
+        "de-DE": `${baseUrl}${path || "/"}`,
+        "en-US": `${baseUrl}/en${path || ""}`,
+        "fr-FR": `${baseUrl}/fr${path || ""}`,
+        "es-ES": `${baseUrl}/es${path || ""}`,
+        "it-IT": `${baseUrl}/it${path || ""}`,
+        "x-default": `${baseUrl}${path || "/"}`,
       },
     },
     openGraph: {
       title,
       description,
       url,
-      siteName: "Meine App",
+      siteName: "FMT",
       locale: ogLocale,
       type,
       images: [
@@ -91,7 +102,7 @@ export function generateSeoMetadata({
       title,
       description,
       images: [ogImage],
-      creator: "@meineapp",
+      creator: "@fmt_app",
     },
     robots: noIndex
       ? {
@@ -123,20 +134,12 @@ export function generateOrganizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Meine App",
+    name: "FMT",
     url: baseUrl,
-    logo: `${baseUrl}/logo.png`,
+    logo: `${baseUrl}/icons/icon.svg`,
     sameAs: [
-      "https://twitter.com/meineapp",
-      "https://linkedin.com/company/meineapp",
-      "https://github.com/meineapp",
+      "https://github.com/philippoppel/fmt",
     ],
-    contactPoint: {
-      "@type": "ContactPoint",
-      telephone: "+49-XXX-XXXXXXX",
-      contactType: "customer service",
-      availableLanguage: ["German", "English", "French", "Spanish", "Italian"],
-    },
   };
 }
 
@@ -145,17 +148,9 @@ export function generateWebSiteSchema(locale: string) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Meine App",
+    name: "FMT",
     url: baseUrl,
     inLanguage: locale,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${baseUrl}/search?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 
@@ -207,10 +202,10 @@ export function generateArticleSchema({
     })),
     publisher: {
       "@type": "Organization",
-      name: "Meine App",
+      name: "FMT",
       logo: {
         "@type": "ImageObject",
-        url: `${baseUrl}/logo.png`,
+        url: `${baseUrl}/icons/icon.svg`,
       },
     },
   };

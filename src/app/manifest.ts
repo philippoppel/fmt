@@ -2,8 +2,8 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Meine App",
-    short_name: "MeineApp",
+    name: "FMT",
+    short_name: "FMT",
     description: "Eine barrierefreie, mehrsprachige Webanwendung",
     start_url: "/",
     display: "standalone",
@@ -12,16 +12,16 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "portrait-primary",
     icons: [
       {
-        src: "/icons/icon-192x192.png",
-        sizes: "192x192",
-        type: "image/png",
-        purpose: "maskable",
+        src: "/icons/icon.svg",
+        sizes: "any",
+        type: "image/svg+xml",
+        purpose: "any",
       },
       {
-        src: "/icons/icon-512x512.png",
+        src: "/icons/icon.svg",
         sizes: "512x512",
-        type: "image/png",
-        purpose: "any",
+        type: "image/svg+xml",
+        purpose: "maskable",
       },
     ],
   };
