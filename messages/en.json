@@ -200,6 +200,8 @@
       "reset": "Reset",
       "showFilters": "Show Filters",
       "showResults": "Show Results",
+      "any": "Any",
+      "online": "Online",
       "contentType": {
         "label": "Content Type",
         "all": "All",

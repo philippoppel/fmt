@@ -13,6 +13,7 @@ interface GenderFilterProps {
 
 export function GenderFilter({ value, onChange }: GenderFilterProps) {
   const t = useTranslations("therapists.filters.gender");
+  const tFilters = useTranslations("therapists.filters");
 
   const handleChange = (newValue: string) => {
     onChange(newValue === "any" ? null : (newValue as Gender));
@@ -28,7 +29,7 @@ export function GenderFilter({ value, onChange }: GenderFilterProps) {
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="any" id="gender-any" />
           <Label htmlFor="gender-any" className="text-sm font-normal cursor-pointer">
-            Alle
+            {tFilters("any")}
           </Label>
         </div>
         {GENDER_OPTIONS.map((option) => (

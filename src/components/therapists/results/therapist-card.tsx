@@ -16,6 +16,7 @@ interface TherapistCardProps {
 
 export function TherapistCard({ therapist }: TherapistCardProps) {
   const t = useTranslations("therapists");
+  const tFilters = useTranslations("therapists.filters");
   const tSpec = useTranslations("therapists.specialties");
 
   return (
@@ -75,7 +76,7 @@ export function TherapistCard({ therapist }: TherapistCardProps) {
                   therapist.sessionType === "both") && (
                   <span className="flex items-center gap-1">
                     <Video className="h-3.5 w-3.5" aria-hidden="true" />
-                    Online
+                    {tFilters("online")}
                   </span>
                 )}
                 {(therapist.sessionType === "in_person" ||

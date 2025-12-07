@@ -19,13 +19,13 @@ export function ContentTypeFilter({ value, onChange }: ContentTypeFilterProps) {
   ];
 
   return (
-    <div className="flex rounded-lg border bg-muted p-1" role="tablist">
+    <div className="flex rounded-lg border bg-muted p-1" role="radiogroup" aria-label={t("label")}>
       {options.map((option) => (
         <button
           key={option.value}
           type="button"
-          role="tab"
-          aria-selected={value === option.value}
+          role="radio"
+          aria-checked={value === option.value}
           onClick={() => onChange(option.value)}
           className={cn(
             "flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",

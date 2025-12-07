@@ -19,7 +19,7 @@ export function ResultsHeader({
 
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <p className="text-sm text-muted-foreground" aria-live="polite">
+      <p className="text-sm text-muted-foreground" aria-live="polite" aria-atomic="true">
         {t("count", { count: resultCount })}
       </p>
       <div className="sm:w-auto">

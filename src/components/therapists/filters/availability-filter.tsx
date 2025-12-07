@@ -16,6 +16,7 @@ export function AvailabilityFilter({
   onChange,
 }: AvailabilityFilterProps) {
   const t = useTranslations("therapists.filters.availability");
+  const tFilters = useTranslations("therapists.filters");
 
   const handleChange = (newValue: string) => {
     onChange(newValue === "any" ? null : (newValue as Availability));
@@ -34,7 +35,7 @@ export function AvailabilityFilter({
             htmlFor="availability-any"
             className="text-sm font-normal cursor-pointer"
           >
-            Alle
+            {tFilters("any")}
           </Label>
         </div>
         {AVAILABILITY_OPTIONS.map((option) => (

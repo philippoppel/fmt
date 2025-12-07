@@ -11,6 +11,7 @@ interface RatingFilterProps {
 
 export function RatingFilter({ value, onChange }: RatingFilterProps) {
   const t = useTranslations("therapists.filters.rating");
+  const tFilters = useTranslations("therapists.filters");
 
   return (
     <FilterSection title={t("label")} defaultOpen={false}>
@@ -28,7 +29,7 @@ export function RatingFilter({ value, onChange }: RatingFilterProps) {
               onClick={() => onChange(0)}
               className="text-xs text-muted-foreground hover:text-foreground"
             >
-              (Reset)
+              ({tFilters("reset")})
             </button>
           )}
         </div>

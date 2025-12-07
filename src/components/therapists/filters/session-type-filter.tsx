@@ -13,6 +13,7 @@ interface SessionTypeFilterProps {
 
 export function SessionTypeFilter({ value, onChange }: SessionTypeFilterProps) {
   const t = useTranslations("therapists.filters.sessionType");
+  const tFilters = useTranslations("therapists.filters");
 
   const handleChange = (newValue: string) => {
     onChange(newValue === "any" ? null : (newValue as SessionType));
@@ -28,7 +29,7 @@ export function SessionTypeFilter({ value, onChange }: SessionTypeFilterProps) {
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="any" id="session-any" />
           <Label htmlFor="session-any" className="text-sm font-normal cursor-pointer">
-            Alle
+            {tFilters("any")}
           </Label>
         </div>
         {SESSION_TYPES.map((type) => (
