@@ -80,7 +80,7 @@ export function StarRating({
               <Star
                 className={cn(
                   sizeClasses[size],
-                  "absolute inset-0 fill-yellow-400 text-yellow-400"
+                  "absolute inset-0 fill-amber-500 text-amber-500"
                 )}
                 style={{
                   clipPath: `inset(0 ${100 - fillPercentage}% 0 0)`,

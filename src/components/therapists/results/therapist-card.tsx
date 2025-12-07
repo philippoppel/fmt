@@ -20,7 +20,7 @@ export function TherapistCard({ therapist }: TherapistCardProps) {
   const tSpec = useTranslations("therapists.specialties");
 
   return (
-    <Card className="overflow-hidden transition-shadow hover:shadow-lg border-l-4 border-l-emerald-500">
+    <Card className="overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/10 border-l-4 border-l-primary">
       <CardContent className="p-0">
         <div className="flex flex-col sm:flex-row">
           {/* Profile Image */}
@@ -32,7 +32,7 @@ export function TherapistCard({ therapist }: TherapistCardProps) {
               className="object-cover"
               sizes="(max-width: 640px) 100vw, 160px"
             />
-            <Badge className="absolute left-2 top-2 bg-emerald-500 hover:bg-emerald-600 gap-1">
+            <Badge className="absolute left-2 top-2 bg-primary hover:bg-primary/90 gap-1">
               <UserCircle className="h-3 w-3" aria-hidden="true" />
               {t("therapist")}
             </Badge>

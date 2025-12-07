@@ -18,7 +18,7 @@ export function BlogCard({ post }: BlogCardProps) {
   const tSpec = useTranslations("therapists.specialties");
 
   return (
-    <Card className="overflow-hidden transition-shadow hover:shadow-lg border-l-4 border-l-amber-500">
+    <Card className="overflow-hidden transition-all hover:shadow-lg hover:shadow-accent/20 border-l-4 border-l-accent">
       <CardContent className="p-0">
         <div className="flex flex-col sm:flex-row">
           {/* Featured Image */}
@@ -30,7 +30,7 @@ export function BlogCard({ post }: BlogCardProps) {
               className="object-cover"
               sizes="(max-width: 640px) 100vw, 160px"
             />
-            <Badge className="absolute left-2 top-2 bg-amber-500 hover:bg-amber-600 gap-1">
+            <Badge className="absolute left-2 top-2 bg-accent-foreground text-accent hover:bg-accent-foreground/90 gap-1">
               <FileText className="h-3 w-3" aria-hidden="true" />
               {t("blog")}
             </Badge>
