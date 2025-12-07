@@ -1,0 +1,181 @@
+{
+  "metadata": {
+    "title": "My App - Your Solution for...",
+    "description": "An accessible, multilingual web application with the highest quality and user experience.",
+    "keywords": "webapp, accessibility, multilingual, seo"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "search": "Search",
+    "searchPlaceholder": "Search...",
+    "noResults": "No results found",
+    "showMore": "Show more",
+    "showLess": "Show less"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "profile": "Profile",
+    "settings": "Settings",
+    "skipToContent": "Skip to main content",
+    "skipToNavigation": "Skip to navigation",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "home": {
+    "hero": {
+      "title": "Welcome to Your App",
+      "subtitle": "A modern, accessible web application",
+      "cta": "Get Started"
+    },
+    "features": {
+      "title": "Our Features",
+      "accessibility": {
+        "title": "Full Accessibility",
+        "description": "WCAG 2.1 AAA compliant for all users"
+      },
+      "performance": {
+        "title": "Lightning Fast",
+        "description": "Optimized for best Core Web Vitals"
+      },
+      "security": {
+        "title": "Secure",
+        "description": "Modern security standards with 2FA"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "description": "Sign in to your account",
+      "email": "Email address",
+      "emailPlaceholder": "name@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "Your password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Register now",
+      "orContinueWith": "Or continue with",
+      "errors": {
+        "invalidCredentials": "Email or password is incorrect",
+        "accountLocked": "Your account has been locked. Please contact support.",
+        "emailRequired": "Please enter your email address",
+        "passwordRequired": "Please enter your password"
+      }
+    },
+    "register": {
+      "title": "Register",
+      "description": "Create a new account",
+      "name": "Full name",
+      "namePlaceholder": "John Doe",
+      "email": "Email address",
+      "emailPlaceholder": "name@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Repeat password",
+      "acceptTerms": "I accept the {termsLink} and {privacyLink}",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "submit": "Register",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in now",
+      "passwordRequirements": {
+        "title": "Password requirements:",
+        "minLength": "At least 8 characters",
+        "uppercase": "At least one uppercase letter",
+        "lowercase": "At least one lowercase letter",
+        "number": "At least one number",
+        "special": "At least one special character"
+      },
+      "errors": {
+        "nameRequired": "Please enter your name",
+        "emailRequired": "Please enter your email address",
+        "emailInvalid": "Please enter a valid email address",
+        "emailExists": "This email address is already registered",
+        "passwordRequired": "Please enter a password",
+        "passwordWeak": "The password does not meet all requirements",
+        "passwordMismatch": "Passwords do not match",
+        "termsRequired": "Please accept the terms of service"
+      }
+    },
+    "twoFactor": {
+      "title": "Two-Factor Authentication",
+      "description": "Enter the code from your authenticator app",
+      "code": "Authentication code",
+      "codePlaceholder": "000000",
+      "submit": "Verify",
+      "useBackupCode": "Use backup code",
+      "backupCodeTitle": "Enter backup code",
+      "backupCodePlaceholder": "Your backup code",
+      "errors": {
+        "invalidCode": "The entered code is invalid",
+        "codeExpired": "The code has expired. Please try again."
+      }
+    },
+    "forgotPassword": {
+      "title": "Reset Password",
+      "description": "Enter your email address to receive a reset link",
+      "email": "Email address",
+      "emailPlaceholder": "name@example.com",
+      "submit": "Send reset link",
+      "backToLogin": "Back to login",
+      "success": "If an account with this email exists, you will receive an email with further instructions shortly."
+    }
+  },
+  "footer": {
+    "copyright": "© {year} My App. All rights reserved.",
+    "links": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "imprint": "Imprint",
+      "accessibility": "Accessibility"
+    },
+    "social": {
+      "followUs": "Follow us",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    }
+  },
+  "accessibility": {
+    "languageSelector": "Select language",
+    "currentLanguage": "Current language: {language}",
+    "themeToggle": "Toggle color scheme",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "systemMode": "System preference",
+    "increaseTextSize": "Increase text size",
+    "decreaseTextSize": "Decrease text size",
+    "resetTextSize": "Reset text size"
+  },
+  "errors": {
+    "404": {
+      "title": "Page not found",
+      "description": "The page you are looking for does not exist or has been moved.",
+      "backHome": "Back to homepage"
+    },
+    "500": {
+      "title": "Server error",
+      "description": "An unexpected error occurred. Please try again later.",
+      "backHome": "Back to homepage"
+    }
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "metadata": {
+    "title": "Meine App - Ihre Lösung für...",
+    "description": "Eine barrierefreie, mehrsprachige Webanwendung mit höchster Qualität und Benutzerfreundlichkeit.",
+    "keywords": "webapp, barrierefreiheit, mehrsprachig, seo"
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Ein Fehler ist aufgetreten",
+    "retry": "Erneut versuchen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "close": "Schließen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "submit": "Absenden",
+    "search": "Suchen",
+    "searchPlaceholder": "Suche...",
+    "noResults": "Keine Ergebnisse gefunden",
+    "showMore": "Mehr anzeigen",
+    "showLess": "Weniger anzeigen"
+  },
+  "navigation": {
+    "home": "Startseite",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "skipToContent": "Zum Hauptinhalt springen",
+    "skipToNavigation": "Zur Navigation springen",
+    "mainNavigation": "Hauptnavigation",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen"
+  },
+  "home": {
+    "hero": {
+      "title": "Willkommen bei Ihrer App",
+      "subtitle": "Eine moderne, barrierefreie Webanwendung",
+      "cta": "Jetzt starten"
+    },
+    "features": {
+      "title": "Unsere Funktionen",
+      "accessibility": {
+        "title": "Volle Barrierefreiheit",
+        "description": "WCAG 2.1 AAA konform für alle Nutzer"
+      },
+      "performance": {
+        "title": "Blitzschnell",
+        "description": "Optimiert für beste Core Web Vitals"
+      },
+      "security": {
+        "title": "Sicher",
+        "description": "Modernste Sicherheitsstandards mit 2FA"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "description": "Melden Sie sich mit Ihrem Konto an",
+      "email": "E-Mail-Adresse",
+      "emailPlaceholder": "name@beispiel.de",
+      "password": "Passwort",
+      "passwordPlaceholder": "Ihr Passwort",
+      "rememberMe": "Angemeldet bleiben",
+      "forgotPassword": "Passwort vergessen?",
+      "submit": "Anmelden",
+      "noAccount": "Noch kein Konto?",
+      "registerLink": "Jetzt registrieren",
+      "orContinueWith": "Oder weiter mit",
+      "errors": {
+        "invalidCredentials": "E-Mail oder Passwort ist falsch",
+        "accountLocked": "Ihr Konto wurde gesperrt. Bitte kontaktieren Sie den Support.",
+        "emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse ein",
+        "passwordRequired": "Bitte geben Sie Ihr Passwort ein"
+      }
+    },
+    "register": {
+      "title": "Registrieren",
+      "description": "Erstellen Sie ein neues Konto",
+      "name": "Vollständiger Name",
+      "namePlaceholder": "Max Mustermann",
+      "email": "E-Mail-Adresse",
+      "emailPlaceholder": "name@beispiel.de",
+      "password": "Passwort",
+      "passwordPlaceholder": "Mindestens 8 Zeichen",
+      "confirmPassword": "Passwort bestätigen",
+      "confirmPasswordPlaceholder": "Passwort wiederholen",
+      "acceptTerms": "Ich akzeptiere die {termsLink} und {privacyLink}",
+      "terms": "Nutzungsbedingungen",
+      "privacy": "Datenschutzerklärung",
+      "submit": "Registrieren",
+      "hasAccount": "Bereits ein Konto?",
+      "loginLink": "Jetzt anmelden",
+      "passwordRequirements": {
+        "title": "Passwort-Anforderungen:",
+        "minLength": "Mindestens 8 Zeichen",
+        "uppercase": "Mindestens ein Großbuchstabe",
+        "lowercase": "Mindestens ein Kleinbuchstabe",
+        "number": "Mindestens eine Zahl",
+        "special": "Mindestens ein Sonderzeichen"
+      },
+      "errors": {
+        "nameRequired": "Bitte geben Sie Ihren Namen ein",
+        "emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse ein",
+        "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+        "emailExists": "Diese E-Mail-Adresse ist bereits registriert",
+        "passwordRequired": "Bitte geben Sie ein Passwort ein",
+        "passwordWeak": "Das Passwort erfüllt nicht alle Anforderungen",
+        "passwordMismatch": "Die Passwörter stimmen nicht überein",
+        "termsRequired": "Bitte akzeptieren Sie die Nutzungsbedingungen"
+      }
+    },
+    "twoFactor": {
+      "title": "Zwei-Faktor-Authentifizierung",
+      "description": "Geben Sie den Code aus Ihrer Authenticator-App ein",
+      "code": "Authentifizierungscode",
+      "codePlaceholder": "000000",
+      "submit": "Verifizieren",
+      "useBackupCode": "Backup-Code verwenden",
+      "backupCodeTitle": "Backup-Code eingeben",
+      "backupCodePlaceholder": "Ihr Backup-Code",
+      "errors": {
+        "invalidCode": "Der eingegebene Code ist ungültig",
+        "codeExpired": "Der Code ist abgelaufen. Bitte versuchen Sie es erneut."
+      }
+    },
+    "forgotPassword": {
+      "title": "Passwort zurücksetzen",
+      "description": "Geben Sie Ihre E-Mail-Adresse ein, um einen Reset-Link zu erhalten",
+      "email": "E-Mail-Adresse",
+      "emailPlaceholder": "name@beispiel.de",
+      "submit": "Reset-Link senden",
+      "backToLogin": "Zurück zur Anmeldung",
+      "success": "Wenn ein Konto mit dieser E-Mail existiert, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen."
+    }
+  },
+  "footer": {
+    "copyright": "© {year} Meine App. Alle Rechte vorbehalten.",
+    "links": {
+      "privacy": "Datenschutz",
+      "terms": "Nutzungsbedingungen",
+      "imprint": "Impressum",
+      "accessibility": "Barrierefreiheit"
+    },
+    "social": {
+      "followUs": "Folgen Sie uns",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    }
+  },
+  "accessibility": {
+    "languageSelector": "Sprache auswählen",
+    "currentLanguage": "Aktuelle Sprache: {language}",
+    "themeToggle": "Farbschema wechseln",
+    "darkMode": "Dunkelmodus",
+    "lightMode": "Hellmodus",
+    "systemMode": "Systemeinstellung",
+    "increaseTextSize": "Schriftgröße erhöhen",
+    "decreaseTextSize": "Schriftgröße verringern",
+    "resetTextSize": "Schriftgröße zurücksetzen"
+  },
+  "errors": {
+    "404": {
+      "title": "Seite nicht gefunden",
+      "description": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+      "backHome": "Zurück zur Startseite"
+    },
+    "500": {
+      "title": "Serverfehler",
+      "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
+      "backHome": "Zurück zur Startseite"
+    }
+  }
+}

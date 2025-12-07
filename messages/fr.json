@@ -1,0 +1,181 @@
+{
+  "metadata": {
+    "title": "Mon App - Votre Solution pour...",
+    "description": "Une application web accessible et multilingue avec la plus haute qualité et expérience utilisateur.",
+    "keywords": "webapp, accessibilité, multilingue, seo"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "submit": "Envoyer",
+    "search": "Rechercher",
+    "searchPlaceholder": "Recherche...",
+    "noResults": "Aucun résultat trouvé",
+    "showMore": "Afficher plus",
+    "showLess": "Afficher moins"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "about": "À propos",
+    "contact": "Contact",
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "skipToContent": "Aller au contenu principal",
+    "skipToNavigation": "Aller à la navigation",
+    "mainNavigation": "Navigation principale",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "home": {
+    "hero": {
+      "title": "Bienvenue sur Votre App",
+      "subtitle": "Une application web moderne et accessible",
+      "cta": "Commencer"
+    },
+    "features": {
+      "title": "Nos Fonctionnalités",
+      "accessibility": {
+        "title": "Accessibilité Complète",
+        "description": "Conforme WCAG 2.1 AAA pour tous les utilisateurs"
+      },
+      "performance": {
+        "title": "Ultra Rapide",
+        "description": "Optimisé pour les meilleurs Core Web Vitals"
+      },
+      "security": {
+        "title": "Sécurisé",
+        "description": "Standards de sécurité modernes avec 2FA"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "description": "Connectez-vous à votre compte",
+      "email": "Adresse e-mail",
+      "emailPlaceholder": "nom@exemple.fr",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Votre mot de passe",
+      "rememberMe": "Se souvenir de moi",
+      "forgotPassword": "Mot de passe oublié ?",
+      "submit": "Se connecter",
+      "noAccount": "Pas encore de compte ?",
+      "registerLink": "Inscrivez-vous",
+      "orContinueWith": "Ou continuer avec",
+      "errors": {
+        "invalidCredentials": "E-mail ou mot de passe incorrect",
+        "accountLocked": "Votre compte a été verrouillé. Veuillez contacter le support.",
+        "emailRequired": "Veuillez entrer votre adresse e-mail",
+        "passwordRequired": "Veuillez entrer votre mot de passe"
+      }
+    },
+    "register": {
+      "title": "Inscription",
+      "description": "Créer un nouveau compte",
+      "name": "Nom complet",
+      "namePlaceholder": "Jean Dupont",
+      "email": "Adresse e-mail",
+      "emailPlaceholder": "nom@exemple.fr",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Au moins 8 caractères",
+      "confirmPassword": "Confirmer le mot de passe",
+      "confirmPasswordPlaceholder": "Répéter le mot de passe",
+      "acceptTerms": "J'accepte les {termsLink} et la {privacyLink}",
+      "terms": "Conditions d'utilisation",
+      "privacy": "Politique de confidentialité",
+      "submit": "S'inscrire",
+      "hasAccount": "Déjà un compte ?",
+      "loginLink": "Connectez-vous",
+      "passwordRequirements": {
+        "title": "Exigences du mot de passe :",
+        "minLength": "Au moins 8 caractères",
+        "uppercase": "Au moins une majuscule",
+        "lowercase": "Au moins une minuscule",
+        "number": "Au moins un chiffre",
+        "special": "Au moins un caractère spécial"
+      },
+      "errors": {
+        "nameRequired": "Veuillez entrer votre nom",
+        "emailRequired": "Veuillez entrer votre adresse e-mail",
+        "emailInvalid": "Veuillez entrer une adresse e-mail valide",
+        "emailExists": "Cette adresse e-mail est déjà enregistrée",
+        "passwordRequired": "Veuillez entrer un mot de passe",
+        "passwordWeak": "Le mot de passe ne répond pas à toutes les exigences",
+        "passwordMismatch": "Les mots de passe ne correspondent pas",
+        "termsRequired": "Veuillez accepter les conditions d'utilisation"
+      }
+    },
+    "twoFactor": {
+      "title": "Authentification à deux facteurs",
+      "description": "Entrez le code de votre application d'authentification",
+      "code": "Code d'authentification",
+      "codePlaceholder": "000000",
+      "submit": "Vérifier",
+      "useBackupCode": "Utiliser un code de secours",
+      "backupCodeTitle": "Entrer le code de secours",
+      "backupCodePlaceholder": "Votre code de secours",
+      "errors": {
+        "invalidCode": "Le code entré est invalide",
+        "codeExpired": "Le code a expiré. Veuillez réessayer."
+      }
+    },
+    "forgotPassword": {
+      "title": "Réinitialiser le mot de passe",
+      "description": "Entrez votre adresse e-mail pour recevoir un lien de réinitialisation",
+      "email": "Adresse e-mail",
+      "emailPlaceholder": "nom@exemple.fr",
+      "submit": "Envoyer le lien",
+      "backToLogin": "Retour à la connexion",
+      "success": "Si un compte avec cette adresse e-mail existe, vous recevrez bientôt un e-mail avec des instructions supplémentaires."
+    }
+  },
+  "footer": {
+    "copyright": "© {year} Mon App. Tous droits réservés.",
+    "links": {
+      "privacy": "Confidentialité",
+      "terms": "Conditions d'utilisation",
+      "imprint": "Mentions légales",
+      "accessibility": "Accessibilité"
+    },
+    "social": {
+      "followUs": "Suivez-nous",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "github": "GitHub"
+    }
+  },
+  "accessibility": {
+    "languageSelector": "Sélectionner la langue",
+    "currentLanguage": "Langue actuelle : {language}",
+    "themeToggle": "Changer le thème",
+    "darkMode": "Mode sombre",
+    "lightMode": "Mode clair",
+    "systemMode": "Préférence système",
+    "increaseTextSize": "Augmenter la taille du texte",
+    "decreaseTextSize": "Diminuer la taille du texte",
+    "resetTextSize": "Réinitialiser la taille du texte"
+  },
+  "errors": {
+    "404": {
+      "title": "Page non trouvée",
+      "description": "La page que vous recherchez n'existe pas ou a été déplacée.",
+      "backHome": "Retour à l'accueil"
+    },
+    "500": {
+      "title": "Erreur serveur",
+      "description": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard.",
+      "backHome": "Retour à l'accueil"
+    }
+  }
+}
