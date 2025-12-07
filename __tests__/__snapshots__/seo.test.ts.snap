@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`JSON-LD Schema Generation > generateFAQSchema > should match snapshot 1`] = `
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A web application.",
+      },
+      "name": "What is FMT?",
+    },
+    {
+      "@type": "Question",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, it is.",
+      },
+      "name": "Is it free?",
+    },
+  ],
+}
+`;
+
+exports[`JSON-LD Schema Generation > generateOrganizationSchema > should match snapshot 1`] = `
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "logo": "https://example.com/icons/icon.svg",
+  "name": "FMT",
+  "sameAs": [
+    "https://github.com/philippoppel/fmt",
+  ],
+  "url": "https://example.com",
+}
+`;
+
+exports[`JSON-LD Schema Generation > generateWebSiteSchema > should match snapshot for German locale 1`] = `
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "inLanguage": "de",
+  "name": "FMT",
+  "url": "https://example.com",
+}
+`;

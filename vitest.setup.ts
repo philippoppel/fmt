@@ -11,6 +11,17 @@ vi.mock("next-intl", () => ({
   getTranslations: async () => (key: string) => key,
 }));
 
+// Mock next-intl/routing
+vi.mock("next-intl/routing", () => ({
+  defineRouting: (config: unknown) => config,
+  createNavigation: () => ({
+    Link: () => null,
+    useRouter: () => ({ push: vi.fn() }),
+    usePathname: () => "/",
+    redirect: vi.fn(),
+  }),
+}));
+
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
