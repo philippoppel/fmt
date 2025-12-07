@@ -29,7 +29,7 @@ export function FilterSidebar({
   const t = useTranslations("therapists.filters");
 
   return (
-    <div className="sticky top-24 space-y-4 rounded-lg border bg-card p-4">
+    <div className="space-y-4 rounded-lg border bg-card p-4">
       <div className="flex items-center justify-between border-b pb-4">
         <h2 className="text-lg font-semibold">{t("title")}</h2>
         <Button variant="ghost" size="sm" onClick={onReset}>
