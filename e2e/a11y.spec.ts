@@ -3,12 +3,13 @@ import AxeBuilder from "@axe-core/playwright";
 
 test.describe("Accessibility", () => {
   test.describe("Axe Audits", () => {
+    // Test main pages with explicit locale to avoid redirect issues
     const pages = [
-      { path: "/", name: "Homepage" },
-      { path: "/about", name: "About" },
-      { path: "/contact", name: "Contact" },
-      { path: "/auth/login", name: "Login" },
-      { path: "/auth/register", name: "Register" },
+      { path: "/en", name: "Homepage" },
+      { path: "/en/about", name: "About" },
+      { path: "/en/contact", name: "Contact" },
+      { path: "/en/auth/login", name: "Login" },
+      { path: "/en/auth/register", name: "Register" },
     ];
 
     for (const { path, name } of pages) {
@@ -16,7 +17,7 @@ test.describe("Accessibility", () => {
         await page.goto(path);
 
         // Wait for page to be fully loaded
-        await page.waitForLoadState("networkidle");
+        await page.waitForLoadState("domcontentloaded");
 
         const accessibilityScanResults = await new AxeBuilder({ page })
           .withTags(["wcag2a", "wcag2aa"])
