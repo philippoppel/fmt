@@ -37,7 +37,7 @@ describe("SEO Metadata Generation", () => {
       expect(metadata.alternates?.canonical).toBe("https://example.com/en/about");
     });
 
-    it("should include all 5 language alternates plus x-default", () => {
+    it("should include all 2 language alternates plus x-default", () => {
       const metadata = generateSeoMetadata({
         title: "Test",
         description: "Test description",
@@ -47,9 +47,6 @@ describe("SEO Metadata Generation", () => {
       const languages = metadata.alternates?.languages;
       expect(languages).toHaveProperty("de-DE");
       expect(languages).toHaveProperty("en-US");
-      expect(languages).toHaveProperty("fr-FR");
-      expect(languages).toHaveProperty("es-ES");
-      expect(languages).toHaveProperty("it-IT");
       expect(languages).toHaveProperty("x-default");
     });
 
@@ -102,13 +99,10 @@ describe("SEO Metadata Generation", () => {
     });
 
     it("should use correct locale mapping for all locales", () => {
-      const locales = ["de", "en", "fr", "es", "it"];
+      const locales = ["de", "en"];
       const expectedMapping: Record<string, string> = {
         de: "de_DE",
         en: "en_US",
-        fr: "fr_FR",
-        es: "es_ES",
-        it: "it_IT",
       };
 
       locales.forEach((locale) => {
@@ -155,7 +149,7 @@ describe("JSON-LD Schema Generation", () => {
 
   describe("generateWebSiteSchema", () => {
     it("should include correct inLanguage for each locale", () => {
-      const locales = ["de", "en", "fr", "es", "it"];
+      const locales = ["de", "en"];
 
       locales.forEach((locale) => {
         const schema = generateWebSiteSchema(locale);

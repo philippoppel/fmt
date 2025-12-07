@@ -26,6 +26,7 @@
     "home": "Startseite",
     "about": "Über uns",
     "contact": "Kontakt",
+    "findTherapist": "Therapeuten finden",
     "login": "Anmelden",
     "register": "Registrieren",
     "logout": "Abmelden",
@@ -41,7 +42,8 @@
     "hero": {
       "title": "Willkommen bei Ihrer App",
       "subtitle": "Eine moderne, barrierefreie Webanwendung",
-      "cta": "Jetzt starten"
+      "cta": "Jetzt starten",
+      "ctaSecondary": "Los geht's"
     },
     "features": {
       "title": "Unsere Funktionen",
@@ -176,6 +178,116 @@
       "title": "Serverfehler",
       "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
       "backHome": "Zurück zur Startseite"
+    }
+  },
+  "therapists": {
+    "meta": {
+      "title": "Therapeuten finden - Psychotherapie in Ihrer Nähe",
+      "description": "Finden Sie qualifizierte Therapeuten und Psychologen in Ihrer Nähe. Vergleichen Sie Profile, Spezialisierungen und Bewertungen."
+    },
+    "title": "Therapeuten finden",
+    "subtitle": "Finden Sie den passenden Therapeuten für Ihre Bedürfnisse",
+    "viewProfile": "Profil ansehen",
+    "readMore": "Weiterlesen",
+    "blog": "Blog",
+    "perSession": "€/Sitzung",
+    "inPerson": "Vor Ort",
+    "reviews": "Bewertungen",
+    "minRead": "Min. Lesezeit",
+    "profileImageAlt": "Profilbild von",
+    "filters": {
+      "title": "Filter",
+      "reset": "Zurücksetzen",
+      "showFilters": "Filter anzeigen",
+      "showResults": "Ergebnisse anzeigen",
+      "contentType": {
+        "label": "Inhaltstyp",
+        "all": "Alle",
+        "therapists": "Therapeuten",
+        "blogs": "Blog-Artikel"
+      },
+      "search": {
+        "label": "Suche",
+        "placeholder": "Name oder Stichwort..."
+      },
+      "location": {
+        "label": "Standort",
+        "placeholder": "Stadt oder PLZ"
+      },
+      "specialty": {
+        "label": "Spezialisierung"
+      },
+      "therapyType": {
+        "label": "Therapieart"
+      },
+      "language": {
+        "label": "Sprache"
+      },
+      "priceRange": {
+        "label": "Preis pro Sitzung",
+        "min": "Min",
+        "max": "Max"
+      },
+      "sessionType": {
+        "label": "Sitzungsart",
+        "online": "Online",
+        "in_person": "Vor Ort",
+        "both": "Beides"
+      },
+      "insurance": {
+        "label": "Versicherung",
+        "public": "Kassenplätze verfügbar",
+        "private": "Privatpatienten"
+      },
+      "availability": {
+        "label": "Verfügbarkeit",
+        "immediately": "Sofort verfügbar",
+        "this_week": "Diese Woche",
+        "flexible": "Flexibel"
+      },
+      "gender": {
+        "label": "Geschlecht des Therapeuten",
+        "male": "Männlich",
+        "female": "Weiblich",
+        "diverse": "Divers"
+      },
+      "rating": {
+        "label": "Mindestbewertung",
+        "stars": "Sterne"
+      }
+    },
+    "specialties": {
+      "depression": "Depression",
+      "anxiety": "Angststörungen",
+      "trauma": "Trauma",
+      "relationships": "Beziehungen",
+      "addiction": "Sucht",
+      "eating_disorders": "Essstörungen",
+      "adhd": "ADHS",
+      "burnout": "Burnout"
+    },
+    "therapyTypes": {
+      "cbt": "Verhaltenstherapie",
+      "psychoanalysis": "Psychoanalyse",
+      "systemic": "Systemische Therapie",
+      "gestalt": "Gestalttherapie",
+      "humanistic": "Humanistische Therapie"
+    },
+    "languages": {
+      "de": "Deutsch",
+      "en": "Englisch",
+      "tr": "Türkisch",
+      "ar": "Arabisch"
+    },
+    "results": {
+      "count": "{count} Ergebnisse",
+      "sortBy": "Sortieren nach",
+      "relevance": "Relevanz",
+      "rating": "Bewertung",
+      "price": "Preis",
+      "noResults": "Keine Ergebnisse gefunden",
+      "noResultsDescription": "Versuchen Sie, Ihre Filterkriterien anzupassen",
+      "clearFilters": "Filter zurücksetzen"
     }
   }
 }

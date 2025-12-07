@@ -18,9 +18,6 @@ type SeoParams = {
 const localeMap: Record<string, string> = {
   de: "de_DE",
   en: "en_US",
-  fr: "fr_FR",
-  es: "es_ES",
-  it: "it_IT",
 };
 
 export function generateSeoMetadata({
@@ -72,9 +69,6 @@ export function generateSeoMetadata({
       languages: {
         "de-DE": `${baseUrl}${path || "/"}`,
         "en-US": `${baseUrl}/en${path || ""}`,
-        "fr-FR": `${baseUrl}/fr${path || ""}`,
-        "es-ES": `${baseUrl}/es${path || ""}`,
-        "it-IT": `${baseUrl}/it${path || ""}`,
         "x-default": `${baseUrl}${path || "/"}`,
       },
     },

@@ -26,6 +26,7 @@
     "home": "Home",
     "about": "About",
     "contact": "Contact",
+    "findTherapist": "Find Therapist",
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
@@ -41,7 +42,8 @@
     "hero": {
       "title": "Welcome to Your App",
       "subtitle": "A modern, accessible web application",
-      "cta": "Get Started"
+      "cta": "Get Started",
+      "ctaSecondary": "Let's Go"
     },
     "features": {
       "title": "Our Features",
@@ -176,6 +178,116 @@
       "title": "Server error",
       "description": "An unexpected error occurred. Please try again later.",
       "backHome": "Back to homepage"
+    }
+  },
+  "therapists": {
+    "meta": {
+      "title": "Find Therapists - Psychotherapy Near You",
+      "description": "Find qualified therapists and psychologists near you. Compare profiles, specializations, and reviews."
+    },
+    "title": "Find Therapists",
+    "subtitle": "Find the right therapist for your needs",
+    "viewProfile": "View Profile",
+    "readMore": "Read More",
+    "blog": "Blog",
+    "perSession": "€/session",
+    "inPerson": "In Person",
+    "reviews": "reviews",
+    "minRead": "min read",
+    "profileImageAlt": "Profile image of",
+    "filters": {
+      "title": "Filters",
+      "reset": "Reset",
+      "showFilters": "Show Filters",
+      "showResults": "Show Results",
+      "contentType": {
+        "label": "Content Type",
+        "all": "All",
+        "therapists": "Therapists",
+        "blogs": "Blog Posts"
+      },
+      "search": {
+        "label": "Search",
+        "placeholder": "Name or keyword..."
+      },
+      "location": {
+        "label": "Location",
+        "placeholder": "City or postal code"
+      },
+      "specialty": {
+        "label": "Specialization"
+      },
+      "therapyType": {
+        "label": "Therapy Type"
+      },
+      "language": {
+        "label": "Language"
+      },
+      "priceRange": {
+        "label": "Price per Session",
+        "min": "Min",
+        "max": "Max"
+      },
+      "sessionType": {
+        "label": "Session Type",
+        "online": "Online",
+        "in_person": "In Person",
+        "both": "Both"
+      },
+      "insurance": {
+        "label": "Insurance",
+        "public": "Public insurance available",
+        "private": "Private patients"
+      },
+      "availability": {
+        "label": "Availability",
+        "immediately": "Available immediately",
+        "this_week": "This week",
+        "flexible": "Flexible"
+      },
+      "gender": {
+        "label": "Therapist Gender",
+        "male": "Male",
+        "female": "Female",
+        "diverse": "Diverse"
+      },
+      "rating": {
+        "label": "Minimum Rating",
+        "stars": "stars"
+      }
+    },
+    "specialties": {
+      "depression": "Depression",
+      "anxiety": "Anxiety",
+      "trauma": "Trauma",
+      "relationships": "Relationships",
+      "addiction": "Addiction",
+      "eating_disorders": "Eating Disorders",
+      "adhd": "ADHD",
+      "burnout": "Burnout"
+    },
+    "therapyTypes": {
+      "cbt": "Cognitive Behavioral Therapy",
+      "psychoanalysis": "Psychoanalysis",
+      "systemic": "Systemic Therapy",
+      "gestalt": "Gestalt Therapy",
+      "humanistic": "Humanistic Therapy"
+    },
+    "languages": {
+      "de": "German",
+      "en": "English",
+      "tr": "Turkish",
+      "ar": "Arabic"
+    },
+    "results": {
+      "count": "{count} results",
+      "sortBy": "Sort by",
+      "relevance": "Relevance",
+      "rating": "Rating",
+      "price": "Price",
+      "noResults": "No results found",
+      "noResultsDescription": "Try adjusting your filter criteria",
+      "clearFilters": "Clear filters"
     }
   }
 }

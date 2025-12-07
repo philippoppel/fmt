@@ -12,7 +12,7 @@ test.describe("Critical Paths", () => {
       await page.goto("/");
       // Lang could be de (default) or browser-detected locale
       const lang = await page.locator("html").getAttribute("lang");
-      expect(["de", "en", "fr", "es", "it"]).toContain(lang);
+      expect(["de", "en"]).toContain(lang);
     });
 
     test("should have meta description", async ({ page }) => {
@@ -34,9 +34,6 @@ test.describe("Critical Paths", () => {
     // Test explicit locale paths (skip default "/" as it may redirect based on browser)
     const locales = [
       { code: "en", path: "/en", expectedLang: "en" },
-      { code: "fr", path: "/fr", expectedLang: "fr" },
-      { code: "es", path: "/es", expectedLang: "es" },
-      { code: "it", path: "/it", expectedLang: "it" },
     ];
 
     for (const locale of locales) {
@@ -81,7 +78,7 @@ test.describe("Critical Paths", () => {
       await page.goto("/");
 
       const hreflangs = await page.locator('link[rel="alternate"][hreflang]').all();
-      expect(hreflangs.length).toBeGreaterThanOrEqual(6); // 5 locales + x-default
+      expect(hreflangs.length).toBeGreaterThanOrEqual(3); // 2 locales + x-default
 
       const hreflangValues = await Promise.all(
         hreflangs.map((link) => link.getAttribute("hreflang"))
@@ -89,9 +86,6 @@ test.describe("Critical Paths", () => {
 
       expect(hreflangValues).toContain("de-DE");
       expect(hreflangValues).toContain("en-US");
-      expect(hreflangValues).toContain("fr-FR");
-      expect(hreflangValues).toContain("es-ES");
-      expect(hreflangValues).toContain("it-IT");
       expect(hreflangValues).toContain("x-default");
     });
 

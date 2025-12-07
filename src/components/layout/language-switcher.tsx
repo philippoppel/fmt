@@ -15,9 +15,6 @@ import {
 const languageNames: Record<Locale, string> = {
   de: "Deutsch",
   en: "English",
-  fr: "Français",
-  es: "Español",
-  it: "Italiano",
 };
 
 export function LanguageSwitcher() {

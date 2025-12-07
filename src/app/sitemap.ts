@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Definiere alle statischen Seiten
   const staticPages = [
     "",
+    "/therapists",
     "/about",
     "/contact",
   ];
@@ -28,11 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       const languages: Record<string, string> = {};
       locales.forEach((altLocale) => {
         const isAltDefault = altLocale === defaultLocale;
-        const langCode = altLocale === "de" ? "de-DE"
-          : altLocale === "en" ? "en-US"
-          : altLocale === "fr" ? "fr-FR"
-          : altLocale === "es" ? "es-ES"
-          : "it-IT";
+        const langCode = altLocale === "de" ? "de-DE" : "en-US";
         languages[langCode] = isAltDefault
           ? `${baseUrl}${page}`
           : `${baseUrl}/${altLocale}${page}`;

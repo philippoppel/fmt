@@ -57,10 +57,10 @@ function HomePageContent() {
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button size="lg" asChild>
-              <Link href="/auth/register">{t("hero.cta")}</Link>
+              <Link href="/therapists">{t("hero.ctaSecondary")}</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link href="/about">{tNav("about")}</Link>
+              <Link href="/auth/register">{t("hero.cta")}</Link>
             </Button>
           </div>
         </div>

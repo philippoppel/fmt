@@ -15,7 +15,7 @@ function readMessages(locale: string): Record<string, unknown> {
 function readRoutingConfig() {
   // We test the expected configuration directly
   return {
-    locales: ["de", "en", "fr", "es", "it"],
+    locales: ["de", "en"],
     defaultLocale: "de",
     localePrefix: "as-needed",
   };
@@ -24,9 +24,9 @@ function readRoutingConfig() {
 describe("i18n Routing Configuration", () => {
   const routing = readRoutingConfig();
 
-  it("should support exactly 5 locales", () => {
-    expect(routing.locales).toHaveLength(5);
-    expect(routing.locales).toEqual(["de", "en", "fr", "es", "it"]);
+  it("should support exactly 2 locales", () => {
+    expect(routing.locales).toHaveLength(2);
+    expect(routing.locales).toEqual(["de", "en"]);
   });
 
   it("should have German (de) as default locale", () => {
@@ -55,7 +55,7 @@ describe("Translation Completeness", () => {
 
   const de = readMessages("de");
   const deKeys = extractKeys(de);
-  const otherLocales = ["en", "fr", "es", "it"];
+  const otherLocales = ["en"];
 
   it("should have German (de) as reference with keys", () => {
     expect(deKeys.length).toBeGreaterThan(0);
@@ -94,7 +94,7 @@ describe("Translation Completeness", () => {
 });
 
 describe("Translation Content Integrity", () => {
-  const locales = ["de", "en", "fr", "es", "it"];
+  const locales = ["de", "en"];
 
   locales.forEach((locale) => {
     describe(`${locale.toUpperCase()} content`, () => {
@@ -126,7 +126,7 @@ describe("Translation Content Integrity", () => {
 });
 
 describe("Translation Interpolation Placeholders", () => {
-  const locales = ["de", "en", "fr", "es", "it"];
+  const locales = ["de", "en"];
 
   it("should have year placeholder in footer.copyright for all locales", () => {
     locales.forEach((locale) => {

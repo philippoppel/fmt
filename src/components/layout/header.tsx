@@ -14,6 +14,7 @@ export function Header() {
 
   const navItems = [
     { href: "/", label: t("home") },
+    { href: "/therapists", label: t("findTherapist") },
     { href: "/about", label: t("about") },
     { href: "/contact", label: t("contact") },
   ];
