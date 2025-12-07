@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Geist, Geist_Mono } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { AuthProvider } from "@/components/providers/auth-provider";
 import { SkipLinks } from "@/components/a11y/skip-links";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -98,23 +99,25 @@ export default async function LocaleLayout({ children, params }: Props) {
         />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NextIntlClientProvider messages={messages}>
-            <SkipLinks />
-            <div className="relative flex min-h-screen flex-col">
-              <Header />
-              <main id="main-content" className="flex-1" tabIndex={-1}>
-                {children}
-              </main>
-              <Footer />
-            </div>
-          </NextIntlClientProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <NextIntlClientProvider messages={messages}>
+              <SkipLinks />
+              <div className="relative flex min-h-screen flex-col">
+                <Header />
+                <main id="main-content" className="flex-1" tabIndex={-1}>
+                  {children}
+                </main>
+                <Footer />
+              </div>
+            </NextIntlClientProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

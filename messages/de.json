@@ -72,6 +72,7 @@
       "rememberMe": "Angemeldet bleiben",
       "forgotPassword": "Passwort vergessen?",
       "submit": "Anmelden",
+      "submitting": "Anmelden...",
       "noAccount": "Noch kein Konto?",
       "registerLink": "Jetzt registrieren",
       "orContinueWith": "Oder weiter mit",
@@ -97,8 +98,11 @@
       "terms": "Nutzungsbedingungen",
       "privacy": "Datenschutzerklärung",
       "submit": "Registrieren",
+      "submitting": "Registrieren...",
       "hasAccount": "Bereits ein Konto?",
       "loginLink": "Jetzt anmelden",
+      "passwordMatch": "Passwörter stimmen überein",
+      "passwordMismatch": "Passwörter stimmen nicht überein",
       "passwordRequirements": {
         "title": "Passwort-Anforderungen:",
         "minLength": "Mindestens 8 Zeichen",
@@ -140,6 +144,54 @@
       "submit": "Reset-Link senden",
       "backToLogin": "Zurück zur Anmeldung",
       "success": "Wenn ein Konto mit dieser E-Mail existiert, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen."
+    }
+  },
+  "dashboard": {
+    "settings": {
+      "title": "Profileinstellungen",
+      "subtitle": "Verwalten Sie Ihre Therapeuten-Profilinformationen",
+      "saveChanges": "Änderungen speichern",
+      "saving": "Speichern...",
+      "saved": "Änderungen erfolgreich gespeichert",
+      "sections": {
+        "basicInfo": {
+          "title": "Grundinformationen",
+          "description": "Name, Titel und Beschreibung Ihres Profils",
+          "name": "Anzeigename",
+          "namePlaceholder": "Dr. Max Mustermann",
+          "professionalTitle": "Berufstitel",
+          "titlePlaceholder": "z.B. Psychologische Psychotherapeutin",
+          "image": "Profilbild-URL",
+          "description": "Kurzbeschreibung",
+          "descriptionPlaceholder": "Beschreiben Sie Ihren therapeutischen Ansatz und Ihre Schwerpunkte..."
+        },
+        "location": {
+          "title": "Standort",
+          "description": "Wo finden Ihre Sitzungen statt?",
+          "city": "Stadt",
+          "cityPlaceholder": "z.B. Berlin",
+          "postalCode": "Postleitzahl",
+          "postalCodePlaceholder": "z.B. 10115"
+        },
+        "specializations": {
+          "description": "Wählen Sie Ihre Fachgebiete"
+        },
+        "therapyTypes": {
+          "description": "Welche Therapieformen bieten Sie an?"
+        },
+        "languages": {
+          "description": "In welchen Sprachen bieten Sie Therapie an?"
+        },
+        "pricing": {
+          "title": "Preis & Versicherung",
+          "description": "Kosten und akzeptierte Versicherungen",
+          "pricePerSession": "Preis pro Sitzung (EUR)"
+        },
+        "availability": {
+          "title": "Verfügbarkeit & Präferenzen",
+          "description": "Wann und wie sind Sie verfügbar?"
+        }
+      }
     }
   },
   "footer": {
@@ -218,13 +270,33 @@
         "placeholder": "Stadt oder PLZ"
       },
       "specialty": {
-        "label": "Spezialisierung"
+        "title": "Spezialisierung",
+        "label": "Spezialisierung",
+        "depression": "Depression",
+        "anxiety": "Angststörungen",
+        "trauma": "Trauma",
+        "relationships": "Beziehungen",
+        "addiction": "Sucht",
+        "eating_disorders": "Essstörungen",
+        "adhd": "ADHS",
+        "burnout": "Burnout"
       },
       "therapyType": {
-        "label": "Therapieart"
+        "title": "Therapieart",
+        "label": "Therapieart",
+        "cbt": "Verhaltenstherapie",
+        "psychoanalysis": "Psychoanalyse",
+        "systemic": "Systemische Therapie",
+        "gestalt": "Gestalttherapie",
+        "humanistic": "Humanistische Therapie"
       },
       "language": {
-        "label": "Sprache"
+        "title": "Sprachen",
+        "label": "Sprache",
+        "de": "Deutsch",
+        "en": "Englisch",
+        "tr": "Türkisch",
+        "ar": "Arabisch"
       },
       "priceRange": {
         "label": "Preis pro Sitzung",
@@ -232,23 +304,27 @@
         "max": "Max"
       },
       "sessionType": {
+        "title": "Sitzungsart",
         "label": "Sitzungsart",
         "online": "Online",
         "in_person": "Vor Ort",
         "both": "Beides"
       },
       "insurance": {
+        "title": "Versicherung",
         "label": "Versicherung",
         "public": "Kassenplätze verfügbar",
         "private": "Privatpatienten"
       },
       "availability": {
+        "title": "Verfügbarkeit",
         "label": "Verfügbarkeit",
         "immediately": "Sofort verfügbar",
         "this_week": "Diese Woche",
         "flexible": "Flexibel"
       },
       "gender": {
+        "title": "Geschlecht",
         "label": "Geschlecht des Therapeuten",
         "male": "Männlich",
         "female": "Weiblich",

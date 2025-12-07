@@ -13,7 +13,7 @@ export function SearchPage() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const { filters, updateFilters, resetFilters, activeFilterCount } =
     useFilters();
-  const results = useSearchResults(filters);
+  const { results, isLoading } = useSearchResults(filters);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -62,7 +62,7 @@ export function SearchPage() {
             }
           />
 
-          <ResultsGrid results={results} onClearFilters={resetFilters} />
+          <ResultsGrid results={results} onClearFilters={resetFilters} isLoading={isLoading} />
         </main>
       </div>
 

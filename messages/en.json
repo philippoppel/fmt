@@ -72,6 +72,7 @@
       "rememberMe": "Remember me",
       "forgotPassword": "Forgot password?",
       "submit": "Sign in",
+      "submitting": "Signing in...",
       "noAccount": "Don't have an account?",
       "registerLink": "Register now",
       "orContinueWith": "Or continue with",
@@ -97,8 +98,11 @@
       "terms": "Terms of Service",
       "privacy": "Privacy Policy",
       "submit": "Register",
+      "submitting": "Registering...",
       "hasAccount": "Already have an account?",
       "loginLink": "Sign in now",
+      "passwordMatch": "Passwords match",
+      "passwordMismatch": "Passwords do not match",
       "passwordRequirements": {
         "title": "Password requirements:",
         "minLength": "At least 8 characters",
@@ -140,6 +144,54 @@
       "submit": "Send reset link",
       "backToLogin": "Back to login",
       "success": "If an account with this email exists, you will receive an email with further instructions shortly."
+    }
+  },
+  "dashboard": {
+    "settings": {
+      "title": "Profile Settings",
+      "subtitle": "Manage your therapist profile information",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "saved": "Changes saved successfully",
+      "sections": {
+        "basicInfo": {
+          "title": "Basic Information",
+          "description": "Name, title, and description of your profile",
+          "name": "Display Name",
+          "namePlaceholder": "Dr. John Smith",
+          "professionalTitle": "Professional Title",
+          "titlePlaceholder": "e.g., Licensed Psychotherapist",
+          "image": "Profile Image URL",
+          "description": "Short Description",
+          "descriptionPlaceholder": "Describe your therapeutic approach and specialties..."
+        },
+        "location": {
+          "title": "Location",
+          "description": "Where do your sessions take place?",
+          "city": "City",
+          "cityPlaceholder": "e.g., Berlin",
+          "postalCode": "Postal Code",
+          "postalCodePlaceholder": "e.g., 10115"
+        },
+        "specializations": {
+          "description": "Select your areas of expertise"
+        },
+        "therapyTypes": {
+          "description": "What therapy approaches do you offer?"
+        },
+        "languages": {
+          "description": "In which languages do you offer therapy?"
+        },
+        "pricing": {
+          "title": "Pricing & Insurance",
+          "description": "Costs and accepted insurance types",
+          "pricePerSession": "Price per Session (EUR)"
+        },
+        "availability": {
+          "title": "Availability & Preferences",
+          "description": "When and how are you available?"
+        }
+      }
     }
   },
   "footer": {
@@ -218,13 +270,33 @@
         "placeholder": "City or postal code"
       },
       "specialty": {
-        "label": "Specialization"
+        "title": "Specialization",
+        "label": "Specialization",
+        "depression": "Depression",
+        "anxiety": "Anxiety",
+        "trauma": "Trauma",
+        "relationships": "Relationships",
+        "addiction": "Addiction",
+        "eating_disorders": "Eating Disorders",
+        "adhd": "ADHD",
+        "burnout": "Burnout"
       },
       "therapyType": {
-        "label": "Therapy Type"
+        "title": "Therapy Type",
+        "label": "Therapy Type",
+        "cbt": "Cognitive Behavioral Therapy",
+        "psychoanalysis": "Psychoanalysis",
+        "systemic": "Systemic Therapy",
+        "gestalt": "Gestalt Therapy",
+        "humanistic": "Humanistic Therapy"
       },
       "language": {
-        "label": "Language"
+        "title": "Languages",
+        "label": "Language",
+        "de": "German",
+        "en": "English",
+        "tr": "Turkish",
+        "ar": "Arabic"
       },
       "priceRange": {
         "label": "Price per Session",
@@ -232,23 +304,27 @@
         "max": "Max"
       },
       "sessionType": {
+        "title": "Session Type",
         "label": "Session Type",
         "online": "Online",
         "in_person": "In Person",
         "both": "Both"
       },
       "insurance": {
+        "title": "Insurance",
         "label": "Insurance",
         "public": "Public insurance available",
         "private": "Private patients"
       },
       "availability": {
+        "title": "Availability",
         "label": "Availability",
         "immediately": "Available immediately",
         "this_week": "This week",
         "flexible": "Flexible"
       },
       "gender": {
+        "title": "Gender",
         "label": "Therapist Gender",
         "male": "Male",
         "female": "Female",

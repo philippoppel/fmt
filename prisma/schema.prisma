@@ -8,6 +8,25 @@ datasource db {
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
+// Enums for TherapistProfile
+enum SessionType {
+  online
+  in_person
+  both
+}
+
+enum Availability {
+  immediately
+  this_week
+  flexible
+}
+
+enum Gender {
+  male
+  female
+  diverse
+}
+
 model User {
   id                    String    @id @default(cuid())
   name                  String?
@@ -35,6 +54,7 @@ model User {
   // Relations
   accounts              Account[]
   sessions              Session[]
+  therapistProfile      TherapistProfile?
 
   @@map("users")
 }
@@ -123,4 +143,48 @@ model AuditLog {
   @@index([action])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+model TherapistProfile {
+  id                String       @id @default(cuid())
+  userId            String       @unique
+
+  // Basic Info
+  title             String?
+  imageUrl          String?
+  shortDescription  String?      @db.Text
+
+  // Location
+  city              String?
+  postalCode        String?
+
+  // Professional Details (stored as string arrays)
+  specializations   String[]
+  therapyTypes      String[]
+  languages         String[]
+  insurance         String[]
+
+  // Pricing & Availability
+  pricePerSession   Int?         @default(0)
+  sessionType       SessionType  @default(both)
+  availability      Availability @default(flexible)
+  gender            Gender?
+
+  // Ratings
+  rating            Float        @default(0)
+  reviewCount       Int          @default(0)
+
+  // Profile visibility
+  isPublished       Boolean      @default(true)
+
+  // Timestamps
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  // Relations
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([city])
+  @@index([isPublished])
+  @@map("therapist_profiles")
 }

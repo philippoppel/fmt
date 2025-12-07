@@ -1,118 +1,53 @@
 "use client";
 
-import { useMemo } from "react";
-import { demoTherapists, demoBlogPosts } from "@/lib/data/demo-data";
-import type { FilterState, SearchResult } from "@/types/therapist";
+import { useEffect, useState, useTransition, useMemo } from "react";
+import { demoBlogPosts } from "@/lib/data/demo-data";
+import { searchTherapistsAction } from "@/lib/actions/search";
+import type { FilterState, SearchResult, Therapist } from "@/types/therapist";
 
-export function useSearchResults(filters: FilterState): SearchResult[] {
-  return useMemo(() => {
-    let therapistResults: SearchResult[] = [];
-    let blogResults: SearchResult[] = [];
+export function useSearchResults(filters: FilterState): {
+  results: SearchResult[];
+  isLoading: boolean;
+} {
+  const [therapists, setTherapists] = useState<Therapist[]>([]);
+  const [isPending, startTransition] = useTransition();
 
-    // Filter therapists
-    if (filters.contentType === "all" || filters.contentType === "therapists") {
-      therapistResults = demoTherapists
-        .filter((t) => {
-          // Text search
-          if (filters.searchQuery) {
-            const query = filters.searchQuery.toLowerCase();
-            if (
-              !t.name.toLowerCase().includes(query) &&
-              !t.shortDescription.toLowerCase().includes(query) &&
-              !t.title.toLowerCase().includes(query)
-            ) {
-              return false;
-            }
-          }
-
-          // Location filter
-          if (filters.location) {
-            const loc = filters.location.toLowerCase();
-            if (
-              !t.location.city.toLowerCase().includes(loc) &&
-              !t.location.postalCode.includes(loc)
-            ) {
-              return false;
-            }
-          }
-
-          // Specialties filter
-          if (filters.specialties.length > 0) {
-            if (!filters.specialties.some((s) => t.specializations.includes(s))) {
-              return false;
-            }
-          }
-
-          // Therapy types filter
-          if (filters.therapyTypes.length > 0) {
-            if (!filters.therapyTypes.some((tt) => t.therapyTypes.includes(tt))) {
-              return false;
-            }
-          }
-
-          // Languages filter
-          if (filters.languages.length > 0) {
-            if (!filters.languages.some((l) => t.languages.includes(l))) {
-              return false;
-            }
-          }
-
-          // Price range filter
-          if (
-            t.pricePerSession < filters.priceRange.min ||
-            t.pricePerSession > filters.priceRange.max
-          ) {
-            return false;
-          }
-
-          // Session type filter
-          if (filters.sessionType !== null) {
-            if (filters.sessionType === "both") {
-              if (t.sessionType !== "both") {
-                return false;
-              }
-            } else if (
-              t.sessionType !== filters.sessionType &&
-              t.sessionType !== "both"
-            ) {
-              return false;
-            }
-          }
-
-          // Insurance filter
-          if (filters.insurance.length > 0) {
-            if (!filters.insurance.some((i) => t.insurance.includes(i))) {
-              return false;
-            }
-          }
-
-          // Availability filter
-          if (filters.availability !== null) {
-            if (t.availability !== filters.availability) {
-              return false;
-            }
-          }
-
-          // Gender filter
-          if (filters.gender !== null) {
-            if (t.gender !== filters.gender) {
-              return false;
-            }
-          }
-
-          // Rating filter
-          if (filters.minRating > 0) {
-            if (t.rating < filters.minRating) {
-              return false;
-            }
-          }
-
-          return true;
-        })
-        .map((t) => ({ type: "therapist" as const, data: t }));
+  // Fetch therapists from database when filters change
+  useEffect(() => {
+    if (filters.contentType === "blogs") {
+      setTherapists([]);
+      return;
     }
 
-    // Filter blog posts
+    startTransition(async () => {
+      const data = await searchTherapistsAction(filters);
+      setTherapists(data);
+    });
+  }, [
+    filters.contentType,
+    filters.searchQuery,
+    filters.location,
+    JSON.stringify(filters.specialties),
+    JSON.stringify(filters.therapyTypes),
+    JSON.stringify(filters.languages),
+    filters.priceRange.min,
+    filters.priceRange.max,
+    filters.sessionType,
+    JSON.stringify(filters.insurance),
+    filters.availability,
+    filters.gender,
+    filters.minRating,
+  ]);
+
+  // Build results
+  const results = useMemo(() => {
+    const therapistResults: SearchResult[] =
+      filters.contentType === "blogs"
+        ? []
+        : therapists.map((t) => ({ type: "therapist" as const, data: t }));
+
+    // Keep blog filtering client-side (demo data for now)
+    let blogResults: SearchResult[] = [];
     if (filters.contentType === "all" || filters.contentType === "blogs") {
       blogResults = demoBlogPosts
         .filter((b) => {
@@ -140,7 +75,8 @@ export function useSearchResults(filters: FilterState): SearchResult[] {
         .map((b) => ({ type: "blog" as const, data: b }));
     }
 
-    // Combine results: therapists first, then blogs
     return [...therapistResults, ...blogResults];
-  }, [filters]);
+  }, [therapists, filters.contentType, filters.searchQuery, filters.specialties]);
+
+  return { results, isLoading: isPending };
 }

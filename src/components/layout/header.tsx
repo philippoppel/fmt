@@ -5,12 +5,15 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 export function Header() {
   const t = useTranslations("navigation");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === "authenticated";
 
   const navItems = [
     { href: "/", label: t("home") },
@@ -55,12 +58,33 @@ export function Header() {
             <ThemeToggle />
 
             <div className="hidden lg:flex lg:items-center lg:gap-1.5 lg:ml-2">
-              <Button variant="ghost" asChild className="rounded-full">
-                <Link href="/auth/login">{t("login")}</Link>
-              </Button>
-              <Button asChild className="rounded-full">
-                <Link href="/auth/register">{t("register")}</Link>
-              </Button>
+              {isAuthenticated ? (
+                <>
+                  <Button variant="ghost" asChild className="rounded-full gap-2">
+                    <Link href="/dashboard/settings">
+                      <User className="h-4 w-4" />
+                      {t("profile")}
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="rounded-full gap-2"
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    {t("logout")}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" asChild className="rounded-full">
+                    <Link href="/auth/login">{t("login")}</Link>
+                  </Button>
+                  <Button asChild className="rounded-full">
+                    <Link href="/auth/register">{t("register")}</Link>
+                  </Button>
+                </>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -105,12 +129,40 @@ export function Header() {
               ))}
               <li className="border-t border-white/20 dark:border-white/10 pt-4 mt-4">
                 <div className="flex flex-col gap-2">
-                  <Button variant="outline" asChild className="w-full rounded-full">
-                    <Link href="/auth/login">{t("login")}</Link>
-                  </Button>
-                  <Button asChild className="w-full rounded-full">
-                    <Link href="/auth/register">{t("register")}</Link>
-                  </Button>
+                  {isAuthenticated ? (
+                    <>
+                      <Button variant="outline" asChild className="w-full rounded-full gap-2">
+                        <Link href="/dashboard/settings" onClick={() => setMobileMenuOpen(false)}>
+                          <User className="h-4 w-4" />
+                          {t("profile")}
+                        </Link>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="w-full rounded-full gap-2"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          signOut({ callbackUrl: "/" });
+                        }}
+                      >
+                        <LogOut className="h-4 w-4" />
+                        {t("logout")}
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="outline" asChild className="w-full rounded-full">
+                        <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
+                          {t("login")}
+                        </Link>
+                      </Button>
+                      <Button asChild className="w-full rounded-full">
+                        <Link href="/auth/register" onClick={() => setMobileMenuOpen(false)}>
+                          {t("register")}
+                        </Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </li>
             </ul>
