@@ -35,12 +35,12 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <ul className="hidden md:flex md:items-center md:gap-6" role="list">
+        <ul className="hidden lg:flex lg:items-center lg:gap-1" role="list">
           {navItems.map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-2 py-1"
+                className="whitespace-nowrap text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-3 py-2"
               >
                 {item.label}
               </Link>
@@ -53,7 +53,7 @@ export function Header() {
           <LanguageSwitcher />
           <ThemeToggle />
 
-          <div className="hidden md:flex md:items-center md:gap-2">
+          <div className="hidden lg:flex lg:items-center lg:gap-2">
             <Button variant="ghost" asChild>
               <Link href="/auth/login">{t("login")}</Link>
             </Button>
@@ -66,7 +66,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
@@ -85,7 +85,7 @@ export function Header() {
       {mobileMenuOpen && (
         <div
           id="mobile-menu"
-          className="border-t md:hidden"
+          className="border-t lg:hidden"
           role="dialog"
           aria-modal="true"
           aria-label={t("mainNavigation")}
