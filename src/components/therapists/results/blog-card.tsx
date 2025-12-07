@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, User } from "lucide-react";
+import { Clock, User, FileText } from "lucide-react";
 import type { BlogPost } from "@/types/therapist";
 
 interface BlogCardProps {
@@ -18,7 +18,7 @@ export function BlogCard({ post }: BlogCardProps) {
   const tSpec = useTranslations("therapists.specialties");
 
   return (
-    <Card className="overflow-hidden transition-shadow hover:shadow-lg">
+    <Card className="overflow-hidden transition-shadow hover:shadow-lg border-l-4 border-l-amber-500">
       <CardContent className="p-0">
         <div className="flex flex-col sm:flex-row">
           {/* Featured Image */}
@@ -30,7 +30,8 @@ export function BlogCard({ post }: BlogCardProps) {
               className="object-cover"
               sizes="(max-width: 640px) 100vw, 160px"
             />
-            <Badge className="absolute left-2 top-2" variant="default">
+            <Badge className="absolute left-2 top-2 bg-amber-500 hover:bg-amber-600 gap-1">
+              <FileText className="h-3 w-3" aria-hidden="true" />
               {t("blog")}
             </Badge>
           </div>

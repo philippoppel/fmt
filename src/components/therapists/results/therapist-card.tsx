@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/ui/star-rating";
-import { MapPin, Euro, Video, Building2 } from "lucide-react";
+import { MapPin, Euro, Video, Building2, UserCircle } from "lucide-react";
 import type { Therapist } from "@/types/therapist";
 
 interface TherapistCardProps {
@@ -20,7 +20,7 @@ export function TherapistCard({ therapist }: TherapistCardProps) {
   const tSpec = useTranslations("therapists.specialties");
 
   return (
-    <Card className="overflow-hidden transition-shadow hover:shadow-lg">
+    <Card className="overflow-hidden transition-shadow hover:shadow-lg border-l-4 border-l-emerald-500">
       <CardContent className="p-0">
         <div className="flex flex-col sm:flex-row">
           {/* Profile Image */}
@@ -32,6 +32,10 @@ export function TherapistCard({ therapist }: TherapistCardProps) {
               className="object-cover"
               sizes="(max-width: 640px) 100vw, 160px"
             />
+            <Badge className="absolute left-2 top-2 bg-emerald-500 hover:bg-emerald-600 gap-1">
+              <UserCircle className="h-3 w-3" aria-hidden="true" />
+              {t("therapist")}
+            </Badge>
           </div>
 
           {/* Info */}
