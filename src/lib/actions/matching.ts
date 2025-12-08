@@ -8,7 +8,7 @@ import type {
   BlogPost,
 } from "@/types/therapist";
 import {
-  calculateMatchScoreForAll,
+  calculateMatchScoreForAllWithBreakdown,
   getSpecialtiesFromTopics,
 } from "@/lib/matching";
 import { demoBlogPosts } from "@/lib/data/demo-data";
@@ -42,7 +42,7 @@ export async function searchWithMatching(
     orderBy: [{ rating: "desc" }, { reviewCount: "desc" }],
   });
 
-  // Transform to Therapist type
+  // Transform to Therapist type (including therapy style fields)
   const therapists: Therapist[] = profiles.map((profile) => ({
     id: profile.id,
     name: profile.user.name ?? "Unknown",
@@ -65,10 +65,16 @@ export async function searchWithMatching(
     insurance: profile.insurance as Therapist["insurance"],
     availability: profile.availability as Therapist["availability"],
     gender: profile.gender as Therapist["gender"],
+    // Therapy Style fields for matching
+    communicationStyle: profile.communicationStyle as Therapist["communicationStyle"],
+    usesHomework: profile.usesHomework ?? undefined,
+    therapyFocus: profile.therapyFocus as Therapist["therapyFocus"],
+    clientTalkRatio: profile.clientTalkRatio ?? undefined,
+    therapyDepth: profile.therapyDepth as Therapist["therapyDepth"],
   }));
 
-  // Calculate match scores and sort
-  const matchedTherapists = calculateMatchScoreForAll(therapists, criteria);
+  // Calculate match scores with breakdown and sort
+  const matchedTherapists = calculateMatchScoreForAllWithBreakdown(therapists, criteria);
 
   // Fetch related blog posts
   const blogs = await getRelatedBlogPosts(criteria.selectedTopics);

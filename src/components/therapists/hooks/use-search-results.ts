@@ -15,6 +15,7 @@ import type {
 interface TherapistResult {
   therapist: Therapist;
   matchScore?: number;
+  scoreBreakdown?: import("@/types/therapist").ScoreBreakdown;
 }
 
 interface SearchResultsSeparated {
@@ -81,6 +82,7 @@ export function useSearchResults(
       const therapistResults: TherapistResult[] = matchedTherapists.map((t) => ({
         therapist: t,
         matchScore: t.matchScore,
+        scoreBreakdown: t.scoreBreakdown,
       }));
 
       return {

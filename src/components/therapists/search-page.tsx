@@ -125,6 +125,7 @@ export function SearchPage() {
             articles={articles}
             onClearFilters={resetFilters}
             isLoading={isLoading}
+            isMatchingMode={!!matchingCriteria}
           />
         </main>
       </div>
