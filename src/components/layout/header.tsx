@@ -24,7 +24,7 @@ export function Header() {
   ];
 
   return (
-    <div className="sticky top-0 z-50 w-full px-[5%] lg:px-[10%] pt-4">
+    <div className="sticky top-0 z-50 w-full px-4 lg:px-6 pt-4">
       <header className="rounded-2xl border border-white/20 bg-background/70 backdrop-blur-xl shadow-lg shadow-black/5 dark:border-white/10 dark:bg-background/60 dark:shadow-black/20">
         <nav
           id="main-navigation"
