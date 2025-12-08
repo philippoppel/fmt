@@ -78,6 +78,344 @@ const blogCategories = [
   },
 ]
 
+// Sample Blog Posts
+const blogPosts = [
+  {
+    slug: 'depression-erkennen-und-verstehen',
+    title: 'Depression erkennen und verstehen: Ein Leitfaden',
+    summaryShort: 'Lernen Sie die wichtigsten Anzeichen einer Depression zu erkennen und verstehen Sie, warum professionelle Hilfe wichtig ist.',
+    summaryMedium: 'Depression ist mehr als nur Traurigkeit. In diesem Artikel erklären wir die häufigsten Symptome, Ursachen und warum es so wichtig ist, frühzeitig Hilfe zu suchen. Erfahren Sie, wie Sie Warnsignale bei sich oder Angehörigen erkennen können.',
+    featuredImage: 'https://images.unsplash.com/photo-1493836512294-502baa1986e2?w=1200&h=630&fit=crop',
+    featuredImageAlt: 'Person sitzt nachdenklich am Fenster',
+    metaTitle: 'Depression erkennen: Symptome, Ursachen & Hilfe',
+    metaDescription: 'Erfahren Sie, wie Sie Anzeichen einer Depression erkennen. Symptome, Ursachen und wann Sie professionelle Hilfe suchen sollten.',
+    categorySlug: 'depression',
+    tags: ['Depression', 'Symptome', 'Diagnose', 'Hilfe'],
+    content: {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Depression ist eine der häufigsten psychischen Erkrankungen weltweit. Dennoch wird sie oft missverstanden oder nicht ernst genommen. In diesem Artikel möchten wir Ihnen helfen, die Anzeichen einer Depression besser zu verstehen.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Was ist eine Depression?' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Eine Depression ist weit mehr als eine vorübergehende Traurigkeit. Es handelt sich um eine ernsthafte psychische Erkrankung, die das Denken, Fühlen und Handeln beeinflusst. Sie kann jeden treffen – unabhängig von Alter, Geschlecht oder Lebenssituation.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Häufige Symptome' }]
+        },
+        {
+          type: 'bulletList',
+          content: [
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Anhaltende Traurigkeit oder Leere' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Verlust von Interesse an Aktivitäten, die früher Freude bereitet haben' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Schlafstörungen (zu viel oder zu wenig Schlaf)' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Appetitveränderungen und Gewichtsschwankungen' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Konzentrationsschwierigkeiten' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Gefühle von Wertlosigkeit oder übermäßige Schuldgefühle' }] }] }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Wann sollte man Hilfe suchen?' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Wenn Sie mehrere dieser Symptome über einen Zeitraum von mehr als zwei Wochen erleben, ist es wichtig, professionelle Hilfe zu suchen. Depression ist behandelbar, und je früher Sie Unterstützung erhalten, desto besser sind die Aussichten auf Besserung.' }
+          ]
+        },
+        {
+          type: 'blockquote',
+          content: [
+            { type: 'paragraph', content: [{ type: 'text', text: 'Der erste Schritt zur Besserung ist oft der schwierigste – aber auch der wichtigste. Scheuen Sie sich nicht, Hilfe anzunehmen.' }] }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    slug: 'achtsamkeit-im-alltag',
+    title: '5 einfache Achtsamkeitsübungen für den Alltag',
+    summaryShort: 'Praktische Achtsamkeitsübungen, die Sie leicht in Ihren Alltag integrieren können.',
+    summaryMedium: 'Achtsamkeit muss nicht kompliziert sein. Mit diesen fünf einfachen Übungen können Sie mehr Ruhe und Gelassenheit in Ihren Alltag bringen – ohne stundenlang meditieren zu müssen.',
+    featuredImage: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200&h=630&fit=crop',
+    featuredImageAlt: 'Person meditiert in der Natur',
+    metaTitle: '5 Achtsamkeitsübungen für jeden Tag',
+    metaDescription: 'Entdecken Sie 5 einfache Achtsamkeitsübungen für mehr Ruhe und Gelassenheit im Alltag. Praktische Tipps zum sofort Ausprobieren.',
+    categorySlug: 'self-care',
+    tags: ['Achtsamkeit', 'Meditation', 'Selbstfürsorge', 'Entspannung'],
+    content: {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'In unserer hektischen Welt fällt es oft schwer, einen Moment innezuhalten. Achtsamkeit kann helfen, wieder mehr im Hier und Jetzt anzukommen. Hier sind fünf einfache Übungen, die Sie sofort ausprobieren können.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: '1. Die Atem-Anker-Übung' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Nehmen Sie sich eine Minute Zeit und konzentrieren Sie sich nur auf Ihren Atem. Spüren Sie, wie die Luft durch Ihre Nase einströmt und wieder ausströmt. Wenn Ihre Gedanken abschweifen, bringen Sie sie sanft zurück zum Atem.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: '2. Achtsames Essen' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Bei Ihrer nächsten Mahlzeit: Legen Sie das Handy weg und konzentrieren Sie sich voll auf das Essen. Beobachten Sie die Farben, riechen Sie die Aromen, schmecken Sie jeden Bissen bewusst.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: '3. Der Body-Scan' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Schließen Sie die Augen und wandern Sie mit Ihrer Aufmerksamkeit langsam durch Ihren Körper – von den Zehen bis zum Kopf. Nehmen Sie wahr, wo Sie Anspannung spüren, ohne sie verändern zu wollen.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: '4. Die 5-4-3-2-1-Technik' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Benennen Sie: 5 Dinge, die Sie sehen, 4 Dinge, die Sie hören, 3 Dinge, die Sie fühlen können, 2 Dinge, die Sie riechen, und 1 Sache, die Sie schmecken. Diese Übung erdet Sie sofort im Moment.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: '5. Dankbarkeits-Moment' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Bevor Sie abends einschlafen, denken Sie an drei Dinge, für die Sie heute dankbar sind. Es können kleine Dinge sein – ein freundliches Lächeln, eine Tasse guter Kaffee, ein Moment der Ruhe.' }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    slug: 'burnout-praevention-tipps',
+    title: 'Burnout vorbeugen: 7 Strategien für mehr Balance',
+    summaryShort: 'Erfahren Sie, wie Sie Burnout frühzeitig erkennen und mit effektiven Strategien vorbeugen können.',
+    summaryMedium: 'Burnout entwickelt sich schleichend und wird oft zu spät erkannt. Mit diesen sieben bewährten Strategien können Sie Ihre Work-Life-Balance verbessern und einem Burnout aktiv vorbeugen.',
+    featuredImage: 'https://images.unsplash.com/photo-1541199249251-f713e6145474?w=1200&h=630&fit=crop',
+    featuredImageAlt: 'Gestresste Person am Arbeitsplatz',
+    metaTitle: 'Burnout vorbeugen: 7 effektive Strategien',
+    metaDescription: 'Lernen Sie 7 bewährte Strategien zur Burnout-Prävention. Erkennen Sie Warnsignale früh und finden Sie zurück zur Balance.',
+    categorySlug: 'stress-burnout',
+    tags: ['Burnout', 'Prävention', 'Work-Life-Balance', 'Stress'],
+    content: {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Burnout ist kein plötzliches Ereignis, sondern ein schleichender Prozess. Die gute Nachricht: Mit den richtigen Strategien können Sie aktiv vorbeugen.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Warnsignale erkennen' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Bevor wir zu den Präventionsstrategien kommen, ist es wichtig, die frühen Warnsignale zu kennen: chronische Müdigkeit, zunehmender Zynismus, das Gefühl, nicht mehr effektiv zu sein, und emotionale Erschöpfung.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: '7 Strategien zur Prävention' }]
+        },
+        {
+          type: 'orderedList',
+          content: [
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Grenzen setzen: ' }, { type: 'text', text: 'Lernen Sie, Nein zu sagen – sowohl im Beruf als auch privat.' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Pausen einplanen: ' }, { type: 'text', text: 'Regelmäßige Pausen sind keine Zeitverschwendung, sondern steigern Ihre Produktivität.' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Bewegung integrieren: ' }, { type: 'text', text: 'Körperliche Aktivität ist einer der effektivsten Stresspuffer.' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Soziale Kontakte pflegen: ' }, { type: 'text', text: 'Investieren Sie Zeit in Beziehungen, die Ihnen Energie geben.' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Schlaf priorisieren: ' }, { type: 'text', text: 'Ausreichend Schlaf ist die Basis für Stressresilienz.' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Hobbys pflegen: ' }, { type: 'text', text: 'Aktivitäten, die nichts mit Arbeit zu tun haben, laden Ihre Batterien auf.' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Professionelle Hilfe suchen: ' }, { type: 'text', text: 'Wenn Sie merken, dass Sie alleine nicht weiterkommen, ist das ein Zeichen von Stärke, nicht von Schwäche.' }] }] }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    slug: 'kognitive-verhaltenstherapie-erklaert',
+    title: 'Kognitive Verhaltenstherapie: Was Sie wissen sollten',
+    summaryShort: 'Eine verständliche Einführung in die Kognitive Verhaltenstherapie und wie sie funktioniert.',
+    summaryMedium: 'Die Kognitive Verhaltenstherapie (KVT) ist eine der am besten erforschten Therapieformen. Erfahren Sie, wie sie funktioniert, bei welchen Problemen sie hilft und was Sie in einer Therapie erwartet.',
+    featuredImage: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=1200&h=630&fit=crop',
+    featuredImageAlt: 'Therapeutin im Gespräch mit Patientin',
+    metaTitle: 'Kognitive Verhaltenstherapie einfach erklärt',
+    metaDescription: 'Was ist Kognitive Verhaltenstherapie? Erfahren Sie, wie KVT funktioniert, wann sie hilft und was Sie erwartet.',
+    categorySlug: 'therapy-methods',
+    tags: ['KVT', 'Therapie', 'Psychotherapie', 'Behandlung'],
+    content: {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Die Kognitive Verhaltenstherapie (KVT) gehört zu den wirksamsten und am besten erforschten Psychotherapieverfahren. Aber was genau verbirgt sich dahinter?' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Das Grundprinzip' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Die KVT basiert auf der Erkenntnis, dass unsere Gedanken, Gefühle und Verhaltensweisen eng miteinander verbunden sind. Negative Denkmuster können zu belastenden Gefühlen und ungünstigen Verhaltensweisen führen – und umgekehrt.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Wie läuft eine KVT ab?' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'In der Therapie lernen Sie zunächst, Ihre automatischen Gedankenmuster zu erkennen. Dann arbeiten Sie gemeinsam mit Ihrem Therapeuten daran, diese Muster zu hinterfragen und durch hilfreichere Gedanken zu ersetzen.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Bei welchen Problemen hilft KVT?' }]
+        },
+        {
+          type: 'bulletList',
+          content: [
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Depressionen' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Angststörungen und Phobien' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Zwangsstörungen' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Essstörungen' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Schlafstörungen' }] }] },
+            { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Chronische Schmerzen' }] }] }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Was macht KVT besonders?' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'KVT ist in der Regel zeitlich begrenzt (15-25 Sitzungen), stark strukturiert und lösungsorientiert. Sie erhalten konkrete Werkzeuge, die Sie auch nach der Therapie selbstständig anwenden können.' }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    slug: 'angst-vor-therapie-ueberwinden',
+    title: 'Die Angst vor dem ersten Therapietermin überwinden',
+    summaryShort: 'Tipps und Ermutigung für alle, die mit dem Gedanken spielen, eine Therapie zu beginnen.',
+    summaryMedium: 'Der Schritt zur Therapie fällt vielen Menschen schwer. Erfahren Sie, was Sie beim ersten Termin erwartet, welche Ängste normal sind und wie Sie den Mut finden, diesen wichtigen Schritt zu gehen.',
+    featuredImage: 'https://images.unsplash.com/photo-1516302752625-fcc3c50ae61f?w=1200&h=630&fit=crop',
+    featuredImageAlt: 'Einladende Therapiepraxis',
+    metaTitle: 'Angst vor Therapie? So überwinden Sie die Hürde',
+    metaDescription: 'Haben Sie Angst vor dem ersten Therapietermin? Erfahren Sie, was Sie erwartet und wie Sie den ersten Schritt wagen können.',
+    categorySlug: 'therapy-methods',
+    tags: ['Therapie', 'Ersttermin', 'Ängste', 'Mut'],
+    content: {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Sie denken schon länger darüber nach, eine Therapie zu beginnen, aber irgendetwas hält Sie zurück? Damit sind Sie nicht allein. Die Angst vor dem ersten Schritt ist völlig normal – und überwindbar.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Häufige Ängste und Sorgen' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', marks: [{ type: 'bold' }], text: '\"Was wird der Therapeut von mir denken?\"' },
+            { type: 'text', text: ' – Therapeuten sind ausgebildet, um ohne Urteil zuzuhören. Sie haben schon vieles gehört und sind da, um zu helfen, nicht um zu urteilen.' }
+          ]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', marks: [{ type: 'bold' }], text: '\"Ich weiß nicht, was ich sagen soll.\"' },
+            { type: 'text', text: ' – Sie müssen nichts vorbereiten. Der Therapeut wird Ihnen Fragen stellen und das Gespräch leiten.' }
+          ]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', marks: [{ type: 'bold' }], text: '\"Therapie ist nur für Menschen mit schweren Problemen.\"' },
+            { type: 'text', text: ' – Therapie ist für jeden, der sich Unterstützung wünscht. Sie müssen nicht in einer Krise sein, um von Therapie zu profitieren.' }
+          ]
+        },
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Was beim Erstgespräch passiert' }]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            { type: 'text', text: 'Das erste Gespräch dient dem gegenseitigen Kennenlernen. Der Therapeut wird Ihnen Fragen zu Ihrer aktuellen Situation stellen und Sie können Fragen zur Therapie stellen. Es geht darum herauszufinden, ob Sie gut zusammenarbeiten können.' }
+          ]
+        },
+        {
+          type: 'blockquote',
+          content: [
+            { type: 'paragraph', content: [{ type: 'text', text: 'Denken Sie daran: Hilfe zu suchen ist ein Zeichen von Stärke, nicht von Schwäche. Es zeigt, dass Sie bereit sind, aktiv an Ihrem Wohlbefinden zu arbeiten.' }] }
+          ]
+        }
+      ]
+    }
+  }
+]
+
 const therapists = [
   {
     userId: 'seed-user-1',
@@ -216,7 +554,137 @@ async function main() {
   }
 
   const count = await prisma.therapistProfile.count()
-  console.log(`\nSeeding complete! Total therapists: ${count}`)
+  console.log(`Therapist profiles seeded: ${count}\n`)
+
+  // Seed Blog Posts
+  console.log('Seeding blog posts...')
+
+  // Get a user to be the author (use first seed user)
+  const author = await prisma.user.findFirst({ where: { id: 'seed-user-1' } })
+  if (!author) {
+    console.log('No author found, skipping blog posts')
+    return
+  }
+
+  for (const post of blogPosts) {
+    // Get the category
+    const category = await prisma.blogCategory.findUnique({
+      where: { slug: post.categorySlug }
+    })
+
+    if (!category) {
+      console.log(`Category ${post.categorySlug} not found, skipping post: ${post.title}`)
+      continue
+    }
+
+    // Generate HTML content from TipTap JSON
+    const contentHtml = generateSimpleHtml(post.content)
+    const plainText = extractText(post.content)
+    const wordCount = plainText.split(/\s+/).filter(Boolean).length
+    const readingTime = Math.ceil(wordCount / 200)
+
+    // Check if post already exists
+    const existing = await prisma.blogPost.findUnique({ where: { slug: post.slug } })
+    if (existing) {
+      console.log(`Post already exists: ${post.title}`)
+      continue
+    }
+
+    // Create the blog post
+    const createdPost = await prisma.blogPost.create({
+      data: {
+        slug: post.slug,
+        title: post.title,
+        content: post.content,
+        contentHtml,
+        excerpt: plainText.substring(0, 160) + '...',
+        summaryShort: post.summaryShort,
+        summaryMedium: post.summaryMedium,
+        featuredImage: post.featuredImage,
+        featuredImageAlt: post.featuredImageAlt,
+        metaTitle: post.metaTitle,
+        metaDescription: post.metaDescription,
+        wordCount,
+        readingTimeMinutes: readingTime,
+        status: 'published',
+        publishedAt: new Date(),
+        authorId: author.id,
+      }
+    })
+
+    // Connect category
+    await prisma.blogPostCategory.create({
+      data: {
+        postId: createdPost.id,
+        categoryId: category.id
+      }
+    })
+
+    // Create tags
+    for (const tagName of post.tags) {
+      const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+
+      let tag = await prisma.blogTag.findUnique({ where: { slug: tagSlug } })
+      if (!tag) {
+        tag = await prisma.blogTag.create({
+          data: { slug: tagSlug, name: tagName }
+        })
+      }
+
+      await prisma.blogPostTag.create({
+        data: {
+          postId: createdPost.id,
+          tagId: tag.id
+        }
+      }).catch(() => {}) // Ignore if already exists
+    }
+
+    console.log(`Created post: ${post.title}`)
+  }
+
+  const postCount = await prisma.blogPost.count()
+  console.log(`\nSeeding complete! Total blog posts: ${postCount}`)
+}
+
+// Helper function to generate HTML from TipTap JSON
+function generateSimpleHtml(node: any): string {
+  if (!node) return ''
+
+  if (node.text) {
+    let text = node.text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+
+    if (node.marks) {
+      for (const mark of node.marks) {
+        if (mark.type === 'bold') text = `<strong>${text}</strong>`
+        if (mark.type === 'italic') text = `<em>${text}</em>`
+      }
+    }
+    return text
+  }
+
+  const children = node.content?.map(generateSimpleHtml).join('') || ''
+
+  switch (node.type) {
+    case 'doc': return children
+    case 'paragraph': return `<p>${children}</p>`
+    case 'heading': return `<h${node.attrs?.level || 2}>${children}</h${node.attrs?.level || 2}>`
+    case 'bulletList': return `<ul>${children}</ul>`
+    case 'orderedList': return `<ol>${children}</ol>`
+    case 'listItem': return `<li>${children}</li>`
+    case 'blockquote': return `<blockquote>${children}</blockquote>`
+    default: return children
+  }
+}
+
+// Helper function to extract plain text
+function extractText(node: any): string {
+  if (!node) return ''
+  if (node.text) return node.text
+  if (node.content) return node.content.map(extractText).join(' ')
+  return ''
 }
 
 main()
