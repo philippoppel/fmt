@@ -56,7 +56,7 @@ export function CriteriaSelection() {
                 onClick={() => actions.setGender(gender)}
                 label={
                   gender
-                    ? t(`therapists.filters.gender.options.${gender}`)
+                    ? t(`therapists.filters.gender.${gender}`)
                     : t("matching.criteria.anyGender")
                 }
               />
@@ -80,9 +80,7 @@ export function CriteriaSelection() {
                   onClick={() => actions.setSessionType(sessionType)}
                   label={
                     sessionType
-                      ? t(
-                          `therapists.filters.sessionType.options.${sessionType}`
-                        )
+                      ? t(`therapists.filters.sessionType.${sessionType}`)
                       : t("matching.criteria.anySessionType")
                   }
                 />
@@ -108,7 +106,7 @@ export function CriteriaSelection() {
                   onCheckedChange={() => actions.toggleInsurance(insurance)}
                 />
                 <span className="text-sm">
-                  {t(`therapists.filters.insurance.options.${insurance}`)}
+                  {t(`therapists.filters.insurance.${insurance}`)}
                 </span>
               </label>
             ))}

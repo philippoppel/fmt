@@ -21,8 +21,8 @@ function WizardContent() {
   const handleShowResults = () => {
     // Encode matching data for URL
     const matchingData = {
-      topics: state.selectedTopics,
-      subTopics: state.selectedSubTopics,
+      selectedTopics: state.selectedTopics,
+      selectedSubTopics: state.selectedSubTopics,
       location: state.criteria.location,
       gender: state.criteria.gender,
       sessionType: state.criteria.sessionType,
