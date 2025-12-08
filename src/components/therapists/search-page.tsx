@@ -1,26 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal, Sparkles } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { FilterSidebar, FilterSheet } from "./filters";
-import { ResultsHeader, ResultsGrid } from "./results";
+import { ResultsSections } from "./results/results-sections";
 import { useFilters, useSearchResults } from "./hooks";
 import type { MatchingCriteria } from "@/types/therapist";
 
 export function SearchPage() {
   const t = useTranslations("therapists");
   const tMatching = useTranslations("matching");
-  const locale = useLocale();
   const searchParams = useSearchParams();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [matchingCriteria, setMatchingCriteria] = useState<MatchingCriteria | null>(null);
   const { filters, updateFilters, resetFilters, activeFilterCount } =
     useFilters();
-  const { results, isLoading } = useSearchResults(filters, matchingCriteria);
+  const { therapists, articles, isLoading } = useSearchResults(filters, matchingCriteria);
 
   // Check for matching mode from URL and sessionStorage
   useEffect(() => {
@@ -56,6 +55,8 @@ export function SearchPage() {
     sessionStorage.removeItem("matchingCriteria");
     resetFilters();
   };
+
+  const totalResults = therapists.length + articles.length;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -103,7 +104,7 @@ export function SearchPage() {
         {/* Main Content */}
         <main className="flex-1" id="search-results">
           {/* Mobile Filter Button */}
-          <div className="mb-4 lg:hidden">
+          <div className="mb-6 lg:hidden">
             <Button
               variant="outline"
               onClick={() => setMobileFiltersOpen(true)}
@@ -119,15 +120,12 @@ export function SearchPage() {
             </Button>
           </div>
 
-          <ResultsHeader
-            resultCount={results.length}
-            contentType={filters.contentType}
-            onContentTypeChange={(contentType) =>
-              updateFilters({ contentType })
-            }
+          <ResultsSections
+            therapists={therapists}
+            articles={articles}
+            onClearFilters={resetFilters}
+            isLoading={isLoading}
           />
-
-          <ResultsGrid results={results} onClearFilters={resetFilters} isLoading={isLoading} />
         </main>
       </div>
 
@@ -138,7 +136,7 @@ export function SearchPage() {
         filters={filters}
         onFilterChange={updateFilters}
         onReset={resetFilters}
-        resultCount={results.length}
+        resultCount={totalResults}
       />
     </div>
   );

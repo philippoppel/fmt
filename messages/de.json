@@ -441,7 +441,10 @@
       "price": "Preis",
       "noResults": "Keine Ergebnisse gefunden",
       "noResultsDescription": "Versuchen Sie, Ihre Filterkriterien anzupassen",
-      "clearFilters": "Filter zurücksetzen"
+      "clearFilters": "Filter zurücksetzen",
+      "sectionTherapists": "Therapeuten",
+      "sectionKnowledge": "Wissen & Selbsthilfe",
+      "viewDetails": "Details anzeigen"
     }
   },
   "matching": {

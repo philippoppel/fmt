@@ -6,20 +6,27 @@ import { searchTherapistsAction } from "@/lib/actions/search";
 import { searchWithMatching } from "@/lib/actions/matching";
 import type {
   FilterState,
-  SearchResult,
   Therapist,
   MatchingCriteria,
   MatchedTherapist,
   BlogPost,
 } from "@/types/therapist";
 
+interface TherapistResult {
+  therapist: Therapist;
+  matchScore?: number;
+}
+
+interface SearchResultsSeparated {
+  therapists: TherapistResult[];
+  articles: BlogPost[];
+  isLoading: boolean;
+}
+
 export function useSearchResults(
   filters: FilterState,
   matchingCriteria?: MatchingCriteria | null
-): {
-  results: SearchResult[];
-  isLoading: boolean;
-} {
+): SearchResultsSeparated {
   const [therapists, setTherapists] = useState<Therapist[]>([]);
   const [matchedTherapists, setMatchedTherapists] = useState<MatchedTherapist[]>([]);
   const [matchedBlogs, setMatchedBlogs] = useState<BlogPost[]>([]);
@@ -67,60 +74,58 @@ export function useSearchResults(
     filters.minRating,
   ]);
 
-  // Build results
-  const results = useMemo(() => {
+  // Build separated results
+  const separatedResults = useMemo(() => {
     // If in matching mode, use matched results
     if (matchedTherapists.length > 0 || matchedBlogs.length > 0) {
-      const therapistResults: SearchResult[] = matchedTherapists.map((t) => ({
-        type: "therapist" as const,
-        data: t,
+      const therapistResults: TherapistResult[] = matchedTherapists.map((t) => ({
+        therapist: t,
         matchScore: t.matchScore,
       }));
 
-      const blogResults: SearchResult[] = matchedBlogs.map((b) => ({
-        type: "blog" as const,
-        data: b,
-      }));
-
-      return [...therapistResults, ...blogResults];
+      return {
+        therapists: therapistResults,
+        articles: matchedBlogs,
+      };
     }
 
-    // Normal mode
-    const therapistResults: SearchResult[] =
+    // Normal mode - therapists
+    const therapistResults: TherapistResult[] =
       filters.contentType === "blogs"
         ? []
-        : therapists.map((t) => ({ type: "therapist" as const, data: t }));
+        : therapists.map((t) => ({ therapist: t }));
 
-    // Keep blog filtering client-side (demo data for now)
-    let blogResults: SearchResult[] = [];
+    // Normal mode - blogs (demo data for now)
+    let articles: BlogPost[] = [];
     if (filters.contentType === "all" || filters.contentType === "blogs") {
-      blogResults = demoBlogPosts
-        .filter((b) => {
-          // Text search
-          if (filters.searchQuery) {
-            const query = filters.searchQuery.toLowerCase();
-            if (
-              !b.title.toLowerCase().includes(query) &&
-              !b.excerpt.toLowerCase().includes(query) &&
-              !b.author.name.toLowerCase().includes(query)
-            ) {
-              return false;
-            }
+      articles = demoBlogPosts.filter((b) => {
+        // Text search
+        if (filters.searchQuery) {
+          const query = filters.searchQuery.toLowerCase();
+          if (
+            !b.title.toLowerCase().includes(query) &&
+            !b.excerpt.toLowerCase().includes(query) &&
+            !b.author.name.toLowerCase().includes(query)
+          ) {
+            return false;
           }
+        }
 
-          // Specialties filter (matches blog category)
-          if (filters.specialties.length > 0) {
-            if (!filters.specialties.includes(b.category)) {
-              return false;
-            }
+        // Specialties filter (matches blog category)
+        if (filters.specialties.length > 0) {
+          if (!filters.specialties.includes(b.category)) {
+            return false;
           }
+        }
 
-          return true;
-        })
-        .map((b) => ({ type: "blog" as const, data: b }));
+        return true;
+      });
     }
 
-    return [...therapistResults, ...blogResults];
+    return {
+      therapists: therapistResults,
+      articles,
+    };
   }, [
     therapists,
     matchedTherapists,
@@ -130,5 +135,9 @@ export function useSearchResults(
     filters.specialties,
   ]);
 
-  return { results, isLoading: isPending };
+  return {
+    therapists: separatedResults.therapists,
+    articles: separatedResults.articles,
+    isLoading: isPending,
+  };
 }

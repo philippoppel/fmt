@@ -441,7 +441,10 @@
       "price": "Price",
       "noResults": "No results found",
       "noResultsDescription": "Try adjusting your filter criteria",
-      "clearFilters": "Clear filters"
+      "clearFilters": "Clear filters",
+      "sectionTherapists": "Therapists",
+      "sectionKnowledge": "Knowledge & Self-Help",
+      "viewDetails": "View details"
     }
   },
   "matching": {
