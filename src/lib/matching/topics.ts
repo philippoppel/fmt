@@ -246,6 +246,29 @@ export const MATCHING_TOPICS: Topic[] = [
       },
     ],
   },
+  {
+    id: "sleep",
+    labelKey: "matching.topics.sleep",
+    unsplashId: "photo-1541781774459-bb2af2f05b55",
+    mappedSpecialties: ["depression", "anxiety"],
+    subTopics: [
+      {
+        id: "insomnia",
+        labelKey: "matching.subtopics.insomnia",
+        weight: 1.0,
+      },
+      {
+        id: "nightmares",
+        labelKey: "matching.subtopics.nightmares",
+        weight: 0.9,
+      },
+      {
+        id: "sleep_anxiety",
+        labelKey: "matching.subtopics.sleepAnxiety",
+        weight: 0.8,
+      },
+    ],
+  },
 ];
 
 export function getTopicById(id: string): Topic | undefined {

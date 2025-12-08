@@ -21,8 +21,8 @@ export function TopicSelection() {
         </p>
       </div>
 
-      {/* Topic Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-4">
+      {/* Topic Grid - 4x3 for 12 topics */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 lg:gap-4">
         {MATCHING_TOPICS.map((topic) => (
           <TopicCard
             key={topic.id}
