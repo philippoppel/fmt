@@ -14,10 +14,10 @@ export function MatchScoreBadge({
   className,
 }: MatchScoreBadgeProps) {
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "bg-green-500/10 text-green-700 border-green-500/30";
-    if (score >= 60) return "bg-yellow-500/10 text-yellow-700 border-yellow-500/30";
-    if (score >= 40) return "bg-orange-500/10 text-orange-700 border-orange-500/30";
-    return "bg-muted text-muted-foreground border-muted-foreground/30";
+    if (score >= 80) return "bg-green-500 text-white border-green-600 shadow-lg";
+    if (score >= 60) return "bg-yellow-500 text-white border-yellow-600 shadow-lg";
+    if (score >= 40) return "bg-orange-500 text-white border-orange-600 shadow-lg";
+    return "bg-gray-500 text-white border-gray-600 shadow-lg";
   };
 
   const sizeClasses = {
