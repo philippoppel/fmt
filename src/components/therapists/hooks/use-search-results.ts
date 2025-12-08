@@ -3,17 +3,44 @@
 import { useEffect, useState, useTransition, useMemo } from "react";
 import { demoBlogPosts } from "@/lib/data/demo-data";
 import { searchTherapistsAction } from "@/lib/actions/search";
-import type { FilterState, SearchResult, Therapist } from "@/types/therapist";
+import { searchWithMatching } from "@/lib/actions/matching";
+import type {
+  FilterState,
+  SearchResult,
+  Therapist,
+  MatchingCriteria,
+  MatchedTherapist,
+  BlogPost,
+} from "@/types/therapist";
 
-export function useSearchResults(filters: FilterState): {
+export function useSearchResults(
+  filters: FilterState,
+  matchingCriteria?: MatchingCriteria | null
+): {
   results: SearchResult[];
   isLoading: boolean;
 } {
   const [therapists, setTherapists] = useState<Therapist[]>([]);
+  const [matchedTherapists, setMatchedTherapists] = useState<MatchedTherapist[]>([]);
+  const [matchedBlogs, setMatchedBlogs] = useState<BlogPost[]>([]);
   const [isPending, startTransition] = useTransition();
 
-  // Fetch therapists from database when filters change
+  // Fetch with matching if criteria provided
   useEffect(() => {
+    if (matchingCriteria && matchingCriteria.selectedTopics.length > 0) {
+      startTransition(async () => {
+        const { therapists: matched, blogs } = await searchWithMatching(matchingCriteria);
+        setMatchedTherapists(matched);
+        setMatchedBlogs(blogs);
+        setTherapists([]);
+      });
+      return;
+    }
+
+    // Clear matching results when not in matching mode
+    setMatchedTherapists([]);
+    setMatchedBlogs([]);
+
     if (filters.contentType === "blogs") {
       setTherapists([]);
       return;
@@ -24,6 +51,7 @@ export function useSearchResults(filters: FilterState): {
       setTherapists(data);
     });
   }, [
+    matchingCriteria,
     filters.contentType,
     filters.searchQuery,
     filters.location,
@@ -41,6 +69,23 @@ export function useSearchResults(filters: FilterState): {
 
   // Build results
   const results = useMemo(() => {
+    // If in matching mode, use matched results
+    if (matchedTherapists.length > 0 || matchedBlogs.length > 0) {
+      const therapistResults: SearchResult[] = matchedTherapists.map((t) => ({
+        type: "therapist" as const,
+        data: t,
+        matchScore: t.matchScore,
+      }));
+
+      const blogResults: SearchResult[] = matchedBlogs.map((b) => ({
+        type: "blog" as const,
+        data: b,
+      }));
+
+      return [...therapistResults, ...blogResults];
+    }
+
+    // Normal mode
     const therapistResults: SearchResult[] =
       filters.contentType === "blogs"
         ? []
@@ -76,7 +121,14 @@ export function useSearchResults(filters: FilterState): {
     }
 
     return [...therapistResults, ...blogResults];
-  }, [therapists, filters.contentType, filters.searchQuery, filters.specialties]);
+  }, [
+    therapists,
+    matchedTherapists,
+    matchedBlogs,
+    filters.contentType,
+    filters.searchQuery,
+    filters.specialties,
+  ]);
 
   return { results, isLoading: isPending };
 }

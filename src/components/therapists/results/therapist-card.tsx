@@ -9,12 +9,14 @@ import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/ui/star-rating";
 import { MapPin, Euro, Video, Building2, UserCircle } from "lucide-react";
 import type { Therapist } from "@/types/therapist";
+import { MatchScoreBadge } from "./match-score-badge";
 
 interface TherapistCardProps {
   therapist: Therapist;
+  matchScore?: number;
 }
 
-export function TherapistCard({ therapist }: TherapistCardProps) {
+export function TherapistCard({ therapist, matchScore }: TherapistCardProps) {
   const t = useTranslations("therapists");
   const tFilters = useTranslations("therapists.filters");
   const tSpec = useTranslations("therapists.specialties");
@@ -36,6 +38,11 @@ export function TherapistCard({ therapist }: TherapistCardProps) {
               <UserCircle className="h-3 w-3" aria-hidden="true" />
               {t("therapist")}
             </Badge>
+            {matchScore !== undefined && (
+              <div className="absolute right-2 top-2">
+                <MatchScoreBadge score={matchScore} size="md" />
+              </div>
+            )}
           </div>
 
           {/* Info */}

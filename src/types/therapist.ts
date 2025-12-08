@@ -78,7 +78,7 @@ export interface BlogPost {
 
 // Union type for search results
 export type SearchResult =
-  | { type: "therapist"; data: Therapist }
+  | { type: "therapist"; data: Therapist; matchScore?: number }
   | { type: "blog"; data: BlogPost };
 
 // Filter state for the search page
@@ -146,3 +146,23 @@ export const AVAILABILITY_OPTIONS: Availability[] = [
 ];
 
 export const GENDER_OPTIONS: Gender[] = ["male", "female", "diverse"];
+
+// Matching-specific types
+export interface MatchingCriteria {
+  selectedTopics: string[];
+  selectedSubTopics: string[];
+  location: string;
+  gender: Gender | null;
+  sessionType: SessionType | null;
+  insurance: Insurance[];
+}
+
+export interface MatchedTherapist extends Therapist {
+  matchScore: number;
+}
+
+export interface MatchingResult {
+  therapists: MatchedTherapist[];
+  blogs: BlogPost[];
+  criteria: MatchingCriteria;
+}

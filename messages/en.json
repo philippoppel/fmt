@@ -443,5 +443,107 @@
       "noResultsDescription": "Try adjusting your filter criteria",
       "clearFilters": "Clear filters"
     }
+  },
+  "matching": {
+    "meta": {
+      "title": "Therapist Matching - Find Your Perfect Therapist",
+      "description": "Find your ideal therapist through our guided matching system tailored to your individual needs."
+    },
+    "startButton": "Guided Matching",
+    "wizard": {
+      "badge": "Guided Matching",
+      "step1Title": "What's on your mind?",
+      "step1Subtitle": "Select one or more topics",
+      "step2Title": "Your Preferences",
+      "step2Subtitle": "These details help us find the right therapists for you",
+      "step3Title": "Would you like to be more specific?",
+      "step3Subtitle": "Optional details for even better results",
+      "back": "Back",
+      "next": "Next",
+      "skip": "Skip",
+      "showResults": "Show Results",
+      "selectAtLeastOne": "Please select at least one topic",
+      "selectedCount": "{count} topics selected",
+      "allOptional": "All fields are optional",
+      "refinementCount": "{count} refinements selected",
+      "refinementOptional": "These details are optional and can be skipped",
+      "stepLabels": {
+        "topics": "Topics",
+        "preferences": "Preferences",
+        "refinement": "Refinement"
+      }
+    },
+    "topics": {
+      "family": "Family",
+      "anxiety": "Anxiety",
+      "depression": "Depression",
+      "relationships": "Relationships",
+      "burnout": "Burnout",
+      "trauma": "Trauma",
+      "addiction": "Addiction",
+      "eatingDisorders": "Eating Disorders",
+      "adhd": "ADHD",
+      "selfCare": "Self-Care",
+      "stress": "Stress"
+    },
+    "subtopics": {
+      "divorce": "Divorce",
+      "parenting": "Parenting",
+      "familyConflicts": "Family Conflicts",
+      "generationConflicts": "Generation Conflicts",
+      "socialAnxiety": "Social Anxiety",
+      "panicAttacks": "Panic Attacks",
+      "phobias": "Phobias",
+      "generalizedAnxiety": "Generalized Anxiety",
+      "chronicSadness": "Chronic Sadness",
+      "lackMotivation": "Lack of Motivation",
+      "grief": "Grief",
+      "loneliness": "Loneliness",
+      "coupleConflicts": "Couple Conflicts",
+      "breakup": "Breakup",
+      "datingIssues": "Dating Issues",
+      "intimacy": "Intimacy",
+      "workStress": "Work Stress",
+      "exhaustion": "Exhaustion",
+      "workLifeBalance": "Work-Life Balance",
+      "ptsd": "PTSD",
+      "childhoodTrauma": "Childhood Trauma",
+      "accidentTrauma": "Accident Trauma",
+      "loss": "Loss",
+      "alcohol": "Alcohol",
+      "drugs": "Drugs",
+      "behavioralAddiction": "Behavioral Addiction",
+      "gaming": "Gaming",
+      "anorexia": "Anorexia",
+      "bulimia": "Bulimia",
+      "bingeEating": "Binge Eating",
+      "concentration": "Concentration",
+      "impulsivity": "Impulsivity",
+      "adultAdhd": "Adult ADHD",
+      "selfEsteem": "Self-Esteem",
+      "boundaries": "Setting Boundaries",
+      "lifeChanges": "Life Changes",
+      "chronicStress": "Chronic Stress",
+      "examAnxiety": "Exam Anxiety",
+      "performancePressure": "Performance Pressure"
+    },
+    "criteria": {
+      "location": "Location",
+      "locationPlaceholder": "Enter city or postal code",
+      "gender": "Therapist Gender",
+      "anyGender": "Any",
+      "sessionType": "Session Type",
+      "anySessionType": "Any",
+      "insurance": "Insurance"
+    },
+    "results": {
+      "title": "Your Matches",
+      "matchScore": "{score}% Match",
+      "relatedArticles": "Related Articles",
+      "continueSearch": "Apply More Filters",
+      "noResults": "No matching therapists found",
+      "matchingActive": "Matching Mode Active",
+      "clearMatching": "Exit Matching"
+    }
   }
 }

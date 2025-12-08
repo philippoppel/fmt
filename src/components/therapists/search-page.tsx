@@ -1,29 +1,94 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
-import { SlidersHorizontal } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useTranslations, useLocale } from "next-intl";
+import { useSearchParams } from "next/navigation";
+import { SlidersHorizontal, Sparkles } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { FilterSidebar, FilterSheet } from "./filters";
 import { ResultsHeader, ResultsGrid } from "./results";
 import { useFilters, useSearchResults } from "./hooks";
+import type { MatchingCriteria } from "@/types/therapist";
 
 export function SearchPage() {
   const t = useTranslations("therapists");
+  const tMatching = useTranslations("matching");
+  const locale = useLocale();
+  const searchParams = useSearchParams();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [matchingCriteria, setMatchingCriteria] = useState<MatchingCriteria | null>(null);
   const { filters, updateFilters, resetFilters, activeFilterCount } =
     useFilters();
-  const { results, isLoading } = useSearchResults(filters);
+  const { results, isLoading } = useSearchResults(filters, matchingCriteria);
+
+  // Check for matching mode from URL and sessionStorage
+  useEffect(() => {
+    const isMatching = searchParams.get("matching") === "true";
+    if (isMatching) {
+      try {
+        const stored = sessionStorage.getItem("matchingCriteria");
+        if (stored) {
+          const criteria = JSON.parse(stored) as MatchingCriteria;
+          setMatchingCriteria(criteria);
+          // Apply basic filters from matching criteria
+          if (criteria.location) {
+            updateFilters({ location: criteria.location });
+          }
+          if (criteria.gender) {
+            updateFilters({ gender: criteria.gender });
+          }
+          if (criteria.sessionType) {
+            updateFilters({ sessionType: criteria.sessionType });
+          }
+          if (criteria.insurance && criteria.insurance.length > 0) {
+            updateFilters({ insurance: criteria.insurance });
+          }
+        }
+      } catch {
+        // Ignore parsing errors
+      }
+    }
+  }, [searchParams]);
+
+  const clearMatching = () => {
+    setMatchingCriteria(null);
+    sessionStorage.removeItem("matchingCriteria");
+    resetFilters();
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-          {t("title")}
-        </h1>
-        <p className="mt-2 text-muted-foreground">{t("subtitle")}</p>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+            {t("title")}
+          </h1>
+          <p className="mt-2 text-muted-foreground">{t("subtitle")}</p>
+        </div>
+        <Button asChild className="gap-2 shrink-0">
+          <Link href="/therapists/matching">
+            <Sparkles className="h-4 w-4" />
+            {tMatching("startButton")}
+          </Link>
+        </Button>
       </div>
+
+      {/* Matching Mode Banner */}
+      {matchingCriteria && (
+        <div className="mb-6 flex items-center justify-between rounded-lg border border-primary/20 bg-primary/5 p-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <span className="font-medium text-primary">
+              {tMatching("results.matchingActive")}
+            </span>
+          </div>
+          <Button variant="ghost" size="sm" onClick={clearMatching}>
+            {tMatching("results.clearMatching")}
+          </Button>
+        </div>
+      )}
 
       <div className="flex flex-col gap-8 lg:flex-row">
         {/* Desktop Sidebar */}

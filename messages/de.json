@@ -443,5 +443,107 @@
       "noResultsDescription": "Versuchen Sie, Ihre Filterkriterien anzupassen",
       "clearFilters": "Filter zurücksetzen"
     }
+  },
+  "matching": {
+    "meta": {
+      "title": "Therapeuten-Matching - Finden Sie Ihren perfekten Therapeuten",
+      "description": "Finden Sie durch unser geführtes Matching-System den idealen Therapeuten für Ihre individuellen Bedürfnisse."
+    },
+    "startButton": "Geführtes Matching",
+    "wizard": {
+      "badge": "Geführtes Matching",
+      "step1Title": "Was beschäftigt Sie?",
+      "step1Subtitle": "Wählen Sie ein oder mehrere Themen aus",
+      "step2Title": "Ihre Präferenzen",
+      "step2Subtitle": "Diese Angaben helfen uns, passende Therapeuten zu finden",
+      "step3Title": "Möchten Sie konkretisieren?",
+      "step3Subtitle": "Optionale Angaben für noch bessere Ergebnisse",
+      "back": "Zurück",
+      "next": "Weiter",
+      "skip": "Überspringen",
+      "showResults": "Ergebnisse anzeigen",
+      "selectAtLeastOne": "Bitte wählen Sie mindestens ein Thema aus",
+      "selectedCount": "{count} Themen ausgewählt",
+      "allOptional": "Alle Angaben sind optional",
+      "refinementCount": "{count} Verfeinerungen ausgewählt",
+      "refinementOptional": "Diese Angaben sind optional und können übersprungen werden",
+      "stepLabels": {
+        "topics": "Themen",
+        "preferences": "Präferenzen",
+        "refinement": "Verfeinerung"
+      }
+    },
+    "topics": {
+      "family": "Familie",
+      "anxiety": "Angst",
+      "depression": "Depression",
+      "relationships": "Beziehungen",
+      "burnout": "Burnout",
+      "trauma": "Trauma",
+      "addiction": "Sucht",
+      "eatingDisorders": "Essstörungen",
+      "adhd": "ADHS",
+      "selfCare": "Selbstfürsorge",
+      "stress": "Stress"
+    },
+    "subtopics": {
+      "divorce": "Scheidung",
+      "parenting": "Erziehung",
+      "familyConflicts": "Familienkonflikte",
+      "generationConflicts": "Generationenkonflikte",
+      "socialAnxiety": "Soziale Angst",
+      "panicAttacks": "Panikattacken",
+      "phobias": "Phobien",
+      "generalizedAnxiety": "Generalisierte Angst",
+      "chronicSadness": "Chronische Traurigkeit",
+      "lackMotivation": "Antriebslosigkeit",
+      "grief": "Trauer",
+      "loneliness": "Einsamkeit",
+      "coupleConflicts": "Paarkonflikte",
+      "breakup": "Trennung",
+      "datingIssues": "Dating-Probleme",
+      "intimacy": "Intimität",
+      "workStress": "Arbeitsstress",
+      "exhaustion": "Erschöpfung",
+      "workLifeBalance": "Work-Life-Balance",
+      "ptsd": "PTBS",
+      "childhoodTrauma": "Kindheitstrauma",
+      "accidentTrauma": "Unfalltrauma",
+      "loss": "Verlust",
+      "alcohol": "Alkohol",
+      "drugs": "Drogen",
+      "behavioralAddiction": "Verhaltenssüchte",
+      "gaming": "Gaming",
+      "anorexia": "Magersucht",
+      "bulimia": "Bulimie",
+      "bingeEating": "Binge-Eating",
+      "concentration": "Konzentration",
+      "impulsivity": "Impulsivität",
+      "adultAdhd": "ADHS im Erwachsenenalter",
+      "selfEsteem": "Selbstwert",
+      "boundaries": "Grenzen setzen",
+      "lifeChanges": "Lebensveränderungen",
+      "chronicStress": "Chronischer Stress",
+      "examAnxiety": "Prüfungsangst",
+      "performancePressure": "Leistungsdruck"
+    },
+    "criteria": {
+      "location": "Standort",
+      "locationPlaceholder": "Stadt oder Postleitzahl eingeben",
+      "gender": "Geschlecht des Therapeuten",
+      "anyGender": "Egal",
+      "sessionType": "Sitzungsart",
+      "anySessionType": "Egal",
+      "insurance": "Versicherung"
+    },
+    "results": {
+      "title": "Ihre Matches",
+      "matchScore": "{score}% Match",
+      "relatedArticles": "Passende Artikel",
+      "continueSearch": "Weitere Filter anwenden",
+      "noResults": "Keine passenden Therapeuten gefunden",
+      "matchingActive": "Matching-Modus aktiv",
+      "clearMatching": "Matching beenden"
+    }
   }
 }

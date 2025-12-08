@@ -30,7 +30,10 @@ export function ResultsGrid({ results, onClearFilters, isLoading }: ResultsGridP
       {results.map((result) => (
         <div key={result.data.id} role="listitem">
           {result.type === "therapist" ? (
-            <TherapistCard therapist={result.data} />
+            <TherapistCard
+              therapist={result.data}
+              matchScore={result.matchScore}
+            />
           ) : (
             <BlogCard post={result.data} />
           )}
