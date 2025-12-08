@@ -27,6 +27,13 @@ enum Gender {
   diverse
 }
 
+// Blog Enums
+enum PostStatus {
+  draft
+  published
+  archived
+}
+
 model User {
   id                    String    @id @default(cuid())
   name                  String?
@@ -55,6 +62,12 @@ model User {
   accounts              Account[]
   sessions              Session[]
   therapistProfile      TherapistProfile?
+
+  // Blog Relations
+  blogPosts             BlogPost[]
+  comments              Comment[]
+  bookmarks             Bookmark[]
+  blogDrafts            BlogDraft[]
 
   @@map("users")
 }
@@ -187,4 +200,233 @@ model TherapistProfile {
   @@index([city])
   @@index([isPublished])
   @@map("therapist_profiles")
+}
+
+// ============================================
+// BLOG MODELS
+// ============================================
+
+model BlogPost {
+  id                String         @id @default(cuid())
+  slug              String         @unique
+
+  // Content
+  title             String
+  content           Json           // TipTap JSON content
+  contentHtml       String         @db.Text // Pre-rendered HTML for SEO
+  excerpt           String?        @db.Text // Auto-generated excerpt
+
+  // Summary (Pflichtfeld)
+  summaryShort      String         @db.VarChar(280) // TLDR kurz
+  summaryMedium     String?        @db.Text // Mittlere Zusammenfassung
+
+  // Media
+  featuredImage     String?        // Cloudinary URL
+  featuredImageAlt  String?        // Alt-Text fuer A11y
+
+  // Meta & SEO
+  metaTitle         String?        @db.VarChar(60)
+  metaDescription   String?        @db.VarChar(160)
+  canonicalUrl      String?
+
+  // Reading
+  readingTimeMinutes Int           @default(0)
+  wordCount         Int            @default(0)
+
+  // Status & Visibility
+  status            PostStatus     @default(draft)
+  publishedAt       DateTime?
+
+  // Author
+  authorId          String
+  author            User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Relations
+  categories        BlogPostCategory[]
+  tags              BlogPostTag[]
+  citations         Citation[]
+  comments          Comment[]
+  bookmarks         Bookmark[]
+
+  // Timestamps
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@index([authorId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([slug])
+  @@map("blog_posts")
+}
+
+model BlogCategory {
+  id              String              @id @default(cuid())
+  slug            String              @unique
+  name            String              // Internal name
+  nameDE          String              // German translation
+  nameEN          String              // English translation
+  description     String?             @db.Text
+  descriptionDE   String?             @db.Text
+  descriptionEN   String?             @db.Text
+  color           String?             // Hex color for UI
+  icon            String?             // Lucide icon name
+  sortOrder       Int                 @default(0)
+
+  // SEO
+  metaTitleDE     String?             @db.VarChar(60)
+  metaTitleEN     String?             @db.VarChar(60)
+  metaDescDE      String?             @db.VarChar(160)
+  metaDescEN      String?             @db.VarChar(160)
+
+  posts           BlogPostCategory[]
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@map("blog_categories")
+}
+
+model BlogPostCategory {
+  postId          String
+  categoryId      String
+  post            BlogPost            @relation(fields: [postId], references: [id], onDelete: Cascade)
+  category        BlogCategory        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([postId, categoryId])
+  @@map("blog_post_categories")
+}
+
+model BlogTag {
+  id              String              @id @default(cuid())
+  slug            String              @unique
+  name            String
+
+  posts           BlogPostTag[]
+
+  createdAt       DateTime            @default(now())
+
+  @@map("blog_tags")
+}
+
+model BlogPostTag {
+  postId          String
+  tagId           String
+  post            BlogPost            @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag             BlogTag             @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@map("blog_post_tags")
+}
+
+model Citation {
+  id              String              @id @default(cuid())
+
+  // DOI Support
+  doi             String?
+
+  // Bibliographic Data
+  title           String
+  authors         String[]            // Array of author names
+  journal         String?
+  year            Int?
+  volume          String?
+  issue           String?
+  pages           String?
+  publisher       String?
+  url             String?
+  accessDate      DateTime?
+
+  // Citation Type
+  type            String              @default("article") // article, book, website, etc.
+
+  // Formatted citations (cached)
+  formattedAPA    String?             @db.Text
+
+  // Relation to post
+  postId          String
+  post            BlogPost            @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  // Position in post (for inline citations)
+  inlineKey       String              // e.g. "smith2023" for [Smith, 2023]
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([postId])
+  @@index([doi])
+  @@map("citations")
+}
+
+model Comment {
+  id              String              @id @default(cuid())
+  content         String              @db.Text
+
+  // Author (registered user or guest)
+  authorId        String?
+  author          User?               @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  guestName       String?
+  guestEmail      String?
+
+  // Post relation
+  postId          String
+  post            BlogPost            @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  // Nested comments
+  parentId        String?
+  parent          Comment?            @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies         Comment[]           @relation("CommentReplies")
+
+  // Moderation
+  isApproved      Boolean             @default(false)
+  isSpam          Boolean             @default(false)
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([postId])
+  @@index([authorId])
+  @@index([parentId])
+  @@map("comments")
+}
+
+model Bookmark {
+  id              String              @id @default(cuid())
+
+  userId          String
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  postId          String
+  post            BlogPost            @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  // Reading progress
+  readProgress    Float               @default(0) // 0-100%
+  lastReadAt      DateTime?
+
+  createdAt       DateTime            @default(now())
+
+  @@unique([userId, postId])
+  @@index([userId])
+  @@map("bookmarks")
+}
+
+model BlogDraft {
+  id              String              @id @default(cuid())
+
+  // Link to existing post (null for new posts)
+  postId          String?             @unique
+
+  // Author
+  authorId        String
+  author          User                @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Draft content
+  content         Json                // TipTap JSON
+  title           String?
+  summaryShort    String?             @db.VarChar(280)
+
+  // Autosave metadata
+  savedAt         DateTime            @default(now())
+
+  @@index([authorId])
+  @@map("blog_drafts")
 }

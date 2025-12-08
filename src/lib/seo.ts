@@ -219,3 +219,92 @@ export function generateFAQSchema(faqs: { question: string; answer: string }[]) 
     })),
   };
 }
+
+// Blog-specific schemas
+export function generateBlogPostingSchema({
+  title,
+  description,
+  url,
+  image,
+  publishedTime,
+  modifiedTime,
+  authors,
+  wordCount,
+  keywords,
+}: {
+  title: string;
+  description: string;
+  url: string;
+  image: string;
+  publishedTime: string;
+  modifiedTime?: string;
+  authors: string[];
+  wordCount?: number;
+  keywords?: string[];
+}) {
+  const baseUrl = getBaseUrl();
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    description,
+    image,
+    url,
+    datePublished: publishedTime,
+    dateModified: modifiedTime || publishedTime,
+    wordCount,
+    keywords: keywords?.join(", "),
+    author: authors.map((name) => ({
+      "@type": "Person",
+      name,
+    })),
+    publisher: {
+      "@type": "Organization",
+      name: "FMT",
+      logo: {
+        "@type": "ImageObject",
+        url: `${baseUrl}/icons/icon.svg`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+  };
+}
+
+export function generateMedicalWebPageSchema({
+  title,
+  description,
+  url,
+  datePublished,
+  dateModified,
+  author,
+  medicalSpecialty,
+}: {
+  title: string;
+  description: string;
+  url: string;
+  datePublished: string;
+  dateModified?: string;
+  author: { name: string; credentials?: string };
+  medicalSpecialty?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    headline: title,
+    description,
+    url,
+    datePublished,
+    dateModified: dateModified || datePublished,
+    author: {
+      "@type": "Person",
+      name: author.name,
+      ...(author.credentials && { hasCredential: author.credentials }),
+    },
+    medicalSpecialty: medicalSpecialty || "Psychiatry",
+    isAccessibleForFree: true,
+    publisher: generateOrganizationSchema(),
+  };
+}

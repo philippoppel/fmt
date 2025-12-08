@@ -93,9 +93,10 @@ describe("SEO Metadata Generation", () => {
         locale: "de",
       });
 
-      expect(metadata.twitter?.card).toBe("summary_large_image");
-      expect(metadata.twitter?.title).toBe("Test");
-      expect(metadata.twitter?.creator).toBe("@fmt_app");
+      const twitter = metadata.twitter as Record<string, unknown>;
+      expect(twitter?.card).toBe("summary_large_image");
+      expect(twitter?.title).toBe("Test");
+      expect(twitter?.creator).toBe("@fmt_app");
     });
 
     it("should use correct locale mapping for all locales", () => {

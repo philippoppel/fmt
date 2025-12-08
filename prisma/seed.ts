@@ -2,6 +2,82 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+// Blog Categories for psychotherapeutic topics
+const blogCategories = [
+  {
+    slug: 'depression',
+    name: 'Depression',
+    nameDE: 'Depression',
+    nameEN: 'Depression',
+    descriptionDE: 'Artikel über Depressionen, Symptome, Behandlung und Selbsthilfe',
+    descriptionEN: 'Articles about depression, symptoms, treatment and self-help',
+    sortOrder: 1,
+  },
+  {
+    slug: 'anxiety',
+    name: 'Anxiety',
+    nameDE: 'Angststörungen',
+    nameEN: 'Anxiety Disorders',
+    descriptionDE: 'Informationen über Angststörungen, Panikattacken und deren Behandlung',
+    descriptionEN: 'Information about anxiety disorders, panic attacks and their treatment',
+    sortOrder: 2,
+  },
+  {
+    slug: 'stress-burnout',
+    name: 'Stress & Burnout',
+    nameDE: 'Stress & Burnout',
+    nameEN: 'Stress & Burnout',
+    descriptionDE: 'Strategien zur Stressbewältigung und Burnout-Prävention',
+    descriptionEN: 'Strategies for stress management and burnout prevention',
+    sortOrder: 3,
+  },
+  {
+    slug: 'relationships',
+    name: 'Relationships',
+    nameDE: 'Beziehungen',
+    nameEN: 'Relationships',
+    descriptionDE: 'Tipps für gesunde Beziehungen, Kommunikation und Paartherapie',
+    descriptionEN: 'Tips for healthy relationships, communication and couples therapy',
+    sortOrder: 4,
+  },
+  {
+    slug: 'self-care',
+    name: 'Self-Care',
+    nameDE: 'Selbstfürsorge',
+    nameEN: 'Self-Care',
+    descriptionDE: 'Praktische Tipps für mentale Gesundheit und Wohlbefinden',
+    descriptionEN: 'Practical tips for mental health and wellbeing',
+    sortOrder: 5,
+  },
+  {
+    slug: 'trauma',
+    name: 'Trauma',
+    nameDE: 'Trauma & PTBS',
+    nameEN: 'Trauma & PTSD',
+    descriptionDE: 'Verständnis und Heilung von traumatischen Erfahrungen',
+    descriptionEN: 'Understanding and healing from traumatic experiences',
+    sortOrder: 6,
+  },
+  {
+    slug: 'therapy-methods',
+    name: 'Therapy Methods',
+    nameDE: 'Therapiemethoden',
+    nameEN: 'Therapy Methods',
+    descriptionDE: 'Übersicht verschiedener Therapieansätze und deren Wirksamkeit',
+    descriptionEN: 'Overview of different therapy approaches and their effectiveness',
+    sortOrder: 7,
+  },
+  {
+    slug: 'research',
+    name: 'Research',
+    nameDE: 'Forschung & Studien',
+    nameEN: 'Research & Studies',
+    descriptionDE: 'Aktuelle wissenschaftliche Erkenntnisse aus der Psychologie',
+    descriptionEN: 'Current scientific findings from psychology',
+    sortOrder: 8,
+  },
+]
+
 const therapists = [
   {
     userId: 'seed-user-1',
@@ -101,6 +177,20 @@ const therapists = [
 ]
 
 async function main() {
+  // Seed Blog Categories
+  console.log('Seeding blog categories...')
+  for (const category of blogCategories) {
+    await prisma.blogCategory.upsert({
+      where: { slug: category.slug },
+      update: category,
+      create: category,
+    })
+    console.log(`Created category: ${category.nameDE}`)
+  }
+  const categoryCount = await prisma.blogCategory.count()
+  console.log(`Blog categories seeded: ${categoryCount}\n`)
+
+  // Seed Therapist Profiles
   console.log('Seeding therapist profiles...')
 
   for (const therapist of therapists) {

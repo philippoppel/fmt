@@ -27,6 +27,7 @@
     "about": "About",
     "contact": "Contact",
     "findTherapist": "Therapists",
+    "blog": "Blog",
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
@@ -230,6 +231,80 @@
       "title": "Server error",
       "description": "An unexpected error occurred. Please try again later.",
       "backHome": "Back to homepage"
+    }
+  },
+  "blog": {
+    "meta": {
+      "title": "Expert Blog - Psychotherapy & Mental Health",
+      "description": "Evidence-based articles on psychotherapy, mental health, and self-help."
+    },
+    "title": "Expert Blog",
+    "subtitle": "Evidence-based articles on psychotherapy and mental health",
+    "readMore": "Read more",
+    "publishedOn": "Published on",
+    "updatedOn": "Updated on",
+    "readingTime": "{minutes} min read",
+    "author": "By {name}",
+    "tableOfContents": "Table of Contents",
+    "relatedPosts": "Related Articles",
+    "references": "References",
+    "tldr": "Summary",
+    "bookmark": {
+      "add": "Add to reading list",
+      "remove": "Remove from reading list",
+      "added": "Added to reading list"
+    },
+    "share": {
+      "title": "Share article",
+      "copyLink": "Copy link",
+      "copied": "Link copied!"
+    },
+    "comments": {
+      "title": "Comments",
+      "count": "{count} comments",
+      "writeComment": "Write a comment",
+      "reply": "Reply",
+      "submit": "Submit",
+      "placeholder": "Your comment..."
+    },
+    "editor": {
+      "title": "New Article",
+      "titlePlaceholder": "Article title...",
+      "contentPlaceholder": "Start writing or press '/' for commands...",
+      "summary": {
+        "short": "Short summary (max. 280 characters)",
+        "shortPlaceholder": "TLDR: What's this about?",
+        "medium": "Detailed summary",
+        "mediumPlaceholder": "More detailed summary of the article..."
+      },
+      "publish": "Publish",
+      "saveDraft": "Save as draft",
+      "saving": "Saving...",
+      "saved": "Saved"
+    },
+    "a11y": {
+      "textToSpeech": {
+        "play": "Read aloud",
+        "pause": "Pause",
+        "stop": "Stop"
+      },
+      "fontSize": {
+        "label": "Font size",
+        "small": "Small",
+        "normal": "Normal",
+        "large": "Large",
+        "extraLarge": "Extra large"
+      },
+      "highContrast": "High contrast"
+    },
+    "categories": {
+      "all": "All categories"
+    },
+    "filters": {
+      "sortBy": "Sort by",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "popular": "Most popular"
     }
   },
   "therapists": {

@@ -27,6 +27,7 @@
     "about": "Über uns",
     "contact": "Kontakt",
     "findTherapist": "Therapeuten",
+    "blog": "Blog",
     "login": "Anmelden",
     "register": "Registrieren",
     "logout": "Abmelden",
@@ -230,6 +231,80 @@
       "title": "Serverfehler",
       "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
       "backHome": "Zurück zur Startseite"
+    }
+  },
+  "blog": {
+    "meta": {
+      "title": "Fachblog - Psychotherapie & Mental Health",
+      "description": "Wissenschaftlich fundierte Artikel zu Psychotherapie, mentaler Gesundheit und Selbsthilfe."
+    },
+    "title": "Fachblog",
+    "subtitle": "Wissenschaftlich fundierte Artikel zu Psychotherapie und mentaler Gesundheit",
+    "readMore": "Weiterlesen",
+    "publishedOn": "Veröffentlicht am",
+    "updatedOn": "Aktualisiert am",
+    "readingTime": "{minutes} Min. Lesezeit",
+    "author": "Von {name}",
+    "tableOfContents": "Inhaltsverzeichnis",
+    "relatedPosts": "Verwandte Artikel",
+    "references": "Literaturverzeichnis",
+    "tldr": "Zusammenfassung",
+    "bookmark": {
+      "add": "Zur Leseliste hinzufügen",
+      "remove": "Aus Leseliste entfernen",
+      "added": "Zur Leseliste hinzugefügt"
+    },
+    "share": {
+      "title": "Artikel teilen",
+      "copyLink": "Link kopieren",
+      "copied": "Link kopiert!"
+    },
+    "comments": {
+      "title": "Kommentare",
+      "count": "{count} Kommentare",
+      "writeComment": "Kommentar schreiben",
+      "reply": "Antworten",
+      "submit": "Absenden",
+      "placeholder": "Ihr Kommentar..."
+    },
+    "editor": {
+      "title": "Neuer Artikel",
+      "titlePlaceholder": "Artikel-Titel...",
+      "contentPlaceholder": "Schreiben Sie hier oder drücken Sie '/' für Befehle...",
+      "summary": {
+        "short": "Kurze Zusammenfassung (max. 280 Zeichen)",
+        "shortPlaceholder": "TLDR: Worum geht es?",
+        "medium": "Ausführliche Zusammenfassung",
+        "mediumPlaceholder": "Detailliertere Zusammenfassung des Artikels..."
+      },
+      "publish": "Veröffentlichen",
+      "saveDraft": "Als Entwurf speichern",
+      "saving": "Speichern...",
+      "saved": "Gespeichert"
+    },
+    "a11y": {
+      "textToSpeech": {
+        "play": "Artikel vorlesen",
+        "pause": "Pause",
+        "stop": "Stopp"
+      },
+      "fontSize": {
+        "label": "Schriftgröße",
+        "small": "Klein",
+        "normal": "Normal",
+        "large": "Groß",
+        "extraLarge": "Sehr groß"
+      },
+      "highContrast": "Hoher Kontrast"
+    },
+    "categories": {
+      "all": "Alle Kategorien"
+    },
+    "filters": {
+      "sortBy": "Sortieren nach",
+      "newest": "Neueste",
+      "oldest": "Älteste",
+      "popular": "Beliebteste"
     }
   },
   "therapists": {
