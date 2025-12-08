@@ -11,6 +11,7 @@ import {
   calculateMatchScoreForAll,
   getSpecialtiesFromTopics,
 } from "@/lib/matching";
+import { demoBlogPosts } from "@/lib/data/demo-data";
 
 export async function searchWithMatching(
   criteria: MatchingCriteria
@@ -86,6 +87,7 @@ async function getRelatedBlogPosts(selectedTopics: string[]): Promise<BlogPost[]
   // Get specialties from topics for category matching
   const specialties = getSpecialtiesFromTopics(selectedTopics);
 
+  // Try database first
   try {
     const posts = await db.blogPost.findMany({
       where: {
@@ -115,24 +117,33 @@ async function getRelatedBlogPosts(selectedTopics: string[]): Promise<BlogPost[]
       take: 6,
     });
 
-    return posts.map((post) => ({
-      id: post.id,
-      title: post.title,
-      slug: post.slug,
-      featuredImage: post.featuredImage ?? "",
-      excerpt: post.summaryShort ?? "",
-      author: {
-        id: post.authorId,
-        name: post.author.name ?? "Unknown",
-        imageUrl: post.author.image ?? "",
-      },
-      category: (post.categories[0]?.category.slug ?? "depression") as BlogPost["category"],
-      tags: [],
-      readingTimeMinutes: post.readingTimeMinutes ?? 5,
-      publishedAt: post.publishedAt?.toISOString() ?? new Date().toISOString(),
-    }));
+    if (posts.length > 0) {
+      return posts.map((post) => ({
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        featuredImage: post.featuredImage ?? "",
+        excerpt: post.summaryShort ?? "",
+        author: {
+          id: post.authorId,
+          name: post.author.name ?? "Unknown",
+          imageUrl: post.author.image ?? "",
+        },
+        category: (post.categories[0]?.category.slug ?? "depression") as BlogPost["category"],
+        tags: [],
+        readingTimeMinutes: post.readingTimeMinutes ?? 5,
+        publishedAt: post.publishedAt?.toISOString() ?? new Date().toISOString(),
+      }));
+    }
   } catch {
-    // If blog tables don't exist or query fails, return empty array
-    return [];
+    // Database query failed, fall through to demo data
   }
+
+  // Fall back to demo blog posts filtered by matching specialties
+  const filteredBlogs = demoBlogPosts.filter((blog) =>
+    specialties.includes(blog.category)
+  );
+
+  // Return up to 6 relevant blog posts
+  return filteredBlogs.slice(0, 6);
 }
