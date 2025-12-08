@@ -318,4 +318,194 @@ export const demoBlogPosts: BlogPost[] = [
     readingTimeMinutes: 11,
     publishedAt: "2024-11-10",
   },
+  {
+    id: "blog-7",
+    title: "Essstörungen: Wenn Essen zur Qual wird",
+    slug: "essstoerungen-verstehen",
+    featuredImage:
+      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=450&fit=crop",
+    excerpt:
+      "Magersucht, Bulimie, Binge-Eating – Essstörungen haben viele Gesichter. Erfahren Sie, wie Sie Warnsignale erkennen und welche Hilfsangebote es gibt.",
+    author: {
+      id: "9",
+      name: "Claudia Berger",
+      imageUrl:
+        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face",
+    },
+    category: "eating_disorders",
+    tags: ["Essstörung", "Magersucht", "Bulimie", "Therapie"],
+    readingTimeMinutes: 13,
+    publishedAt: "2024-11-08",
+  },
+  {
+    id: "blog-8",
+    title: "Sucht überwinden: Der erste Schritt zur Freiheit",
+    slug: "sucht-ueberwinden-erster-schritt",
+    featuredImage:
+      "https://images.unsplash.com/photo-1527137342181-19aab11a8ee8?w=800&h=450&fit=crop",
+    excerpt:
+      "Der Weg aus der Sucht beginnt mit dem Erkennen des Problems. Dieser Artikel zeigt Ihnen, wie Sie den ersten Schritt wagen und welche Unterstützung verfügbar ist.",
+    author: {
+      id: "10",
+      name: "Dr. Robert Schuster",
+      imageUrl:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    },
+    category: "addiction",
+    tags: ["Sucht", "Abhängigkeit", "Entwöhnung", "Selbsthilfe"],
+    readingTimeMinutes: 10,
+    publishedAt: "2024-11-05",
+  },
+  {
+    id: "blog-9",
+    title: "Besser schlafen: Tipps gegen Schlafstörungen",
+    slug: "besser-schlafen-tipps",
+    featuredImage:
+      "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=800&h=450&fit=crop",
+    excerpt:
+      "Schlafprobleme belasten Körper und Psyche. Entdecken Sie bewährte Strategien für erholsamen Schlaf und wann professionelle Hilfe sinnvoll ist.",
+    author: {
+      id: "1",
+      name: "Dr. Maria Schneider",
+      imageUrl:
+        "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&fit=crop&crop=face",
+    },
+    category: "depression",
+    tags: ["Schlaf", "Schlafstörung", "Insomnie", "Schlafhygiene"],
+    readingTimeMinutes: 7,
+    publishedAt: "2024-11-02",
+  },
+  {
+    id: "blog-10",
+    title: "Selbstfürsorge lernen: Warum Sie sich selbst wichtig nehmen sollten",
+    slug: "selbstfuersorge-lernen",
+    featuredImage:
+      "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&h=450&fit=crop",
+    excerpt:
+      "Selbstfürsorge ist kein Luxus, sondern notwendig für die psychische Gesundheit. Praktische Tipps, wie Sie mehr auf sich selbst achten können.",
+    author: {
+      id: "7",
+      name: "Lisa Müller",
+      imageUrl:
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face",
+    },
+    category: "burnout",
+    tags: ["Selbstfürsorge", "Achtsamkeit", "Wohlbefinden", "Balance"],
+    readingTimeMinutes: 6,
+    publishedAt: "2024-10-30",
+  },
+  {
+    id: "blog-11",
+    title: "Panikattacken stoppen: Sofort-Hilfe für den Notfall",
+    slug: "panikattacken-stoppen-soforthilfe",
+    featuredImage:
+      "https://images.unsplash.com/photo-1474418397713-7ede21d49118?w=800&h=450&fit=crop",
+    excerpt:
+      "Eine Panikattacke kann überwältigend sein. Lernen Sie Techniken, die Ihnen im akuten Moment helfen können, die Kontrolle zurückzugewinnen.",
+    author: {
+      id: "3",
+      name: "Dr. Sarah Klein",
+      imageUrl:
+        "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&fit=crop&crop=face",
+    },
+    category: "anxiety",
+    tags: ["Panikattacke", "Angst", "Soforthilfe", "Atemtechnik"],
+    readingTimeMinutes: 5,
+    publishedAt: "2024-10-28",
+  },
+  {
+    id: "blog-12",
+    title: "Familie und Konflikte: Wege zur besseren Kommunikation",
+    slug: "familie-konflikte-kommunikation",
+    featuredImage:
+      "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=800&h=450&fit=crop",
+    excerpt:
+      "Familiäre Konflikte belasten alle Beteiligten. Erfahren Sie, wie Sie konstruktiv streiten und zu Lösungen finden, die für alle funktionieren.",
+    author: {
+      id: "7",
+      name: "Lisa Müller",
+      imageUrl:
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face",
+    },
+    category: "relationships",
+    tags: ["Familie", "Konflikte", "Kommunikation", "Systemisch"],
+    readingTimeMinutes: 8,
+    publishedAt: "2024-10-25",
+  },
+  {
+    id: "blog-13",
+    title: "Kindheitstrauma verarbeiten: Heilung ist möglich",
+    slug: "kindheitstrauma-verarbeiten",
+    featuredImage:
+      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=450&fit=crop",
+    excerpt:
+      "Traumatische Erfahrungen in der Kindheit können das ganze Leben prägen. Doch mit der richtigen Unterstützung ist Heilung möglich.",
+    author: {
+      id: "5",
+      name: "Dr. Elena Petrova",
+      imageUrl:
+        "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=face",
+    },
+    category: "trauma",
+    tags: ["Kindheitstrauma", "Heilung", "Therapie", "Inneres Kind"],
+    readingTimeMinutes: 14,
+    publishedAt: "2024-10-22",
+  },
+  {
+    id: "blog-14",
+    title: "Work-Life-Balance: So schaffen Sie den Ausgleich",
+    slug: "work-life-balance-ausgleich",
+    featuredImage:
+      "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=450&fit=crop",
+    excerpt:
+      "Die Balance zwischen Arbeit und Privatleben zu finden ist eine der größten Herausforderungen unserer Zeit. Praktische Strategien für mehr Gleichgewicht.",
+    author: {
+      id: "4",
+      name: "Michael Hoffmann",
+      imageUrl:
+        "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=100&h=100&fit=crop&crop=face",
+    },
+    category: "burnout",
+    tags: ["Work-Life-Balance", "Stress", "Grenzen setzen", "Zeitmanagement"],
+    readingTimeMinutes: 9,
+    publishedAt: "2024-10-18",
+  },
+  {
+    id: "blog-15",
+    title: "Achtsamkeitsübungen für den Alltag",
+    slug: "achtsamkeitsuebungen-alltag",
+    featuredImage:
+      "https://images.unsplash.com/photo-1508672019048-805c876b67e2?w=800&h=450&fit=crop",
+    excerpt:
+      "Achtsamkeit muss nicht kompliziert sein. Diese einfachen Übungen lassen sich problemlos in Ihren Alltag integrieren und verbessern Ihr Wohlbefinden.",
+    author: {
+      id: "9",
+      name: "Claudia Berger",
+      imageUrl:
+        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face",
+    },
+    category: "anxiety",
+    tags: ["Achtsamkeit", "Meditation", "Übungen", "Entspannung"],
+    readingTimeMinutes: 6,
+    publishedAt: "2024-10-15",
+  },
+  {
+    id: "blog-16",
+    title: "Digitale Sucht: Wenn das Smartphone zur Falle wird",
+    slug: "digitale-sucht-smartphone",
+    featuredImage:
+      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&h=450&fit=crop",
+    excerpt:
+      "Social Media, Gaming, ständige Erreichbarkeit – digitale Abhängigkeit ist ein wachsendes Problem. Erkennen Sie die Zeichen und finden Sie zurück zur Balance.",
+    author: {
+      id: "10",
+      name: "Dr. Robert Schuster",
+      imageUrl:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    },
+    category: "addiction",
+    tags: ["Digitale Sucht", "Smartphone", "Social Media", "Abhängigkeit"],
+    readingTimeMinutes: 11,
+    publishedAt: "2024-10-12",
+  },
 ];
