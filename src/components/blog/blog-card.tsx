@@ -1,7 +1,5 @@
-"use client";
-
 import Link from "next/link";
-import { useTranslations, useLocale } from "next-intl";
+import Image from "next/image";
 import { Clock, MessageCircle, Bookmark } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -34,14 +32,12 @@ interface BlogCardProps {
       bookmarks: number;
     };
   };
+  locale: string;
   variant?: "default" | "featured" | "compact";
   className?: string;
 }
 
-export function BlogCard({ post, variant = "default", className }: BlogCardProps) {
-  const t = useTranslations("blog");
-  const locale = useLocale();
-
+export function BlogCard({ post, locale, variant = "default", className }: BlogCardProps) {
   const href = locale === "de" ? `/blog/${post.slug}` : `/${locale}/blog/${post.slug}`;
 
   const formattedDate = post.publishedAt
@@ -49,7 +45,7 @@ export function BlogCard({ post, variant = "default", className }: BlogCardProps
         year: "numeric",
         month: "short",
         day: "numeric",
-      }).format(post.publishedAt)
+      }).format(new Date(post.publishedAt))
     : null;
 
   if (variant === "compact") {
@@ -57,12 +53,15 @@ export function BlogCard({ post, variant = "default", className }: BlogCardProps
       <article className={cn("group", className)}>
         <Link href={href} className="flex gap-4 items-start">
           {post.featuredImage && (
-            <img
-              src={post.featuredImage}
-              alt={post.featuredImageAlt || post.title}
-              className="w-20 h-20 object-cover rounded-lg shrink-0"
-              loading="lazy"
-            />
+            <div className="relative w-20 h-20 shrink-0">
+              <Image
+                src={post.featuredImage}
+                alt={post.featuredImageAlt || post.title}
+                fill
+                sizes="80px"
+                className="object-cover rounded-lg"
+              />
+            </div>
           )}
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors">
@@ -72,7 +71,7 @@ export function BlogCard({ post, variant = "default", className }: BlogCardProps
               {formattedDate && <span>{formattedDate}</span>}
               <span className="flex items-center gap-1">
                 <Clock className="h-3 w-3" aria-hidden="true" />
-                {t("readingTime", { minutes: post.readingTimeMinutes })}
+                {post.readingTimeMinutes} min
               </span>
             </div>
           </div>
@@ -87,12 +86,14 @@ export function BlogCard({ post, variant = "default", className }: BlogCardProps
         <Card className="overflow-hidden h-full">
           <Link href={href}>
             {post.featuredImage && (
-              <div className="aspect-[16/9] overflow-hidden">
-                <img
+              <div className="relative aspect-[16/9] overflow-hidden">
+                <Image
                   src={post.featuredImage}
                   alt={post.featuredImageAlt || post.title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  loading="lazy"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  priority
                 />
               </div>
             )}
@@ -152,12 +153,13 @@ export function BlogCard({ post, variant = "default", className }: BlogCardProps
       <Card className="overflow-hidden h-full flex flex-col">
         <Link href={href} className="flex-1 flex flex-col">
           {post.featuredImage && (
-            <div className="aspect-[16/10] overflow-hidden">
-              <img
+            <div className="relative aspect-[16/10] overflow-hidden">
+              <Image
                 src={post.featuredImage}
                 alt={post.featuredImageAlt || post.title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                loading="lazy"
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
             </div>
           )}
@@ -185,11 +187,15 @@ export function BlogCard({ post, variant = "default", className }: BlogCardProps
         <CardFooter className="pt-0 text-xs text-muted-foreground flex items-center justify-between">
           <div className="flex items-center gap-2">
             {post.author.image && (
-              <img
-                src={post.author.image}
-                alt={post.author.name || ""}
-                className="w-5 h-5 rounded-full"
-              />
+              <div className="relative w-5 h-5">
+                <Image
+                  src={post.author.image}
+                  alt={post.author.name || ""}
+                  fill
+                  sizes="20px"
+                  className="rounded-full object-cover"
+                />
+              </div>
             )}
             <span>{post.author.name}</span>
           </div>

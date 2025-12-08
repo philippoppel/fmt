@@ -10,13 +10,13 @@ import { TLDRBox } from "@/components/blog/display/tldr-box";
 import { TableOfContents, TableOfContentsCollapsible } from "@/components/blog/display/table-of-contents";
 import { CitationList } from "@/components/blog/display/citation-list";
 import { AuthorInline } from "@/components/blog/display/author-card";
-import { BlogCard } from "@/components/blog/blog-card";
 import { ReadingPreferences } from "@/components/blog/a11y/reading-preferences";
 import { Badge } from "@/components/ui/badge";
 import { BookmarkButton } from "@/components/blog/interaction/bookmark-button";
 import { ShareButton } from "@/components/blog/interaction/share-button";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Clock, ArrowLeft } from "lucide-react";
 
 type Props = {
@@ -167,11 +167,16 @@ export default async function BlogPostPage({ params }: Props) {
               {/* Featured Image */}
               {post.featuredImage && (
                 <figure className="mb-8">
-                  <img
-                    src={post.featuredImage}
-                    alt={post.featuredImageAlt || post.title}
-                    className="w-full rounded-lg object-cover aspect-[16/9]"
-                  />
+                  <div className="relative w-full aspect-[16/9]">
+                    <Image
+                      src={post.featuredImage}
+                      alt={post.featuredImageAlt || post.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 800px"
+                      className="rounded-lg object-cover"
+                      priority
+                    />
+                  </div>
                   {post.featuredImageAlt && (
                     <figcaption className="text-sm text-muted-foreground mt-2 text-center">
                       {post.featuredImageAlt}
@@ -248,11 +253,15 @@ export default async function BlogPostPage({ params }: Props) {
                 <article key={relatedPost.slug} className="group">
                   <Link href={`${localePath}/blog/${relatedPost.slug}`}>
                     {relatedPost.featuredImage && (
-                      <img
-                        src={relatedPost.featuredImage}
-                        alt={relatedPost.title}
-                        className="w-full aspect-[16/10] object-cover rounded-lg mb-3"
-                      />
+                      <div className="relative w-full aspect-[16/10] mb-3">
+                        <Image
+                          src={relatedPost.featuredImage}
+                          alt={relatedPost.title}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover rounded-lg"
+                        />
+                      </div>
                     )}
                     <h3 className="font-semibold group-hover:text-primary transition-colors line-clamp-2">
                       {relatedPost.title}

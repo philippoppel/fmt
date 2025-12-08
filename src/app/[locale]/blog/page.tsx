@@ -127,7 +127,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
               {/* Featured Post */}
               {featuredPost && !search.category && !search.tag && !search.q && currentPage === 1 && (
                 <section className="mb-12">
-                  <BlogCard post={featuredPost} variant="featured" />
+                  <BlogCard post={featuredPost} locale={locale} variant="featured" />
                 </section>
               )}
 
@@ -135,7 +135,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
               <section>
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {(search.category || search.tag || search.q || currentPage > 1 ? posts : remainingPosts).map((post) => (
-                    <BlogCard key={post.slug} post={post} />
+                    <BlogCard key={post.slug} post={post} locale={locale} />
                   ))}
                 </div>
               </section>

@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { unstable_cache } from "next/cache";
 import type { PostStatus } from "@prisma/client";
 
 export interface BlogPostFilters {
@@ -51,9 +52,9 @@ export interface BlogPostWithDetails {
 }
 
 /**
- * Get blog posts with optional filtering
+ * Internal function to fetch blog posts
  */
-export async function getBlogPosts(
+async function fetchBlogPosts(
   filters: BlogPostFilters = {}
 ): Promise<{ posts: BlogPostWithDetails[]; total: number }> {
   const {
@@ -160,64 +161,104 @@ export async function getBlogPosts(
 }
 
 /**
- * Get a single blog post by slug
+ * Get blog posts with optional filtering (cached for 60 seconds)
+ * Search queries bypass cache for fresh results
+ */
+export async function getBlogPosts(
+  filters: BlogPostFilters = {}
+): Promise<{ posts: BlogPostWithDetails[]; total: number }> {
+  // Don't cache search queries - they need fresh results
+  if (filters.search) {
+    return fetchBlogPosts(filters);
+  }
+
+  // Create cache key from filters
+  const cacheKey = [
+    "blog-posts",
+    filters.status || "published",
+    filters.categorySlug || "all",
+    filters.tagSlug || "all",
+    filters.authorId || "all",
+    String(filters.page || 1),
+    String(filters.limit || 10),
+  ];
+
+  const cachedFetch = unstable_cache(
+    () => fetchBlogPosts(filters),
+    cacheKey,
+    { revalidate: 60, tags: ["blog-posts"] }
+  );
+
+  return cachedFetch();
+}
+
+/**
+ * Get a single blog post by slug (cached for 60 seconds)
  */
 export async function getBlogPostBySlug(slug: string) {
-  return db.blogPost.findUnique({
-    where: { slug },
-    include: {
-      author: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
-      categories: {
-        select: {
-          category: {
+  const cachedFetch = unstable_cache(
+    async () => {
+      return db.blogPost.findUnique({
+        where: { slug },
+        include: {
+          author: {
             select: {
               id: true,
-              slug: true,
-              nameDE: true,
-              nameEN: true,
-              color: true,
-              icon: true,
-            },
-          },
-        },
-      },
-      tags: {
-        select: {
-          tag: {
-            select: {
-              id: true,
-              slug: true,
               name: true,
+              image: true,
+            },
+          },
+          categories: {
+            select: {
+              category: {
+                select: {
+                  id: true,
+                  slug: true,
+                  nameDE: true,
+                  nameEN: true,
+                  color: true,
+                  icon: true,
+                },
+              },
+            },
+          },
+          tags: {
+            select: {
+              tag: {
+                select: {
+                  id: true,
+                  slug: true,
+                  name: true,
+                },
+              },
+            },
+          },
+          citations: {
+            select: {
+              id: true,
+              doi: true,
+              title: true,
+              authors: true,
+              inlineKey: true,
+              formattedAPA: true,
+              year: true,
+            },
+            orderBy: { createdAt: "asc" },
+          },
+          _count: {
+            select: {
+              comments: { where: { isApproved: true } },
+              bookmarks: true,
             },
           },
         },
-      },
-      citations: {
-        select: {
-          id: true,
-          doi: true,
-          title: true,
-          authors: true,
-          inlineKey: true,
-          formattedAPA: true,
-          year: true,
-        },
-        orderBy: { createdAt: "asc" },
-      },
-      _count: {
-        select: {
-          comments: { where: { isApproved: true } },
-          bookmarks: true,
-        },
-      },
+      });
     },
-  });
+    ["blog-post", slug],
+    { revalidate: 60, tags: ["blog-posts", `blog-post-${slug}`] }
+  );
+
+  return cachedFetch();
 }
 
 /**
@@ -253,24 +294,28 @@ export async function getRelatedPosts(
 }
 
 /**
- * Get all categories
+ * Get all categories (cached for 5 minutes)
  */
-export async function getCategories() {
-  return db.blogCategory.findMany({
-    orderBy: { sortOrder: "asc" },
-    include: {
-      _count: {
-        select: {
-          posts: {
-            where: {
-              post: { status: "published" },
+export const getCategories = unstable_cache(
+  async () => {
+    return db.blogCategory.findMany({
+      orderBy: { sortOrder: "asc" },
+      include: {
+        _count: {
+          select: {
+            posts: {
+              where: {
+                post: { status: "published" },
+              },
             },
           },
         },
       },
-    },
-  });
-}
+    });
+  },
+  ["blog-categories"],
+  { revalidate: 300, tags: ["blog-categories"] }
+);
 
 /**
  * Get category by slug
@@ -282,31 +327,35 @@ export async function getCategoryBySlug(slug: string) {
 }
 
 /**
- * Get popular tags
+ * Get popular tags (cached for 5 minutes)
  */
-export async function getPopularTags(limit: number = 20) {
-  const tags = await db.blogTag.findMany({
-    include: {
-      _count: {
-        select: {
-          posts: {
-            where: {
-              post: { status: "published" },
+export const getPopularTags = unstable_cache(
+  async (limit: number = 20) => {
+    const tags = await db.blogTag.findMany({
+      include: {
+        _count: {
+          select: {
+            posts: {
+              where: {
+                post: { status: "published" },
+              },
             },
           },
         },
       },
-    },
-    orderBy: {
-      posts: {
-        _count: "desc",
+      orderBy: {
+        posts: {
+          _count: "desc",
+        },
       },
-    },
-    take: limit,
-  });
+      take: limit,
+    });
 
-  return tags.filter((tag) => tag._count.posts > 0);
-}
+    return tags.filter((tag) => tag._count.posts > 0);
+  },
+  ["blog-popular-tags"],
+  { revalidate: 300, tags: ["blog-tags"] }
+);
 
 /**
  * Get tag by slug
