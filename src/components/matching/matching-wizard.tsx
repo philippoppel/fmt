@@ -9,8 +9,8 @@ import {
   StepIndicator,
   TopicSelection,
   CriteriaSelection,
-  RefinementSelection,
 } from "./steps";
+import { TherapyStyleQuiz } from "./steps/therapy-style-quiz";
 
 function WizardContent() {
   const router = useRouter();
@@ -27,6 +27,7 @@ function WizardContent() {
       gender: state.criteria.gender,
       sessionType: state.criteria.sessionType,
       insurance: state.criteria.insurance,
+      therapyStyle: state.therapyStyle,
     };
 
     // Store in sessionStorage for larger data
@@ -53,7 +54,7 @@ function WizardContent() {
   const stepLabels = {
     topics: t("matching.wizard.stepLabels.topics"),
     preferences: t("matching.wizard.stepLabels.preferences"),
-    refinement: t("matching.wizard.stepLabels.refinement"),
+    style: t("matching.wizard.stepLabels.style"),
   };
 
   return (
@@ -76,7 +77,7 @@ function WizardContent() {
         <div className="min-h-[400px]">
           {state.currentStep === 1 && <TopicSelection />}
           {state.currentStep === 2 && <CriteriaSelection />}
-          {state.currentStep === 3 && <RefinementSelection />}
+          {state.currentStep === 3 && <TherapyStyleQuiz />}
         </div>
 
         {/* Navigation */}

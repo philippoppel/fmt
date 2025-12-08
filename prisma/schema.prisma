@@ -27,6 +27,26 @@ enum Gender {
   diverse
 }
 
+// Therapy Style Enums for Matching
+enum CommunicationStyle {
+  directive   // Klar & strukturiert - gibt konkrete Anleitungen
+  empathetic  // Einfühlsam & begleitend - hört vor allem zu
+  balanced    // Ausgewogen - passt sich an
+}
+
+enum TherapyFocus {
+  past        // Vergangenheit verstehen - Ursachen und Muster erkennen
+  present     // Gegenwart bewältigen - aktuelle Probleme lösen
+  future      // Zukunft gestalten - Ziele setzen und erreichen
+  holistic    // Ganzheitlich - alle Zeitebenen
+}
+
+enum TherapyDepth {
+  symptom_relief  // Akute Symptomlinderung - schnelle Hilfe
+  deep_change     // Tiefgreifende Veränderung - langfristig
+  flexible        // Flexibel - je nach Bedarf
+}
+
 // Blog Enums
 enum PostStatus {
   draft
@@ -186,6 +206,13 @@ model TherapistProfile {
   // Ratings
   rating            Float        @default(0)
   reviewCount       Int          @default(0)
+
+  // Therapy Style (for Matching)
+  communicationStyle  CommunicationStyle?  @default(balanced)
+  usesHomework        Boolean?             @default(true)
+  therapyFocus        TherapyFocus?        @default(holistic)
+  clientTalkRatio     Int?                 @default(50)  // 0-100: wie viel % redet Patient
+  therapyDepth        TherapyDepth?        @default(flexible)
 
   // Profile visibility
   isPublished       Boolean      @default(true)

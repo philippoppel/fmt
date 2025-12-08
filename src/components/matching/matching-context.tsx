@@ -8,7 +8,16 @@ import {
   useMemo,
   type ReactNode,
 } from "react";
-import type { Gender, SessionType, Insurance } from "@/types/therapist";
+import type {
+  Gender,
+  SessionType,
+  Insurance,
+  TherapyStylePreferences,
+  CommunicationStyle,
+  TherapyFocus,
+  TherapyDepth,
+} from "@/types/therapist";
+import { defaultTherapyStylePreferences } from "@/types/therapist";
 import {
   MATCHING_TOPICS,
   getSubTopicsForTopics,
@@ -28,6 +37,8 @@ export interface MatchingState {
     sessionType: SessionType | null;
     insurance: Insurance[];
   };
+  // Therapy Style Quiz (Step 3)
+  therapyStyle: TherapyStylePreferences;
 }
 
 type MatchingAction =
@@ -38,6 +49,11 @@ type MatchingAction =
   | { type: "SET_GENDER"; gender: Gender | null }
   | { type: "SET_SESSION_TYPE"; sessionType: SessionType | null }
   | { type: "TOGGLE_INSURANCE"; insurance: Insurance }
+  | { type: "SET_COMMUNICATION_STYLE"; style: CommunicationStyle | null }
+  | { type: "SET_PREFERS_HOMEWORK"; value: boolean | null }
+  | { type: "SET_THERAPY_FOCUS"; focus: TherapyFocus | null }
+  | { type: "SET_TALK_PREFERENCE"; value: "more_self" | "guided" | null }
+  | { type: "SET_THERAPY_DEPTH"; depth: TherapyDepth | null }
   | { type: "RESET" };
 
 const initialState: MatchingState = {
@@ -50,6 +66,7 @@ const initialState: MatchingState = {
     sessionType: null,
     insurance: [],
   },
+  therapyStyle: defaultTherapyStylePreferences,
 };
 
 function matchingReducer(
@@ -122,6 +139,52 @@ function matchingReducer(
       };
     }
 
+    // Therapy Style Actions
+    case "SET_COMMUNICATION_STYLE":
+      return {
+        ...state,
+        therapyStyle: {
+          ...state.therapyStyle,
+          communicationStyle: action.style,
+        },
+      };
+
+    case "SET_PREFERS_HOMEWORK":
+      return {
+        ...state,
+        therapyStyle: {
+          ...state.therapyStyle,
+          prefersHomework: action.value,
+        },
+      };
+
+    case "SET_THERAPY_FOCUS":
+      return {
+        ...state,
+        therapyStyle: {
+          ...state.therapyStyle,
+          therapyFocus: action.focus,
+        },
+      };
+
+    case "SET_TALK_PREFERENCE":
+      return {
+        ...state,
+        therapyStyle: {
+          ...state.therapyStyle,
+          talkPreference: action.value,
+        },
+      };
+
+    case "SET_THERAPY_DEPTH":
+      return {
+        ...state,
+        therapyStyle: {
+          ...state.therapyStyle,
+          therapyDepth: action.depth,
+        },
+      };
+
     case "RESET":
       return initialState;
 
@@ -140,6 +203,12 @@ interface MatchingContextValue {
     setGender: (gender: Gender | null) => void;
     setSessionType: (sessionType: SessionType | null) => void;
     toggleInsurance: (insurance: Insurance) => void;
+    // Therapy Style actions
+    setCommunicationStyle: (style: CommunicationStyle | null) => void;
+    setPrefersHomework: (value: boolean | null) => void;
+    setTherapyFocus: (focus: TherapyFocus | null) => void;
+    setTalkPreference: (value: "more_self" | "guided" | null) => void;
+    setTherapyDepth: (depth: TherapyDepth | null) => void;
     reset: () => void;
     goNext: () => void;
     goBack: () => void;
@@ -184,6 +253,33 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
 
   const toggleInsurance = useCallback((insurance: Insurance) => {
     dispatch({ type: "TOGGLE_INSURANCE", insurance });
+  }, []);
+
+  // Therapy Style actions
+  const setCommunicationStyle = useCallback(
+    (style: CommunicationStyle | null) => {
+      dispatch({ type: "SET_COMMUNICATION_STYLE", style });
+    },
+    []
+  );
+
+  const setPrefersHomework = useCallback((value: boolean | null) => {
+    dispatch({ type: "SET_PREFERS_HOMEWORK", value });
+  }, []);
+
+  const setTherapyFocus = useCallback((focus: TherapyFocus | null) => {
+    dispatch({ type: "SET_THERAPY_FOCUS", focus });
+  }, []);
+
+  const setTalkPreference = useCallback(
+    (value: "more_self" | "guided" | null) => {
+      dispatch({ type: "SET_TALK_PREFERENCE", value });
+    },
+    []
+  );
+
+  const setTherapyDepth = useCallback((depth: TherapyDepth | null) => {
+    dispatch({ type: "SET_THERAPY_DEPTH", depth });
   }, []);
 
   const reset = useCallback(() => {
@@ -240,6 +336,11 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
       setGender,
       setSessionType,
       toggleInsurance,
+      setCommunicationStyle,
+      setPrefersHomework,
+      setTherapyFocus,
+      setTalkPreference,
+      setTherapyDepth,
       reset,
       goNext,
       goBack,

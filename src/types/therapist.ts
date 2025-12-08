@@ -35,6 +35,55 @@ export type Availability = "immediately" | "this_week" | "flexible";
 // Gender options
 export type Gender = "male" | "female" | "diverse";
 
+// ============================================
+// THERAPY STYLE TYPES (for Matching)
+// ============================================
+
+// Communication style preference
+export type CommunicationStyle = "directive" | "empathetic" | "balanced";
+
+// Therapy focus (time orientation)
+export type TherapyFocus = "past" | "present" | "future" | "holistic";
+
+// Therapy depth preference
+export type TherapyDepth = "symptom_relief" | "deep_change" | "flexible";
+
+// User's therapy style preferences (from Quiz)
+export interface TherapyStylePreferences {
+  communicationStyle: CommunicationStyle | null;
+  prefersHomework: boolean | null;
+  therapyFocus: TherapyFocus | null;
+  talkPreference: "more_self" | "guided" | null;
+  therapyDepth: TherapyDepth | null;
+}
+
+// Default values for therapy style preferences
+export const defaultTherapyStylePreferences: TherapyStylePreferences = {
+  communicationStyle: null,
+  prefersHomework: null,
+  therapyFocus: null,
+  talkPreference: null,
+  therapyDepth: null,
+};
+
+// Score breakdown for transparent matching
+export interface ScoreCategory {
+  score: number;
+  maxScore: number;
+  label: string;
+  details?: string;
+}
+
+export interface ScoreBreakdown {
+  total: number;
+  categories: {
+    specialization: ScoreCategory;
+    therapyStyle: ScoreCategory;
+    practicalCriteria: ScoreCategory;
+  };
+  matchReasons: string[];
+}
+
 // Therapist profile
 export interface Therapist {
   id: string;
@@ -56,6 +105,12 @@ export interface Therapist {
   insurance: Insurance[];
   availability: Availability;
   gender: Gender;
+  // Therapy Style fields (for Matching)
+  communicationStyle?: CommunicationStyle;
+  usesHomework?: boolean;
+  therapyFocus?: TherapyFocus;
+  clientTalkRatio?: number; // 0-100
+  therapyDepth?: TherapyDepth;
 }
 
 // Blog post from a therapist
@@ -155,10 +210,13 @@ export interface MatchingCriteria {
   gender: Gender | null;
   sessionType: SessionType | null;
   insurance: Insurance[];
+  // Therapy Style preferences from Quiz
+  therapyStyle?: TherapyStylePreferences;
 }
 
 export interface MatchedTherapist extends Therapist {
   matchScore: number;
+  scoreBreakdown?: ScoreBreakdown;
 }
 
 export interface MatchingResult {
@@ -166,3 +224,23 @@ export interface MatchingResult {
   blogs: BlogPost[];
   criteria: MatchingCriteria;
 }
+
+// Constants for Therapy Style options (for UI)
+export const COMMUNICATION_STYLES: CommunicationStyle[] = [
+  "directive",
+  "empathetic",
+  "balanced",
+];
+
+export const THERAPY_FOCUSES: TherapyFocus[] = [
+  "past",
+  "present",
+  "future",
+  "holistic",
+];
+
+export const THERAPY_DEPTHS: TherapyDepth[] = [
+  "symptom_relief",
+  "deep_change",
+  "flexible",
+];

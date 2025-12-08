@@ -473,7 +473,50 @@
       "stepLabels": {
         "topics": "Topics",
         "preferences": "Preferences",
-        "refinement": "Refinement"
+        "style": "Work Style"
+      }
+    },
+    "quiz": {
+      "title": "How do you want to work?",
+      "subtitle": "Help us find your ideal therapy style",
+      "allOptional": "All fields are optional",
+      "communication": {
+        "question": "How should your therapist work with you?",
+        "directive": "Clear & structured",
+        "directiveDesc": "Provides concrete guidance and structure",
+        "balanced": "Balanced",
+        "balancedDesc": "Adapts to your needs",
+        "empathetic": "Empathetic & supportive",
+        "empatheticDesc": "Primarily listens and accompanies"
+      },
+      "homework": {
+        "question": "Do you want to do exercises between sessions?",
+        "yes": "Yes, I want to actively work on myself",
+        "no": "No, I prefer everything in the session",
+        "noPreference": "No preference"
+      },
+      "focus": {
+        "question": "What should therapy focus on?",
+        "past": "Understanding the past",
+        "pastDesc": "Recognizing causes and patterns",
+        "present": "Managing the present",
+        "presentDesc": "Solving current problems",
+        "future": "Shaping the future",
+        "futureDesc": "Setting and achieving goals",
+        "holistic": "All together",
+        "holisticDesc": "Holistic approach"
+      },
+      "talk": {
+        "question": "How do you want to communicate in sessions?",
+        "moreSelf": "I want to talk a lot myself",
+        "guided": "Prefer guided questions & exercises",
+        "noPreference": "No preference"
+      },
+      "depth": {
+        "question": "What is your goal?",
+        "symptom_relief": "Quick help with acute problems",
+        "deep_change": "Deep, long-term change",
+        "flexible": "I'll decide later"
       }
     },
     "topics": {
@@ -550,7 +593,30 @@
       "continueSearch": "Apply More Filters",
       "noResults": "No matching therapists found",
       "matchingActive": "Matching Mode Active",
-      "clearMatching": "Exit Matching"
+      "clearMatching": "Exit Matching",
+      "smartMatching": "Smart Matching",
+      "topMatches": "Your Top 3 Matches",
+      "topMatchesSubtitle": "Based on your preferences, we found these therapists for you",
+      "bestMatch": "Best Match",
+      "veryGoodMatch": "Very Good Match",
+      "goodMatch": "Good Match",
+      "showMore": "Show {count} More Results",
+      "showMoreHint": "View all other therapists, sorted by match score",
+      "matchBecause": "{name} matches you because:",
+      "expertIn": "Expert in {specialties}",
+      "specializedIn": "Specialized in:",
+      "reasons": {
+        "styleMatches": "Work style matches your preferences",
+        "offersOnline": "Offers online sessions",
+        "offersInPerson": "In-person appointments available",
+        "availableNow": "Available soon",
+        "nearLocation": "Near your location"
+      }
+    },
+    "scoreBreakdown": {
+      "specialization": "Specialization",
+      "therapyStyle": "Therapy Style",
+      "practicalCriteria": "Practical Criteria"
     }
   }
 }

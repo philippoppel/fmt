@@ -473,7 +473,50 @@
       "stepLabels": {
         "topics": "Themen",
         "preferences": "Präferenzen",
-        "refinement": "Verfeinerung"
+        "style": "Arbeitsstil"
+      }
+    },
+    "quiz": {
+      "title": "Wie möchtest du arbeiten?",
+      "subtitle": "Hilf uns, deinen idealen Therapiestil zu finden",
+      "allOptional": "Alle Angaben sind optional",
+      "communication": {
+        "question": "Wie soll dein/e Therapeut:in mit dir arbeiten?",
+        "directive": "Klar & strukturiert",
+        "directiveDesc": "Gibt konkrete Anleitungen und Struktur",
+        "balanced": "Ausgewogen",
+        "balancedDesc": "Passt sich deinen Bedürfnissen an",
+        "empathetic": "Einfühlsam & begleitend",
+        "empatheticDesc": "Hört vor allem zu und begleitet"
+      },
+      "homework": {
+        "question": "Möchtest du zwischen den Sitzungen Übungen machen?",
+        "yes": "Ja, ich möchte aktiv an mir arbeiten",
+        "no": "Nein, lieber alles in der Sitzung",
+        "noPreference": "Egal"
+      },
+      "focus": {
+        "question": "Worauf soll die Therapie fokussieren?",
+        "past": "Vergangenheit verstehen",
+        "pastDesc": "Ursachen und Muster erkennen",
+        "present": "Gegenwart bewältigen",
+        "presentDesc": "Aktuelle Probleme lösen",
+        "future": "Zukunft gestalten",
+        "futureDesc": "Ziele setzen und erreichen",
+        "holistic": "Alles zusammen",
+        "holisticDesc": "Ganzheitlicher Ansatz"
+      },
+      "talk": {
+        "question": "Wie möchtest du in den Sitzungen kommunizieren?",
+        "moreSelf": "Ich möchte viel selbst erzählen",
+        "guided": "Lieber geführte Fragen & Übungen",
+        "noPreference": "Egal"
+      },
+      "depth": {
+        "question": "Was ist dein Ziel?",
+        "symptom_relief": "Schnelle Hilfe bei akuten Problemen",
+        "deep_change": "Tiefgreifende, langfristige Veränderung",
+        "flexible": "Das entscheide ich später"
       }
     },
     "topics": {
@@ -550,7 +593,30 @@
       "continueSearch": "Weitere Filter anwenden",
       "noResults": "Keine passenden Therapeuten gefunden",
       "matchingActive": "Matching-Modus aktiv",
-      "clearMatching": "Matching beenden"
+      "clearMatching": "Matching beenden",
+      "smartMatching": "Smart Matching",
+      "topMatches": "Deine Top 3 Matches",
+      "topMatchesSubtitle": "Basierend auf deinen Angaben haben wir diese Therapeuten für dich gefunden",
+      "bestMatch": "Beste Übereinstimmung",
+      "veryGoodMatch": "Sehr gute Übereinstimmung",
+      "goodMatch": "Gute Übereinstimmung",
+      "showMore": "Weitere {count} Ergebnisse anzeigen",
+      "showMoreHint": "Alle weiteren Therapeuten anzeigen, sortiert nach Übereinstimmung",
+      "matchBecause": "{name} passt zu dir weil:",
+      "expertIn": "Experte für {specialties}",
+      "specializedIn": "Spezialisiert auf:",
+      "reasons": {
+        "styleMatches": "Arbeitsstil passt zu dir",
+        "offersOnline": "Bietet Online-Sitzungen",
+        "offersInPerson": "Vor-Ort Termine möglich",
+        "availableNow": "Kurzfristig verfügbar",
+        "nearLocation": "In deiner Nähe"
+      }
+    },
+    "scoreBreakdown": {
+      "specialization": "Spezialisierung",
+      "therapyStyle": "Therapiestil",
+      "practicalCriteria": "Praktische Kriterien"
     }
   }
 }
