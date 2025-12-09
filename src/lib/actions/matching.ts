@@ -42,7 +42,7 @@ export async function searchWithMatching(
     orderBy: [{ rating: "desc" }, { reviewCount: "desc" }],
   });
 
-  // Transform to Therapist type (including therapy style fields)
+  // Transform to Therapist type (including therapy style fields and matching fields)
   const therapists: Therapist[] = profiles.map((profile) => ({
     id: profile.id,
     name: profile.user.name ?? "Unknown",
@@ -65,6 +65,12 @@ export async function searchWithMatching(
     insurance: profile.insurance as Therapist["insurance"],
     availability: profile.availability as Therapist["availability"],
     gender: profile.gender as Therapist["gender"],
+    // Account & Verification fields for matching
+    accountType: profile.accountType as Therapist["accountType"],
+    isVerified: profile.isVerified ?? false,
+    experienceYears: profile.experienceYears ?? undefined,
+    specializationRanks: (profile.specializationRanks as Record<string, 1 | 2 | 3>) ?? undefined,
+    profileCompleteness: profile.profileCompleteness ?? undefined,
     // Therapy Style fields for matching
     communicationStyle: profile.communicationStyle as Therapist["communicationStyle"],
     usesHomework: profile.usesHomework ?? undefined,
