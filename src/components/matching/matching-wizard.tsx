@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { ArrowLeft, ArrowRight, Sparkles, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MatchingProvider, useMatching } from "./matching-context";
+import { PrecisionMeter } from "./precision-meter";
 import {
   StepIndicator,
   TopicSelection,
@@ -114,6 +115,11 @@ function WizardContent() {
 
         {/* Step Indicator (for steps 1-3, not showing screening) */}
         <StepIndicator labels={stepLabels} />
+
+        {/* Precision Meter - motivates users to provide more info */}
+        <div className="mx-auto mt-6 max-w-md">
+          <PrecisionMeter />
+        </div>
 
         {/* Step Content */}
         <div className="min-h-[400px]">

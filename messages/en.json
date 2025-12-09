@@ -450,7 +450,8 @@
       "sectionTherapists": "Therapists",
       "sectionKnowledge": "Knowledge & Self-Help",
       "viewDetails": "View details"
-    }
+    },
+    "contact": "Contact"
   },
   "matching": {
     "meta": {
@@ -482,6 +483,17 @@
         "style": "Work Style"
       },
       "continue": "Continue to Matching"
+    },
+    "precision": {
+      "label": "Match Precision",
+      "levels": {
+        "low": "Basic Matching",
+        "medium": "Good Matching",
+        "high": "Precise Matching",
+        "excellent": "Optimal Matching"
+      },
+      "motivation": "More details improve your results",
+      "excellent": "Best possible match quality"
     },
     "screening": {
       "title": "Quick Safety Check",
@@ -734,7 +746,9 @@
     "scoreBreakdown": {
       "specialization": "Specialization",
       "therapyStyle": "Therapy Style",
-      "practicalCriteria": "Practical Criteria"
+      "practicalCriteria": "Practical Criteria",
+      "intensityExperience": "Experience & Intensity",
+      "profileQuality": "Profile Quality"
     },
     "howItWorks": {
       "trigger": "How does matching work?",
