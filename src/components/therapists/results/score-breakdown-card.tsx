@@ -61,10 +61,13 @@ export function ScoreBreakdownCard({
           return (
             <div key={key} className="flex items-center gap-2">
               {Icon && <Icon className="h-3 w-3 text-muted-foreground shrink-0" />}
+              <span className="w-28 text-[11px] text-muted-foreground">
+                {t(`matching.scoreBreakdown.${key}`)}
+              </span>
               <div className="flex-1">
                 <Progress value={percentage} className="h-1.5" />
               </div>
-              <span className="text-xs text-muted-foreground w-8 text-right">
+              <span className="text-xs text-muted-foreground w-10 text-right">
                 {percentage}%
               </span>
             </div>

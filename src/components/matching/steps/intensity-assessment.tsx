@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Activity, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,7 @@ import { getTopicById } from "@/lib/matching/topics";
 export function IntensityAssessment() {
   const t = useTranslations();
   const { state, actions } = useMatching();
+  const [openTopic, setOpenTopic] = useState<string | null>(null);
 
   // Get statements for selected topics
   const statements = getIntensityStatementsForTopics(state.selectedTopics);
@@ -45,6 +46,15 @@ export function IntensityAssessment() {
     actions.setIntensity(score, level);
   }, [state.selectedIntensityStatements, state.selectedTopics, actions]);
 
+  useEffect(() => {
+    if (!openTopic && statementsByTopic.length > 0) {
+      setOpenTopic(statementsByTopic[0].topicId);
+    }
+    if (openTopic && !statementsByTopic.find((t) => t.topicId === openTopic)) {
+      setOpenTopic(statementsByTopic[0]?.topicId ?? null);
+    }
+  }, [statementsByTopic, openTopic]);
+
   const handleToggleStatement = (statementId: string) => {
     actions.toggleIntensityStatement(statementId);
   };
@@ -65,27 +75,61 @@ export function IntensityAssessment() {
       </div>
 
       {/* Statement groups by topic */}
-      <div className="mx-auto flex-1 max-w-2xl space-y-8">
-        {statementsByTopic.map(({ topicId, topicLabel, statements }) => (
-          <div key={topicId} className="space-y-3">
-            <h3 className="font-semibold text-lg">{topicLabel}</h3>
-            <div className="space-y-2">
-              {statements.map((statement) => {
-                const isSelected = state.selectedIntensityStatements.includes(
-                  statement.id
-                );
-                return (
-                  <StatementCheckbox
-                    key={statement.id}
-                    label={t(statement.labelKey)}
-                    isSelected={isSelected}
-                    onClick={() => handleToggleStatement(statement.id)}
-                  />
-                );
-              })}
+      <div className="mx-auto flex-1 max-w-4xl space-y-3">
+        {statementsByTopic.map(({ topicId, topicLabel, statements }) => {
+          const isOpen = openTopic === topicId;
+          const selectedCount = statements.filter((s) =>
+            state.selectedIntensityStatements.includes(s.id)
+          ).length;
+
+          return (
+            <div key={topicId} className="rounded-xl border bg-card/70">
+              <button
+                type="button"
+                onClick={() => setOpenTopic(isOpen ? null : topicId)}
+                className="flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 text-left transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                <div className="flex items-center gap-3">
+                  <span
+                    className={cn(
+                      "flex h-8 w-8 items-center justify-center rounded-full border text-sm font-semibold",
+                      isOpen ? "border-primary text-primary" : "border-muted-foreground/40 text-muted-foreground"
+                    )}
+                  >
+                    {selectedCount > 0 ? selectedCount : "•"}
+                  </span>
+                  <div>
+                    <div className="text-sm font-semibold">{topicLabel}</div>
+                    <p className="text-xs text-muted-foreground">
+                      {t("matching.intensity.optional")}
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs font-semibold text-muted-foreground">
+                  {isOpen ? "Close" : "Open"}
+                </span>
+              </button>
+
+              {isOpen && (
+                <div className="grid gap-2 border-t px-4 py-3 md:grid-cols-2">
+                  {statements.map((statement) => {
+                    const isSelected = state.selectedIntensityStatements.includes(
+                      statement.id
+                    );
+                    return (
+                      <StatementCheckbox
+                        key={statement.id}
+                        label={t(statement.labelKey)}
+                        isSelected={isSelected}
+                        onClick={() => handleToggleStatement(statement.id)}
+                      />
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {/* Current intensity indicator */}
         {state.intensityLevel && (

@@ -10,7 +10,7 @@ export function TopicSelection() {
   const { state, actions } = useMatching();
 
   return (
-    <div className="flex h-full flex-col gap-6">
+    <div className="flex h-full flex-col gap-4">
       {/* Header */}
       <div className="text-center sm:text-left">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
@@ -22,7 +22,7 @@ export function TopicSelection() {
       </div>
 
       {/* Topic Grid - 4x3 for 12 topics */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 lg:gap-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 lg:gap-3">
         {MATCHING_TOPICS.map((topic) => (
           <TopicCard
             key={topic.id}

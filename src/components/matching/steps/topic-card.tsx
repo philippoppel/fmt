@@ -23,7 +23,7 @@ export function TopicCard({
       type="button"
       onClick={onToggle}
       className={cn(
-        "group relative aspect-[4/3] w-full overflow-hidden rounded-xl border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        "group relative aspect-[3/2] w-full overflow-hidden rounded-xl border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         isSelected
           ? "border-primary shadow-lg ring-2 ring-primary/20"
           : "border-transparent hover:border-primary/50 hover:shadow-md"
