@@ -740,7 +740,8 @@
         "offersOnline": "Bietet Online-Sitzungen",
         "offersInPerson": "Vor-Ort Termine möglich",
         "availableNow": "Kurzfristig verfügbar",
-        "nearLocation": "In deiner Nähe"
+        "nearLocation": "In deiner Nähe",
+        "expertIn": "Expert:in für {specialties}"
       }
     },
     "scoreBreakdown": {
@@ -839,6 +840,23 @@
       "availabilityMatch": "Hat kurzfristig Termine frei",
       "locationMatch": "In deiner Nähe ({city})",
       "onlineMatch": "Bietet flexible Online-Termine"
+    },
+    "transparency": {
+      "title": "Warum dieser Match?",
+      "clickToSee": "Klicken für Details",
+      "overallFit": "Gesamtpassung",
+      "whyThisRank": "Warum ist {name} auf Platz {rank}?",
+      "rankExplanation": "Mit {score}% Übereinstimmung – besonders stark in {category}.",
+      "breakdown": "Score-Zusammensetzung",
+      "topFactor": "Stärkster Faktor",
+      "reasons": "Warum passt ihr zusammen",
+      "howWeCalculate": "So berechnen wir den Match-Score",
+      "calcExplanation1": "Unser Algorithmus analysiert mehrere Faktoren, um die beste Passung zu finden:",
+      "calcFactor1": "Spezialisierung: Passt die Expertise zu deinen Themen?",
+      "calcFactor2": "Erfahrung: Hat der/die Therapeut:in Erfahrung mit ähnlicher Intensität?",
+      "calcFactor3": "Praktische Kriterien: Stimmen Ort, Versicherung und Session-Art?",
+      "calcFactor4": "Profilqualität: Ist das Profil vollständig und verifiziert?",
+      "calcExplanation2": "Je mehr Faktoren übereinstimmen, desto höher der Score. Therapeut:innen mit höherem Score erscheinen weiter oben."
     },
     "howItWorks": {
       "trigger": "Wie funktioniert das Matching?",

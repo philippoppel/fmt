@@ -740,7 +740,8 @@
         "offersOnline": "Offers online sessions",
         "offersInPerson": "In-person appointments available",
         "availableNow": "Available soon",
-        "nearLocation": "Near your location"
+        "nearLocation": "Near your location",
+        "expertIn": "Expert in {specialties}"
       }
     },
     "scoreBreakdown": {
@@ -839,6 +840,23 @@
       "availabilityMatch": "Has appointments available soon",
       "locationMatch": "Near you ({city})",
       "onlineMatch": "Offers flexible online appointments"
+    },
+    "transparency": {
+      "title": "Why this match?",
+      "clickToSee": "Click for details",
+      "overallFit": "Overall fit",
+      "whyThisRank": "Why is {name} ranked #{rank}?",
+      "rankExplanation": "With {score}% match – particularly strong in {category}.",
+      "breakdown": "Score breakdown",
+      "topFactor": "Top factor",
+      "reasons": "Why you match",
+      "howWeCalculate": "How we calculate the match score",
+      "calcExplanation1": "Our algorithm analyzes multiple factors to find the best fit:",
+      "calcFactor1": "Specialization: Does the expertise match your topics?",
+      "calcFactor2": "Experience: Does the therapist have experience with similar intensity?",
+      "calcFactor3": "Practical criteria: Do location, insurance, and session type match?",
+      "calcFactor4": "Profile quality: Is the profile complete and verified?",
+      "calcExplanation2": "The more factors match, the higher the score. Therapists with higher scores appear higher."
     },
     "howItWorks": {
       "trigger": "How does matching work?",

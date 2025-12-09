@@ -23,6 +23,7 @@ import {
   BadgeCheck,
   GitCompare,
   Sparkles,
+  HelpCircle,
 } from "lucide-react";
 import type { MatchedTherapist } from "@/types/therapist";
 import { cn } from "@/lib/utils";
@@ -32,6 +33,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ScoreBreakdownModal } from "./score-breakdown-modal";
 
 interface TopMatchCardProps {
   therapist: MatchedTherapist & {
@@ -84,6 +86,7 @@ export function TopMatchCard({
   const t = useTranslations();
   const tSpec = useTranslations("therapists.specialties");
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   const config = rankConfig[rank] ?? { Icon: CheckCircle2, color: "text-primary", border: "border-l-primary/50", bg: "bg-primary/10" };
   const RankIcon = config.Icon;
@@ -124,18 +127,19 @@ export function TopMatchCard({
         <CardContent className="p-0">
           {/* Main Content */}
           <div className="flex gap-4 p-4">
-            {/* Image with Video Play Button */}
-            <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden rounded-xl bg-muted">
+            {/* Image with Video Play Button - LARGER */}
+            <div className="relative h-40 w-40 flex-shrink-0 overflow-hidden rounded-2xl bg-muted shadow-lg">
               <Image
                 src={therapist.imageUrl}
                 alt={therapist.name}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
-                sizes="112px"
+                sizes="160px"
+                priority={rank <= 3}
               />
               {/* Rank Badge */}
-              <div className={cn("absolute left-1 top-1 flex h-6 w-6 items-center justify-center rounded-full", config.bg)}>
-                <RankIcon className={cn("h-3.5 w-3.5", config.color)} />
+              <div className={cn("absolute left-2 top-2 flex h-8 w-8 items-center justify-center rounded-full shadow-md", config.bg)}>
+                <RankIcon className={cn("h-4 w-4", config.color)} />
               </div>
               {/* Video Play Button */}
               {therapist.videoIntroUrl && (
@@ -143,15 +147,15 @@ export function TopMatchCard({
                   onClick={() => setShowVideoModal(true)}
                   className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                    <Play className="h-5 w-5 text-primary" fill="currentColor" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                    <Play className="h-6 w-6 text-primary" fill="currentColor" />
                   </div>
                 </button>
               )}
               {/* Verified Badge */}
               {therapist.isVerified && (
-                <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-background shadow-md">
-                  <BadgeCheck className="h-4 w-4 text-blue-500" />
+                <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-background shadow-md">
+                  <BadgeCheck className="h-5 w-5 text-blue-500" />
                 </div>
               )}
             </div>
@@ -161,13 +165,20 @@ export function TopMatchCard({
               {/* Header Row */}
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <h3 className="truncate font-semibold leading-tight">{therapist.name}</h3>
-                  <p className="truncate text-xs text-muted-foreground">{therapist.title}</p>
+                  <h3 className="truncate text-lg font-semibold leading-tight">{therapist.name}</h3>
+                  <p className="truncate text-sm text-muted-foreground">{therapist.title}</p>
                 </div>
-                {/* Fit Level Badge instead of percentage */}
-                <Badge variant="outline" className={cn("shrink-0 text-[10px] font-medium", fitLevel.color)}>
-                  {t(`matching.fitLevel.${fitLevel.key}`)}
-                </Badge>
+                {/* Fit Level Badge - clickable for transparency */}
+                <button
+                  onClick={() => setShowBreakdown(true)}
+                  className="group/badge flex items-center gap-1"
+                  title={t("matching.transparency.clickToSee")}
+                >
+                  <Badge variant="outline" className={cn("shrink-0 text-xs font-medium transition-all group-hover/badge:ring-2 group-hover/badge:ring-primary/50", fitLevel.color)}>
+                    {t(`matching.fitLevel.${fitLevel.key}`)}
+                  </Badge>
+                  <HelpCircle className="h-4 w-4 text-muted-foreground opacity-50 transition-opacity group-hover/badge:opacity-100" />
+                </button>
               </div>
 
               {/* Quick Info Row */}
@@ -289,6 +300,14 @@ export function TopMatchCard({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Score Breakdown Modal */}
+      <ScoreBreakdownModal
+        open={showBreakdown}
+        onOpenChange={setShowBreakdown}
+        therapist={therapist}
+        rank={rank}
+      />
     </>
   );
 }
