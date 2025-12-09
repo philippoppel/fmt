@@ -106,7 +106,7 @@ export function IntensityAssessment() {
                   </div>
                 </div>
                 <span className="text-xs font-semibold text-muted-foreground">
-                  {isOpen ? "Close" : "Open"}
+                  {isOpen ? "−" : "+"}
                 </span>
               </button>
 
