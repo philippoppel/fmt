@@ -52,13 +52,15 @@ export function ScoreBreakdownCard({
     return (
       <div className="space-y-2">
         {/* Compact progress bars */}
-        {Object.entries(breakdown.categories).map(([key, category]) => {
+        {Object.entries(breakdown.categories)
+          .filter(([, category]) => category.maxScore > 0) // Skip categories with 0 max score
+          .map(([key, category]) => {
           const Icon = categoryIcons[key as keyof typeof categoryIcons];
           const percentage = Math.round((category.score / category.maxScore) * 100);
 
           return (
             <div key={key} className="flex items-center gap-2">
-              <Icon className="h-3 w-3 text-muted-foreground shrink-0" />
+              {Icon && <Icon className="h-3 w-3 text-muted-foreground shrink-0" />}
               <div className="flex-1">
                 <Progress value={percentage} className="h-1.5" />
               </div>
@@ -81,7 +83,9 @@ export function ScoreBreakdownCard({
 
       {/* Category progress bars */}
       <div className="space-y-3">
-        {Object.entries(breakdown.categories).map(([key, category]) => {
+        {Object.entries(breakdown.categories)
+          .filter(([, category]) => category.maxScore > 0) // Skip categories with 0 max score
+          .map(([key, category]) => {
           const Icon = categoryIcons[key as keyof typeof categoryIcons];
           const percentage = Math.round((category.score / category.maxScore) * 100);
 
@@ -89,7 +93,7 @@ export function ScoreBreakdownCard({
             <div key={key} className="space-y-1">
               <div className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-2">
-                  <Icon className="h-4 w-4 text-muted-foreground" />
+                  {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
                   {t(`matching.scoreBreakdown.${key}`)}
                 </span>
                 <span className="font-medium">
