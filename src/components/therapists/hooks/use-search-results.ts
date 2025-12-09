@@ -22,6 +22,7 @@ interface SearchResultsSeparated {
   therapists: TherapistResult[];
   articles: BlogPost[];
   isLoading: boolean;
+  error?: string;
 }
 
 export function useSearchResults(
@@ -32,15 +33,28 @@ export function useSearchResults(
   const [matchedTherapists, setMatchedTherapists] = useState<MatchedTherapist[]>([]);
   const [matchedBlogs, setMatchedBlogs] = useState<BlogPost[]>([]);
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | undefined>();
+  const [initialized, setInitialized] = useState(false);
 
   // Fetch with matching if criteria provided
   useEffect(() => {
+    setError(undefined);
+
     if (matchingCriteria && matchingCriteria.selectedTopics.length > 0) {
       startTransition(async () => {
-        const { therapists: matched, blogs } = await searchWithMatching(matchingCriteria);
-        setMatchedTherapists(matched);
-        setMatchedBlogs(blogs);
-        setTherapists([]);
+        try {
+          const { therapists: matched, blogs } = await searchWithMatching(matchingCriteria);
+          setMatchedTherapists(matched);
+          setMatchedBlogs(blogs);
+          setTherapists([]);
+        } catch (err) {
+          console.error("Error fetching matched therapists:", err);
+          setError("Failed to load therapists. Please try again.");
+          setMatchedTherapists([]);
+          setMatchedBlogs([]);
+        } finally {
+          setInitialized(true);
+        }
       });
       return;
     }
@@ -51,12 +65,21 @@ export function useSearchResults(
 
     if (filters.contentType === "blogs") {
       setTherapists([]);
+      setInitialized(true);
       return;
     }
 
     startTransition(async () => {
-      const data = await searchTherapistsAction(filters);
-      setTherapists(data);
+      try {
+        const data = await searchTherapistsAction(filters);
+        setTherapists(data);
+      } catch (err) {
+        console.error("Error fetching therapists:", err);
+        setError("Failed to load therapists. Please try again.");
+        setTherapists([]);
+      } finally {
+        setInitialized(true);
+      }
     });
   }, [
     matchingCriteria,
@@ -140,6 +163,7 @@ export function useSearchResults(
   return {
     therapists: separatedResults.therapists,
     articles: separatedResults.articles,
-    isLoading: isPending,
+    isLoading: isPending || !initialized,
+    error,
   };
 }

@@ -312,6 +312,11 @@
       "title": "Find Therapists - Psychotherapy Near You",
       "description": "Find qualified therapists and psychologists near you. Compare profiles, specializations, and reviews."
     },
+    "error": {
+      "title": "Connection Problem",
+      "description": "Could not load therapist data. Please check your internet connection and try again.",
+      "retry": "Reload"
+    },
     "title": "Find Therapists",
     "subtitle": "Find the right therapist for your needs",
     "viewProfile": "View Profile",

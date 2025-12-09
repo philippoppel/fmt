@@ -19,7 +19,7 @@ export function SearchPage() {
   const [matchingCriteria, setMatchingCriteria] = useState<MatchingCriteria | null>(null);
   const { filters, updateFilters, resetFilters, activeFilterCount } =
     useFilters();
-  const { therapists, articles, isLoading } = useSearchResults(filters, matchingCriteria);
+  const { therapists, articles, isLoading, error } = useSearchResults(filters, matchingCriteria);
 
   // Check for matching mode from URL and sessionStorage
   useEffect(() => {
@@ -126,6 +126,7 @@ export function SearchPage() {
             onClearFilters={resetFilters}
             isLoading={isLoading}
             isMatchingMode={!!matchingCriteria}
+            error={error}
           />
         </main>
       </div>

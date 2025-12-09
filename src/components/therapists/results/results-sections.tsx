@@ -6,7 +6,8 @@ import { TherapistGrid } from "./therapist-grid";
 import { KnowledgeSection } from "./knowledge-section";
 import { NoResults } from "./no-results";
 import { TopMatches } from "./top-matches";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { Therapist, BlogPost, ScoreBreakdown, MatchedTherapist } from "@/types/therapist";
 
 interface TherapistResult {
@@ -21,6 +22,7 @@ interface ResultsSectionsProps {
   onClearFilters: () => void;
   isLoading?: boolean;
   isMatchingMode?: boolean;
+  error?: string;
 }
 
 export function ResultsSections({
@@ -29,13 +31,29 @@ export function ResultsSections({
   onClearFilters,
   isLoading,
   isMatchingMode,
+  error,
 }: ResultsSectionsProps) {
+  const t = useTranslations("therapists");
   const [showAllResults, setShowAllResults] = useState(false);
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <AlertCircle className="h-12 w-12 text-destructive mb-4" />
+        <h3 className="text-lg font-semibold mb-2">{t("error.title")}</h3>
+        <p className="text-muted-foreground mb-4 max-w-md">{t("error.description")}</p>
+        <Button onClick={() => window.location.reload()} className="gap-2">
+          <RefreshCw className="h-4 w-4" />
+          {t("error.retry")}
+        </Button>
       </div>
     );
   }

@@ -312,6 +312,11 @@
       "title": "Therapeuten finden - Psychotherapie in Ihrer Nähe",
       "description": "Finden Sie qualifizierte Therapeuten und Psychologen in Ihrer Nähe. Vergleichen Sie Profile, Spezialisierungen und Bewertungen."
     },
+    "error": {
+      "title": "Verbindungsproblem",
+      "description": "Die Therapeuten-Daten konnten nicht geladen werden. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
+      "retry": "Erneut laden"
+    },
     "title": "Therapeuten finden",
     "subtitle": "Finden Sie den passenden Therapeuten für Ihre Bedürfnisse",
     "viewProfile": "Profil ansehen",
