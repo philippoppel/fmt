@@ -730,6 +730,37 @@
       "specialization": "Specialization",
       "therapyStyle": "Therapy Style",
       "practicalCriteria": "Practical Criteria"
+    },
+    "howItWorks": {
+      "trigger": "How does matching work?",
+      "title": "How We Find Your Match",
+      "subtitle": "A personal process in 5 steps",
+      "step1": {
+        "title": "You tell us about yourself",
+        "description": "What topics are you dealing with? What's weighing on you? Your answers stay confidential."
+      },
+      "step2": {
+        "title": "We understand your needs",
+        "description": "Do you prefer an empathetic or direct style? Online or in-person? We listen carefully."
+      },
+      "step3": {
+        "title": "We search our network",
+        "description": "Hundreds of qualified therapists with various specializations and experience levels."
+      },
+      "step4": {
+        "title": "We calculate the fit",
+        "description": "Specialization, therapy style, experience and practical factors – we find who truly fits you."
+      },
+      "step5": {
+        "title": "Your personal top matches",
+        "description": "The therapists with the highest compatibility, sorted by your individual fit."
+      },
+      "badges": {
+        "privacy": "100% Privacy",
+        "verified": "Verified Therapists"
+      },
+      "closing": "You're on the right path. The first step is often the most important.",
+      "understood": "Got it"
     }
   },
   "feedback": {

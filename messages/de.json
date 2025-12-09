@@ -730,6 +730,37 @@
       "specialization": "Spezialisierung",
       "therapyStyle": "Therapiestil",
       "practicalCriteria": "Praktische Kriterien"
+    },
+    "howItWorks": {
+      "trigger": "Wie funktioniert das Matching?",
+      "title": "So finden wir deinen Match",
+      "subtitle": "Ein persönlicher Prozess in 5 Schritten",
+      "step1": {
+        "title": "Du erzählst uns von dir",
+        "description": "Mit welchen Themen beschäftigst du dich? Was belastet dich? Deine Antworten bleiben vertraulich."
+      },
+      "step2": {
+        "title": "Wir verstehen deine Bedürfnisse",
+        "description": "Bevorzugst du einen einfühlsamen oder direkten Stil? Online oder vor Ort? Wir hören genau hin."
+      },
+      "step3": {
+        "title": "Wir durchsuchen unser Netzwerk",
+        "description": "Hunderte qualifizierte Therapeut:innen mit verschiedenen Spezialisierungen und Erfahrungen."
+      },
+      "step4": {
+        "title": "Wir berechnen die Passung",
+        "description": "Spezialisierung, Therapiestil, Erfahrung und praktische Faktoren – wir finden, wer wirklich zu dir passt."
+      },
+      "step5": {
+        "title": "Deine persönlichen Top-Matches",
+        "description": "Die Therapeut:innen mit der höchsten Übereinstimmung, sortiert nach deiner individuellen Passung."
+      },
+      "badges": {
+        "privacy": "100% Datenschutz",
+        "verified": "Geprüfte Therapeut:innen"
+      },
+      "closing": "Du bist auf dem richtigen Weg. Der erste Schritt ist oft der wichtigste.",
+      "understood": "Verstanden"
     }
   },
   "feedback": {

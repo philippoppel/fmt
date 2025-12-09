@@ -1,9 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Sparkles, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TopMatchCard } from "./top-match-card";
+import {
+  HowMatchingWorksModal,
+  HowMatchingWorksTrigger,
+} from "./how-matching-works-modal";
 import type { MatchedTherapist } from "@/types/therapist";
 
 interface TopMatchesProps {
@@ -18,6 +23,7 @@ export function TopMatches({
   totalCount,
 }: TopMatchesProps) {
   const t = useTranslations();
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
 
   if (topTherapists.length === 0) {
     return null;
@@ -39,6 +45,9 @@ export function TopMatches({
         <p className="mt-2 text-muted-foreground">
           {t("matching.results.topMatchesSubtitle")}
         </p>
+        <div className="mt-3">
+          <HowMatchingWorksTrigger onClick={() => setShowHowItWorks(true)} />
+        </div>
       </div>
 
       {/* Top 3 Cards */}
@@ -68,6 +77,12 @@ export function TopMatches({
           </p>
         </div>
       )}
+
+      {/* How Matching Works Modal */}
+      <HowMatchingWorksModal
+        open={showHowItWorks}
+        onOpenChange={setShowHowItWorks}
+      />
     </div>
   );
 }
