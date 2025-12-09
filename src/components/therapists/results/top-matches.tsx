@@ -50,8 +50,8 @@ export function TopMatches({
         </div>
       </div>
 
-      {/* Top 3 Cards */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* Top Cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
         {topTherapists.map((therapist, index) => (
           <TopMatchCard
             key={therapist.id}

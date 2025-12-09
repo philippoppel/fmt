@@ -108,8 +108,17 @@ function WizardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
-      <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-2 py-3 sm:px-3 sm:py-4">
+    <div
+      className="relative min-h-screen bg-background"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplasokh.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80&sat=-12&exp=-5')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="absolute inset-0 bg-black/35" aria-hidden="true" />
+      <div className="relative mx-auto flex min-h-screen max-w-4xl flex-col px-2 py-3 sm:px-3 sm:py-4">
         <div className="flex h-[calc(100vh-1.5rem)] flex-1 flex-col gap-2 rounded-2xl border bg-card/85 p-3 sm:p-4 shadow-xl backdrop-blur">
           {/* Shell Header */}
           <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-muted/30 px-3 py-2">
