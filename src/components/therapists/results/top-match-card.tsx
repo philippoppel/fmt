@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
@@ -16,123 +17,278 @@ import {
   Medal,
   Award,
   CheckCircle2,
+  Clock,
+  Calendar,
+  Play,
+  BadgeCheck,
+  GitCompare,
+  Sparkles,
 } from "lucide-react";
 import type { MatchedTherapist } from "@/types/therapist";
-import { MatchScoreBadge } from "./match-score-badge";
 import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface TopMatchCardProps {
-  therapist: MatchedTherapist;
+  therapist: MatchedTherapist & {
+    videoIntroUrl?: string;
+    avgResponseTimeHours?: number;
+    nextAvailableSlot?: Date | string;
+    offersTrialSession?: boolean;
+    trialSessionPrice?: number;
+    experienceYears?: number;
+    bookingRate?: number;
+  };
   rank: number;
+  onCompareToggle?: (id: string) => void;
+  isComparing?: boolean;
 }
 
-const rankConfig: Record<number, { Icon: typeof Crown; color: string; border: string }> = {
-  1: { Icon: Crown, color: "text-yellow-500", border: "border-l-yellow-500" },
-  2: { Icon: Medal, color: "text-slate-400", border: "border-l-slate-400" },
-  3: { Icon: Award, color: "text-amber-600", border: "border-l-amber-600" },
+const rankConfig: Record<number, { Icon: typeof Crown; color: string; border: string; bg: string }> = {
+  1: { Icon: Crown, color: "text-yellow-500", border: "border-l-yellow-500", bg: "bg-yellow-500/10" },
+  2: { Icon: Medal, color: "text-slate-400", border: "border-l-slate-400", bg: "bg-slate-400/10" },
+  3: { Icon: Award, color: "text-amber-600", border: "border-l-amber-600", bg: "bg-amber-600/10" },
 };
 
-export function TopMatchCard({ therapist, rank }: TopMatchCardProps) {
-  const t = useTranslations();
-  const tFilters = useTranslations("therapists.filters");
-  const tSpec = useTranslations("therapists.specialties");
+function getFitLevel(score: number): { key: string; color: string } {
+  if (score >= 85) return { key: "excellent", color: "text-green-500 bg-green-500/10" };
+  if (score >= 70) return { key: "high", color: "text-emerald-500 bg-emerald-500/10" };
+  if (score >= 50) return { key: "good", color: "text-blue-500 bg-blue-500/10" };
+  return { key: "moderate", color: "text-muted-foreground bg-muted" };
+}
 
-  const config = rankConfig[rank] ?? { Icon: CheckCircle2, color: "text-primary", border: "border-l-primary/50" };
+function formatNextSlot(date: Date | string | undefined, t: ReturnType<typeof useTranslations>): string | null {
+  if (!date) return null;
+  const d = new Date(date);
+  const now = new Date();
+  const diffDays = Math.ceil((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 0) return t("matching.therapistCard.availableNow");
+  if (diffDays <= 7) return t("matching.therapistCard.availableNow");
+
+  return t("matching.therapistCard.nextSlot", {
+    date: d.toLocaleDateString("de-DE", { day: "numeric", month: "short" }),
+  });
+}
+
+export function TopMatchCard({
+  therapist,
+  rank,
+  onCompareToggle,
+  isComparing,
+}: TopMatchCardProps) {
+  const t = useTranslations();
+  const tSpec = useTranslations("therapists.specialties");
+  const [showVideoModal, setShowVideoModal] = useState(false);
+
+  const config = rankConfig[rank] ?? { Icon: CheckCircle2, color: "text-primary", border: "border-l-primary/50", bg: "bg-primary/10" };
   const RankIcon = config.Icon;
-  const breakdown = therapist.scoreBreakdown;
-  const reasons = breakdown?.matchReasons.slice(0, 2) ?? therapist.specializations.slice(0, 2);
+  const fitLevel = getFitLevel(therapist.matchScore);
+  const nextSlotText = formatNextSlot(therapist.nextAvailableSlot, t);
+
+  // Generate personalized reason
+  const getPersonalizedReason = () => {
+    const reasons: string[] = [];
+    const specs = therapist.specializations.slice(0, 2).map(s => tSpec(s)).join(" & ");
+
+    if (specs) {
+      reasons.push(t("matching.personalized.expertInTopics", { topics: specs }));
+    }
+    if (therapist.experienceYears && therapist.experienceYears >= 5) {
+      reasons.push(t("matching.personalized.experienceMatch", { years: therapist.experienceYears }));
+    }
+    if (therapist.sessionType === "online" || therapist.sessionType === "both") {
+      reasons.push(t("matching.personalized.onlineMatch"));
+    }
+    if (therapist.nextAvailableSlot) {
+      reasons.push(t("matching.personalized.availabilityMatch"));
+    }
+
+    return reasons[0] || specs;
+  };
 
   return (
-    <Card
-      className={cn(
-        "group relative overflow-hidden border-l-4 bg-card/80 backdrop-blur transition-all hover:bg-card hover:shadow-lg",
-        config.border,
-        rank === 1 && "ring-1 ring-yellow-500/20"
-      )}
-    >
-      <CardContent className="p-0">
-        <div className="flex gap-4 p-4">
-          {/* Image */}
-          <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl bg-muted">
-            <Image
-              src={therapist.imageUrl}
-              alt={therapist.name}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-              sizes="96px"
-            />
-            <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-background shadow-md">
-              <RankIcon className={cn("h-4 w-4", config.color)} />
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="flex min-w-0 flex-1 flex-col">
-            {/* Header Row */}
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <h3 className="truncate font-semibold leading-tight">{therapist.name}</h3>
-                <p className="truncate text-xs text-muted-foreground">{therapist.title}</p>
+    <>
+      <Card
+        className={cn(
+          "group relative overflow-hidden border-l-4 bg-card/90 backdrop-blur transition-all hover:bg-card hover:shadow-xl",
+          config.border,
+          rank === 1 && "ring-1 ring-yellow-500/30",
+          isComparing && "ring-2 ring-primary"
+        )}
+      >
+        <CardContent className="p-0">
+          {/* Main Content */}
+          <div className="flex gap-4 p-4">
+            {/* Image with Video Play Button */}
+            <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden rounded-xl bg-muted">
+              <Image
+                src={therapist.imageUrl}
+                alt={therapist.name}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="112px"
+              />
+              {/* Rank Badge */}
+              <div className={cn("absolute left-1 top-1 flex h-6 w-6 items-center justify-center rounded-full", config.bg)}>
+                <RankIcon className={cn("h-3.5 w-3.5", config.color)} />
               </div>
-              <MatchScoreBadge score={therapist.matchScore} size="sm" />
+              {/* Video Play Button */}
+              {therapist.videoIntroUrl && (
+                <button
+                  onClick={() => setShowVideoModal(true)}
+                  className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                    <Play className="h-5 w-5 text-primary" fill="currentColor" />
+                  </div>
+                </button>
+              )}
+              {/* Verified Badge */}
+              {therapist.isVerified && (
+                <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-background shadow-md">
+                  <BadgeCheck className="h-4 w-4 text-blue-500" />
+                </div>
+              )}
             </div>
 
-            {/* Meta Row */}
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <MapPin className="h-3 w-3" />
-                {therapist.location.city}
-              </span>
-              <span className="flex items-center gap-1">
-                <Euro className="h-3 w-3" />
-                {therapist.pricePerSession}€
-              </span>
-              <span className="flex items-center gap-1">
-                {therapist.sessionType === "online" && <Video className="h-3 w-3" />}
-                {therapist.sessionType === "in_person" && <Building2 className="h-3 w-3" />}
-                {therapist.sessionType === "both" && (
-                  <>
-                    <Video className="h-3 w-3" />
-                    <Building2 className="h-3 w-3" />
-                  </>
-                )}
-              </span>
-              <StarRating rating={therapist.rating} size="sm" />
-            </div>
-
-            {/* Specializations */}
-            <div className="mt-2 flex flex-wrap gap-1">
-              {therapist.specializations.slice(0, 3).map((spec) => (
-                <Badge key={spec} variant="secondary" className="text-[10px]">
-                  {tSpec(spec)}
+            {/* Content */}
+            <div className="flex min-w-0 flex-1 flex-col">
+              {/* Header Row */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <h3 className="truncate font-semibold leading-tight">{therapist.name}</h3>
+                  <p className="truncate text-xs text-muted-foreground">{therapist.title}</p>
+                </div>
+                {/* Fit Level Badge instead of percentage */}
+                <Badge variant="outline" className={cn("shrink-0 text-[10px] font-medium", fitLevel.color)}>
+                  {t(`matching.fitLevel.${fitLevel.key}`)}
                 </Badge>
-              ))}
+              </div>
+
+              {/* Quick Info Row */}
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <MapPin className="h-3 w-3" />
+                  {therapist.location.city}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Euro className="h-3 w-3" />
+                  {therapist.pricePerSession}€
+                </span>
+                {therapist.experienceYears && (
+                  <span className="flex items-center gap-1">
+                    {therapist.experienceYears}J Erfahrung
+                  </span>
+                )}
+                <StarRating rating={therapist.rating} size="sm" />
+              </div>
+
+              {/* Response Time & Availability Highlights */}
+              <div className="mt-2 flex flex-wrap gap-2">
+                {therapist.avgResponseTimeHours && therapist.avgResponseTimeHours <= 24 && (
+                  <Badge variant="secondary" className="gap-1 text-[10px]">
+                    <Clock className="h-3 w-3" />
+                    {therapist.avgResponseTimeHours <= 2
+                      ? t("matching.therapistCard.responseTimeFast")
+                      : t("matching.therapistCard.responseTime", { hours: therapist.avgResponseTimeHours })}
+                  </Badge>
+                )}
+                {nextSlotText && (
+                  <Badge variant="secondary" className="gap-1 text-[10px] bg-green-500/10 text-green-600">
+                    <Calendar className="h-3 w-3" />
+                    {nextSlotText}
+                  </Badge>
+                )}
+                {therapist.offersTrialSession && (
+                  <Badge variant="secondary" className="gap-1 text-[10px] bg-blue-500/10 text-blue-600">
+                    <Sparkles className="h-3 w-3" />
+                    {therapist.trialSessionPrice === 0
+                      ? t("matching.therapistCard.trialSessionFree")
+                      : t("matching.therapistCard.trialSession", { price: `${therapist.trialSessionPrice}€` })}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Specializations */}
+              <div className="mt-2 flex flex-wrap gap-1">
+                {therapist.specializations.slice(0, 3).map((spec) => (
+                  <Badge key={spec} variant="outline" className="text-[10px]">
+                    {tSpec(spec)}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between border-t bg-muted/30 px-4 py-2">
-          <div className="flex flex-wrap gap-1">
-            {reasons.map((reason, i) => (
-              <span key={i} className="text-[11px] text-muted-foreground">
-                {typeof reason === "string" ? reason : tSpec(reason)}
-                {i < reasons.length - 1 && " · "}
-              </span>
-            ))}
+          {/* Personalized Reason */}
+          <div className="border-t bg-gradient-to-r from-primary/5 to-transparent px-4 py-2">
+            <p className="text-xs text-muted-foreground">
+              <span className="font-medium text-foreground">{getPersonalizedReason()}</span>
+            </p>
           </div>
-          <div className="flex gap-2">
-            <Button asChild variant="ghost" size="sm" className="h-7 px-2 text-xs">
-              <Link href={`/therapists/${therapist.id}`}>
-                {t("therapists.viewProfile")}
-              </Link>
-            </Button>
-            <Button size="sm" className="h-7 px-3 text-xs">
-              {t("therapists.contact")}
-            </Button>
+
+          {/* Footer Actions */}
+          <div className="flex items-center justify-between border-t bg-muted/30 px-4 py-2">
+            <div className="flex gap-1">
+              {therapist.sessionType === "online" || therapist.sessionType === "both" ? (
+                <Video className="h-4 w-4 text-muted-foreground" />
+              ) : null}
+              {therapist.sessionType === "in_person" || therapist.sessionType === "both" ? (
+                <Building2 className="h-4 w-4 text-muted-foreground" />
+              ) : null}
+              {therapist.bookingRate && therapist.bookingRate > 50 && (
+                <span className="ml-2 text-[10px] text-muted-foreground">
+                  {t("matching.therapistCard.similarChose", { percent: Math.round(therapist.bookingRate) })}
+                </span>
+              )}
+            </div>
+            <div className="flex gap-2">
+              {onCompareToggle && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn("h-7 w-7 p-0", isComparing && "text-primary")}
+                  onClick={() => onCompareToggle(therapist.id)}
+                >
+                  <GitCompare className="h-4 w-4" />
+                </Button>
+              )}
+              <Button asChild variant="ghost" size="sm" className="h-7 px-2 text-xs">
+                <Link href={`/therapists/${therapist.id}`}>
+                  {t("therapists.viewProfile")}
+                </Link>
+              </Button>
+              <Button size="sm" className="h-7 px-3 text-xs">
+                {t("therapists.contact")}
+              </Button>
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      {/* Video Modal */}
+      <Dialog open={showVideoModal} onOpenChange={setShowVideoModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{t("matching.therapistCard.videoIntro")} – {therapist.name}</DialogTitle>
+          </DialogHeader>
+          <div className="aspect-video w-full overflow-hidden rounded-lg bg-muted">
+            {therapist.videoIntroUrl && (
+              <video
+                src={therapist.videoIntroUrl}
+                controls
+                autoPlay
+                className="h-full w-full"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

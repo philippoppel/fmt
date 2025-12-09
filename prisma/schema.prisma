@@ -232,6 +232,21 @@ model TherapistProfile {
   // Profil-Vollständigkeit für Qualitäts-Bonus (0-100)
   profileCompleteness Int                  @default(0)
 
+  // Enhanced Matching Fields
+  videoIntroUrl       String?              // 30-Sekunden Video-Vorstellung
+  avgResponseTimeHours Int?                // Durchschnittliche Antwortzeit in Stunden
+  nextAvailableSlot   DateTime?            // Nächster freier Termin
+  firstSessionInfo    String?    @db.Text  // "So läuft die erste Sitzung ab"
+  offersTrialSession  Boolean    @default(false) // Kostenloses/günstiges Erstgespräch
+  trialSessionPrice   Int?                 // Preis für Erstgespräch (0 = kostenlos)
+
+  // Therapie-Methoden (für spezifisches Matching)
+  therapyMethods      String[]             // ["emdr", "exposure", "cbt_specific", ...]
+
+  // Booking/Contact Stats (für ML)
+  contactCount        Int        @default(0)
+  bookingRate         Float?               // % der Kontakte die zu Terminen führen
+
   // Profile visibility
   isPublished       Boolean      @default(true)
 

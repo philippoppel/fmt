@@ -750,6 +750,96 @@
       "intensityExperience": "Experience & Intensity",
       "profileQuality": "Profile Quality"
     },
+    "freetext": {
+      "badge": "AI-Powered Analysis",
+      "title": "Tell us what's on your mind",
+      "subtitle": "Describe your current situation in 2-3 sentences. Our AI helps find the right therapists for you.",
+      "placeholder": "e.g. I've been feeling exhausted for weeks and everything feels overwhelming. My relationship is suffering...",
+      "examples": "Examples to get started:",
+      "example1": "I've had sleep problems for months and feel exhausted during the day. Work is very stressful.",
+      "example2": "After the breakup, it's hard to trust again. I keep thinking about the past.",
+      "example3": "I have regular panic attacks, especially in social situations. It's limiting my life.",
+      "analyze": "Analyze",
+      "analyzing": "Analyzing...",
+      "continue": "Continue with these topics",
+      "skip": "Choose topics manually",
+      "detectedTopics": "Detected topics:",
+      "suggestedMethods": "Suggested therapy approaches:"
+    },
+    "fitLevel": {
+      "excellent": "Excellent Fit",
+      "high": "High Fit",
+      "good": "Good Fit",
+      "moderate": "Fit"
+    },
+    "modeSelection": {
+      "title": "How would you like to start?",
+      "subtitle": "Choose the mode that fits you best",
+      "quick": {
+        "title": "Quick Matching",
+        "description": "3 simple questions, instant results",
+        "time": "~60 seconds"
+      },
+      "full": {
+        "title": "Detailed Matching",
+        "description": "AI-powered analysis for precise results",
+        "benefit": "Best match quality"
+      }
+    },
+    "quickMode": {
+      "badge": "60-Second Matching",
+      "title": "Find your therapist fast",
+      "subtitle": "3 questions, instant results",
+      "q1": "What's bothering you the most?",
+      "q2": "How urgent is your need for help?",
+      "q2Urgent": "As soon as possible",
+      "q2Soon": "In the next few weeks",
+      "q2Flexible": "Flexible",
+      "q3": "Online or in-person?",
+      "q3Online": "Online",
+      "q3InPerson": "In-person",
+      "q3Both": "Both OK",
+      "showResults": "Show results",
+      "switchToFull": "More options"
+    },
+    "compare": {
+      "title": "Comparison",
+      "addToCompare": "Compare",
+      "removeFromCompare": "Remove from comparison",
+      "compareNow": "Compare now",
+      "selected": "{count} selected",
+      "maxReached": "Max 3 for comparison",
+      "specialization": "Specialization",
+      "experience": "Experience",
+      "style": "Therapy style",
+      "availability": "Availability",
+      "price": "Price",
+      "rating": "Rating",
+      "methods": "Methods"
+    },
+    "therapistCard": {
+      "responseTime": "Responds in ~{hours}h",
+      "responseTimeFast": "Responds quickly",
+      "nextSlot": "Next appointment: {date}",
+      "availableNow": "Appointments this week",
+      "trialSession": "First session {price}",
+      "trialSessionFree": "Free first session",
+      "videoIntro": "Watch video introduction",
+      "firstSessionInfo": "About the first session",
+      "verified": "Verified",
+      "yearsExperience": "{years} years experience",
+      "similarChose": "{percent}% of similar users booked"
+    },
+    "personalized": {
+      "because": "{name} fits you because:",
+      "expertInTopics": "Expert in {topics} – exactly your topic",
+      "experienceMatch": "Has {years} years of experience with similar cases",
+      "styleMatch": "Works {style} – just like you wanted",
+      "methodMatch": "Uses {method} – a proven method for your concern",
+      "availabilityMatch": "Has appointments available soon",
+      "locationMatch": "Near you ({city})",
+      "onlineMatch": "Offers flexible online appointments"
+    },
     "howItWorks": {
       "trigger": "How does matching work?",
       "title": "How We Find Your Match",

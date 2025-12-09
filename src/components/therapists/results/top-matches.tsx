@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Sparkles, ChevronDown } from "lucide-react";
+import { Sparkles, ChevronDown, GitCompare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { TopMatchCard } from "./top-match-card";
+import { CompareModal } from "./compare-modal";
 import {
   HowMatchingWorksModal,
   HowMatchingWorksTrigger,
@@ -12,12 +14,22 @@ import {
 import type { MatchedTherapist } from "@/types/therapist";
 
 interface TopMatchesProps {
-  topTherapists: MatchedTherapist[];
+  topTherapists: Array<MatchedTherapist & {
+    videoIntroUrl?: string;
+    avgResponseTimeHours?: number;
+    nextAvailableSlot?: Date | string;
+    offersTrialSession?: boolean;
+    trialSessionPrice?: number;
+    experienceYears?: number;
+    bookingRate?: number;
+    therapyMethods?: string[];
+  }>;
   onShowMore: () => void;
   totalCount: number;
 }
 
 const TOP_COUNT = 6;
+const MAX_COMPARE = 3;
 
 export function TopMatches({
   topTherapists,
@@ -26,12 +38,28 @@ export function TopMatches({
 }: TopMatchesProps) {
   const t = useTranslations();
   const [showHowItWorks, setShowHowItWorks] = useState(false);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [showCompare, setShowCompare] = useState(false);
 
   if (topTherapists.length === 0) {
     return null;
   }
 
   const remaining = totalCount - TOP_COUNT;
+
+  const handleCompareToggle = (id: string) => {
+    setCompareIds((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((i) => i !== id);
+      }
+      if (prev.length >= MAX_COMPARE) {
+        return prev;
+      }
+      return [...prev, id];
+    });
+  };
+
+  const compareTherapists = topTherapists.filter((t) => compareIds.includes(t.id));
 
   return (
     <div className="space-y-6">
@@ -51,8 +79,31 @@ export function TopMatches({
             {t("matching.results.topMatchesSubtitle")}
           </p>
         </div>
-        <HowMatchingWorksTrigger onClick={() => setShowHowItWorks(true)} />
+        <div className="flex items-center gap-2">
+          {compareIds.length > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowCompare(true)}
+              className="gap-2"
+            >
+              <GitCompare className="h-4 w-4" />
+              {t("matching.compare.compareNow")}
+              <Badge variant="secondary" className="ml-1">
+                {compareIds.length}
+              </Badge>
+            </Button>
+          )}
+          <HowMatchingWorksTrigger onClick={() => setShowHowItWorks(true)} />
+        </div>
       </div>
+
+      {/* Compare Hint */}
+      {compareIds.length === 0 && (
+        <p className="text-center text-xs text-muted-foreground">
+          Klicke auf <GitCompare className="inline h-3 w-3" /> um Therapeuten zu vergleichen
+        </p>
+      )}
 
       {/* Cards - 2 columns grid for compact horizontal cards */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -61,6 +112,8 @@ export function TopMatches({
             key={therapist.id}
             therapist={therapist}
             rank={index + 1}
+            onCompareToggle={handleCompareToggle}
+            isComparing={compareIds.includes(therapist.id)}
           />
         ))}
       </div>
@@ -78,6 +131,14 @@ export function TopMatches({
           </Button>
         </div>
       )}
+
+      {/* Compare Modal */}
+      <CompareModal
+        open={showCompare}
+        onOpenChange={setShowCompare}
+        therapists={compareTherapists}
+        onRemove={(id) => setCompareIds((prev) => prev.filter((i) => i !== id))}
+      />
 
       {/* How Matching Works Modal */}
       <HowMatchingWorksModal

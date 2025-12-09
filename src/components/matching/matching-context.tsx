@@ -25,16 +25,33 @@ import {
   type SubTopic,
 } from "@/lib/matching/topics";
 
-// Steps: 0 = Screening, 1 = Topics, 1.5 = Intensity (optional), 2 = Criteria (final)
-export type WizardStep = 0 | 1 | 1.5 | 2;
+// Steps: 0 = Screening, 0.5 = Mode Selection, 0.75 = Freetext (optional), 1 = Topics, 1.5 = Intensity (optional), 2 = Criteria (final)
+export type WizardStep = 0 | 0.5 | 0.75 | 1 | 1.5 | 2;
 
 export type IntensityLevel = "low" | "medium" | "high";
+export type MatchingMode = "quick" | "full";
+
+export interface FreetextAnalysis {
+  suggestedTopics: string[];
+  suggestedSpecialties: string[];
+  suggestedCommunicationStyle: string | null;
+  suggestedTherapyFocus: string | null;
+  suggestedIntensityLevel: IntensityLevel | null;
+  understandingSummary: string;
+  suggestedMethods: string[];
+  keywords: string[];
+}
 
 export interface MatchingState {
   currentStep: WizardStep;
+  // Mode Selection
+  matchingMode: MatchingMode;
   // Screening (Step 0)
   screeningCompleted: boolean;
   crisisDetected: boolean;
+  // Freetext Analysis (Step 0.75)
+  freetextInput: string;
+  freetextAnalysis: FreetextAnalysis | null;
   // Topics (Step 1)
   selectedTopics: string[];
   selectedSubTopics: string[];
@@ -55,8 +72,13 @@ export interface MatchingState {
 
 type MatchingAction =
   | { type: "SET_STEP"; step: WizardStep }
+  | { type: "SET_MODE"; mode: MatchingMode }
   | { type: "COMPLETE_SCREENING"; crisisDetected: boolean }
   | { type: "RESET_SCREENING" }
+  | { type: "SET_FREETEXT"; text: string }
+  | { type: "SET_FREETEXT_ANALYSIS"; analysis: FreetextAnalysis }
+  | { type: "APPLY_FREETEXT_ANALYSIS" }
+  | { type: "SKIP_FREETEXT" }
   | { type: "TOGGLE_TOPIC"; topicId: string }
   | { type: "TOGGLE_SUBTOPIC"; subTopicId: string }
   | { type: "TOGGLE_INTENSITY_STATEMENT"; statementId: string }
@@ -75,8 +97,11 @@ type MatchingAction =
 
 const initialState: MatchingState = {
   currentStep: 0, // Start with screening
+  matchingMode: "full",
   screeningCompleted: false,
   crisisDetected: false,
+  freetextInput: "",
+  freetextAnalysis: null,
   selectedTopics: [],
   selectedSubTopics: [],
   selectedIntensityStatements: [],
@@ -99,12 +124,16 @@ function matchingReducer(
     case "SET_STEP":
       return { ...state, currentStep: action.step };
 
+    case "SET_MODE":
+      return { ...state, matchingMode: action.mode };
+
     case "COMPLETE_SCREENING":
       return {
         ...state,
         screeningCompleted: true,
         crisisDetected: action.crisisDetected,
-        currentStep: action.crisisDetected ? 0 : 1, // Stay on 0 if crisis, else go to 1
+        // Go to mode selection (0.5) after safe screening
+        currentStep: action.crisisDetected ? 0 : 0.5,
       };
 
     case "RESET_SCREENING":
@@ -113,6 +142,30 @@ function matchingReducer(
         screeningCompleted: false,
         crisisDetected: false,
         currentStep: 0,
+      };
+
+    case "SET_FREETEXT":
+      return { ...state, freetextInput: action.text };
+
+    case "SET_FREETEXT_ANALYSIS":
+      return { ...state, freetextAnalysis: action.analysis };
+
+    case "APPLY_FREETEXT_ANALYSIS": {
+      if (!state.freetextAnalysis) return state;
+      return {
+        ...state,
+        selectedTopics: state.freetextAnalysis.suggestedTopics,
+        intensityLevel: state.freetextAnalysis.suggestedIntensityLevel,
+        currentStep: 1, // Go to topic selection (pre-filled)
+      };
+    }
+
+    case "SKIP_FREETEXT":
+      return {
+        ...state,
+        freetextInput: "",
+        freetextAnalysis: null,
+        currentStep: 1, // Go to manual topic selection
       };
 
     case "TOGGLE_INTENSITY_STATEMENT": {
@@ -260,9 +313,15 @@ interface MatchingContextValue {
   state: MatchingState;
   actions: {
     setStep: (step: WizardStep) => void;
+    setMode: (mode: MatchingMode) => void;
     // Screening actions
     completeScreening: (crisisDetected: boolean) => void;
     resetScreening: () => void;
+    // Freetext actions
+    setFreetext: (text: string) => void;
+    setFreetextAnalysis: (analysis: FreetextAnalysis) => void;
+    applyFreetextAnalysis: () => void;
+    skipFreetext: () => void;
     // Topic actions
     toggleTopic: (topicId: string) => void;
     toggleSubTopic: (subTopicId: string) => void;
@@ -381,9 +440,31 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "RESET" });
   }, []);
 
-  // Navigation: 0 -> 1 -> 1.5 -> 2 (final, no Step 3 Style Quiz)
+  // Mode selection
+  const setMode = useCallback((mode: MatchingMode) => {
+    dispatch({ type: "SET_MODE", mode });
+  }, []);
+
+  // Freetext actions
+  const setFreetext = useCallback((text: string) => {
+    dispatch({ type: "SET_FREETEXT", text });
+  }, []);
+
+  const setFreetextAnalysis = useCallback((analysis: FreetextAnalysis) => {
+    dispatch({ type: "SET_FREETEXT_ANALYSIS", analysis });
+  }, []);
+
+  const applyFreetextAnalysis = useCallback(() => {
+    dispatch({ type: "APPLY_FREETEXT_ANALYSIS" });
+  }, []);
+
+  const skipFreetext = useCallback(() => {
+    dispatch({ type: "SKIP_FREETEXT" });
+  }, []);
+
+  // Navigation: 0 -> 0.5 -> 0.75 (optional) -> 1 -> 1.5 -> 2
   const goNext = useCallback(() => {
-    const stepOrder: WizardStep[] = [0, 1, 1.5, 2];
+    const stepOrder: WizardStep[] = [0, 0.5, 0.75, 1, 1.5, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
     if (currentIndex < stepOrder.length - 1) {
       dispatch({ type: "SET_STEP", step: stepOrder[currentIndex + 1] });
@@ -391,13 +472,16 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
   }, [state.currentStep]);
 
   const goBack = useCallback(() => {
-    const stepOrder: WizardStep[] = [0, 1, 1.5, 2];
+    const stepOrder: WizardStep[] = [0, 0.5, 0.75, 1, 1.5, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
-    // Can't go back from screening (step 0) or step 1
-    if (currentIndex > 1) {
+    // Can't go back from screening (step 0), step 0.5, or step 1 (if no freetext was used)
+    if (currentIndex > 2 || (currentIndex === 3 && state.freetextAnalysis)) {
       dispatch({ type: "SET_STEP", step: stepOrder[currentIndex - 1] });
+    } else if (currentIndex === 3) {
+      // From topics, go back to mode selection
+      dispatch({ type: "SET_STEP", step: 0.5 });
     }
-  }, [state.currentStep]);
+  }, [state.currentStep, state.freetextAnalysis]);
 
   // Computed values
   const selectedTopicDetails = useMemo(
@@ -414,6 +498,10 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     switch (state.currentStep) {
       case 0:
         return state.screeningCompleted && !state.crisisDetected;
+      case 0.5:
+        return true; // Mode selection - handled by the component
+      case 0.75:
+        return true; // Freetext is optional
       case 1:
         return state.selectedTopics.length > 0;
       case 1.5:
@@ -425,13 +513,15 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     }
   }, [state.currentStep, state.screeningCompleted, state.crisisDetected, state.selectedTopics.length]);
 
-  // Progress: 0 = 0%, 1 = 25%, 1.5 = 50%, 2 = 75%, results = 100%
+  // Progress: 0 = 0%, 0.5 = 10%, 0.75 = 20%, 1 = 40%, 1.5 = 60%, 2 = 80%, results = 100%
   const progress = useMemo(() => {
     const stepProgress: Record<WizardStep, number> = {
       0: 0,
-      1: 25,
-      1.5: 50,
-      2: 75,
+      0.5: 10,
+      0.75: 20,
+      1: 40,
+      1.5: 60,
+      2: 80,
     };
     return stepProgress[state.currentStep] ?? 0;
   }, [state.currentStep]);
@@ -440,9 +530,15 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     state,
     actions: {
       setStep,
+      setMode,
       // Screening
       completeScreening,
       resetScreening,
+      // Freetext
+      setFreetext,
+      setFreetextAnalysis,
+      applyFreetextAnalysis,
+      skipFreetext,
       // Topics
       toggleTopic,
       toggleSubTopic,

@@ -750,6 +750,96 @@
       "intensityExperience": "Erfahrung & Intensität",
       "profileQuality": "Profilqualität"
     },
+    "freetext": {
+      "badge": "KI-gestützte Analyse",
+      "title": "Erzähl uns, was dich beschäftigt",
+      "subtitle": "Beschreibe in 2-3 Sätzen deine aktuelle Situation. Unsere KI hilft, die passenden Therapeuten zu finden.",
+      "placeholder": "z.B. Ich fühle mich seit Wochen erschöpft und habe das Gefühl, dass mir alles über den Kopf wächst. Meine Beziehung leidet darunter...",
+      "examples": "Beispiele zum Starten:",
+      "example1": "Ich habe seit Monaten Schlafprobleme und fühle mich tagsüber erschöpft. Die Arbeit belastet mich sehr.",
+      "example2": "Nach der Trennung fällt es mir schwer, wieder Vertrauen aufzubauen. Ich grübele viel über die Vergangenheit.",
+      "example3": "Ich habe regelmäßig Panikattacken, besonders in sozialen Situationen. Das schränkt mein Leben ein.",
+      "analyze": "Analysieren",
+      "analyzing": "Wird analysiert...",
+      "continue": "Weiter mit diesen Themen",
+      "skip": "Lieber Themen selbst wählen",
+      "detectedTopics": "Erkannte Themen:",
+      "suggestedMethods": "Mögliche Therapieansätze:"
+    },
+    "fitLevel": {
+      "excellent": "Ausgezeichnete Passung",
+      "high": "Hohe Passung",
+      "good": "Gute Passung",
+      "moderate": "Passung"
+    },
+    "modeSelection": {
+      "title": "Wie möchtest du starten?",
+      "subtitle": "Wähle den Modus, der am besten zu dir passt",
+      "quick": {
+        "title": "Schnell-Matching",
+        "description": "3 einfache Fragen, sofortige Ergebnisse",
+        "time": "~60 Sekunden"
+      },
+      "full": {
+        "title": "Detailliertes Matching",
+        "description": "KI-gestützte Analyse für präzise Ergebnisse",
+        "benefit": "Beste Übereinstimmung"
+      }
+    },
+    "quickMode": {
+      "badge": "60-Sekunden-Matching",
+      "title": "Schnell zum passenden Therapeuten",
+      "subtitle": "3 Fragen, sofortige Ergebnisse",
+      "q1": "Was belastet dich am meisten?",
+      "q2": "Wie dringend brauchst du Hilfe?",
+      "q2Urgent": "So schnell wie möglich",
+      "q2Soon": "In den nächsten Wochen",
+      "q2Flexible": "Flexibel",
+      "q3": "Online oder vor Ort?",
+      "q3Online": "Online",
+      "q3InPerson": "Vor Ort",
+      "q3Both": "Beides OK",
+      "showResults": "Ergebnisse anzeigen",
+      "switchToFull": "Mehr Optionen"
+    },
+    "compare": {
+      "title": "Vergleich",
+      "addToCompare": "Vergleichen",
+      "removeFromCompare": "Aus Vergleich entfernen",
+      "compareNow": "Jetzt vergleichen",
+      "selected": "{count} ausgewählt",
+      "maxReached": "Max. 3 zum Vergleichen",
+      "specialization": "Spezialisierung",
+      "experience": "Erfahrung",
+      "style": "Therapiestil",
+      "availability": "Verfügbarkeit",
+      "price": "Preis",
+      "rating": "Bewertung",
+      "methods": "Methoden"
+    },
+    "therapistCard": {
+      "responseTime": "Antwortet in ~{hours}h",
+      "responseTimeFast": "Antwortet schnell",
+      "nextSlot": "Nächster Termin: {date}",
+      "availableNow": "Termine diese Woche frei",
+      "trialSession": "Erstgespräch {price}",
+      "trialSessionFree": "Kostenloses Erstgespräch",
+      "videoIntro": "Video-Vorstellung ansehen",
+      "firstSessionInfo": "So läuft die erste Sitzung",
+      "verified": "Verifiziert",
+      "yearsExperience": "{years} Jahre Erfahrung",
+      "similarChose": "{percent}% ähnlicher Nutzer haben gebucht"
+    },
+    "personalized": {
+      "because": "{name} passt zu dir, weil:",
+      "expertInTopics": "Expert:in für {topics} – genau dein Thema",
+      "experienceMatch": "Hat {years} Jahre Erfahrung mit ähnlichen Fällen",
+      "styleMatch": "Arbeitet {style} – so wie du es dir wünschst",
+      "methodMatch": "Nutzt {method} – eine bewährte Methode für dein Anliegen",
+      "availabilityMatch": "Hat kurzfristig Termine frei",
+      "locationMatch": "In deiner Nähe ({city})",
+      "onlineMatch": "Bietet flexible Online-Termine"
+    },
     "howItWorks": {
       "trigger": "Wie funktioniert das Matching?",
       "title": "So finden wir deinen Match",

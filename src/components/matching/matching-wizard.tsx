@@ -4,12 +4,15 @@ import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight, Sparkles, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MatchingProvider, useMatching } from "./matching-context";
+import { MatchingProvider, useMatching, type FreetextAnalysis } from "./matching-context";
 import { PrecisionMeter } from "./precision-meter";
 import { StepIndicator, TopicSelection, CriteriaSelection } from "./steps";
 import { SuicideScreening } from "./steps/suicide-screening";
 import { CrisisResources } from "./steps/crisis-resources";
 import { IntensityAssessment } from "./steps/intensity-assessment";
+import { ModeSelection } from "./steps/mode-selection";
+import { SituationInput } from "./steps/situation-input";
+import type { SituationAnalysis } from "@/lib/actions/analyze-situation";
 
 function WizardContent() {
   const router = useRouter();
@@ -81,6 +84,22 @@ function WizardContent() {
     );
   }
 
+  // Handle freetext analysis callback
+  const handleFreetextAnalysis = (analysis: SituationAnalysis) => {
+    const freetextAnalysis: FreetextAnalysis = {
+      suggestedTopics: analysis.suggestedTopics,
+      suggestedSpecialties: analysis.suggestedSpecialties,
+      suggestedCommunicationStyle: analysis.suggestedCommunicationStyle,
+      suggestedTherapyFocus: analysis.suggestedTherapyFocus,
+      suggestedIntensityLevel: analysis.suggestedIntensityLevel,
+      understandingSummary: analysis.understandingSummary,
+      suggestedMethods: analysis.suggestedMethods,
+      keywords: analysis.keywords,
+    };
+    actions.setFreetextAnalysis(freetextAnalysis);
+    actions.applyFreetextAnalysis();
+  };
+
   // Screening step has its own flow
   if (state.currentStep === 0) {
     return (
@@ -101,6 +120,35 @@ function WizardContent() {
                 </Button>
               </div>
             )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Mode selection step
+  if (state.currentStep === 0.5) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
+        <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-8 sm:py-12">
+          <div className="flex flex-1 flex-col rounded-3xl border bg-card/80 p-6 shadow-2xl backdrop-blur">
+            <ModeSelection />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Freetext analysis step (optional, only in full mode)
+  if (state.currentStep === 0.75) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
+        <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-8 sm:py-12">
+          <div className="flex flex-1 flex-col rounded-3xl border bg-card/80 p-6 shadow-2xl backdrop-blur">
+            <SituationInput
+              onAnalysisComplete={handleFreetextAnalysis}
+              onSkip={actions.skipFreetext}
+            />
           </div>
         </div>
       </div>
