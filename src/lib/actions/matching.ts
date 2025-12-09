@@ -16,21 +16,25 @@ import { demoBlogPosts } from "@/lib/data/demo-data";
 export async function searchWithMatching(
   criteria: MatchingCriteria
 ): Promise<{ therapists: MatchedTherapist[]; blogs: BlogPost[] }> {
-  // Get specialties from selected topics
-  const specialties = getSpecialtiesFromTopics(criteria.selectedTopics);
+  try {
+    console.log("[searchWithMatching] Starting matching search...");
 
-  // Build database query
-  const whereClause: Record<string, unknown> = {
-    isPublished: true,
-  };
+    // Get specialties from selected topics
+    const specialties = getSpecialtiesFromTopics(criteria.selectedTopics);
 
-  // Filter by specialties if topics were selected
-  if (specialties.length > 0) {
-    whereClause.specializations = { hasSome: specialties };
-  }
+    // Build database query
+    const whereClause: Record<string, unknown> = {
+      isPublished: true,
+    };
 
-  // Fetch therapist profiles
-  const profiles = await db.therapistProfile.findMany({
+    // Filter by specialties if topics were selected
+    if (specialties.length > 0) {
+      whereClause.specializations = { hasSome: specialties };
+    }
+
+    console.log("[searchWithMatching] Querying database...");
+    // Fetch therapist profiles
+    const profiles = await db.therapistProfile.findMany({
     where: whereClause,
     include: {
       user: {
@@ -81,14 +85,20 @@ export async function searchWithMatching(
 
   // Calculate match scores with breakdown and sort
   const matchedTherapists = calculateMatchScoreForAllWithBreakdown(therapists, criteria);
+  console.log(`[searchWithMatching] Found ${matchedTherapists.length} matched therapists`);
 
   // Fetch related blog posts
   const blogs = await getRelatedBlogPosts(criteria.selectedTopics);
 
+  console.log(`[searchWithMatching] Returning results`);
   return {
     therapists: matchedTherapists,
     blogs,
   };
+  } catch (error) {
+    console.error("[searchWithMatching] Error:", error);
+    throw new Error("Failed to fetch matched therapists");
+  }
 }
 
 async function getRelatedBlogPosts(selectedTopics: string[]): Promise<BlogPost[]> {
