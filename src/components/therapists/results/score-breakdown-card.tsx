@@ -50,7 +50,7 @@ export function ScoreBreakdownCard({
 
   if (compact) {
     return (
-      <div className="space-y-2">
+      <div className="space-y-3">
         {/* Compact progress bars */}
         {Object.entries(breakdown.categories)
           .filter(([, category]) => category.maxScore > 0) // Skip categories with 0 max score
@@ -70,6 +70,18 @@ export function ScoreBreakdownCard({
             </div>
           );
         })}
+
+        {/* Match reasons */}
+        {breakdown.matchReasons.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {breakdown.matchReasons.map((reason, i) => (
+              <Badge key={i} variant="outline" className="gap-1 text-[11px]">
+                <Check className="h-3 w-3" />
+                {getReasonLabel(reason)}
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
     );
   }

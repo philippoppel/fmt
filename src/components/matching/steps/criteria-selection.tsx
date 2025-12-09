@@ -14,18 +14,18 @@ export function CriteriaSelection() {
   const { state, actions } = useMatching();
 
   return (
-    <div className="space-y-6">
+    <div className="flex h-full flex-col gap-6">
       {/* Header */}
-      <div className="text-center">
+      <div className="text-center sm:text-left">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           {t("matching.wizard.step2Title")}
         </h2>
-        <p className="mt-2 text-muted-foreground">
+        <p className="mt-2 text-muted-foreground text-balance">
           {t("matching.wizard.step2Subtitle")}
         </p>
       </div>
 
-      <div className="mx-auto max-w-2xl space-y-8">
+      <div className="mx-auto flex-1 max-w-2xl space-y-8">
         {/* Location */}
         <div className="space-y-3">
           <Label className="flex items-center gap-2 text-base font-medium">
@@ -112,12 +112,12 @@ export function CriteriaSelection() {
             ))}
           </div>
         </div>
-
-        {/* Optional hint */}
-        <p className="text-center text-sm text-muted-foreground">
-          {t("matching.wizard.allOptional")}
-        </p>
       </div>
+
+      {/* Optional hint */}
+      <p className="mt-auto text-center text-sm text-muted-foreground">
+        {t("matching.wizard.allOptional")}
+      </p>
     </div>
   );
 }

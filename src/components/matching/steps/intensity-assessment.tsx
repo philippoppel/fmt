@@ -50,22 +50,22 @@ export function IntensityAssessment() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex h-full flex-col gap-6">
       {/* Header */}
-      <div className="text-center">
+      <div className="text-center sm:text-left">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
           <Activity className="h-6 w-6 text-primary" />
         </div>
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           {t("matching.intensity.title")}
         </h2>
-        <p className="mx-auto mt-2 max-w-md text-muted-foreground">
+        <p className="mx-auto mt-2 max-w-md text-balance text-muted-foreground sm:mx-0">
           {t("matching.intensity.subtitle")}
         </p>
       </div>
 
       {/* Statement groups by topic */}
-      <div className="mx-auto max-w-2xl space-y-8">
+      <div className="mx-auto flex-1 max-w-2xl space-y-8">
         {statementsByTopic.map(({ topicId, topicLabel, statements }) => (
           <div key={topicId} className="space-y-3">
             <h3 className="font-semibold text-lg">{topicLabel}</h3>
@@ -111,10 +111,11 @@ export function IntensityAssessment() {
         )}
 
         {/* Optional hint */}
-        <p className="text-center text-sm text-muted-foreground">
-          {t("matching.intensity.optional")}
-        </p>
       </div>
+
+      <p className="mt-auto text-center text-sm text-muted-foreground">
+        {t("matching.intensity.optional")}
+      </p>
     </div>
   );
 }

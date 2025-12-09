@@ -10,13 +10,13 @@ export function TopicSelection() {
   const { state, actions } = useMatching();
 
   return (
-    <div className="space-y-6">
+    <div className="flex h-full flex-col gap-6">
       {/* Header */}
-      <div className="text-center">
+      <div className="text-center sm:text-left">
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           {t("matching.wizard.step1Title")}
         </h2>
-        <p className="mt-2 text-muted-foreground">
+        <p className="mt-2 text-muted-foreground text-balance">
           {t("matching.wizard.step1Subtitle")}
         </p>
       </div>
@@ -34,21 +34,17 @@ export function TopicSelection() {
         ))}
       </div>
 
-      {/* Selection hint */}
-      {state.selectedTopics.length === 0 && (
-        <p className="text-center text-sm text-muted-foreground">
-          {t("matching.wizard.selectAtLeastOne")}
-        </p>
-      )}
-
-      {/* Selected count */}
-      {state.selectedTopics.length > 0 && (
-        <p className="text-center text-sm text-muted-foreground">
-          {t("matching.wizard.selectedCount", {
-            count: state.selectedTopics.length,
-          })}
-        </p>
-      )}
+      <div className="mt-auto text-center text-sm text-muted-foreground">
+        {state.selectedTopics.length === 0 ? (
+          <p>{t("matching.wizard.selectAtLeastOne")}</p>
+        ) : (
+          <p>
+            {t("matching.wizard.selectedCount", {
+              count: state.selectedTopics.length,
+            })}
+          </p>
+        )}
+      </div>
     </div>
   );
 }
