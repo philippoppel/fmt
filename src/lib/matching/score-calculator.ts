@@ -12,19 +12,19 @@ import type {
 import { getSpecialtiesFromTopics, getTopicById } from "./topics";
 
 /**
- * Enhanced Score Weights:
+ * Score Weights (Optimized - Style Quiz removed):
  * - Topic match: 35 points (with specialization ranking)
- * - Intensity ↔ Experience: 15 points (NEW)
- * - Criteria match: 20 points (location, gender, session type, insurance)
- * - Therapy Style: 20 points (communication style, homework, focus, etc.)
- * - Profile Quality: 10 points (NEW: image, description, verified, account type)
+ * - Intensity ↔ Experience: 15 points
+ * - Criteria match: 40 points (location 12, gender 8, session type 12, insurance 8)
+ * - Therapy Style: 0 points (REMOVED)
+ * - Profile Quality: 10 points (image, description, verified, account type)
  */
 
 const WEIGHTS = {
   topics: 35,
   intensityExperience: 15,
-  criteria: 20,
-  therapyStyle: 20,
+  criteria: 40, // +20 from removed therapyStyle
+  therapyStyle: 0, // Removed - Style Quiz no longer used
   profileQuality: 10,
 };
 
@@ -516,7 +516,8 @@ function getCriteriaMatchDetails(
 }
 
 /**
- * Calculate criteria score (max 20 points)
+ * Calculate criteria score (max 40 points)
+ * Points distributed: Location 12, Gender 8, Session Type 12, Insurance 8
  */
 function calculateCriteriaScore(
   therapist: Therapist,
@@ -525,37 +526,37 @@ function calculateCriteriaScore(
   let score = 0;
   let maxPoints = 0;
 
-  // Location match (6 points)
+  // Location match (12 points)
   if (criteria.location && criteria.location.trim() !== "") {
-    maxPoints += 6;
+    maxPoints += 12;
     if (matchesLocation(therapist, criteria.location)) {
-      score += 6;
+      score += 12;
     }
   }
 
-  // Gender match (4 points)
+  // Gender match (8 points)
   if (criteria.gender) {
-    maxPoints += 4;
+    maxPoints += 8;
     if (therapist.gender === criteria.gender) {
-      score += 4;
+      score += 8;
     }
   }
 
-  // Session type match (6 points)
+  // Session type match (12 points)
   if (criteria.sessionType) {
-    maxPoints += 6;
+    maxPoints += 12;
     if (matchesSessionType(therapist.sessionType, criteria.sessionType)) {
-      score += 6;
+      score += 12;
     }
   }
 
-  // Insurance match (4 points)
+  // Insurance match (8 points)
   if (criteria.insurance && criteria.insurance.length > 0) {
-    maxPoints += 4;
+    maxPoints += 8;
     if (
       therapist.insurance.some((ins) => criteria.insurance.includes(ins))
     ) {
-      score += 4;
+      score += 8;
     }
   }
 

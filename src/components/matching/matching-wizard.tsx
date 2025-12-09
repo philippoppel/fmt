@@ -11,7 +11,6 @@ import {
   TopicSelection,
   CriteriaSelection,
 } from "./steps";
-import { TherapyStyleQuiz } from "./steps/therapy-style-quiz";
 import { SuicideScreening } from "./steps/suicide-screening";
 import { CrisisResources } from "./steps/crisis-resources";
 import { IntensityAssessment } from "./steps/intensity-assessment";
@@ -72,7 +71,6 @@ function WizardContent() {
     topics: t("matching.wizard.stepLabels.topics"),
     intensity: t("matching.wizard.stepLabels.intensity"),
     preferences: t("matching.wizard.stepLabels.preferences"),
-    style: t("matching.wizard.stepLabels.style"),
   };
 
   // Screening step has no header/navigation
@@ -125,7 +123,6 @@ function WizardContent() {
           {state.currentStep === 1 && <TopicSelection />}
           {state.currentStep === 1.5 && <IntensityAssessment />}
           {state.currentStep === 2 && <CriteriaSelection />}
-          {state.currentStep === 3 && <TherapyStyleQuiz />}
         </div>
 
         {/* Navigation */}
@@ -155,14 +152,7 @@ function WizardContent() {
               </Button>
             )}
 
-            {/* Skip button for style quiz */}
-            {state.currentStep === 3 && (
-              <Button variant="outline" onClick={handleShowResults}>
-                {t("matching.wizard.skip")}
-              </Button>
-            )}
-
-            {state.currentStep < 3 ? (
+            {state.currentStep < 2 ? (
               <Button
                 onClick={actions.goNext}
                 disabled={!computed.canProceed}

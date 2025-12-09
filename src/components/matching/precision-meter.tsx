@@ -7,12 +7,13 @@ import { cn } from "@/lib/utils";
 import { useMatching } from "./matching-context";
 
 // Calculate precision based on filled information
+// Aligned with score weights: Topics 35, Intensity 15, Criteria 40 (no Style Quiz)
 function calculatePrecision(state: ReturnType<typeof useMatching>["state"]): number {
   let precision = 0;
 
-  // Topics selected: base 30%
+  // Topics selected: base 35%
   if (state.selectedTopics.length > 0) {
-    precision += 30;
+    precision += 35;
   }
 
   // SubTopics add refinement: up to 10%
@@ -25,36 +26,25 @@ function calculatePrecision(state: ReturnType<typeof useMatching>["state"]): num
     precision += 15;
   }
 
-  // Location: 10%
+  // Location: 15%
   if (state.criteria.location.trim().length > 0) {
-    precision += 10;
+    precision += 15;
   }
 
-  // Gender preference: 5%
+  // Gender preference: 8%
   if (state.criteria.gender !== null) {
-    precision += 5;
+    precision += 8;
   }
 
-  // Session type: 5%
+  // Session type: 12%
   if (state.criteria.sessionType !== null) {
-    precision += 5;
+    precision += 12;
   }
 
   // Insurance: 5%
   if (state.criteria.insurance.length > 0) {
     precision += 5;
   }
-
-  // Therapy Style Quiz: up to 20%
-  const styleAnswers = [
-    state.therapyStyle.communicationStyle,
-    state.therapyStyle.prefersHomework,
-    state.therapyStyle.therapyFocus,
-    state.therapyStyle.talkPreference,
-    state.therapyStyle.therapyDepth,
-  ].filter((v) => v !== null);
-
-  precision += styleAnswers.length * 4; // Each answer adds 4%
 
   return Math.min(precision, 100);
 }

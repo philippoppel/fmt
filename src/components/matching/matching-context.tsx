@@ -25,8 +25,8 @@ import {
   type SubTopic,
 } from "@/lib/matching/topics";
 
-// Steps: 0 = Screening, 1 = Topics, 1.5 = Intensity (optional), 2 = Criteria, 3 = Style
-export type WizardStep = 0 | 1 | 1.5 | 2 | 3;
+// Steps: 0 = Screening, 1 = Topics, 1.5 = Intensity (optional), 2 = Criteria (final)
+export type WizardStep = 0 | 1 | 1.5 | 2;
 
 export type IntensityLevel = "low" | "medium" | "high";
 
@@ -381,9 +381,9 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "RESET" });
   }, []);
 
-  // Navigation with new step flow: 0 -> 1 -> 1.5 -> 2 -> 3
+  // Navigation: 0 -> 1 -> 1.5 -> 2 (final, no Step 3 Style Quiz)
   const goNext = useCallback(() => {
-    const stepOrder: WizardStep[] = [0, 1, 1.5, 2, 3];
+    const stepOrder: WizardStep[] = [0, 1, 1.5, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
     if (currentIndex < stepOrder.length - 1) {
       dispatch({ type: "SET_STEP", step: stepOrder[currentIndex + 1] });
@@ -391,7 +391,7 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
   }, [state.currentStep]);
 
   const goBack = useCallback(() => {
-    const stepOrder: WizardStep[] = [0, 1, 1.5, 2, 3];
+    const stepOrder: WizardStep[] = [0, 1, 1.5, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
     // Can't go back from screening (step 0) or step 1
     if (currentIndex > 1) {
@@ -419,22 +419,19 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
       case 1.5:
         return true; // Intensity is optional
       case 2:
-        return true; // All criteria are optional
-      case 3:
-        return true; // Can be skipped
+        return true; // All criteria are optional (final step)
       default:
         return false;
     }
   }, [state.currentStep, state.screeningCompleted, state.crisisDetected, state.selectedTopics.length]);
 
-  // Progress: 0 = 0%, 1 = 20%, 1.5 = 40%, 2 = 60%, 3 = 80%, results = 100%
+  // Progress: 0 = 0%, 1 = 25%, 1.5 = 50%, 2 = 75%, results = 100%
   const progress = useMemo(() => {
     const stepProgress: Record<WizardStep, number> = {
       0: 0,
-      1: 20,
-      1.5: 40,
-      2: 60,
-      3: 80,
+      1: 25,
+      1.5: 50,
+      2: 75,
     };
     return stepProgress[state.currentStep] ?? 0;
   }, [state.currentStep]);

@@ -7,14 +7,12 @@ import { useMatching, type WizardStep } from "../matching-context";
 const steps: { step: WizardStep; labelKey: string }[] = [
   { step: 1, labelKey: "topics" },
   { step: 2, labelKey: "preferences" },
-  { step: 3, labelKey: "style" },
 ];
 
 interface StepIndicatorProps {
   labels: {
     topics: string;
     preferences: string;
-    style: string;
   };
 }
 
