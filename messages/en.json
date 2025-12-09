@@ -473,6 +473,7 @@
       "showResults": "Show Results",
       "selectAtLeastOne": "Please select at least one topic",
       "selectedCount": "{count} topics selected",
+      "preferToDescribe": "Prefer to describe",
       "allOptional": "All fields are optional",
       "refinementCount": "{count} refinements selected",
       "refinementOptional": "These details are optional and can be skipped",

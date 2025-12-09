@@ -1,6 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { MessageSquareText } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { MATCHING_TOPICS } from "@/lib/matching/topics";
 import { useMatching } from "../matching-context";
 import { TopicCard } from "./topic-card";
@@ -34,16 +36,30 @@ export function TopicSelection() {
         ))}
       </div>
 
-      <div className="mt-auto text-center text-sm text-muted-foreground">
-        {state.selectedTopics.length === 0 ? (
-          <p>{t("matching.wizard.selectAtLeastOne")}</p>
-        ) : (
-          <p>
-            {t("matching.wizard.selectedCount", {
-              count: state.selectedTopics.length,
-            })}
-          </p>
-        )}
+      {/* Footer with count and alternative */}
+      <div className="mt-auto flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+        <div className="text-center text-sm text-muted-foreground sm:text-left">
+          {state.selectedTopics.length === 0 ? (
+            <p>{t("matching.wizard.selectAtLeastOne")}</p>
+          ) : (
+            <p>
+              {t("matching.wizard.selectedCount", {
+                count: state.selectedTopics.length,
+              })}
+            </p>
+          )}
+        </div>
+
+        {/* Alternative: Describe instead */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={actions.switchToFreetext}
+          className="gap-2 text-muted-foreground hover:text-foreground"
+        >
+          <MessageSquareText className="h-4 w-4" />
+          {t("matching.wizard.preferToDescribe")}
+        </Button>
       </div>
     </div>
   );

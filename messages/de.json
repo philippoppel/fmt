@@ -473,6 +473,7 @@
       "showResults": "Ergebnisse anzeigen",
       "selectAtLeastOne": "Bitte wählen Sie mindestens ein Thema aus",
       "selectedCount": "{count} Themen ausgewählt",
+      "preferToDescribe": "Lieber beschreiben",
       "allOptional": "Alle Angaben sind optional",
       "refinementCount": "{count} Verfeinerungen ausgewählt",
       "refinementOptional": "Diese Angaben sind optional und können übersprungen werden",

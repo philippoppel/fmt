@@ -24,15 +24,23 @@ function WizardContent() {
     preferences: t("matching.wizard.stepLabels.preferences"),
   };
 
+  // Determine step position for display (freetext counts as topics step)
+  const getStepPosition = () => {
+    if (state.currentStep === 0.75 || state.currentStep === 1) return 1;
+    if (state.currentStep === 1.5) return 2;
+    if (state.currentStep === 2) return 3;
+    if (state.currentStep === 2.5) return 4;
+    return 1;
+  };
+
   const activeStepLabel =
-    state.currentStep === 1
+    state.currentStep === 0.75 || state.currentStep === 1
       ? stepLabels.topics
       : state.currentStep === 1.5
         ? stepLabels.intensity
         : stepLabels.preferences;
-  const stepPosition =
-    state.currentStep === 1 ? 1 : state.currentStep === 1.5 ? 2 : 3;
-  const totalSteps = 3;
+  const stepPosition = getStepPosition();
+  const totalSteps = 4; // Topics, Intensity, Preferences, Safety Check
 
   const handleShowResults = () => {
     // Encode matching data for URL
@@ -99,8 +107,24 @@ function WizardContent() {
     actions.applyFreetextAnalysis();
   };
 
-  // Screening step has its own flow
-  if (state.currentStep === 0) {
+  // Freetext analysis step (alternative to topic selection)
+  if (state.currentStep === 0.75) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
+        <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-8 sm:py-12">
+          <div className="flex flex-1 flex-col rounded-3xl border bg-card/80 p-6 shadow-2xl backdrop-blur">
+            <SituationInput
+              onAnalysisComplete={handleFreetextAnalysis}
+              onSkip={actions.skipFreetext}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Screening step (at the end, before results)
+  if (state.currentStep === 2.5) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
         <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-8 sm:py-12">
@@ -111,30 +135,14 @@ function WizardContent() {
             {state.screeningCompleted && !state.crisisDetected && (
               <div className="mt-auto flex justify-center pt-6">
                 <Button
-                  onClick={actions.goNext}
+                  onClick={handleShowResults}
                   className="w-full justify-center gap-2 bg-primary text-base hover:bg-primary/90 sm:w-auto"
                 >
-                  {t("matching.wizard.continue")}
-                  <ArrowRight className="h-4 w-4" />
+                  <Sparkles className="h-4 w-4" />
+                  {t("matching.wizard.showResults")}
                 </Button>
               </div>
             )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Freetext analysis step (optional, only in full mode)
-  if (state.currentStep === 0.75) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
-        <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-8 sm:py-12">
-          <div className="flex flex-1 flex-col rounded-3xl border bg-card/80 p-6 shadow-2xl backdrop-blur">
-            <SituationInput
-              onAnalysisComplete={handleFreetextAnalysis}
-              onSkip={actions.skipFreetext}
-            />
           </div>
         </div>
       </div>
@@ -238,11 +246,11 @@ function WizardContent() {
                 ) : (
                   <Button
                     size="sm"
-                    onClick={handleShowResults}
+                    onClick={actions.goNext}
                     className="gap-2 bg-primary hover:bg-primary/90"
                   >
-                    <Sparkles className="h-4 w-4" />
-                    {t("matching.wizard.showResults")}
+                    {t("matching.wizard.next")}
+                    <ArrowRight className="h-4 w-4" />
                   </Button>
                 )}
               </div>
@@ -289,11 +297,11 @@ function WizardContent() {
                   </Button>
                 ) : (
                   <Button
-                    onClick={handleShowResults}
+                    onClick={actions.goNext}
                     className="w-full justify-center gap-2 bg-primary hover:bg-primary/90 sm:w-auto"
                   >
-                    <Sparkles className="h-4 w-4" />
-                    {t("matching.wizard.showResults")}
+                    {t("matching.wizard.next")}
+                    <ArrowRight className="h-4 w-4" />
                   </Button>
                 )}
               </div>
