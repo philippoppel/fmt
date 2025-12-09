@@ -17,6 +17,8 @@ interface TopMatchesProps {
   totalCount: number;
 }
 
+const TOP_COUNT = 6;
+
 export function TopMatches({
   topTherapists,
   onShowMore,
@@ -29,52 +31,51 @@ export function TopMatches({
     return null;
   }
 
+  const remaining = totalCount - TOP_COUNT;
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="text-center">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-primary">
-          <Sparkles className="h-5 w-5" />
-          <span className="text-sm font-medium">
-            {t("matching.results.smartMatching")}
-          </span>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-primary">
+            <Sparkles className="h-4 w-4" />
+            <span className="text-xs font-medium">
+              {t("matching.results.smartMatching")}
+            </span>
+          </div>
+          <h2 className="text-xl font-bold sm:text-2xl">
+            {t("matching.results.topMatches")}
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t("matching.results.topMatchesSubtitle")}
+          </p>
         </div>
-        <h2 className="text-2xl font-bold sm:text-3xl">
-          {t("matching.results.topMatches")}
-        </h2>
-        <p className="mt-2 text-muted-foreground">
-          {t("matching.results.topMatchesSubtitle")}
-        </p>
-        <div className="mt-3">
-          <HowMatchingWorksTrigger onClick={() => setShowHowItWorks(true)} />
-        </div>
+        <HowMatchingWorksTrigger onClick={() => setShowHowItWorks(true)} />
       </div>
 
-      {/* Top Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
+      {/* Cards - 2 columns grid for compact horizontal cards */}
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {topTherapists.map((therapist, index) => (
           <TopMatchCard
             key={therapist.id}
             therapist={therapist}
-            rank={(index + 1) as 1 | 2 | 3}
+            rank={index + 1}
           />
         ))}
       </div>
 
       {/* Show More Button */}
-      {totalCount > 3 && (
-        <div className="text-center pt-4 border-t">
+      {remaining > 0 && (
+        <div className="flex justify-center pt-2">
           <Button
             variant="outline"
             onClick={onShowMore}
             className="gap-2"
           >
             <ChevronDown className="h-4 w-4" />
-            {t("matching.results.showMore", { count: totalCount - 3 })}
+            {t("matching.results.showMore", { count: remaining })}
           </Button>
-          <p className="mt-2 text-xs text-muted-foreground">
-            {t("matching.results.showMoreHint")}
-          </p>
         </div>
       )}
 

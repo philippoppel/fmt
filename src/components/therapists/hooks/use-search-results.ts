@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition, useMemo } from "react";
 import { demoBlogPosts } from "@/lib/data/demo-data";
 import { searchTherapistsAction } from "@/lib/actions/search";
-import { searchWithMatching } from "@/lib/actions/matching";
+import { searchWithMatching, type AdditionalFilters } from "@/lib/actions/matching";
 import type {
   FilterState,
   Therapist,
@@ -41,9 +41,22 @@ export function useSearchResults(
     setError(undefined);
 
     if (matchingCriteria && matchingCriteria.selectedTopics.length > 0) {
+      // Build additional filters from current filter state
+      const additionalFilters: AdditionalFilters = {
+        location: filters.location || undefined,
+        gender: filters.gender,
+        sessionType: filters.sessionType,
+        insurance: filters.insurance.length > 0 ? filters.insurance : undefined,
+        priceRange: filters.priceRange,
+        minRating: filters.minRating,
+      };
+
       startTransition(async () => {
         try {
-          const { therapists: matched, blogs } = await searchWithMatching(matchingCriteria);
+          const { therapists: matched, blogs } = await searchWithMatching(
+            matchingCriteria,
+            additionalFilters
+          );
           setMatchedTherapists(matched);
           setMatchedBlogs(blogs);
           setTherapists([]);

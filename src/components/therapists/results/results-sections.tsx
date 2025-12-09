@@ -64,10 +64,10 @@ export function ResultsSections({
     return <NoResults onClearFilters={onClearFilters} />;
   }
 
-  // In matching mode: show Top 3 with breakdown, then "show more" for rest
+  // In matching mode: show Top 6 with breakdown, then "show more" for rest
   if (isMatchingMode && therapists.length > 0 && !showAllResults) {
     // Convert to MatchedTherapist format for TopMatches
-    const topTherapists: MatchedTherapist[] = therapists.slice(0, 3).map((t) => ({
+    const topTherapists: MatchedTherapist[] = therapists.slice(0, 6).map((t) => ({
       ...t.therapist,
       matchScore: t.matchScore ?? 0,
       scoreBreakdown: t.scoreBreakdown,
@@ -75,7 +75,7 @@ export function ResultsSections({
 
     return (
       <div className="space-y-10">
-        {/* Top 3 Matches */}
+        {/* Top 6 Matches */}
         <TopMatches
           topTherapists={topTherapists}
           onShowMore={() => setShowAllResults(true)}
