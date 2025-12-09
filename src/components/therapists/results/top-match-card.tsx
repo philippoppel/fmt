@@ -21,6 +21,7 @@ import {
   Play,
   BadgeCheck,
   Sparkles,
+  GitCompare,
 } from "lucide-react";
 import type { MatchedTherapist } from "@/types/therapist";
 import { cn } from "@/lib/utils";
@@ -249,11 +250,24 @@ export function TopMatchCard({
 
           {/* Footer Actions */}
           <div className="flex items-center justify-between border-t bg-muted/30 px-4 py-3">
-            <Button asChild variant="ghost" size="sm" className="text-xs">
-              <Link href={`/therapists/${therapist.id}`}>
-                {t("therapists.viewProfile")}
-              </Link>
-            </Button>
+            <div className="flex items-center gap-2">
+              {onCompareToggle && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn("h-8 w-8 p-0", isComparing && "text-primary bg-primary/10")}
+                  onClick={() => onCompareToggle(therapist.id)}
+                  title={t("matching.compare.addToCompare")}
+                >
+                  <GitCompare className="h-4 w-4" />
+                </Button>
+              )}
+              <Button asChild variant="ghost" size="sm" className="text-xs">
+                <Link href={`/therapists/${therapist.id}`}>
+                  {t("therapists.viewProfile")}
+                </Link>
+              </Button>
+            </div>
             <Button size="sm" className="px-4">
               {t("therapists.contact")}
             </Button>
