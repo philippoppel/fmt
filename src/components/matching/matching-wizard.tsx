@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight, Sparkles, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MatchingProvider, useMatching } from "./matching-context";
@@ -18,7 +18,6 @@ import { IntensityAssessment } from "./steps/intensity-assessment";
 
 function WizardContent() {
   const router = useRouter();
-  const locale = useLocale();
   const t = useTranslations();
   const { state, actions, computed } = useMatching();
 
@@ -55,7 +54,7 @@ function WizardContent() {
       params.set("sessionType", state.criteria.sessionType);
     }
 
-    router.push(`/${locale}/therapists?${params.toString()}`);
+    router.push(`/therapists?${params.toString()}`);
   };
 
   // If crisis detected, show crisis resources only
