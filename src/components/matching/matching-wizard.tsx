@@ -10,7 +10,6 @@ import { StepIndicator, TopicSelection, CriteriaSelection } from "./steps";
 import { SuicideScreening } from "./steps/suicide-screening";
 import { CrisisResources } from "./steps/crisis-resources";
 import { IntensityAssessment } from "./steps/intensity-assessment";
-import { ModeSelection } from "./steps/mode-selection";
 import { SituationInput } from "./steps/situation-input";
 import type { SituationAnalysis } from "@/lib/actions/analyze-situation";
 
@@ -120,19 +119,6 @@ function WizardContent() {
                 </Button>
               </div>
             )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Mode selection step
-  if (state.currentStep === 0.5) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
-        <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-8 sm:py-12">
-          <div className="flex flex-1 flex-col rounded-3xl border bg-card/80 p-6 shadow-2xl backdrop-blur">
-            <ModeSelection />
           </div>
         </div>
       </div>

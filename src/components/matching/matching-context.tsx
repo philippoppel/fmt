@@ -25,8 +25,8 @@ import {
   type SubTopic,
 } from "@/lib/matching/topics";
 
-// Steps: 0 = Screening, 0.5 = Mode Selection, 0.75 = Freetext (optional), 1 = Topics, 1.5 = Intensity (optional), 2 = Criteria (final)
-export type WizardStep = 0 | 0.5 | 0.75 | 1 | 1.5 | 2;
+// Steps: 0 = Screening, 0.75 = Freetext (optional), 1 = Topics, 1.5 = Intensity (optional), 2 = Criteria (final)
+export type WizardStep = 0 | 0.75 | 1 | 1.5 | 2;
 
 export type IntensityLevel = "low" | "medium" | "high";
 export type MatchingMode = "quick" | "full";
@@ -132,8 +132,8 @@ function matchingReducer(
         ...state,
         screeningCompleted: true,
         crisisDetected: action.crisisDetected,
-        // Go to mode selection (0.5) after safe screening
-        currentStep: action.crisisDetected ? 0 : 0.5,
+        // Go directly to freetext (0.75) after safe screening
+        currentStep: action.crisisDetected ? 0 : 0.75,
       };
 
     case "RESET_SCREENING":
@@ -462,9 +462,9 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SKIP_FREETEXT" });
   }, []);
 
-  // Navigation: 0 -> 0.5 -> 0.75 (optional) -> 1 -> 1.5 -> 2
+  // Navigation: 0 -> 0.75 (optional) -> 1 -> 1.5 -> 2
   const goNext = useCallback(() => {
-    const stepOrder: WizardStep[] = [0, 0.5, 0.75, 1, 1.5, 2];
+    const stepOrder: WizardStep[] = [0, 0.75, 1, 1.5, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
     if (currentIndex < stepOrder.length - 1) {
       dispatch({ type: "SET_STEP", step: stepOrder[currentIndex + 1] });
@@ -472,14 +472,14 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
   }, [state.currentStep]);
 
   const goBack = useCallback(() => {
-    const stepOrder: WizardStep[] = [0, 0.5, 0.75, 1, 1.5, 2];
+    const stepOrder: WizardStep[] = [0, 0.75, 1, 1.5, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
-    // Can't go back from screening (step 0), step 0.5, or step 1 (if no freetext was used)
-    if (currentIndex > 2 || (currentIndex === 3 && state.freetextAnalysis)) {
+    // Can't go back from screening (step 0) or freetext (step 0.75)
+    if (currentIndex > 1 || (currentIndex === 2 && state.freetextAnalysis)) {
       dispatch({ type: "SET_STEP", step: stepOrder[currentIndex - 1] });
-    } else if (currentIndex === 3) {
-      // From topics, go back to mode selection
-      dispatch({ type: "SET_STEP", step: 0.5 });
+    } else if (currentIndex === 2) {
+      // From topics, go back to freetext
+      dispatch({ type: "SET_STEP", step: 0.75 });
     }
   }, [state.currentStep, state.freetextAnalysis]);
 
@@ -498,8 +498,6 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     switch (state.currentStep) {
       case 0:
         return state.screeningCompleted && !state.crisisDetected;
-      case 0.5:
-        return true; // Mode selection - handled by the component
       case 0.75:
         return true; // Freetext is optional
       case 1:
@@ -513,12 +511,11 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     }
   }, [state.currentStep, state.screeningCompleted, state.crisisDetected, state.selectedTopics.length]);
 
-  // Progress: 0 = 0%, 0.5 = 10%, 0.75 = 20%, 1 = 40%, 1.5 = 60%, 2 = 80%, results = 100%
+  // Progress: 0 = 0%, 0.75 = 15%, 1 = 40%, 1.5 = 60%, 2 = 80%, results = 100%
   const progress = useMemo(() => {
     const stepProgress: Record<WizardStep, number> = {
       0: 0,
-      0.5: 10,
-      0.75: 20,
+      0.75: 15,
       1: 40,
       1.5: 60,
       2: 80,
