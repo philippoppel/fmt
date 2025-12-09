@@ -7,7 +7,6 @@ import { Link } from "@/i18n/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { StarRating } from "@/components/ui/star-rating";
 import {
   MapPin,
   Euro,
@@ -21,9 +20,7 @@ import {
   Calendar,
   Play,
   BadgeCheck,
-  GitCompare,
   Sparkles,
-  HelpCircle,
 } from "lucide-react";
 import type { MatchedTherapist } from "@/types/therapist";
 import { cn } from "@/lib/utils";
@@ -34,6 +31,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScoreBreakdownModal } from "./score-breakdown-modal";
+import { MiniScoreBars } from "./mini-score-bars";
 
 interface TopMatchCardProps {
   therapist: MatchedTherapist & {
@@ -50,17 +48,17 @@ interface TopMatchCardProps {
   isComparing?: boolean;
 }
 
-const rankConfig: Record<number, { Icon: typeof Crown; color: string; border: string; bg: string }> = {
-  1: { Icon: Crown, color: "text-yellow-500", border: "border-l-yellow-500", bg: "bg-yellow-500/10" },
-  2: { Icon: Medal, color: "text-slate-400", border: "border-l-slate-400", bg: "bg-slate-400/10" },
-  3: { Icon: Award, color: "text-amber-600", border: "border-l-amber-600", bg: "bg-amber-600/10" },
+const rankConfig: Record<number, { Icon: typeof Crown; color: string; bg: string; ring: string }> = {
+  1: { Icon: Crown, color: "text-yellow-500", bg: "bg-yellow-500/20", ring: "ring-yellow-500/30" },
+  2: { Icon: Medal, color: "text-slate-400", bg: "bg-slate-400/20", ring: "ring-slate-400/30" },
+  3: { Icon: Award, color: "text-amber-600", bg: "bg-amber-600/20", ring: "ring-amber-600/30" },
 };
 
-function getFitLevel(score: number): { key: string; color: string } {
-  if (score >= 85) return { key: "excellent", color: "text-green-500 bg-green-500/10" };
-  if (score >= 70) return { key: "high", color: "text-emerald-500 bg-emerald-500/10" };
-  if (score >= 50) return { key: "good", color: "text-blue-500 bg-blue-500/10" };
-  return { key: "moderate", color: "text-muted-foreground bg-muted" };
+function getFitLevel(score: number): { key: string; color: string; bgColor: string } {
+  if (score >= 85) return { key: "excellent", color: "text-green-600", bgColor: "bg-green-500/15" };
+  if (score >= 70) return { key: "high", color: "text-emerald-600", bgColor: "bg-emerald-500/15" };
+  if (score >= 50) return { key: "good", color: "text-blue-600", bgColor: "bg-blue-500/15" };
+  return { key: "moderate", color: "text-muted-foreground", bgColor: "bg-muted" };
 }
 
 function formatNextSlot(date: Date | string | undefined, t: ReturnType<typeof useTranslations>): string | null {
@@ -88,7 +86,7 @@ export function TopMatchCard({
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showBreakdown, setShowBreakdown] = useState(false);
 
-  const config = rankConfig[rank] ?? { Icon: CheckCircle2, color: "text-primary", border: "border-l-primary/50", bg: "bg-primary/10" };
+  const config = rankConfig[rank] ?? { Icon: CheckCircle2, color: "text-primary", bg: "bg-primary/20", ring: "ring-primary/30" };
   const RankIcon = config.Icon;
   const fitLevel = getFitLevel(therapist.matchScore);
   const nextSlotText = formatNextSlot(therapist.nextAvailableSlot, t);
@@ -118,166 +116,147 @@ export function TopMatchCard({
     <>
       <Card
         className={cn(
-          "group relative overflow-hidden border-l-4 bg-card/90 backdrop-blur transition-all hover:bg-card hover:shadow-xl",
-          config.border,
-          rank === 1 && "ring-1 ring-yellow-500/30",
+          "group relative overflow-hidden bg-card transition-all hover:shadow-xl",
+          rank === 1 && "ring-2",
+          rank === 1 && config.ring,
           isComparing && "ring-2 ring-primary"
         )}
       >
         <CardContent className="p-0">
-          {/* Main Content */}
-          <div className="flex gap-4 p-4">
-            {/* Image with Video Play Button - LARGER */}
-            <div className="relative h-40 w-40 flex-shrink-0 overflow-hidden rounded-2xl bg-muted shadow-lg">
-              <Image
-                src={therapist.imageUrl}
-                alt={therapist.name}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-                sizes="160px"
-                priority={rank <= 3}
-              />
-              {/* Rank Badge */}
-              <div className={cn("absolute left-2 top-2 flex h-8 w-8 items-center justify-center rounded-full shadow-md", config.bg)}>
-                <RankIcon className={cn("h-4 w-4", config.color)} />
-              </div>
-              {/* Video Play Button */}
-              {therapist.videoIntroUrl && (
-                <button
-                  onClick={() => setShowVideoModal(true)}
-                  className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                    <Play className="h-6 w-6 text-primary" fill="currentColor" />
-                  </div>
-                </button>
-              )}
-              {/* Verified Badge */}
-              {therapist.isVerified && (
-                <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-background shadow-md">
-                  <BadgeCheck className="h-5 w-5 text-blue-500" />
-                </div>
-              )}
+          {/* Large Photo Section - Top */}
+          <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+            <Image
+              src={therapist.imageUrl}
+              alt={therapist.name}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              priority={rank <= 3}
+            />
+
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+            {/* Rank Badge - Top Left */}
+            <div className={cn(
+              "absolute left-3 top-3 flex h-10 w-10 items-center justify-center rounded-full shadow-lg backdrop-blur-sm",
+              config.bg
+            )}>
+              <RankIcon className={cn("h-5 w-5", config.color)} />
             </div>
 
-            {/* Content */}
-            <div className="flex min-w-0 flex-1 flex-col">
-              {/* Header Row */}
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <h3 className="truncate text-lg font-semibold leading-tight">{therapist.name}</h3>
-                  <p className="truncate text-sm text-muted-foreground">{therapist.title}</p>
-                </div>
-                {/* Fit Level Badge - clickable for transparency */}
-                <button
-                  onClick={() => setShowBreakdown(true)}
-                  className="group/badge flex items-center gap-1"
-                  title={t("matching.transparency.clickToSee")}
-                >
-                  <Badge variant="outline" className={cn("shrink-0 text-xs font-medium transition-all group-hover/badge:ring-2 group-hover/badge:ring-primary/50", fitLevel.color)}>
-                    {t(`matching.fitLevel.${fitLevel.key}`)}
-                  </Badge>
-                  <HelpCircle className="h-4 w-4 text-muted-foreground opacity-50 transition-opacity group-hover/badge:opacity-100" />
-                </button>
-              </div>
+            {/* Video Play Button */}
+            {therapist.videoIntroUrl && (
+              <button
+                onClick={() => setShowVideoModal(true)}
+                className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg transition-transform hover:scale-110"
+              >
+                <Play className="h-5 w-5 text-primary" fill="currentColor" />
+              </button>
+            )}
 
-              {/* Quick Info Row */}
-              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <MapPin className="h-3 w-3" />
-                  {therapist.location.city}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Euro className="h-3 w-3" />
-                  {therapist.pricePerSession}€
-                </span>
-                {therapist.experienceYears && (
-                  <span className="flex items-center gap-1">
-                    {therapist.experienceYears}J Erfahrung
-                  </span>
-                )}
-                <StarRating rating={therapist.rating} size="sm" />
+            {/* Verified Badge - Bottom Right of Image */}
+            {therapist.isVerified && (
+              <div className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-lg">
+                <BadgeCheck className="h-5 w-5 text-blue-500" />
               </div>
+            )}
 
-              {/* Response Time & Availability Highlights */}
-              <div className="mt-2 flex flex-wrap gap-2">
-                {therapist.avgResponseTimeHours && therapist.avgResponseTimeHours <= 24 && (
-                  <Badge variant="secondary" className="gap-1 text-[10px]">
-                    <Clock className="h-3 w-3" />
-                    {therapist.avgResponseTimeHours <= 2
-                      ? t("matching.therapistCard.responseTimeFast")
-                      : t("matching.therapistCard.responseTime", { hours: therapist.avgResponseTimeHours })}
-                  </Badge>
-                )}
-                {nextSlotText && (
-                  <Badge variant="secondary" className="gap-1 text-[10px] bg-green-500/10 text-green-600">
-                    <Calendar className="h-3 w-3" />
-                    {nextSlotText}
-                  </Badge>
-                )}
-                {therapist.offersTrialSession && (
-                  <Badge variant="secondary" className="gap-1 text-[10px] bg-blue-500/10 text-blue-600">
-                    <Sparkles className="h-3 w-3" />
-                    {therapist.trialSessionPrice === 0
-                      ? t("matching.therapistCard.trialSessionFree")
-                      : t("matching.therapistCard.trialSession", { price: `${therapist.trialSessionPrice}€` })}
-                  </Badge>
-                )}
-              </div>
-
-              {/* Specializations */}
-              <div className="mt-2 flex flex-wrap gap-1">
-                {therapist.specializations.slice(0, 3).map((spec) => (
-                  <Badge key={spec} variant="outline" className="text-[10px]">
-                    {tSpec(spec)}
-                  </Badge>
-                ))}
-              </div>
+            {/* Name & Title Overlay - Bottom of Image */}
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <h3 className="text-lg font-bold text-white drop-shadow-md">{therapist.name}</h3>
+              <p className="text-sm text-white/90 drop-shadow-md">{therapist.title}</p>
             </div>
           </div>
 
-          {/* Personalized Reason */}
-          <div className="border-t bg-gradient-to-r from-primary/5 to-transparent px-4 py-2">
-            <p className="text-xs text-muted-foreground">
-              <span className="font-medium text-foreground">{getPersonalizedReason()}</span>
-            </p>
+          {/* Content Section */}
+          <div className="space-y-3 p-4">
+            {/* Fit Level Badge - Prominent */}
+            <div className="flex items-center justify-between">
+              <Badge
+                className={cn(
+                  "px-3 py-1.5 text-sm font-semibold",
+                  fitLevel.bgColor,
+                  fitLevel.color
+                )}
+              >
+                {t(`matching.fitLevel.${fitLevel.key}`)}
+              </Badge>
+              <div className="flex items-center gap-1 text-muted-foreground">
+                {therapist.sessionType === "online" || therapist.sessionType === "both" ? (
+                  <Video className="h-4 w-4" />
+                ) : null}
+                {therapist.sessionType === "in_person" || therapist.sessionType === "both" ? (
+                  <Building2 className="h-4 w-4" />
+                ) : null}
+              </div>
+            </div>
+
+            {/* Quick Info Row */}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <MapPin className="h-3.5 w-3.5" />
+                {therapist.location.city}
+              </span>
+              <span className="flex items-center gap-1">
+                <Euro className="h-3.5 w-3.5" />
+                {therapist.pricePerSession}€
+              </span>
+              {therapist.experienceYears && (
+                <span>{therapist.experienceYears}J Erfahrung</span>
+              )}
+            </div>
+
+            {/* Availability Highlights */}
+            <div className="flex flex-wrap gap-1.5">
+              {therapist.avgResponseTimeHours && therapist.avgResponseTimeHours <= 24 && (
+                <Badge variant="secondary" className="gap-1 text-[10px]">
+                  <Clock className="h-3 w-3" />
+                  {therapist.avgResponseTimeHours <= 2
+                    ? t("matching.therapistCard.responseTimeFast")
+                    : t("matching.therapistCard.responseTime", { hours: therapist.avgResponseTimeHours })}
+                </Badge>
+              )}
+              {nextSlotText && (
+                <Badge variant="secondary" className="gap-1 text-[10px] bg-green-500/10 text-green-600">
+                  <Calendar className="h-3 w-3" />
+                  {nextSlotText}
+                </Badge>
+              )}
+              {therapist.offersTrialSession && (
+                <Badge variant="secondary" className="gap-1 text-[10px] bg-blue-500/10 text-blue-600">
+                  <Sparkles className="h-3 w-3" />
+                  {therapist.trialSessionPrice === 0
+                    ? t("matching.therapistCard.trialSessionFree")
+                    : t("matching.therapistCard.trialSession", { price: `${therapist.trialSessionPrice}€` })}
+                </Badge>
+              )}
+            </div>
+
+            {/* Mini Score Bars - Transparency */}
+            <MiniScoreBars
+              scoreBreakdown={therapist.scoreBreakdown}
+              onClick={() => setShowBreakdown(true)}
+            />
+
+            {/* Personalized Reason */}
+            <div className="rounded-lg bg-primary/5 p-3">
+              <p className="text-sm font-medium text-foreground">
+                {getPersonalizedReason()}
+              </p>
+            </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-between border-t bg-muted/30 px-4 py-2">
-            <div className="flex gap-1">
-              {therapist.sessionType === "online" || therapist.sessionType === "both" ? (
-                <Video className="h-4 w-4 text-muted-foreground" />
-              ) : null}
-              {therapist.sessionType === "in_person" || therapist.sessionType === "both" ? (
-                <Building2 className="h-4 w-4 text-muted-foreground" />
-              ) : null}
-              {therapist.bookingRate && therapist.bookingRate > 50 && (
-                <span className="ml-2 text-[10px] text-muted-foreground">
-                  {t("matching.therapistCard.similarChose", { percent: Math.round(therapist.bookingRate) })}
-                </span>
-              )}
-            </div>
-            <div className="flex gap-2">
-              {onCompareToggle && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn("h-7 w-7 p-0", isComparing && "text-primary")}
-                  onClick={() => onCompareToggle(therapist.id)}
-                >
-                  <GitCompare className="h-4 w-4" />
-                </Button>
-              )}
-              <Button asChild variant="ghost" size="sm" className="h-7 px-2 text-xs">
-                <Link href={`/therapists/${therapist.id}`}>
-                  {t("therapists.viewProfile")}
-                </Link>
-              </Button>
-              <Button size="sm" className="h-7 px-3 text-xs">
-                {t("therapists.contact")}
-              </Button>
-            </div>
+          <div className="flex items-center justify-between border-t bg-muted/30 px-4 py-3">
+            <Button asChild variant="ghost" size="sm" className="text-xs">
+              <Link href={`/therapists/${therapist.id}`}>
+                {t("therapists.viewProfile")}
+              </Link>
+            </Button>
+            <Button size="sm" className="px-4">
+              {t("therapists.contact")}
+            </Button>
           </div>
         </CardContent>
       </Card>

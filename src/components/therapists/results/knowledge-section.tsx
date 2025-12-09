@@ -18,7 +18,7 @@ export function KnowledgeSection({ articles }: KnowledgeSectionProps) {
   }
 
   return (
-    <section aria-labelledby="knowledge-heading" className="mt-10">
+    <section aria-labelledby="knowledge-heading">
       <SectionHeader
         title={t("sectionKnowledge")}
         count={articles.length}

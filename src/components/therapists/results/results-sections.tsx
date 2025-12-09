@@ -74,27 +74,39 @@ export function ResultsSections({
     }));
 
     return (
-      <div className="space-y-10">
-        {/* Top 6 Matches */}
-        <TopMatches
-          topTherapists={topTherapists}
-          onShowMore={() => setShowAllResults(true)}
-          totalCount={therapists.length}
-        />
+      <div className="space-y-0">
+        {/* Therapists Section - with subtle background */}
+        <section className="rounded-2xl bg-card/50 px-4 py-8 sm:px-6">
+          <TopMatches
+            topTherapists={topTherapists}
+            onShowMore={() => setShowAllResults(true)}
+            totalCount={therapists.length}
+          />
+        </section>
 
-        {/* Knowledge Section */}
-        <KnowledgeSection articles={articles} />
+        {/* Knowledge Section - with accent background */}
+        {articles.length > 0 && (
+          <section className="mt-6 rounded-2xl bg-accent/30 px-4 py-8 sm:px-6">
+            <KnowledgeSection articles={articles} />
+          </section>
+        )}
       </div>
     );
   }
 
   return (
-    <div className="space-y-10">
-      {/* Therapists Section */}
-      <TherapistGrid therapists={therapists} />
+    <div className="space-y-0">
+      {/* Therapists Section - with subtle background */}
+      <section className="rounded-2xl bg-card/50 px-4 py-8 sm:px-6">
+        <TherapistGrid therapists={therapists} />
+      </section>
 
-      {/* Knowledge Section */}
-      <KnowledgeSection articles={articles} />
+      {/* Knowledge Section - with accent background */}
+      {articles.length > 0 && (
+        <section className="mt-6 rounded-2xl bg-accent/30 px-4 py-8 sm:px-6">
+          <KnowledgeSection articles={articles} />
+        </section>
+      )}
     </div>
   );
 }

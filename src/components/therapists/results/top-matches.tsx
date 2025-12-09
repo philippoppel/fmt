@@ -105,8 +105,8 @@ export function TopMatches({
         </p>
       )}
 
-      {/* Cards - 2 columns grid for compact horizontal cards */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Cards - Responsive grid for vertical cards with large photos */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {topTherapists.map((therapist, index) => (
           <TopMatchCard
             key={therapist.id}

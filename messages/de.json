@@ -749,7 +749,8 @@
       "therapyStyle": "Therapiestil",
       "practicalCriteria": "Praktische Kriterien",
       "intensityExperience": "Erfahrung & Intensität",
-      "profileQuality": "Profilqualität"
+      "profileQuality": "Profilqualität",
+      "matchDetails": "Warum diese Passung?"
     },
     "freetext": {
       "badge": "KI-gestützte Analyse",

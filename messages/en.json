@@ -749,7 +749,8 @@
       "therapyStyle": "Therapy Style",
       "practicalCriteria": "Practical Criteria",
       "intensityExperience": "Experience & Intensity",
-      "profileQuality": "Profile Quality"
+      "profileQuality": "Profile Quality",
+      "matchDetails": "Why this match?"
     },
     "freetext": {
       "badge": "AI-Powered Analysis",
