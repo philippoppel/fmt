@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Sparkles, SkipForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MatchingProvider, useMatching } from "./matching-context";
 import {
@@ -11,6 +11,9 @@ import {
   CriteriaSelection,
 } from "./steps";
 import { TherapyStyleQuiz } from "./steps/therapy-style-quiz";
+import { SuicideScreening } from "./steps/suicide-screening";
+import { CrisisResources } from "./steps/crisis-resources";
+import { IntensityAssessment } from "./steps/intensity-assessment";
 
 function WizardContent() {
   const router = useRouter();
@@ -23,6 +26,9 @@ function WizardContent() {
     const matchingData = {
       selectedTopics: state.selectedTopics,
       selectedSubTopics: state.selectedSubTopics,
+      selectedIntensityStatements: state.selectedIntensityStatements,
+      intensityScore: state.intensityScore,
+      intensityLevel: state.intensityLevel,
       location: state.criteria.location,
       gender: state.criteria.gender,
       sessionType: state.criteria.sessionType,
@@ -51,11 +57,47 @@ function WizardContent() {
     router.push(`/${locale}/therapists?${params.toString()}`);
   };
 
+  // If crisis detected, show crisis resources only
+  if (state.crisisDetected) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <CrisisResources />
+        </div>
+      </div>
+    );
+  }
+
   const stepLabels = {
     topics: t("matching.wizard.stepLabels.topics"),
+    intensity: t("matching.wizard.stepLabels.intensity"),
     preferences: t("matching.wizard.stepLabels.preferences"),
     style: t("matching.wizard.stepLabels.style"),
   };
+
+  // Screening step has no header/navigation
+  if (state.currentStep === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <SuicideScreening />
+
+          {/* Continue button when screening is completed safely */}
+          {state.screeningCompleted && !state.crisisDetected && (
+            <div className="mx-auto mt-8 max-w-xl text-center">
+              <Button
+                onClick={actions.goNext}
+                className="gap-2 bg-primary hover:bg-primary/90"
+              >
+                {t("matching.wizard.continue")}
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -70,12 +112,13 @@ function WizardContent() {
           </div>
         </div>
 
-        {/* Step Indicator */}
+        {/* Step Indicator (for steps 1-3, not showing screening) */}
         <StepIndicator labels={stepLabels} />
 
         {/* Step Content */}
         <div className="min-h-[400px]">
           {state.currentStep === 1 && <TopicSelection />}
+          {state.currentStep === 1.5 && <IntensityAssessment />}
           {state.currentStep === 2 && <CriteriaSelection />}
           {state.currentStep === 3 && <TherapyStyleQuiz />}
         </div>
@@ -93,8 +136,21 @@ function WizardContent() {
             {t("matching.wizard.back")}
           </Button>
 
-          {/* Next/Results Button */}
+          {/* Next/Skip/Results Buttons */}
           <div className="flex gap-2">
+            {/* Skip button for intensity assessment */}
+            {state.currentStep === 1.5 && (
+              <Button
+                variant="outline"
+                onClick={actions.skipIntensity}
+                className="gap-2"
+              >
+                <SkipForward className="h-4 w-4" />
+                {t("matching.wizard.skip")}
+              </Button>
+            )}
+
+            {/* Skip button for style quiz */}
             {state.currentStep === 3 && (
               <Button variant="outline" onClick={handleShowResults}>
                 {t("matching.wizard.skip")}

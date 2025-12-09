@@ -472,8 +472,121 @@
       "refinementOptional": "Diese Angaben sind optional und können übersprungen werden",
       "stepLabels": {
         "topics": "Themen",
+        "intensity": "Intensität",
         "preferences": "Präferenzen",
         "style": "Arbeitsstil"
+      },
+      "continue": "Weiter zum Matching"
+    },
+    "screening": {
+      "title": "Kurze Sicherheitsfragen",
+      "subtitle": "Bevor wir beginnen, möchten wir sicherstellen, dass wir Ihnen die richtige Unterstützung bieten können.",
+      "notice": "Ihre Antworten werden nicht gespeichert und dienen nur dazu, Ihnen die beste Hilfe zu vermitteln.",
+      "question1": "Haben Sie aktuell Gedanken daran, sich selbst zu verletzen oder das Leben zu nehmen?",
+      "question2": "Haben Sie in den letzten 2 Wochen daran gedacht, dass es besser wäre, nicht mehr zu leben?",
+      "yes": "Ja",
+      "no": "Nein",
+      "canProceed": "Vielen Dank. Sie können jetzt mit dem Matching fortfahren.",
+      "crisisDetected": "Wir möchten Ihnen sofort Hilfe vermitteln."
+    },
+    "crisis": {
+      "title": "Sie sind nicht allein",
+      "subtitle": "Es ist mutig, dass Sie hier sind. Es gibt Menschen, die Ihnen helfen können.",
+      "immediateHelp": "Bitte wenden Sie sich jetzt an eine Krisenhotline.",
+      "notAlone": "Geschulte Berater:innen sind rund um die Uhr für Sie da.",
+      "resourcesTitle": "Krisenhotlines",
+      "additionalInfo": "Diese Dienste sind kostenlos und anonym. Sie können jederzeit anrufen.",
+      "alternativeText": "Wenn Sie sich besser fühlen, können Sie jederzeit zurückkehren.",
+      "backToHome": "Zur Startseite"
+    },
+    "intensity": {
+      "title": "Wie stark belastet Sie das?",
+      "subtitle": "Kreuzen Sie an, was auf Sie zutrifft. Das hilft uns, erfahrene Therapeuten zu finden.",
+      "optional": "Diese Angaben sind optional und können übersprungen werden.",
+      "currentLevel": "Aktuelle Einschätzung",
+      "level": {
+        "low": "Leicht",
+        "medium": "Mittel",
+        "high": "Stark"
+      },
+      "depression": {
+        "daily": "Ich fühle mich fast jeden Tag traurig oder leer",
+        "sleep": "Mein Schlaf ist deutlich gestört (zu viel oder zu wenig)",
+        "work": "Ich kann meiner Arbeit oder meinem Alltag kaum noch nachgehen",
+        "isolation": "Ich ziehe mich von Freunden und Familie zurück",
+        "hopeless": "Ich sehe wenig Hoffnung für die Zukunft"
+      },
+      "anxiety": {
+        "daily": "Ich habe fast täglich Angstgefühle",
+        "avoid": "Ich vermeide bestimmte Situationen wegen meiner Angst",
+        "physical": "Ich habe körperliche Symptome wie Herzrasen oder Schwitzen",
+        "panic": "Ich hatte schon Panikattacken",
+        "work": "Meine Angst schränkt meinen Alltag deutlich ein"
+      },
+      "family": {
+        "daily": "Familienkonflikte belasten mich fast täglich",
+        "communication": "Die Kommunikation in meiner Familie ist sehr schwierig",
+        "avoidance": "Ich vermeide den Kontakt zu bestimmten Familienmitgliedern",
+        "children": "Die Situation belastet auch meine Kinder oder andere Familienmitglieder"
+      },
+      "relationships": {
+        "daily": "Beziehungsprobleme beschäftigen mich fast täglich",
+        "trust": "Ich habe Schwierigkeiten, anderen zu vertrauen",
+        "communication": "Wir haben Kommunikationsprobleme in der Beziehung",
+        "separation": "Ich denke an Trennung oder bin in einer Trennung"
+      },
+      "burnout": {
+        "exhausted": "Ich fühle mich dauerhaft erschöpft, auch nach Erholung",
+        "work": "Meine Arbeit überfordert mich regelmäßig",
+        "cynical": "Ich habe eine zunehmend zynische Haltung zu meiner Arbeit",
+        "physical": "Ich habe körperliche Beschwerden durch Stress",
+        "weekend": "Auch am Wochenende kann ich nicht mehr richtig abschalten"
+      },
+      "trauma": {
+        "flashbacks": "Ich habe Flashbacks oder aufdringliche Erinnerungen",
+        "avoid": "Ich vermeide Orte, Menschen oder Situationen, die mich erinnern",
+        "sleep": "Ich habe Albträume oder Schlafprobleme wegen des Erlebten",
+        "trust": "Ich habe Schwierigkeiten, anderen Menschen zu vertrauen",
+        "daily": "Das Erlebte beeinflusst meinen Alltag stark"
+      },
+      "addiction": {
+        "control": "Ich habe das Gefühl, die Kontrolle über mein Verhalten zu verlieren",
+        "daily": "Ich denke täglich daran oder tue es täglich",
+        "relationships": "Mein Verhalten belastet meine Beziehungen",
+        "withdrawal": "Ich habe Entzugserscheinungen, wenn ich aufhöre",
+        "hide": "Ich verstecke mein Verhalten vor anderen"
+      },
+      "eating": {
+        "thoughts": "Gedanken über Essen oder Gewicht beschäftigen mich ständig",
+        "control": "Ich habe das Gefühl, mein Essverhalten nicht kontrollieren zu können",
+        "physical": "Ich habe körperliche Beschwerden durch mein Essverhalten",
+        "social": "Ich vermeide Essen in Gesellschaft"
+      },
+      "adhd": {
+        "focus": "Ich habe große Schwierigkeiten, mich zu konzentrieren",
+        "organize": "Organisation und Planung fallen mir sehr schwer",
+        "impulsive": "Ich handle oft impulsiv und bereue es später",
+        "work": "Meine Konzentrationsprobleme beeinträchtigen meine Arbeit",
+        "relationships": "Meine Symptome belasten meine Beziehungen"
+      },
+      "selfcare": {
+        "worth": "Ich zweifle oft an meinem Selbstwert",
+        "boundaries": "Ich habe Schwierigkeiten, Grenzen zu setzen",
+        "neglect": "Ich vernachlässige oft meine eigenen Bedürfnisse",
+        "overwhelm": "Ich fühle mich regelmäßig überfordert"
+      },
+      "stress": {
+        "constant": "Ich fühle mich ständig unter Druck",
+        "physical": "Stress zeigt sich bei mir körperlich (Kopfschmerzen, Verspannungen)",
+        "sleep": "Stress beeinflusst meinen Schlaf negativ",
+        "control": "Ich habe das Gefühl, meinem Stress hilflos ausgeliefert zu sein"
+      },
+      "sleep": {
+        "falling": "Ich brauche lange zum Einschlafen",
+        "staying": "Ich wache nachts häufig auf",
+        "daily": "Meine Schlafprobleme beeinträchtigen meinen Alltag",
+        "nightmares": "Ich habe regelmäßig Albträume",
+        "medication": "Ich nehme Medikamente oder Substanzen zum Einschlafen"
       }
     },
     "quiz": {
@@ -617,6 +730,26 @@
       "specialization": "Spezialisierung",
       "therapyStyle": "Therapiestil",
       "practicalCriteria": "Praktische Kriterien"
+    }
+  },
+  "feedback": {
+    "title": "Wie war Ihre Erfahrung?",
+    "description": "Ihr Feedback hilft uns, bessere Matches zu finden.",
+    "foundMatch": "Haben Sie jemanden gefunden, der zu Ihnen passt?",
+    "yes": "Ja",
+    "no": "Nein",
+    "relevance": "Wie passend waren die Vorschläge?",
+    "skip": "Überspringen",
+    "submit": "Feedback senden",
+    "thankYou": "Vielen Dank!",
+    "thankYouMessage": "Ihr Feedback hilft uns, unseren Service zu verbessern.",
+    "rating": {
+      "placeholder": "Klicken Sie, um zu bewerten",
+      "1": "Nicht passend",
+      "2": "Wenig passend",
+      "3": "Teilweise passend",
+      "4": "Gut passend",
+      "5": "Sehr passend"
     }
   }
 }

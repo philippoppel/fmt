@@ -48,6 +48,12 @@ export type TherapyFocus = "past" | "present" | "future" | "holistic";
 // Therapy depth preference
 export type TherapyDepth = "symptom_relief" | "deep_change" | "flexible";
 
+// Account type for therapist profiles
+export type AccountType = "gratis" | "mittel" | "premium";
+
+// Intensity level from user assessment
+export type IntensityLevel = "low" | "medium" | "high";
+
 // User's therapy style preferences (from Quiz)
 export interface TherapyStylePreferences {
   communicationStyle: CommunicationStyle | null;
@@ -78,10 +84,18 @@ export interface ScoreBreakdown {
   total: number;
   categories: {
     specialization: ScoreCategory;
+    intensityExperience?: ScoreCategory; // NEW: Intensity ↔ Experience matching
     therapyStyle: ScoreCategory;
     practicalCriteria: ScoreCategory;
+    profileQuality?: ScoreCategory; // NEW: Profile quality bonus
   };
   matchReasons: string[];
+}
+
+// Hard exclusion result
+export interface ExclusionResult {
+  excluded: boolean;
+  reason?: "language" | "session_type" | "distance" | "unverified";
 }
 
 // Therapist profile
@@ -105,6 +119,13 @@ export interface Therapist {
   insurance: Insurance[];
   availability: Availability;
   gender: Gender;
+  // Account & Verification
+  accountType?: AccountType;
+  isVerified?: boolean;
+  experienceYears?: number;
+  // Specialization ranking (1 = highest priority)
+  specializationRanks?: Record<string, 1 | 2 | 3>;
+  profileCompleteness?: number; // 0-100
   // Therapy Style fields (for Matching)
   communicationStyle?: CommunicationStyle;
   usesHomework?: boolean;
@@ -206,10 +227,19 @@ export const GENDER_OPTIONS: Gender[] = ["male", "female", "diverse"];
 export interface MatchingCriteria {
   selectedTopics: string[];
   selectedSubTopics: string[];
+  // Intensity assessment
+  selectedIntensityStatements?: string[];
+  intensityScore?: number;
+  intensityLevel?: IntensityLevel | null;
+  // Practical criteria
   location: string;
   gender: Gender | null;
   sessionType: SessionType | null;
   insurance: Insurance[];
+  // Required languages (for hard exclusion)
+  requiredLanguages?: Language[];
+  // Verified only filter
+  verifiedOnly?: boolean;
   // Therapy Style preferences from Quiz
   therapyStyle?: TherapyStylePreferences;
 }

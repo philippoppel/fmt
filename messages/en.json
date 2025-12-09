@@ -472,8 +472,121 @@
       "refinementOptional": "These details are optional and can be skipped",
       "stepLabels": {
         "topics": "Topics",
+        "intensity": "Intensity",
         "preferences": "Preferences",
         "style": "Work Style"
+      },
+      "continue": "Continue to Matching"
+    },
+    "screening": {
+      "title": "Quick Safety Check",
+      "subtitle": "Before we begin, we want to ensure we can offer you the right support.",
+      "notice": "Your answers are not stored and are only used to provide you with the best help.",
+      "question1": "Are you currently having thoughts of hurting yourself or taking your life?",
+      "question2": "In the past 2 weeks, have you thought that it would be better if you were no longer alive?",
+      "yes": "Yes",
+      "no": "No",
+      "canProceed": "Thank you. You can now continue with the matching.",
+      "crisisDetected": "We want to connect you with immediate help."
+    },
+    "crisis": {
+      "title": "You Are Not Alone",
+      "subtitle": "It takes courage to be here. There are people who can help you.",
+      "immediateHelp": "Please reach out to a crisis hotline now.",
+      "notAlone": "Trained counselors are available around the clock.",
+      "resourcesTitle": "Crisis Hotlines",
+      "additionalInfo": "These services are free and anonymous. You can call anytime.",
+      "alternativeText": "When you feel better, you can return anytime.",
+      "backToHome": "Back to Home"
+    },
+    "intensity": {
+      "title": "How much is this affecting you?",
+      "subtitle": "Check what applies to you. This helps us find experienced therapists.",
+      "optional": "These details are optional and can be skipped.",
+      "currentLevel": "Current assessment",
+      "level": {
+        "low": "Mild",
+        "medium": "Moderate",
+        "high": "Severe"
+      },
+      "depression": {
+        "daily": "I feel sad or empty almost every day",
+        "sleep": "My sleep is significantly disrupted (too much or too little)",
+        "work": "I can barely manage my work or daily activities",
+        "isolation": "I withdraw from friends and family",
+        "hopeless": "I see little hope for the future"
+      },
+      "anxiety": {
+        "daily": "I have anxiety feelings almost every day",
+        "avoid": "I avoid certain situations because of my anxiety",
+        "physical": "I have physical symptoms like racing heart or sweating",
+        "panic": "I have had panic attacks",
+        "work": "My anxiety significantly limits my daily life"
+      },
+      "family": {
+        "daily": "Family conflicts burden me almost daily",
+        "communication": "Communication in my family is very difficult",
+        "avoidance": "I avoid contact with certain family members",
+        "children": "The situation also affects my children or other family members"
+      },
+      "relationships": {
+        "daily": "Relationship problems occupy me almost daily",
+        "trust": "I have difficulty trusting others",
+        "communication": "We have communication problems in the relationship",
+        "separation": "I'm thinking about separation or going through one"
+      },
+      "burnout": {
+        "exhausted": "I feel permanently exhausted, even after rest",
+        "work": "My work regularly overwhelms me",
+        "cynical": "I have an increasingly cynical attitude toward my work",
+        "physical": "I have physical complaints due to stress",
+        "weekend": "Even on weekends, I can't really switch off anymore"
+      },
+      "trauma": {
+        "flashbacks": "I have flashbacks or intrusive memories",
+        "avoid": "I avoid places, people, or situations that remind me",
+        "sleep": "I have nightmares or sleep problems because of what happened",
+        "trust": "I have difficulty trusting other people",
+        "daily": "What I experienced strongly affects my daily life"
+      },
+      "addiction": {
+        "control": "I feel like I'm losing control over my behavior",
+        "daily": "I think about it daily or do it daily",
+        "relationships": "My behavior strains my relationships",
+        "withdrawal": "I have withdrawal symptoms when I stop",
+        "hide": "I hide my behavior from others"
+      },
+      "eating": {
+        "thoughts": "Thoughts about food or weight constantly occupy me",
+        "control": "I feel like I can't control my eating behavior",
+        "physical": "I have physical complaints due to my eating behavior",
+        "social": "I avoid eating in company"
+      },
+      "adhd": {
+        "focus": "I have great difficulty concentrating",
+        "organize": "Organization and planning are very difficult for me",
+        "impulsive": "I often act impulsively and regret it later",
+        "work": "My concentration problems affect my work",
+        "relationships": "My symptoms strain my relationships"
+      },
+      "selfcare": {
+        "worth": "I often doubt my self-worth",
+        "boundaries": "I have difficulty setting boundaries",
+        "neglect": "I often neglect my own needs",
+        "overwhelm": "I regularly feel overwhelmed"
+      },
+      "stress": {
+        "constant": "I feel constantly under pressure",
+        "physical": "Stress shows physically (headaches, tension)",
+        "sleep": "Stress negatively affects my sleep",
+        "control": "I feel helplessly at the mercy of my stress"
+      },
+      "sleep": {
+        "falling": "It takes me a long time to fall asleep",
+        "staying": "I often wake up during the night",
+        "daily": "My sleep problems affect my daily life",
+        "nightmares": "I regularly have nightmares",
+        "medication": "I take medication or substances to fall asleep"
       }
     },
     "quiz": {
@@ -617,6 +730,26 @@
       "specialization": "Specialization",
       "therapyStyle": "Therapy Style",
       "practicalCriteria": "Practical Criteria"
+    }
+  },
+  "feedback": {
+    "title": "How was your experience?",
+    "description": "Your feedback helps us find better matches.",
+    "foundMatch": "Did you find someone who fits you?",
+    "yes": "Yes",
+    "no": "No",
+    "relevance": "How relevant were the suggestions?",
+    "skip": "Skip",
+    "submit": "Submit Feedback",
+    "thankYou": "Thank you!",
+    "thankYouMessage": "Your feedback helps us improve our service.",
+    "rating": {
+      "placeholder": "Click to rate",
+      "1": "Not relevant",
+      "2": "Slightly relevant",
+      "3": "Somewhat relevant",
+      "4": "Very relevant",
+      "5": "Excellent match"
     }
   }
 }

@@ -47,6 +47,13 @@ enum TherapyDepth {
   flexible        // Flexibel - je nach Bedarf
 }
 
+// Account-Typen für Therapeuten-Profile
+enum AccountType {
+  gratis    // Basis: kein Bild, 1 Schwerpunkt, Basisprofil
+  mittel    // Mittel: 1-2 Schwerpunkte mit Ranking, einfaches Bild
+  premium   // Premium: 1-3 Schwerpunkte mit Ranking, volles Profil
+}
+
 // Blog Enums
 enum PostStatus {
   draft
@@ -214,6 +221,17 @@ model TherapistProfile {
   clientTalkRatio     Int?                 @default(50)  // 0-100: wie viel % redet Patient
   therapyDepth        TherapyDepth?        @default(flexible)
 
+  // Account & Verification
+  accountType         AccountType          @default(gratis)
+  isVerified          Boolean              @default(false)
+  experienceYears     Int?                 // Jahre Berufserfahrung
+
+  // Schwerpunkt-Ranking (JSON: {"anxiety": 1, "depression": 2, "trauma": 3})
+  specializationRanks Json?                @default("{}")
+
+  // Profil-Vollständigkeit für Qualitäts-Bonus (0-100)
+  profileCompleteness Int                  @default(0)
+
   // Profile visibility
   isPublished       Boolean      @default(true)
 
@@ -223,6 +241,7 @@ model TherapistProfile {
 
   // Relations
   user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  matchInteractions MatchInteraction[]
 
   @@index([city])
   @@index([isPublished])
@@ -456,4 +475,49 @@ model BlogDraft {
 
   @@index([authorId])
   @@map("blog_drafts")
+}
+
+// ============================================
+// MATCHING & ML MODELS
+// ============================================
+
+// Anonyme Interaktions-Daten für ML-Optimierung
+model MatchInteraction {
+  id              String   @id @default(cuid())
+  sessionId       String   // Anonyme Session-ID (ohne User-Zuordnung)
+  therapistId     String
+  therapist       TherapistProfile @relation(fields: [therapistId], references: [id], onDelete: Cascade)
+
+  // Interaktionstyp
+  action          String   // "view" | "click" | "contact"
+
+  // Kontext zum Zeitpunkt der Interaktion
+  matchScore      Int?
+  searchCriteria  Json?    // Anonymisierte Matching-Kriterien
+
+  timestamp       DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([therapistId])
+  @@index([timestamp])
+  @@map("match_interactions")
+}
+
+// Anonymes Nutzer-Feedback nach Matching
+model MatchFeedback {
+  id              String   @id @default(cuid())
+  sessionId       String   // Anonyme Session-ID
+
+  // Feedback-Daten
+  foundMatch      Boolean? // "Haben Sie jemanden gefunden?"
+  relevanceRating Int?     // 1-5 Sterne
+
+  // Optional: Freitext-Feedback
+  feedbackText    String?  @db.Text
+
+  timestamp       DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([timestamp])
+  @@map("match_feedback")
 }
