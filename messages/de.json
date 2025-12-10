@@ -463,6 +463,7 @@
     "startButton": "Geführtes Matching",
     "wizard": {
       "badge": "Geführtes Matching",
+      "close": "Wizard schließen",
       "step1Title": "Was beschäftigt Sie?",
       "step1Subtitle": "Wählen Sie ein oder mehrere Themen aus",
       "step2Title": "Ihre Präferenzen",

@@ -2,7 +2,7 @@
 
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, ArrowRight, Sparkles, SkipForward } from "lucide-react";
+import { ArrowLeft, ArrowRight, Sparkles, SkipForward, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MatchingProvider, useMatching, type FreetextAnalysis } from "./matching-context";
 import { PrecisionMeter } from "./precision-meter";
@@ -153,7 +153,18 @@ function WizardContent() {
     <div className="flex h-screen flex-col overflow-hidden bg-background">
       {/* Combined Header + Progress - single compact row */}
       <header className="shrink-0 border-b bg-card px-3 py-2">
-        <div className="mx-auto flex max-w-4xl items-center gap-3">
+        <div className="mx-auto flex max-w-4xl items-center gap-2">
+          {/* Close Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/therapists")}
+            className="h-7 w-7 shrink-0 p-0"
+            aria-label={t("matching.wizard.close")}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+
           {/* Logo + Title */}
           <div className="flex shrink-0 items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">

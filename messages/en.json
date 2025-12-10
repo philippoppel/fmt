@@ -463,6 +463,7 @@
     "startButton": "Guided Matching",
     "wizard": {
       "badge": "Guided Matching",
+      "close": "Close wizard",
       "step1Title": "What's on your mind?",
       "step1Subtitle": "Select one or more topics",
       "step2Title": "Your Preferences",
