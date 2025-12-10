@@ -269,10 +269,10 @@ export function LocationInput({
 
   return (
     <div ref={containerRef} className={cn("relative", className)}>
-      <div className="relative flex items-center gap-2">
+      <div className="relative flex items-center gap-1.5">
         {/* Input with icon */}
         <div className="relative flex-1">
-          <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <MapPin className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             ref={inputRef}
             type="text"
@@ -289,7 +289,7 @@ export function LocationInput({
             onKeyDown={handleKeyDown}
             placeholder={placeholder || t("placeholder")}
             className={cn(
-              "h-12 pl-10 pr-10",
+              "h-9 pl-8 pr-8 text-sm",
               hasAutoLocated && value && "border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20"
             )}
             autoComplete="off"
@@ -300,16 +300,16 @@ export function LocationInput({
               type="button"
               onClick={handleClear}
               className={cn(
-                "absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 transition-colors",
+                "absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 transition-colors",
                 hasAutoLocated
-                  ? "text-emerald-600 hover:bg-emerald-100 dark:hover:bg-emerald-900/30"
+                  ? "text-emerald-600"
                   : "text-muted-foreground hover:bg-muted"
               )}
             >
               {hasAutoLocated ? (
-                <Check className="h-4 w-4" />
+                <Check className="h-3.5 w-3.5" />
               ) : (
-                <X className="h-4 w-4" />
+                <X className="h-3.5 w-3.5" />
               )}
             </button>
           )}
@@ -322,33 +322,33 @@ export function LocationInput({
           size="icon"
           onClick={handleLocate}
           disabled={isLocating}
-          className="h-12 w-12 shrink-0"
+          className="h-9 w-9 shrink-0"
           title={t("useMyLocation")}
         >
           {isLocating ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
-            <Navigation className="h-4 w-4" />
+            <Navigation className="h-3.5 w-3.5" />
           )}
         </Button>
       </div>
 
       {/* Error message */}
       {locationError && (
-        <p className="mt-2 text-sm text-destructive">{locationError}</p>
+        <p className="mt-1 text-xs text-destructive">{locationError}</p>
       )}
 
       {/* Suggestions dropdown */}
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-50 mt-1 w-full rounded-lg border bg-popover shadow-lg">
-          <ul className="py-1" role="listbox">
+        <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-md">
+          <ul className="py-0.5" role="listbox">
             {suggestions.map((city, index) => (
               <li
                 key={city}
                 role="option"
                 aria-selected={index === selectedIndex}
                 className={cn(
-                  "flex cursor-pointer items-center gap-2 px-3 py-2 text-sm transition-colors",
+                  "flex cursor-pointer items-center gap-1.5 px-2.5 py-1.5 text-sm transition-colors",
                   index === selectedIndex
                     ? "bg-accent text-accent-foreground"
                     : "hover:bg-muted"
@@ -356,7 +356,7 @@ export function LocationInput({
                 onClick={() => handleSelectSuggestion(city)}
                 onMouseEnter={() => setSelectedIndex(index)}
               >
-                <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                <MapPin className="h-3 w-3 text-muted-foreground" />
                 {city}
               </li>
             ))}

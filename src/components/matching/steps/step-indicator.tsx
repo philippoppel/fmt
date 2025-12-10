@@ -13,11 +13,11 @@ interface StepIndicatorProps {
   optionalLabel?: string;
 }
 
-export function StepIndicator({ labels, optionalLabel }: StepIndicatorProps) {
+export function StepIndicator({ labels }: StepIndicatorProps) {
   const { state } = useMatching();
-  const steps: { step: WizardStep; label: string; optional?: boolean }[] = [
+  const steps: { step: WizardStep; label: string }[] = [
     { step: 1, label: labels.topics },
-    { step: 1.5, label: labels.intensity, optional: true },
+    { step: 1.5, label: labels.intensity },
     { step: 2, label: labels.preferences },
   ];
 
@@ -25,54 +25,41 @@ export function StepIndicator({ labels, optionalLabel }: StepIndicatorProps) {
 
   return (
     <nav aria-label="Progress" className="w-full">
-      <div className="flex items-center justify-between">
-        {steps.map(({ step, label, optional }, index) => {
+      <div className="flex items-center gap-1">
+        {steps.map(({ step, label }, index) => {
           const isCurrent = currentStep === step;
           const isCompleted = currentStep > step;
           const isLast = index === steps.length - 1;
 
           return (
-            <div key={step} className="flex flex-1 items-center">
-              {/* Step with label */}
-              <div className="flex items-center gap-3">
-                <div
-                  className={cn(
-                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-all duration-300",
-                    isCompleted && "bg-primary text-primary-foreground shadow-sm",
-                    isCurrent && !isCompleted && "bg-primary/10 text-primary ring-2 ring-primary",
-                    !isCompleted && !isCurrent && "bg-muted text-muted-foreground"
-                  )}
-                >
-                  {isCompleted ? <Check className="h-4 w-4" /> : index + 1}
-                </div>
-                <div className="hidden flex-col sm:flex">
-                  <span
-                    className={cn(
-                      "text-sm font-medium",
-                      isCurrent ? "text-foreground" : "text-muted-foreground"
-                    )}
-                  >
-                    {label}
+            <div key={step} className="flex flex-1 items-center gap-1">
+              {/* Step pill */}
+              <div
+                className={cn(
+                  "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-all",
+                  isCompleted && "bg-primary/10 text-primary",
+                  isCurrent && !isCompleted && "bg-primary text-primary-foreground",
+                  !isCompleted && !isCurrent && "bg-muted text-muted-foreground"
+                )}
+              >
+                {isCompleted ? (
+                  <Check className="h-3 w-3" />
+                ) : (
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-current/20 text-[10px]">
+                    {index + 1}
                   </span>
-                  {optional && (
-                    <span className="text-[10px] text-muted-foreground/70">
-                      {optionalLabel}
-                    </span>
-                  )}
-                </div>
+                )}
+                <span className="hidden sm:inline">{label}</span>
               </div>
 
-              {/* Connector line */}
+              {/* Connector */}
               {!isLast && (
-                <div className="mx-4 h-px flex-1 bg-border">
-                  <div
-                    className={cn(
-                      "h-full transition-all duration-500",
-                      isCompleted ? "bg-primary" : "bg-transparent"
-                    )}
-                    style={{ width: isCompleted ? "100%" : "0%" }}
-                  />
-                </div>
+                <div
+                  className={cn(
+                    "h-px flex-1",
+                    isCompleted ? "bg-primary/50" : "bg-border"
+                  )}
+                />
               )}
             </div>
           );

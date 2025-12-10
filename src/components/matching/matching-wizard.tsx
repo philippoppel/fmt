@@ -150,83 +150,83 @@ function WizardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
-      <div className="mx-auto flex min-h-screen max-w-3xl flex-col px-4 py-6 sm:py-10">
-        {/* Compact Header */}
-        <header className="mb-6 flex items-center justify-between">
+    <div className="flex h-screen flex-col overflow-hidden bg-background">
+      {/* Fixed Header */}
+      <header className="shrink-0 border-b bg-card px-4 py-3">
+        <div className="mx-auto flex max-w-4xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Sparkles className="h-5 w-5" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Sparkles className="h-4 w-4" />
             </div>
-            <div>
-              <h1 className="text-lg font-semibold">{t("matching.wizard.badge")}</h1>
-              <p className="text-sm text-muted-foreground">
-                {t("matching.wizard.stepLabels.topics")} → {t("matching.wizard.stepLabels.preferences")}
-              </p>
-            </div>
+            <span className="font-semibold">{t("matching.wizard.badge")}</span>
+            <span className="hidden rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground sm:inline">
+              {stepPosition}/{totalSteps}
+            </span>
           </div>
-          <div className="w-36">
+          <div className="w-28">
             <PrecisionMeter compact />
           </div>
-        </header>
+        </div>
+      </header>
 
-        {/* Progress Steps */}
-        <div className="mb-8">
+      {/* Progress Bar - minimal */}
+      <div className="shrink-0 bg-muted/30 px-4 py-2">
+        <div className="mx-auto max-w-4xl">
           <StepIndicator
             labels={stepLabels}
             optionalLabel={t("matching.intensity.optional")}
           />
         </div>
-
-        {/* Main Content Card */}
-        <main className="flex flex-1 flex-col rounded-2xl border bg-card p-6 shadow-sm">
-          <div className="flex-1 overflow-auto">
-            {state.currentStep === 1 && <TopicSelection />}
-            {state.currentStep === 1.5 && <IntensityAssessment />}
-            {state.currentStep === 2 && <CriteriaSelection />}
-          </div>
-
-          {/* Single Navigation Bar */}
-          <nav className="mt-6 flex items-center justify-between border-t pt-6">
-            <Button
-              variant="ghost"
-              onClick={actions.goBack}
-              disabled={state.currentStep === 1}
-              className="gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              {t("matching.wizard.back")}
-            </Button>
-
-            <div className="flex items-center gap-3">
-              {/* Step indicator pill */}
-              <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-                {stepPosition} / {totalSteps}
-              </span>
-
-              {state.currentStep === 1.5 && (
-                <Button
-                  variant="outline"
-                  onClick={actions.skipIntensity}
-                  className="gap-2"
-                >
-                  <SkipForward className="h-4 w-4" />
-                  {t("matching.wizard.skip")}
-                </Button>
-              )}
-
-              <Button
-                onClick={actions.goNext}
-                disabled={!computed.canProceed}
-                className="gap-2"
-              >
-                {t("matching.wizard.next")}
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </nav>
-        </main>
       </div>
+
+      {/* Main Content - scrollable if needed */}
+      <main className="min-h-0 flex-1 overflow-auto px-4 py-4">
+        <div className="mx-auto h-full max-w-4xl">
+          {state.currentStep === 1 && <TopicSelection />}
+          {state.currentStep === 1.5 && <IntensityAssessment />}
+          {state.currentStep === 2 && <CriteriaSelection />}
+        </div>
+      </main>
+
+      {/* Fixed Footer Navigation */}
+      <nav className="shrink-0 border-t bg-card px-4 py-3">
+        <div className="mx-auto flex max-w-4xl items-center justify-between">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={actions.goBack}
+            disabled={state.currentStep === 1}
+            className="gap-1.5"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">{t("matching.wizard.back")}</span>
+          </Button>
+
+          <div className="flex items-center gap-2">
+            {state.currentStep === 1.5 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={actions.skipIntensity}
+                className="gap-1.5 text-muted-foreground"
+              >
+                <SkipForward className="h-4 w-4" />
+                <span className="hidden sm:inline">{t("matching.wizard.skip")}</span>
+              </Button>
+            )}
+
+            <Button
+              size="sm"
+              onClick={actions.goNext}
+              disabled={!computed.canProceed}
+              className="gap-1.5"
+            >
+              {t("matching.wizard.next")}
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </nav>
     </div>
   );
 }

@@ -23,30 +23,27 @@ export function TopicCard({
       type="button"
       onClick={onToggle}
       className={cn(
-        "group relative aspect-[3/2] w-full overflow-hidden rounded-xl border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        "group relative h-full w-full overflow-hidden rounded-lg border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1",
         isSelected
-          ? "border-primary shadow-lg ring-2 ring-primary/20"
-          : "border-transparent hover:border-primary/50 hover:shadow-md"
+          ? "border-primary shadow-md"
+          : "border-transparent hover:border-primary/40"
       )}
       aria-pressed={isSelected}
     >
       {/* Background Image */}
       <Image
-        src={getTopicImageUrl(topic.unsplashId, 400, 300)}
+        src={getTopicImageUrl(topic.unsplashId, 200, 150)}
         alt=""
         fill
-        className={cn(
-          "object-cover transition-transform duration-300",
-          !isSelected && "group-hover:scale-105"
-        )}
-        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+        className="object-cover"
+        sizes="(max-width: 640px) 33vw, 16vw"
       />
 
       {/* Gradient Overlay */}
       <div
         className={cn(
-          "absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-opacity",
-          isSelected && "from-primary/80 via-primary/30"
+          "absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent",
+          isSelected && "from-primary/80 via-primary/20"
         )}
         aria-hidden="true"
       />
@@ -54,21 +51,16 @@ export function TopicCard({
       {/* Selected Checkmark */}
       {isSelected && (
         <div
-          className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg"
+          className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground"
           aria-hidden="true"
         >
-          <Check className="h-4 w-4" strokeWidth={3} />
+          <Check className="h-3 w-3" strokeWidth={3} />
         </div>
       )}
 
       {/* Label */}
-      <div className="absolute inset-x-0 bottom-0 p-3">
-        <span
-          className={cn(
-            "text-base font-semibold text-white drop-shadow-md sm:text-lg",
-            isSelected && "text-white"
-          )}
-        >
+      <div className="absolute inset-x-0 bottom-0 p-1.5">
+        <span className="text-xs font-semibold text-white drop-shadow-md sm:text-sm">
           {label}
         </span>
       </div>
