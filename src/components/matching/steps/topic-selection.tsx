@@ -97,36 +97,36 @@ export function TopicSelection() {
           className={cn(
             "col-span-2 row-span-1 flex cursor-text flex-col overflow-hidden rounded-lg border-2 transition-all",
             analysisState === "success"
-              ? "border-green-500 bg-gradient-to-br from-green-500/5 via-green-500/10 to-green-500/5"
+              ? "border-green-600 bg-green-50 dark:border-green-500 dark:bg-green-950/30"
               : analysisState === "empty"
-                ? "border-amber-500 bg-gradient-to-br from-amber-500/5 via-amber-500/10 to-amber-500/5"
+                ? "border-amber-600 bg-amber-50 dark:border-amber-500 dark:bg-amber-950/30"
                 : isFocused || freetextValue.length > 0
-                  ? "border-primary shadow-md bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5"
-                  : "border-primary/30 hover:border-primary/50 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5"
+                  ? "border-primary shadow-md bg-card"
+                  : "border-border hover:border-primary/50 bg-card"
           )}
         >
           {/* Card Header */}
           <div className={cn(
             "flex items-center gap-2 px-3 py-2 border-b",
-            analysisState === "success" ? "border-green-500/20" : analysisState === "empty" ? "border-amber-500/20" : "border-primary/10"
+            analysisState === "success" ? "border-green-600/30" : analysisState === "empty" ? "border-amber-600/30" : "border-border"
           )}>
             <div className={cn(
               "flex h-6 w-6 items-center justify-center rounded-full",
-              analysisState === "success" ? "bg-green-500/20" : analysisState === "empty" ? "bg-amber-500/20" : "bg-primary/20"
+              analysisState === "success" ? "bg-green-600/20" : analysisState === "empty" ? "bg-amber-600/20" : "bg-primary/15"
             )}>
               {isPending ? (
                 <Loader2 className="h-3.5 w-3.5 text-primary animate-spin" />
               ) : analysisState === "success" ? (
-                <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
+                <CheckCircle2 className="h-3.5 w-3.5 text-green-700 dark:text-green-400" />
               ) : analysisState === "empty" ? (
-                <AlertCircle className="h-3.5 w-3.5 text-amber-600" />
+                <AlertCircle className="h-3.5 w-3.5 text-amber-700 dark:text-amber-400" />
               ) : (
                 <MessageSquareText className="h-3.5 w-3.5 text-primary" />
               )}
             </div>
             <span className={cn(
               "text-xs font-semibold",
-              analysisState === "success" ? "text-green-700 dark:text-green-400" : analysisState === "empty" ? "text-amber-700 dark:text-amber-400" : "text-primary"
+              analysisState === "success" ? "text-green-800 dark:text-green-300" : analysisState === "empty" ? "text-amber-800 dark:text-amber-300" : "text-foreground"
             )}>
               {isPending
                 ? t("matching.freetext.analyzing")
@@ -146,14 +146,18 @@ export function TopicSelection() {
             {analysisState === "success" ? (
               <div className="flex flex-col gap-2 p-1">
                 <div className="flex flex-wrap gap-1">
-                  {detectedTopics.map((topic) => (
-                    <Badge key={topic} className="bg-green-500/20 text-green-700 dark:text-green-300 text-[10px]">
-                      {t(`matching.topics.${topic}`)}
-                    </Badge>
-                  ))}
+                  {detectedTopics.map((topic) => {
+                    // Convert snake_case to camelCase for translation key
+                    const translationKey = topic.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+                    return (
+                      <Badge key={topic} className="bg-green-600/20 text-green-800 dark:bg-green-500/30 dark:text-green-200 text-[10px] font-medium">
+                        {t(`matching.topics.${translationKey}`)}
+                      </Badge>
+                    );
+                  })}
                 </div>
                 {topicReasons && (
-                  <p className="text-[11px] text-muted-foreground leading-snug">
+                  <p className="text-xs text-foreground/80 leading-snug">
                     {topicReasons}
                   </p>
                 )}
@@ -183,7 +187,7 @@ export function TopicSelection() {
           {(freetextValue.length > 0 || analysisState !== "idle") && (
             <div className={cn(
               "flex items-center justify-between border-t px-3 py-1.5",
-              analysisState === "success" ? "border-green-500/20" : analysisState === "empty" ? "border-amber-500/20" : "border-primary/10"
+              analysisState === "success" ? "border-green-600/30" : analysisState === "empty" ? "border-amber-600/30" : "border-border"
             )}>
               <span className="text-[10px] text-muted-foreground">
                 {freetextValue.length}/500

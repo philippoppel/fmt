@@ -209,9 +209,9 @@ export function SituationInput({ onAnalysisComplete, onSkip, onCrisisDetected }:
 
       {/* Analysis Result */}
       {analysis && (
-        <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4">
+        <div className="rounded-xl border-2 border-green-600/30 bg-green-50 p-4 dark:border-green-500/40 dark:bg-green-950/30">
           <div className="flex items-start gap-3">
-            <CheckCircle2 className="h-5 w-5 shrink-0 text-green-500" />
+            <CheckCircle2 className="h-5 w-5 shrink-0 text-green-700 dark:text-green-400" />
             <div className="space-y-3">
               <p className="font-medium text-foreground">
                 {analysis.understandingSummary}
@@ -223,11 +223,14 @@ export function SituationInput({ onAnalysisComplete, onSkip, onCrisisDetected }:
                     {t("matching.freetext.detectedTopics")}
                   </p>
                   <div className="flex flex-wrap gap-1">
-                    {analysis.suggestedTopics.slice(0, 4).map((topic) => (
-                      <Badge key={topic} variant="secondary" className="text-xs">
-                        {t(`matching.topics.${topic}`)}
-                      </Badge>
-                    ))}
+                    {analysis.suggestedTopics.slice(0, 4).map((topic) => {
+                      const translationKey = topic.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase());
+                      return (
+                        <Badge key={topic} className="bg-green-600/20 text-green-800 dark:bg-green-500/30 dark:text-green-200 text-xs font-medium border-0">
+                          {t(`matching.topics.${translationKey}`)}
+                        </Badge>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -239,7 +242,7 @@ export function SituationInput({ onAnalysisComplete, onSkip, onCrisisDetected }:
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {analysis.suggestedMethods.slice(0, 3).map((method) => (
-                      <Badge key={method} variant="outline" className="text-xs">
+                      <Badge key={method} variant="outline" className="text-xs border-border">
                         {t(`matching.freetext.methods.${method}`)}
                       </Badge>
                     ))}
