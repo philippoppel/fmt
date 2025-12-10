@@ -12,6 +12,63 @@ export type Specialty =
   | "adhd"
   | "burnout";
 
+// Sub-specialization areas (matches SubTopic ids in topics.ts)
+export type SubSpecialty =
+  // Family
+  | "divorce"
+  | "parenting"
+  | "family_conflicts"
+  | "generation_conflicts"
+  // Anxiety
+  | "social_anxiety"
+  | "panic_attacks"
+  | "phobias"
+  | "generalized_anxiety"
+  // Depression
+  | "chronic_sadness"
+  | "lack_motivation"
+  | "grief"
+  | "loneliness"
+  // Relationships
+  | "couple_conflicts"
+  | "breakup"
+  | "dating_issues"
+  | "intimacy"
+  // Burnout
+  | "work_stress"
+  | "exhaustion"
+  | "work_life_balance"
+  // Trauma
+  | "ptsd"
+  | "childhood_trauma"
+  | "accident_trauma"
+  | "loss"
+  // Addiction
+  | "alcohol"
+  | "drugs"
+  | "behavioral_addiction"
+  | "gaming"
+  // Eating Disorders
+  | "anorexia"
+  | "bulimia"
+  | "binge_eating"
+  // ADHD
+  | "concentration"
+  | "impulsivity"
+  | "adult_adhd"
+  // Self Care
+  | "self_esteem"
+  | "boundaries"
+  | "life_changes"
+  // Stress
+  | "chronic_stress"
+  | "exam_anxiety"
+  | "performance_pressure"
+  // Sleep
+  | "insomnia"
+  | "nightmares"
+  | "sleep_anxiety";
+
 // Therapy approaches
 export type TherapyType =
   | "cbt" // Verhaltenstherapie
@@ -84,10 +141,11 @@ export interface ScoreBreakdown {
   total: number;
   categories: {
     specialization: ScoreCategory;
-    intensityExperience?: ScoreCategory; // NEW: Intensity ↔ Experience matching
+    subSpecialization?: ScoreCategory; // Sub-specialization matching
+    intensityExperience?: ScoreCategory; // Intensity ↔ Experience matching
     therapyStyle: ScoreCategory;
     practicalCriteria: ScoreCategory;
-    profileQuality?: ScoreCategory; // NEW: Profile quality bonus
+    profileQuality?: ScoreCategory; // Profile quality bonus
   };
   matchReasons: string[];
 }
@@ -125,6 +183,9 @@ export interface Therapist {
   experienceYears?: number;
   // Specialization ranking (1 = highest priority)
   specializationRanks?: Record<string, 1 | 2 | 3>;
+  // Sub-specializations for precise matching
+  subSpecializations?: SubSpecialty[];
+  subSpecializationRanks?: Record<string, 1 | 2 | 3>;
   profileCompleteness?: number; // 0-100
   // Therapy Style fields (for Matching)
   communicationStyle?: CommunicationStyle;

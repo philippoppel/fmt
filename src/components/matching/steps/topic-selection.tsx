@@ -33,6 +33,7 @@ export function TopicSelection() {
       // Here we just analyze topics and stay on this page.
 
       const topics = result.suggestedTopics || [];
+      const subTopics = result.suggestedSubTopics || [];
       setDetectedTopics(topics);
       setTopicReasons(result.topicReasons || "");
 
@@ -42,6 +43,12 @@ export function TopicSelection() {
         topics.forEach(topic => {
           if (!state.selectedTopics.includes(topic)) {
             actions.toggleTopic(topic);
+          }
+        });
+        // Auto-select detected subTopics for precise matching
+        subTopics.forEach(subTopic => {
+          if (!state.selectedSubTopics.includes(subTopic)) {
+            actions.toggleSubTopic(subTopic);
           }
         });
       } else {

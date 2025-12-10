@@ -106,6 +106,9 @@ export async function searchWithMatching(
     isVerified: profile.isVerified ?? false,
     experienceYears: profile.experienceYears ?? undefined,
     specializationRanks: (profile.specializationRanks as Record<string, 1 | 2 | 3>) ?? undefined,
+    // Sub-specializations for precise matching
+    subSpecializations: profile.subSpecializations as Therapist["subSpecializations"],
+    subSpecializationRanks: (profile.subSpecializationRanks as Record<string, 1 | 2 | 3>) ?? undefined,
     profileCompleteness: profile.profileCompleteness ?? undefined,
     // Therapy Style fields for matching
     communicationStyle: profile.communicationStyle as Therapist["communicationStyle"],

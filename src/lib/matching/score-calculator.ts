@@ -8,12 +8,14 @@ import type {
   ScoreCategory,
   ExclusionResult,
   IntensityLevel,
+  SubSpecialty,
 } from "@/types/therapist";
 import { getSpecialtiesFromTopics, getTopicById } from "./topics";
 
 /**
- * Score Weights (Optimized - Style Quiz removed):
- * - Topic match: 35 points (with specialization ranking)
+ * Score Weights (Optimized for SubTopic matching):
+ * - Topic match: 25 points (with specialization ranking)
+ * - SubTopic match: 10 points (precise sub-specialization matching)
  * - Intensity ↔ Experience: 15 points
  * - Criteria match: 40 points (location 12, gender 8, session type 12, insurance 8)
  * - Therapy Style: 0 points (REMOVED)
@@ -21,9 +23,10 @@ import { getSpecialtiesFromTopics, getTopicById } from "./topics";
  */
 
 const WEIGHTS = {
-  topics: 35,
+  topics: 25,
+  subTopics: 10, // SubTopic matching for precision
   intensityExperience: 15,
-  criteria: 40, // +20 from removed therapyStyle
+  criteria: 40,
   therapyStyle: 0, // Removed - Style Quiz no longer used
   profileQuality: 10,
 };
@@ -84,25 +87,28 @@ export function calculateMatchScore(
   therapist: Therapist,
   criteria: MatchingCriteria
 ): number {
-  // 1. TOPIC MATCH with ranking (max 35 points)
+  // 1. TOPIC MATCH with ranking (max 25 points)
   const topicScore = calculateTopicScoreWithRanking(therapist, criteria);
 
-  // 2. INTENSITY ↔ EXPERIENCE (max 15 points)
+  // 2. SUBTOPIC MATCH with ranking (max 10 points)
+  const subTopicScore = calculateSubTopicScore(therapist, criteria);
+
+  // 3. INTENSITY ↔ EXPERIENCE (max 15 points)
   const intensityScore = calculateIntensityExperienceScore(
     therapist.experienceYears,
     criteria.intensityLevel
   );
 
-  // 3. CRITERIA MATCH (max 20 points)
+  // 4. CRITERIA MATCH (max 40 points)
   const criteriaScore = calculateCriteriaScore(therapist, criteria);
 
-  // 4. THERAPY STYLE MATCH (max 20 points)
+  // 5. THERAPY STYLE MATCH (max 0 points - removed)
   const styleScore = calculateTherapyStyleScore(therapist, criteria.therapyStyle);
 
-  // 5. PROFILE QUALITY (max 10 points)
+  // 6. PROFILE QUALITY (max 10 points)
   const qualityScore = calculateProfileQualityScore(therapist);
 
-  const total = topicScore + intensityScore + criteriaScore + styleScore + qualityScore;
+  const total = topicScore + subTopicScore + intensityScore + criteriaScore + styleScore + qualityScore;
   return Math.round(Math.min(100, Math.max(0, total)));
 }
 
@@ -205,6 +211,65 @@ function calculateTopicScoreWithRanking(
 }
 
 /**
+ * Calculate sub-topic score with ranking (max 10 points)
+ * Provides bonus points for precise sub-specialization matches
+ */
+function calculateSubTopicScore(
+  therapist: Therapist,
+  criteria: MatchingCriteria
+): number {
+  // If user didn't select any subTopics, give full points (no penalty)
+  if (!criteria.selectedSubTopics || criteria.selectedSubTopics.length === 0) {
+    return WEIGHTS.subTopics;
+  }
+
+  // If therapist has no sub-specializations, give half points
+  if (!therapist.subSpecializations || therapist.subSpecializations.length === 0) {
+    return Math.round(WEIGHTS.subTopics * 0.5);
+  }
+
+  let totalScore = 0;
+  const ranks = therapist.subSpecializationRanks ?? {};
+
+  for (const subTopic of criteria.selectedSubTopics) {
+    if (therapist.subSpecializations.includes(subTopic as SubSpecialty)) {
+      const rank = ranks[subTopic] as 1 | 2 | 3 | undefined;
+      const multiplier = rank
+        ? RANK_MULTIPLIERS[rank]
+        : RANK_MULTIPLIERS.unranked;
+      totalScore += multiplier;
+    }
+  }
+
+  const maxScore = criteria.selectedSubTopics.length;
+  if (maxScore === 0) return WEIGHTS.subTopics;
+
+  const ratio = totalScore / maxScore;
+  return Math.round(ratio * WEIGHTS.subTopics);
+}
+
+/**
+ * Get details for sub-topic matching
+ */
+function getSubTopicMatchDetails(
+  therapist: Therapist,
+  criteria: MatchingCriteria
+): string {
+  if (!criteria.selectedSubTopics || criteria.selectedSubTopics.length === 0) {
+    return "";
+  }
+  if (!therapist.subSpecializations || therapist.subSpecializations.length === 0) {
+    return "no sub-specs";
+  }
+
+  const matching = therapist.subSpecializations.filter((sub) =>
+    criteria.selectedSubTopics?.includes(sub)
+  );
+
+  return matching.slice(0, 3).join(", ");
+}
+
+/**
  * Calculate match score with detailed breakdown for transparent scoring
  */
 export function calculateMatchScoreWithBreakdown(
@@ -213,6 +278,7 @@ export function calculateMatchScoreWithBreakdown(
 ): { score: number; breakdown: ScoreBreakdown } {
   // Calculate individual scores
   const topicScore = calculateTopicScoreWithRanking(therapist, criteria);
+  const subTopicScore = calculateSubTopicScore(therapist, criteria);
   const intensityScore = calculateIntensityExperienceScore(
     therapist.experienceYears,
     criteria.intensityLevel
@@ -222,12 +288,13 @@ export function calculateMatchScoreWithBreakdown(
   const qualityScore = calculateProfileQualityScore(therapist);
 
   const total = Math.round(
-    Math.min(100, Math.max(0, topicScore + intensityScore + criteriaScore + styleScore + qualityScore))
+    Math.min(100, Math.max(0, topicScore + subTopicScore + intensityScore + criteriaScore + styleScore + qualityScore))
   );
 
   // Generate match reasons
   const matchReasons = generateMatchReasons(therapist, criteria, {
     specialization: topicScore,
+    subSpecialization: subTopicScore,
     style: styleScore,
     practical: criteriaScore,
   });
@@ -241,6 +308,12 @@ export function calculateMatchScoreWithBreakdown(
         maxScore: WEIGHTS.topics,
         label: "specialization",
         details: getMatchingSpecialtiesText(therapist, criteria),
+      },
+      subSpecialization: {
+        score: subTopicScore,
+        maxScore: WEIGHTS.subTopics,
+        label: "subSpecialization",
+        details: getSubTopicMatchDetails(therapist, criteria),
       },
       intensityExperience: {
         score: intensityScore,
@@ -411,15 +484,23 @@ function calculateTherapyStyleScore(
 function generateMatchReasons(
   therapist: Therapist,
   criteria: MatchingCriteria,
-  scores: { specialization: number; style: number; practical: number }
+  scores: { specialization: number; subSpecialization?: number; style: number; practical: number }
 ): string[] {
   const reasons: string[] = [];
 
-  // Specialization reasons (threshold adjusted for new 35 max)
-  if (scores.specialization >= 25) {
+  // Specialization reasons (threshold adjusted for new 25 max)
+  if (scores.specialization >= 18) {
     const matchingSpecs = getMatchingSpecialtiesText(therapist, criteria);
     if (matchingSpecs) {
       reasons.push(`expertIn:${matchingSpecs}`);
+    }
+  }
+
+  // Sub-specialization reasons (threshold: 8 of 10)
+  if (scores.subSpecialization && scores.subSpecialization >= 8) {
+    const matchingSubSpecs = getSubTopicMatchDetails(therapist, criteria);
+    if (matchingSubSpecs && matchingSubSpecs !== "no sub-specs") {
+      reasons.push(`preciseMatch:${matchingSubSpecs}`);
     }
   }
 

@@ -95,6 +95,7 @@ function WizardContent() {
   const handleFreetextAnalysis = (analysis: SituationAnalysis) => {
     const freetextAnalysis: FreetextAnalysis = {
       suggestedTopics: analysis.suggestedTopics,
+      suggestedSubTopics: analysis.suggestedSubTopics,
       suggestedSpecialties: analysis.suggestedSpecialties,
       suggestedCommunicationStyle: analysis.suggestedCommunicationStyle,
       suggestedTherapyFocus: analysis.suggestedTherapyFocus,

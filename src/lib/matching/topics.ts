@@ -304,3 +304,40 @@ export function getTopicImageUrl(
 ): string {
   return `https://images.unsplash.com/${unsplashId}?w=${width}&h=${height}&fit=crop&crop=faces,center&auto=format&q=80`;
 }
+
+/**
+ * Get all SubTopics that belong to a given Specialty
+ */
+export function getSubTopicsForSpecialty(specialty: Specialty): SubTopic[] {
+  const subTopics: SubTopic[] = [];
+  for (const topic of MATCHING_TOPICS) {
+    if (topic.mappedSpecialties.includes(specialty)) {
+      subTopics.push(...topic.subTopics);
+    }
+  }
+  return subTopics;
+}
+
+/**
+ * Get all SubTopic IDs as a Set (for validation)
+ */
+export function getAllSubTopicIds(): Set<string> {
+  const ids = new Set<string>();
+  for (const topic of MATCHING_TOPICS) {
+    topic.subTopics.forEach((st) => ids.add(st.id));
+  }
+  return ids;
+}
+
+/**
+ * Get the parent Specialty for a given SubTopic ID
+ */
+export function getSpecialtyForSubTopic(subTopicId: string): Specialty | undefined {
+  for (const topic of MATCHING_TOPICS) {
+    const found = topic.subTopics.find((st) => st.id === subTopicId);
+    if (found && topic.mappedSpecialties.length > 0) {
+      return topic.mappedSpecialties[0];
+    }
+  }
+  return undefined;
+}

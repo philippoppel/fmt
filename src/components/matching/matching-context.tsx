@@ -34,6 +34,7 @@ export type MatchingMode = "quick" | "full";
 
 export interface FreetextAnalysis {
   suggestedTopics: string[];
+  suggestedSubTopics: string[]; // NEW: SubTopics for precise matching
   suggestedSpecialties: string[];
   suggestedCommunicationStyle: string | null;
   suggestedTherapyFocus: string | null;
@@ -162,6 +163,7 @@ function matchingReducer(
       return {
         ...state,
         selectedTopics: state.freetextAnalysis.suggestedTopics,
+        selectedSubTopics: state.freetextAnalysis.suggestedSubTopics || [],
         intensityLevel: state.freetextAnalysis.suggestedIntensityLevel,
         currentStep: 1, // Go to topic selection (pre-filled)
       };

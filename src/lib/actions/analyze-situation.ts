@@ -7,6 +7,7 @@ export type IntensityLevel = "low" | "medium" | "high";
 
 export interface SituationAnalysis {
   suggestedTopics: string[];
+  suggestedSubTopics: string[]; // NEW: SubTopics for precise matching
   suggestedSpecialties: Specialty[];
   suggestedCommunicationStyle: CommunicationStyle | null;
   suggestedTherapyFocus: TherapyFocus | null;
@@ -240,6 +241,189 @@ const TOPIC_KEYWORDS: Record<string, TopicKeywords> = {
       "lying awake", "ruminating at night", "thoughts at night", "sleeping pills",
       "not rested", "sleep pattern", "sleepless", "restless"
     ],
+  },
+};
+
+// ============================================================================
+// SUBTOPIC KEYWORDS - For precise matching within topics
+// ============================================================================
+
+const SUBTOPIC_KEYWORDS: Record<string, TopicKeywords> = {
+  // Anxiety subtopics
+  social_anxiety: {
+    de: ["soziale angst", "sozialangst", "unter menschen", "menschenmenge", "blamieren", "peinlich", "bewertung", "beurteilt", "beobachtet", "kritisiert", "präsentation", "vortrag", "öffentlich sprechen", "party", "smalltalk", "neue leute", "fremde"],
+    en: ["social anxiety", "social situations", "crowd", "embarrass", "judged", "evaluated", "watched", "criticized", "presentation", "public speaking", "party", "small talk", "new people", "strangers"],
+  },
+  panic_attacks: {
+    de: ["panikattacke", "panik", "herzrasen", "atemnot", "ersticken", "sterben", "kontrollverlust", "ohnmacht", "schwindel", "zittern", "schweißausbruch", "brustschmerz", "hyperventilieren", "plötzlich angst"],
+    en: ["panic attack", "panic", "racing heart", "can't breathe", "suffocating", "dying", "losing control", "faint", "dizzy", "trembling", "sweating", "chest pain", "hyperventilate", "sudden fear"],
+  },
+  phobias: {
+    de: ["phobie", "höhenangst", "flugangst", "spinnen", "schlangen", "enge räume", "klaustrophobie", "agoraphobie", "spritzenangst", "blut", "zahnarzt", "spezifische angst", "vermeiden", "panik bei"],
+    en: ["phobia", "fear of heights", "fear of flying", "spiders", "snakes", "tight spaces", "claustrophobia", "agoraphobia", "needles", "blood", "dentist", "specific fear", "avoid", "panic when"],
+  },
+  generalized_anxiety: {
+    de: ["ständig sorgen", "grübeln", "gedankenkreisen", "was wenn", "worst case", "katastrophe", "angst vor allem", "nicht abschalten", "anspannung", "rastlos", "nervös", "unruhe", "besorgt", "zukunftsangst"],
+    en: ["constant worry", "ruminating", "overthinking", "what if", "worst case", "catastrophe", "anxious about everything", "can't switch off", "tense", "restless", "nervous", "uneasy", "worried", "future anxiety"],
+  },
+  // Depression subtopics
+  chronic_sadness: {
+    de: ["immer traurig", "ständig traurig", "tiefe traurigkeit", "schwermut", "melancholie", "kein licht", "dunkel", "grau", "freudlos", "keine freude mehr", "nichts macht spaß", "leer", "innerlich leer"],
+    en: ["always sad", "constantly sad", "deep sadness", "melancholy", "no light", "dark", "gray", "joyless", "no joy", "nothing fun", "empty", "emotionally empty"],
+  },
+  lack_motivation: {
+    de: ["keine motivation", "antriebslos", "kein antrieb", "nicht aufstehen", "im bett bleiben", "nichts schaffen", "alles zu viel", "keine energie", "erschöpft", "müde", "kraftlos", "prokrastinieren", "aufschieben"],
+    en: ["no motivation", "no drive", "can't get up", "stay in bed", "can't do anything", "everything too much", "no energy", "exhausted", "tired", "weak", "procrastinate", "putting off"],
+  },
+  grief: {
+    de: ["trauer", "verlust", "gestorben", "tod", "verstorben", "abschied", "vermissen", "sehnsucht", "nie wieder", "fehlt mir", "trauerarbeit", "beerdigung", "loslassen"],
+    en: ["grief", "loss", "died", "death", "passed away", "goodbye", "miss", "longing", "never again", "miss them", "mourning", "funeral", "letting go"],
+  },
+  loneliness: {
+    de: ["einsam", "einsamkeit", "allein", "isoliert", "niemand", "keine freunde", "sozial isoliert", "ausgegrenzt", "nicht dazugehören", "verlassen", "keiner versteht mich", "unverbunden"],
+    en: ["lonely", "loneliness", "alone", "isolated", "nobody", "no friends", "socially isolated", "excluded", "don't belong", "abandoned", "no one understands", "disconnected"],
+  },
+  // Relationships subtopics
+  couple_conflicts: {
+    de: ["streit", "streiten", "konflikt", "partner streiten", "immer streit", "eskaliert", "kommunikation", "nicht verstehen", "anschreien", "vorwürfe", "kritik", "nörgeln", "beschuldigen"],
+    en: ["fight", "fighting", "conflict", "arguing", "always fighting", "escalate", "communication", "don't understand", "yelling", "blame", "criticism", "nagging", "accusing"],
+  },
+  breakup: {
+    de: ["trennung", "getrennt", "ex", "beziehung beendet", "schluss gemacht", "verlassen worden", "zurück", "liebeskummer", "herzschmerz", "nicht darüber hinweg"],
+    en: ["breakup", "broke up", "ex", "relationship ended", "dumped", "left", "get back", "heartbreak", "heartache", "can't get over"],
+  },
+  dating_issues: {
+    de: ["dating", "kennenlernen", "single", "niemanden finden", "online dating", "tinder", "erste date", "verlieben", "flirten", "bindungsangst", "commitment", "beziehung eingehen"],
+    en: ["dating", "meeting people", "single", "can't find anyone", "online dating", "tinder", "first date", "falling in love", "flirting", "commitment issues", "fear of commitment"],
+  },
+  intimacy: {
+    de: ["intimität", "nähe", "sex", "sexualität", "sexuelle probleme", "kein sex", "lust", "libido", "körperlich", "zärtlichkeit", "berührung", "distanz"],
+    en: ["intimacy", "closeness", "sex", "sexuality", "sexual problems", "no sex", "desire", "libido", "physical", "affection", "touch", "distance"],
+  },
+  // Trauma subtopics
+  ptsd: {
+    de: ["ptbs", "posttraumatisch", "flashback", "flashbacks", "wiedererlebend", "trigger", "ausgelöst", "albtraum", "albträume", "nicht vergessen", "verfolgt mich", "bilder im kopf"],
+    en: ["ptsd", "post-traumatic", "flashback", "flashbacks", "reliving", "trigger", "triggered", "nightmare", "nightmares", "can't forget", "haunts me", "images in my head"],
+  },
+  childhood_trauma: {
+    de: ["kindheit", "kindheitstrauma", "als kind", "eltern", "missbrauch", "misshandlung", "vernachlässigt", "geschlagen", "übergriff", "früher", "aufgewachsen", "familiär"],
+    en: ["childhood", "childhood trauma", "as a child", "parents", "abuse", "mistreatment", "neglected", "beaten", "assault", "growing up", "family"],
+  },
+  accident_trauma: {
+    de: ["unfall", "autounfall", "verkehrsunfall", "motorrad", "überfahren", "zusammenstoß", "krankenhaus", "verletzt", "operation", "notfall", "rettungswagen"],
+    en: ["accident", "car accident", "traffic accident", "motorcycle", "hit by", "collision", "hospital", "injured", "surgery", "emergency", "ambulance"],
+  },
+  loss: {
+    de: ["verlust", "verloren", "gestorben", "tot", "abschied", "beerdigung", "trauer", "weg", "nie wieder", "fehlt", "vermisse"],
+    en: ["loss", "lost", "died", "dead", "goodbye", "funeral", "grief", "gone", "never again", "missing", "miss"],
+  },
+  // Burnout subtopics
+  work_stress: {
+    de: ["arbeitsstress", "job stress", "überstunden", "deadline", "druck", "chef", "vorgesetzter", "kollegen", "meeting", "projekt", "workload", "zu viel arbeit", "büro"],
+    en: ["work stress", "job stress", "overtime", "deadline", "pressure", "boss", "supervisor", "colleagues", "meeting", "project", "workload", "too much work", "office"],
+  },
+  exhaustion: {
+    de: ["erschöpft", "erschöpfung", "ausgebrannt", "keine kraft", "am ende", "völlig fertig", "kaputt", "zusammenbruch", "nicht mehr können", "leer", "energie weg"],
+    en: ["exhausted", "exhaustion", "burned out", "no strength", "at the end", "completely done", "broken", "breakdown", "can't anymore", "empty", "no energy left"],
+  },
+  work_life_balance: {
+    de: ["work-life", "balance", "freizeit", "hobby", "familie vernachlässigt", "nur arbeit", "keine zeit", "privatleben", "wochenende arbeiten", "feierabend", "abschalten"],
+    en: ["work-life", "balance", "free time", "hobby", "neglecting family", "only work", "no time", "private life", "working weekends", "after work", "switch off"],
+  },
+  // Addiction subtopics
+  alcohol: {
+    de: ["alkohol", "trinken", "betrunken", "saufen", "bier", "wein", "schnaps", "wodka", "kater", "entzug", "trocken", "nüchtern", "alkoholiker"],
+    en: ["alcohol", "drinking", "drunk", "booze", "beer", "wine", "liquor", "vodka", "hangover", "withdrawal", "sober", "alcoholic"],
+  },
+  drugs: {
+    de: ["drogen", "kiffen", "cannabis", "kokain", "mdma", "ecstasy", "speed", "heroin", "dealer", "high", "rausch", "substanz", "illegale"],
+    en: ["drugs", "weed", "cannabis", "cocaine", "mdma", "ecstasy", "speed", "heroin", "dealer", "high", "substance", "illegal"],
+  },
+  behavioral_addiction: {
+    de: ["spielsucht", "glücksspiel", "casino", "wetten", "sportwetten", "automaten", "online glücksspiel", "verlust", "schulden", "kaufsucht", "shoppen", "pornografie"],
+    en: ["gambling", "casino", "betting", "sports betting", "slot machines", "online gambling", "loss", "debt", "shopping addiction", "pornography"],
+  },
+  gaming: {
+    de: ["gaming", "zocken", "videospiele", "computerspiele", "online spiele", "süchtig nach spielen", "nächte durchspielen", "realität", "virtuelle welt"],
+    en: ["gaming", "video games", "computer games", "online games", "addicted to games", "playing all night", "reality", "virtual world"],
+  },
+  // Eating disorder subtopics
+  anorexia: {
+    de: ["magersucht", "anorexie", "nicht essen", "hungern", "fasten", "kalorien zählen", "zu dünn", "untergewicht", "abnehmen", "gewicht verlieren", "kontrollieren"],
+    en: ["anorexia", "not eating", "starving", "fasting", "counting calories", "too thin", "underweight", "lose weight", "control"],
+  },
+  bulimia: {
+    de: ["bulimie", "erbrechen", "kotzen", "finger in hals", "purging", "essen und erbrechen", "kompensieren", "abführmittel", "binge purge"],
+    en: ["bulimia", "throwing up", "vomiting", "purging", "binge purge", "compensate", "laxatives"],
+  },
+  binge_eating: {
+    de: ["essanfall", "fressanfall", "binge eating", "unkontrolliert essen", "nicht aufhören", "vollstopfen", "schuldgefühle nach essen", "heimlich essen", "emotional essen"],
+    en: ["binge eating", "eating uncontrollably", "can't stop eating", "stuffing", "guilt after eating", "eating in secret", "emotional eating"],
+  },
+  // ADHD subtopics
+  concentration: {
+    de: ["konzentration", "konzentrationsprobleme", "nicht konzentrieren", "abgelenkt", "ablenkung", "fokus", "aufmerksamkeit", "vergesslich", "durcheinander"],
+    en: ["concentration", "concentration problems", "can't concentrate", "distracted", "distraction", "focus", "attention", "forgetful", "scattered"],
+  },
+  impulsivity: {
+    de: ["impulsiv", "impulsivität", "ohne nachdenken", "spontan", "bereuen", "vorschnell", "ungeduldig", "nicht warten können", "unterbrechen"],
+    en: ["impulsive", "impulsivity", "without thinking", "spontaneous", "regret", "hasty", "impatient", "can't wait", "interrupting"],
+  },
+  adult_adhd: {
+    de: ["erwachsenen adhs", "adhs erwachsene", "spät diagnostiziert", "nie gewusst", "endlich diagnose", "erklärung", "immer schon so", "chaos im kopf"],
+    en: ["adult adhd", "late diagnosed", "never knew", "finally diagnosed", "explanation", "always been like this", "chaos in head"],
+  },
+  // Self care subtopics
+  self_esteem: {
+    de: ["selbstwert", "selbstwertgefühl", "selbstbewusstsein", "minderwertig", "nicht gut genug", "wertlos", "versager", "selbstzweifel", "unsicher"],
+    en: ["self-esteem", "self-worth", "confidence", "inferior", "not good enough", "worthless", "failure", "self-doubt", "insecure"],
+  },
+  boundaries: {
+    de: ["grenzen", "grenzen setzen", "nein sagen", "people pleaser", "für alle da", "ausgenutzt", "überfordert", "zu viel für andere", "eigene bedürfnisse"],
+    en: ["boundaries", "setting boundaries", "saying no", "people pleaser", "there for everyone", "taken advantage", "overwhelmed", "too much for others", "own needs"],
+  },
+  life_changes: {
+    de: ["veränderung", "neuanfang", "lebenskrise", "midlife", "orientierung", "wer bin ich", "sinn", "lebenssinn", "umbruch", "neuorientierung"],
+    en: ["change", "new beginning", "life crisis", "midlife", "direction", "who am i", "meaning", "purpose", "transition", "reorientation"],
+  },
+  // Stress subtopics
+  chronic_stress: {
+    de: ["dauerstress", "chronischer stress", "ständig stress", "nie entspannt", "immer angespannt", "keine ruhe", "rastlos"],
+    en: ["constant stress", "chronic stress", "always stressed", "never relaxed", "always tense", "no peace", "restless"],
+  },
+  exam_anxiety: {
+    de: ["prüfungsangst", "prüfung", "klausur", "examen", "test", "durchfallen", "versagen", "blackout", "vorbereitung"],
+    en: ["exam anxiety", "exam", "test", "finals", "fail", "failing", "blackout", "preparation"],
+  },
+  performance_pressure: {
+    de: ["leistungsdruck", "druck", "erwartungen", "perfektion", "perfektionismus", "nicht genug", "muss funktionieren", "fehler", "versagen"],
+    en: ["performance pressure", "pressure", "expectations", "perfection", "perfectionism", "not enough", "must perform", "mistakes", "failure"],
+  },
+  // Sleep subtopics
+  insomnia: {
+    de: ["schlaflos", "insomnie", "nicht einschlafen", "nicht durchschlafen", "wachliegen", "stundenlang wach", "müde aber wach"],
+    en: ["sleepless", "insomnia", "can't fall asleep", "can't stay asleep", "lying awake", "awake for hours", "tired but awake"],
+  },
+  nightmares: {
+    de: ["albtraum", "albträume", "schlecht träumen", "aufwachen", "schweißgebadet", "angst nachts", "träume verfolgen"],
+    en: ["nightmare", "nightmares", "bad dreams", "wake up", "sweating", "fear at night", "dreams haunt"],
+  },
+  sleep_anxiety: {
+    de: ["angst vor schlaf", "schlafangst", "angst einzuschlafen", "nicht schlafen wollen", "gedanken nachts", "grübeln nachts", "nicht zur ruhe kommen"],
+    en: ["fear of sleep", "sleep anxiety", "afraid to fall asleep", "don't want to sleep", "thoughts at night", "ruminating at night", "can't calm down"],
+  },
+  // Family/relationships additional
+  divorce: {
+    de: ["scheidung", "scheiden", "trennung ehe", "anwalt", "sorgerecht", "unterhalt", "vermögen teilen"],
+    en: ["divorce", "divorcing", "separation marriage", "lawyer", "custody", "alimony", "dividing assets"],
+  },
+  parenting: {
+    de: ["erziehung", "kind erziehen", "eltern sein", "elternschaft", "teenager", "pubertät", "kind verstehen", "grenzen setzen kind"],
+    en: ["parenting", "raising child", "being parent", "parenthood", "teenager", "puberty", "understand child", "setting limits child"],
+  },
+  family_conflicts: {
+    de: ["familienstreit", "familienkonflikt", "familie streitet", "eltern streiten", "geschwister", "erbschaft", "familienfeier", "zusammenkünfte"],
+    en: ["family fight", "family conflict", "family arguing", "parents fighting", "siblings", "inheritance", "family gathering", "reunions"],
   },
 };
 
@@ -593,6 +777,38 @@ function detectTopics(text: string, lang: "de" | "en"): string[] {
     .map(([topic]) => topic);
 }
 
+function detectSubTopics(text: string, lang: "de" | "en"): string[] {
+  const lowerText = text.toLowerCase();
+  const detectedSubTopics: Map<string, number> = new Map();
+
+  for (const [subTopicId, keywords] of Object.entries(SUBTOPIC_KEYWORDS)) {
+    const langKeywords = keywords[lang];
+    let matchCount = 0;
+
+    for (const keyword of langKeywords) {
+      if (keyword.length <= 4) {
+        const regex = new RegExp(`\\b${keyword}\\b`, "gi");
+        const matches = lowerText.match(regex);
+        if (matches) matchCount += matches.length;
+      } else {
+        const regex = new RegExp(keyword, "gi");
+        const matches = lowerText.match(regex);
+        if (matches) matchCount += matches.length;
+      }
+    }
+
+    if (matchCount > 0) {
+      detectedSubTopics.set(subTopicId, matchCount);
+    }
+  }
+
+  // Sort by match count and return top subtopics
+  return Array.from(detectedSubTopics.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([subTopic]) => subTopic);
+}
+
 function detectMethods(text: string, lang: "de" | "en"): string[] {
   const lowerText = text.toLowerCase();
   const detectedMethods: string[] = [];
@@ -905,6 +1121,70 @@ const AVAILABLE_TOPICS = [
   "burnout", "addiction", "eating_disorders", "adhd", "self_care", "stress", "sleep"
 ];
 
+const AVAILABLE_SUBTOPICS = [
+  // Anxiety
+  "social_anxiety", "panic_attacks", "phobias", "generalized_anxiety",
+  // Depression
+  "chronic_sadness", "lack_motivation", "grief", "loneliness",
+  // Relationships/Family
+  "couple_conflicts", "breakup", "dating_issues", "intimacy", "divorce", "parenting", "family_conflicts",
+  // Trauma
+  "ptsd", "childhood_trauma", "accident_trauma", "loss",
+  // Burnout
+  "work_stress", "exhaustion", "work_life_balance",
+  // Addiction
+  "alcohol", "drugs", "behavioral_addiction", "gaming",
+  // Eating disorders
+  "anorexia", "bulimia", "binge_eating",
+  // ADHD
+  "concentration", "impulsivity", "adult_adhd",
+  // Self care
+  "self_esteem", "boundaries", "life_changes",
+  // Stress
+  "chronic_stress", "exam_anxiety", "performance_pressure",
+  // Sleep
+  "insomnia", "nightmares", "sleep_anxiety",
+];
+
+// Map SubTopics to their parent Topics - ensures consistency
+const SUBTOPIC_TO_TOPIC: Record<string, string> = {
+  // Anxiety
+  social_anxiety: "anxiety", panic_attacks: "anxiety", phobias: "anxiety", generalized_anxiety: "anxiety",
+  // Depression
+  chronic_sadness: "depression", lack_motivation: "depression", grief: "depression", loneliness: "depression",
+  // Relationships
+  couple_conflicts: "relationships", breakup: "relationships", dating_issues: "relationships",
+  intimacy: "relationships", divorce: "relationships", parenting: "family", family_conflicts: "family",
+  // Trauma
+  ptsd: "trauma", childhood_trauma: "trauma", accident_trauma: "trauma", loss: "trauma",
+  // Burnout
+  work_stress: "burnout", exhaustion: "burnout", work_life_balance: "burnout",
+  // Addiction
+  alcohol: "addiction", drugs: "addiction", behavioral_addiction: "addiction", gaming: "addiction",
+  // Eating disorders
+  anorexia: "eating_disorders", bulimia: "eating_disorders", binge_eating: "eating_disorders",
+  // ADHD
+  concentration: "adhd", impulsivity: "adhd", adult_adhd: "adhd",
+  // Self care
+  self_esteem: "self_care", boundaries: "self_care", life_changes: "self_care",
+  // Stress
+  chronic_stress: "stress", exam_anxiety: "stress", performance_pressure: "stress",
+  // Sleep
+  insomnia: "sleep", nightmares: "sleep", sleep_anxiety: "sleep",
+};
+
+// Ensures that if a SubTopic is detected, its parent Topic is also included
+function ensureParentTopics(topics: string[], subTopics: string[]): string[] {
+  const topicSet = new Set(topics);
+  for (const subTopic of subTopics) {
+    const parentTopic = SUBTOPIC_TO_TOPIC[subTopic];
+    if (parentTopic && !topicSet.has(parentTopic)) {
+      topicSet.add(parentTopic);
+    }
+  }
+  return Array.from(topicSet);
+}
+
 const AI_SYSTEM_PROMPT = `Du bist ein einfühlsamer Psychologie-Assistent, der Menschen hilft, ihre Situation zu verstehen.
 
 DATENSCHUTZ: Der Text wurde bereits anonymisiert. Platzhalter wie [NAME], [ORT], [FIRMA] sind normal.
@@ -913,6 +1193,7 @@ Analysiere den Text und antworte NUR mit einem JSON-Objekt (keine Erklärung, ke
 
 {
   "topics": ["topic1", "topic2"],
+  "subTopics": ["subtopic1", "subtopic2"],
   "reasoning": "1-2 Sätze auf Deutsch, warum diese Themen erkannt wurden",
   "intensity": "low" | "medium" | "high",
   "summary": "Kurze, einfühlsame Zusammenfassung auf Deutsch (1-2 Sätze)",
@@ -926,6 +1207,19 @@ WICHTIG - Krisenprüfung (höchste Priorität):
 
 Verfügbare Topics (wähle 1-3 passende):
 ${AVAILABLE_TOPICS.join(", ")}
+
+Verfügbare SubTopics (wähle 1-4 passende, nur wenn spezifisch erkennbar):
+- Angst: social_anxiety, panic_attacks, phobias, generalized_anxiety
+- Depression: chronic_sadness, lack_motivation, grief, loneliness
+- Beziehungen: couple_conflicts, breakup, dating_issues, intimacy, divorce, parenting, family_conflicts
+- Trauma: ptsd, childhood_trauma, accident_trauma, loss
+- Burnout: work_stress, exhaustion, work_life_balance
+- Sucht: alcohol, drugs, behavioral_addiction, gaming
+- Essstörungen: anorexia, bulimia, binge_eating
+- ADHS: concentration, impulsivity, adult_adhd
+- Selbstfürsorge: self_esteem, boundaries, life_changes
+- Stress: chronic_stress, exam_anxiety, performance_pressure
+- Schlaf: insomnia, nightmares, sleep_anxiety
 
 Intensität:
 - "high": Dringend, akute Belastung, kann nicht mehr
@@ -941,6 +1235,7 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
   if (!text || text.trim().length < 10) {
     return {
       suggestedTopics: [],
+      suggestedSubTopics: [],
       suggestedSpecialties: [],
       suggestedCommunicationStyle: null,
       suggestedTherapyFocus: null,
@@ -962,6 +1257,7 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
   if (keywordCrisis.crisisDetected) {
     return {
       suggestedTopics: [],
+      suggestedSubTopics: [],
       suggestedSpecialties: [],
       suggestedCommunicationStyle: null,
       suggestedTherapyFocus: null,
@@ -995,7 +1291,7 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
     const aiResult = JSON.parse(responseText);
 
     // Validate and sanitize AI response
-    const topics = (aiResult.topics || [])
+    let topics = (aiResult.topics || [])
       .filter((t: string) => AVAILABLE_TOPICS.includes(t))
       .slice(0, 4);
 
@@ -1007,6 +1303,7 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
     if (aiResult.crisis === true) {
       return {
         suggestedTopics: [],
+        suggestedSubTopics: [],
         suggestedSpecialties: [],
         suggestedCommunicationStyle: null,
         suggestedTherapyFocus: null,
@@ -1020,6 +1317,14 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       };
     }
 
+    // Validate and sanitize AI subTopics response
+    const subTopics = (aiResult.subTopics || [])
+      .filter((st: string) => AVAILABLE_SUBTOPICS.includes(st))
+      .slice(0, 5);
+
+    // Ensure parent topics are included when subTopics are detected
+    topics = ensureParentTopics(topics, subTopics);
+
     // Map topics to specialties
     const mappedSpecialties = topics
       .map((t: string) => SPECIALTY_MAPPING[t])
@@ -1028,6 +1333,7 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
 
     return {
       suggestedTopics: topics,
+      suggestedSubTopics: subTopics,
       suggestedSpecialties: specialties,
       suggestedCommunicationStyle: null,
       suggestedTherapyFocus: null,
@@ -1044,7 +1350,10 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
     console.error("Groq AI analysis failed, using fallback:", error);
 
     // Fallback to keyword-based analysis
-    const topics = detectTopics(text, lang);
+    const detectedTopics = detectTopics(text, lang);
+    const subTopics = detectSubTopics(text, lang);
+    // Ensure parent topics are included when subTopics are detected
+    const topics = ensureParentTopics(detectedTopics, subTopics);
     const intensity = detectIntensity(text, lang);
     const specialties = [...new Set(
       topics.map((t) => SPECIALTY_MAPPING[t]).filter((s): s is Specialty => !!s)
@@ -1053,6 +1362,7 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
 
     return {
       suggestedTopics: topics,
+      suggestedSubTopics: subTopics,
       suggestedSpecialties: specialties,
       suggestedCommunicationStyle: null,
       suggestedTherapyFocus: null,

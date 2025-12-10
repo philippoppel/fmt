@@ -229,6 +229,10 @@ model TherapistProfile {
   // Schwerpunkt-Ranking (JSON: {"anxiety": 1, "depression": 2, "trauma": 3})
   specializationRanks Json?                @default("{}")
 
+  // Sub-Spezialisierungen für präziseres Matching
+  subSpecializations      String[]
+  subSpecializationRanks  Json?            @default("{}")
+
   // Profil-Vollständigkeit für Qualitäts-Bonus (0-100)
   profileCompleteness Int                  @default(0)
 
