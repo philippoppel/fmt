@@ -18,6 +18,7 @@ export function TopicSelection() {
   const [isFocused, setIsFocused] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [detectedTopics, setDetectedTopics] = useState<string[]>([]);
+  const [topicReasons, setTopicReasons] = useState<string>("");
   const [analysisState, setAnalysisState] = useState<"idle" | "success" | "empty">("idle");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -35,6 +36,7 @@ export function TopicSelection() {
 
       const topics = result.suggestedTopics || [];
       setDetectedTopics(topics);
+      setTopicReasons(result.topicReasons || "");
 
       if (topics.length > 0) {
         setAnalysisState("success");
@@ -57,6 +59,7 @@ export function TopicSelection() {
   const resetAnalysis = () => {
     setAnalysisState("idle");
     setDetectedTopics([]);
+    setTopicReasons("");
   };
 
   return (
@@ -139,14 +142,21 @@ export function TopicSelection() {
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 p-2">
+          <div className="flex-1 p-2 overflow-y-auto">
             {analysisState === "success" ? (
-              <div className="flex flex-wrap gap-1 p-1">
-                {detectedTopics.map((topic) => (
-                  <Badge key={topic} className="bg-green-500/20 text-green-700 dark:text-green-300 text-[10px]">
-                    {t(`matching.topics.${topic}`)}
-                  </Badge>
-                ))}
+              <div className="flex flex-col gap-2 p-1">
+                <div className="flex flex-wrap gap-1">
+                  {detectedTopics.map((topic) => (
+                    <Badge key={topic} className="bg-green-500/20 text-green-700 dark:text-green-300 text-[10px]">
+                      {t(`matching.topics.${topic}`)}
+                    </Badge>
+                  ))}
+                </div>
+                {topicReasons && (
+                  <p className="text-[11px] text-muted-foreground leading-snug">
+                    {topicReasons}
+                  </p>
+                )}
               </div>
             ) : analysisState === "empty" ? (
               <p className="p-1 text-xs text-amber-700 dark:text-amber-400">

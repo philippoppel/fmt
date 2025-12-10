@@ -14,6 +14,8 @@ export interface SituationAnalysis {
   understandingSummary: string;
   suggestedMethods: string[];
   keywords: string[];
+  // Reasoning for topic selection (shown to user)
+  topicReasons: string;
   // Crisis detection - triggers immediate intervention
   crisisDetected: boolean;
   crisisType: "suicidal" | "self_harm" | "acute_danger" | null;
@@ -832,6 +834,69 @@ function generateSummary(
 }
 
 // ============================================================================
+// ANONYMIZATION - Remove personal data before sending to AI
+// ============================================================================
+
+function anonymizeText(text: string): string {
+  let anonymized = text;
+
+  // Remove email addresses
+  anonymized = anonymized.replace(/[\w.-]+@[\w.-]+\.\w+/gi, "[E-MAIL]");
+
+  // Remove phone numbers (various formats)
+  anonymized = anonymized.replace(/(\+?\d{1,4}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{2,4}[-.\s]?\d{2,6}/g, "[TELEFON]");
+
+  // Remove URLs
+  anonymized = anonymized.replace(/https?:\/\/[^\s]+/gi, "[URL]");
+
+  // Remove German postal codes + city patterns (e.g., "80331 München")
+  anonymized = anonymized.replace(/\b\d{5}\s+[A-ZÄÖÜ][a-zäöüß]+/g, "[ORT]");
+
+  // Remove street addresses (German pattern: "Musterstraße 12" or "Hauptstr. 5a")
+  anonymized = anonymized.replace(/[A-ZÄÖÜ][a-zäöüß]+(straße|strasse|str\.|weg|platz|gasse|allee)\s*\d+[a-z]?/gi, "[ADRESSE]");
+
+  // Common German first names (expanded list)
+  const germanNames = [
+    "Anna", "Maria", "Lisa", "Laura", "Julia", "Sarah", "Lena", "Sophie", "Emma", "Mia",
+    "Thomas", "Michael", "Stefan", "Andreas", "Christian", "Markus", "Daniel", "Martin", "Peter", "Klaus",
+    "Max", "Felix", "Paul", "Leon", "Jonas", "Tim", "Jan", "Lukas", "David", "Alexander",
+    "Sandra", "Nicole", "Kathrin", "Sabine", "Petra", "Andrea", "Claudia", "Susanne", "Monika", "Karin",
+    "Hans", "Frank", "Wolfgang", "Jürgen", "Dieter", "Werner", "Helmut", "Gerhard", "Heinrich", "Karl",
+    "Mama", "Papa", "Mutti", "Vati", "Oma", "Opa", "Mutter", "Vater"
+  ];
+  const namePattern = new RegExp(`\\b(${germanNames.join("|")})\\b`, "gi");
+  anonymized = anonymized.replace(namePattern, "[NAME]");
+
+  // Remove patterns like "mein Mann Peter" or "meine Frau Anna"
+  anonymized = anonymized.replace(/\b(mein|meine|der|die)\s+(mann|frau|freund|freundin|partner|partnerin|chef|chefin|kollege|kollegin|bruder|schwester|sohn|tochter)\s+[A-ZÄÖÜ][a-zäöüß]+/gi, "$1 $2 [NAME]");
+
+  // Remove "Herr/Frau + Name" patterns
+  anonymized = anonymized.replace(/\b(herr|frau|dr\.|prof\.)\s+[A-ZÄÖÜ][a-zäöüß]+/gi, "[NAME]");
+
+  // Remove company/institution names after "bei" or "in der/im"
+  anonymized = anonymized.replace(/\b(bei|bei der|beim|in der|im)\s+[A-ZÄÖÜ][a-zäöüß]+\s*(GmbH|AG|KG|e\.V\.|Inc\.)?/gi, "$1 [FIRMA]");
+
+  // Remove city names (major German cities)
+  const cities = [
+    "Berlin", "Hamburg", "München", "Köln", "Frankfurt", "Stuttgart", "Düsseldorf", "Leipzig",
+    "Dortmund", "Essen", "Bremen", "Dresden", "Hannover", "Nürnberg", "Duisburg", "Bochum",
+    "Wuppertal", "Bielefeld", "Bonn", "Münster", "Mannheim", "Karlsruhe", "Augsburg", "Wiesbaden",
+    "Wien", "Zürich", "Salzburg", "Graz", "Linz", "Innsbruck", "Bern", "Basel"
+  ];
+  const cityPattern = new RegExp(`\\b(${cities.join("|")})\\b`, "gi");
+  anonymized = anonymized.replace(cityPattern, "[STADT]");
+
+  // Remove dates in various formats
+  anonymized = anonymized.replace(/\b\d{1,2}[./-]\d{1,2}[./-]\d{2,4}\b/g, "[DATUM]");
+
+  // Remove age mentions like "ich bin 34" or "34 Jahre"
+  anonymized = anonymized.replace(/\b(\d{1,2})\s*(jahre|j\.|jährig)/gi, "[ALTER] Jahre");
+  anonymized = anonymized.replace(/\bbin\s+(\d{1,2})\b/gi, "bin [ALTER]");
+
+  return anonymized;
+}
+
+// ============================================================================
 // AI-POWERED ANALYSIS FUNCTION (using Groq)
 // ============================================================================
 
@@ -842,10 +907,13 @@ const AVAILABLE_TOPICS = [
 
 const AI_SYSTEM_PROMPT = `Du bist ein einfühlsamer Psychologie-Assistent, der Menschen hilft, ihre Situation zu verstehen.
 
+DATENSCHUTZ: Der Text wurde bereits anonymisiert. Platzhalter wie [NAME], [ORT], [FIRMA] sind normal.
+
 Analysiere den Text und antworte NUR mit einem JSON-Objekt (keine Erklärung, kein Markdown):
 
 {
   "topics": ["topic1", "topic2"],
+  "reasoning": "1-2 Sätze auf Deutsch, warum diese Themen erkannt wurden",
   "intensity": "low" | "medium" | "high",
   "summary": "Kurze, einfühlsame Zusammenfassung auf Deutsch (1-2 Sätze)",
   "crisis": false,
@@ -864,6 +932,9 @@ Intensität:
 - "medium": Belastend aber bewältigbar
 - "low": Leichte Beschwerden, präventiv
 
+Beispiel für "reasoning":
+- "Du beschreibst Erschöpfung und fehlende Motivation bei der Arbeit – typische Anzeichen für Burnout. Die Schlafprobleme deuten auf zusätzliche Belastung hin."
+
 Antworte IMMER auf Deutsch, auch wenn der Input auf Englisch ist.`;
 
 export async function analyzeSituation(text: string): Promise<SituationAnalysis> {
@@ -877,6 +948,7 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       understandingSummary: "",
       suggestedMethods: [],
       keywords: [],
+      topicReasons: "",
       crisisDetected: false,
       crisisType: null,
     };
@@ -897,17 +969,21 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       understandingSummary: "",
       suggestedMethods: [],
       keywords: [],
+      topicReasons: "",
       crisisDetected: true,
       crisisType: keywordCrisis.crisisType,
     };
   }
 
   try {
+    // PRIVACY: Anonymize text before sending to external AI
+    const anonymizedText = anonymizeText(text);
+
     // Use Groq AI for analysis
     const completion = await groq.chat.completions.create({
       messages: [
         { role: "system", content: AI_SYSTEM_PROMPT },
-        { role: "user", content: text }
+        { role: "user", content: anonymizedText }
       ],
       model: "llama-3.1-8b-instant",
       temperature: 0.3,
@@ -938,6 +1014,7 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
         understandingSummary: "",
         suggestedMethods: [],
         keywords: [],
+        topicReasons: "",
         crisisDetected: true,
         crisisType: aiResult.crisisType || "acute_danger",
       };
@@ -958,6 +1035,7 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       understandingSummary: aiResult.summary || "",
       suggestedMethods: [],
       keywords: [],
+      topicReasons: aiResult.reasoning || "",
       crisisDetected: false,
       crisisType: null,
     };
@@ -982,6 +1060,7 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       understandingSummary: summary,
       suggestedMethods: [],
       keywords: [],
+      topicReasons: "Basierend auf Schlüsselwörtern in deiner Beschreibung.",
       crisisDetected: false,
       crisisType: null,
     };
