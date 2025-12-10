@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-// German cities for autocomplete suggestions
-const GERMAN_CITIES = [
+// German and Austrian cities for autocomplete suggestions
+const CITIES = [
+  // Germany - Major cities
   "Berlin",
   "Hamburg",
   "München",
@@ -87,6 +88,64 @@ const GERMAN_CITIES = [
   "Siegen",
   "Hildesheim",
   "Cottbus",
+  // Austria - All major cities and towns
+  "Wien",
+  "Graz",
+  "Linz",
+  "Salzburg",
+  "Innsbruck",
+  "Klagenfurt",
+  "Villach",
+  "Wels",
+  "Sankt Pölten",
+  "Dornbirn",
+  "Wiener Neustadt",
+  "Steyr",
+  "Feldkirch",
+  "Bregenz",
+  "Leonding",
+  "Klosterneuburg",
+  "Baden bei Wien",
+  "Wolfsberg",
+  "Leoben",
+  "Krems an der Donau",
+  "Traun",
+  "Amstetten",
+  "Lustenau",
+  "Kapfenberg",
+  "Mödling",
+  "Hallein",
+  "Kufstein",
+  "Traiskirchen",
+  "Schwechat",
+  "Braunau am Inn",
+  "Stockerau",
+  "Saalfelden",
+  "Ansfelden",
+  "Tulln",
+  "Hohenems",
+  "Spittal an der Drau",
+  "Telfs",
+  "Ternitz",
+  "Perchtoldsdorf",
+  "Feldkirchen",
+  "Bludenz",
+  "Bad Ischl",
+  "Eisenstadt",
+  "Schwaz",
+  "Hall in Tirol",
+  "Gmunden",
+  "Wörgl",
+  "Waidhofen an der Ybbs",
+  "Marchtrenk",
+  "Bruck an der Mur",
+  "Lienz",
+  "Hard",
+  "Rankweil",
+  "Ried im Innkreis",
+  "Vöcklabruck",
+  "Götzis",
+  "Brunn am Gebirge",
 ];
 
 interface LocationInputProps {
@@ -115,7 +174,7 @@ export function LocationInput({
   // Filter suggestions based on input
   useEffect(() => {
     if (value.length >= 2) {
-      const filtered = GERMAN_CITIES.filter((city) =>
+      const filtered = CITIES.filter((city) =>
         city.toLowerCase().startsWith(value.toLowerCase())
       ).slice(0, 5);
       setSuggestions(filtered);
