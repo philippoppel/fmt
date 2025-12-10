@@ -251,30 +251,30 @@ export function TopMatchCard({
           </div>
 
           {/* Footer Actions - 3 equal buttons */}
-          <div className="grid grid-cols-3 gap-1.5 border-t bg-muted/30 p-2 sm:gap-2 sm:p-3">
+          <div className="grid grid-cols-3 gap-1 border-t bg-muted/30 p-2">
             {onCompareToggle && (
               <Button
                 variant={isComparing ? "default" : "outline"}
                 size="sm"
                 className={cn(
-                  "h-9 gap-1 px-2 text-xs",
+                  "h-9 gap-1 px-1.5 text-xs lg:px-2",
                   isComparing && "bg-primary text-primary-foreground"
                 )}
                 onClick={() => onCompareToggle(therapist.id)}
               >
-                <GitCompare className="h-3.5 w-3.5 shrink-0" />
-                <span className="hidden truncate sm:inline">{isComparing ? t("matching.compare.added") : t("matching.compare.add")}</span>
+                <GitCompare className="h-4 w-4 shrink-0" />
+                <span className="hidden truncate xl:inline">{isComparing ? t("matching.compare.added") : t("matching.compare.add")}</span>
               </Button>
             )}
-            <Button asChild variant="ghost" size="sm" className="h-9 gap-1 px-2 text-xs">
+            <Button asChild variant="ghost" size="sm" className="h-9 gap-1 px-1.5 text-xs lg:px-2">
               <Link href={`/therapists/${therapist.id}`}>
-                <User className="h-3.5 w-3.5 shrink-0" />
-                <span className="hidden sm:inline">{t("therapists.viewProfile")}</span>
+                <User className="h-4 w-4 shrink-0" />
+                <span className="hidden truncate xl:inline">{t("therapists.viewProfile")}</span>
               </Link>
             </Button>
-            <Button size="sm" className="h-9 gap-1 px-2 text-xs">
-              <MessageCircle className="h-3.5 w-3.5 shrink-0" />
-              <span className="hidden sm:inline">{t("therapists.contact")}</span>
+            <Button size="sm" className="h-9 gap-1 px-1.5 text-xs lg:px-2">
+              <MessageCircle className="h-4 w-4 shrink-0" />
+              <span className="hidden truncate xl:inline">{t("therapists.contact")}</span>
             </Button>
           </div>
         </CardContent>
