@@ -38,8 +38,8 @@ export function SuicideScreening() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/20">
-          <ShieldCheck className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-200 dark:bg-amber-900/30">
+          <ShieldCheck className="h-6 w-6 text-amber-700 dark:text-amber-400" />
         </div>
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           {t("matching.screening.title")}
@@ -51,10 +51,10 @@ export function SuicideScreening() {
 
       <div className="mx-auto max-w-xl space-y-6">
         {/* Important notice */}
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950/20">
+        <div className="rounded-lg border-2 border-amber-400 bg-amber-100 p-4 dark:border-amber-700 dark:bg-amber-950/30">
           <div className="flex gap-3">
             <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
-            <p className="text-sm text-amber-800 dark:text-amber-200">
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
               {t("matching.screening.notice")}
             </p>
           </div>
@@ -136,16 +136,16 @@ function ScreeningButton({ isSelected, onClick, label, variant }: ScreeningButto
       type="button"
       onClick={onClick}
       className={cn(
-        "flex-1 rounded-lg border-2 px-6 py-3 text-base font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+        "flex-1 rounded-lg border-2 px-6 py-3 text-base font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
         variant === "danger" && [
           isSelected
-            ? "border-red-500 bg-red-500 text-white focus-visible:ring-red-500"
-            : "border-red-200 bg-red-50 text-red-700 hover:border-red-300 hover:bg-red-100 focus-visible:ring-red-500 dark:border-red-800 dark:bg-red-950/20 dark:text-red-300 dark:hover:border-red-700 dark:hover:bg-red-950/40",
+            ? "border-red-600 bg-red-600 text-white focus-visible:ring-red-600"
+            : "border-red-400 bg-red-100 text-red-700 hover:border-red-500 hover:bg-red-200 focus-visible:ring-red-500 dark:border-red-700 dark:bg-red-950/30 dark:text-red-300 dark:hover:border-red-600 dark:hover:bg-red-950/50",
         ],
         variant === "safe" && [
           isSelected
-            ? "border-green-500 bg-green-500 text-white focus-visible:ring-green-500"
-            : "border-green-200 bg-green-50 text-green-700 hover:border-green-300 hover:bg-green-100 focus-visible:ring-green-500 dark:border-green-800 dark:bg-green-950/20 dark:text-green-300 dark:hover:border-green-700 dark:hover:bg-green-950/40",
+            ? "border-green-600 bg-green-600 text-white focus-visible:ring-green-600"
+            : "border-green-400 bg-green-100 text-green-700 hover:border-green-500 hover:bg-green-200 focus-visible:ring-green-500 dark:border-green-700 dark:bg-green-950/30 dark:text-green-300 dark:hover:border-green-600 dark:hover:bg-green-950/50",
         ]
       )}
       aria-pressed={isSelected}
