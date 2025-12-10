@@ -81,9 +81,9 @@ function WizardContent() {
   // If crisis detected, show crisis resources only
   if (state.crisisDetected) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
-        <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-8 sm:py-12">
-          <div className="flex-1 rounded-3xl border bg-card/80 p-6 shadow-2xl backdrop-blur">
+      <div className="min-h-[100dvh] bg-gradient-to-b from-background via-background to-secondary/30">
+        <div className="mx-auto flex min-h-[100dvh] max-w-4xl flex-col px-4 py-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+          <div className="flex-1 rounded-3xl border bg-card/80 p-4 sm:p-6 shadow-2xl backdrop-blur">
             <CrisisResources />
           </div>
         </div>
@@ -110,9 +110,9 @@ function WizardContent() {
   // Freetext analysis step (alternative to topic selection)
   if (state.currentStep === 0.75) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
-        <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-8 sm:py-12">
-          <div className="flex flex-1 flex-col rounded-3xl border bg-card/80 p-6 shadow-2xl backdrop-blur">
+      <div className="min-h-[100dvh] bg-gradient-to-b from-background via-background to-secondary/30">
+        <div className="mx-auto flex min-h-[100dvh] max-w-4xl flex-col px-4 py-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+          <div className="flex flex-1 flex-col rounded-3xl border bg-card/80 p-4 sm:p-6 shadow-2xl backdrop-blur">
             <SituationInput
               onAnalysisComplete={handleFreetextAnalysis}
               onSkip={actions.skipFreetext}
@@ -126,14 +126,14 @@ function WizardContent() {
   // Screening step (at the end, before results)
   if (state.currentStep === 2.5) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/30">
-        <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-8 sm:py-12">
-          <div className="flex flex-1 flex-col rounded-3xl border bg-card/80 p-6 shadow-2xl backdrop-blur">
+      <div className="min-h-[100dvh] bg-gradient-to-b from-background via-background to-secondary/30">
+        <div className="mx-auto flex min-h-[100dvh] max-w-4xl flex-col px-4 py-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+          <div className="flex flex-1 flex-col rounded-3xl border bg-card/80 p-4 sm:p-6 shadow-2xl backdrop-blur">
             <SuicideScreening />
 
             {/* Continue button when screening is completed safely */}
             {state.screeningCompleted && !state.crisisDetected && (
-              <div className="mt-auto flex justify-center pt-6">
+              <div className="mt-auto flex justify-center pt-4">
                 <Button
                   onClick={handleShowResults}
                   className="w-full justify-center gap-2 bg-primary text-base hover:bg-primary/90 sm:w-auto"
@@ -150,9 +150,9 @@ function WizardContent() {
   }
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-background">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-background">
       {/* Combined Header + Progress - single compact row */}
-      <header className="shrink-0 border-b bg-card px-3 py-2">
+      <header className="shrink-0 border-b bg-card px-3 py-2 pt-[calc(0.5rem+env(safe-area-inset-top))]">
         <div className="mx-auto flex max-w-6xl items-center gap-2">
           {/* Close Button */}
           <Button
@@ -197,8 +197,8 @@ function WizardContent() {
         </div>
       </main>
 
-      {/* Fixed Footer Navigation - more compact */}
-      <nav className="shrink-0 border-t bg-card px-3 py-2">
+      {/* Fixed Footer Navigation - more compact, with safe area for iOS */}
+      <nav className="shrink-0 border-t bg-card px-3 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <Button
             variant="ghost"
