@@ -776,6 +776,7 @@
       "title": "Beschreibe deine Situation",
       "subtitle": "In eigenen Worten: Was beschäftigt dich? Wir erkennen automatisch passende Themen und Schwerpunkte.",
       "placeholder": "z.B. Ich fühle mich seit Wochen erschöpft und habe das Gefühl, dass mir alles über den Kopf wächst. Meine Beziehung leidet darunter...",
+      "shortPlaceholder": "Beschreibe kurz, was dich beschäftigt...",
       "examples": "Beispiele:",
       "example1": "Ich habe seit Monaten Schlafprobleme und fühle mich tagsüber erschöpft. Die Arbeit belastet mich sehr.",
       "example2": "Nach der Trennung fällt es mir schwer, wieder Vertrauen aufzubauen. Ich grübele viel über die Vergangenheit.",

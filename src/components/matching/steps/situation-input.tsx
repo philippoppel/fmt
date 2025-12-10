@@ -24,10 +24,20 @@ const EXAMPLE_PROMPTS = [
 export function SituationInput({ onAnalysisComplete, onSkip, onCrisisDetected }: SituationInputProps) {
   const t = useTranslations();
   const locale = useLocale();
-  const [text, setText] = useState("");
+  const [text, setText] = useState(() => {
+    // Load draft from sessionStorage if available
+    if (typeof window !== "undefined") {
+      const draft = sessionStorage.getItem("freetextDraft");
+      if (draft) {
+        sessionStorage.removeItem("freetextDraft");
+        return draft;
+      }
+    }
+    return "";
+  });
   const [isPending, startTransition] = useTransition();
   const [analysis, setAnalysis] = useState<SituationAnalysis | null>(null);
-  const [showExamples, setShowExamples] = useState(true);
+  const [showExamples, setShowExamples] = useState(() => !text);
   const [showCrisisAlert, setShowCrisisAlert] = useState(false);
 
   const handleAnalyze = () => {
