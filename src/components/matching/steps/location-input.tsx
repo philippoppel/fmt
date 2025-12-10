@@ -6,147 +6,12 @@ import { MapPin, Navigation, Loader2, X, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useDebounce } from "@/hooks/use-debounce";
 
-// German and Austrian cities for autocomplete suggestions
-const CITIES = [
-  // Germany - Major cities
-  "Berlin",
-  "Hamburg",
-  "München",
-  "Köln",
-  "Frankfurt am Main",
-  "Stuttgart",
-  "Düsseldorf",
-  "Leipzig",
-  "Dortmund",
-  "Essen",
-  "Bremen",
-  "Dresden",
-  "Hannover",
-  "Nürnberg",
-  "Duisburg",
-  "Bochum",
-  "Wuppertal",
-  "Bielefeld",
-  "Bonn",
-  "Münster",
-  "Mannheim",
-  "Karlsruhe",
-  "Augsburg",
-  "Wiesbaden",
-  "Mönchengladbach",
-  "Gelsenkirchen",
-  "Aachen",
-  "Braunschweig",
-  "Kiel",
-  "Chemnitz",
-  "Halle",
-  "Magdeburg",
-  "Freiburg",
-  "Krefeld",
-  "Mainz",
-  "Lübeck",
-  "Erfurt",
-  "Oberhausen",
-  "Rostock",
-  "Kassel",
-  "Hagen",
-  "Potsdam",
-  "Saarbrücken",
-  "Hamm",
-  "Ludwigshafen",
-  "Oldenburg",
-  "Mülheim",
-  "Osnabrück",
-  "Leverkusen",
-  "Heidelberg",
-  "Darmstadt",
-  "Solingen",
-  "Regensburg",
-  "Herne",
-  "Paderborn",
-  "Neuss",
-  "Ingolstadt",
-  "Offenbach",
-  "Würzburg",
-  "Ulm",
-  "Heilbronn",
-  "Pforzheim",
-  "Wolfsburg",
-  "Göttingen",
-  "Bottrop",
-  "Reutlingen",
-  "Koblenz",
-  "Bremerhaven",
-  "Bergisch Gladbach",
-  "Jena",
-  "Erlangen",
-  "Trier",
-  "Remscheid",
-  "Salzgitter",
-  "Moers",
-  "Siegen",
-  "Hildesheim",
-  "Cottbus",
-  // Austria - All major cities and towns
-  "Wien",
-  "Graz",
-  "Linz",
-  "Salzburg",
-  "Innsbruck",
-  "Klagenfurt",
-  "Villach",
-  "Wels",
-  "Sankt Pölten",
-  "Dornbirn",
-  "Wiener Neustadt",
-  "Steyr",
-  "Feldkirch",
-  "Bregenz",
-  "Leonding",
-  "Klosterneuburg",
-  "Baden bei Wien",
-  "Wolfsberg",
-  "Leoben",
-  "Krems an der Donau",
-  "Traun",
-  "Amstetten",
-  "Lustenau",
-  "Kapfenberg",
-  "Mödling",
-  "Hallein",
-  "Kufstein",
-  "Traiskirchen",
-  "Schwechat",
-  "Braunau am Inn",
-  "Stockerau",
-  "Saalfelden",
-  "Ansfelden",
-  "Tulln",
-  "Hohenems",
-  "Spittal an der Drau",
-  "Telfs",
-  "Ternitz",
-  "Perchtoldsdorf",
-  "Feldkirchen",
-  "Bludenz",
-  "Bad Ischl",
-  "Eisenstadt",
-  "Schwaz",
-  "Hall in Tirol",
-  "Gmunden",
-  "Wörgl",
-  "Waidhofen an der Ybbs",
-  "Marchtrenk",
-  "Bruck an der Mur",
-  "Lienz",
-  "Hard",
-  "Rankweil",
-  "Ried im Innkreis",
-  "Vöcklabruck",
-  "Götzis",
-  "Brunn am Gebirge",
-];
+interface LocationSuggestion {
+  name: string;
+  displayName: string;
+}
 
 interface LocationInputProps {
   value: string;
@@ -163,28 +28,89 @@ export function LocationInput({
 }: LocationInputProps) {
   const t = useTranslations("matching.location");
   const [isLocating, setIsLocating] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [hasAutoLocated, setHasAutoLocated] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Filter suggestions based on input
+  // Debounce the search query
+  const debouncedValue = useDebounce(value, 300);
+
+  // Search for cities using Nominatim API
   useEffect(() => {
-    if (value.length >= 2) {
-      const filtered = CITIES.filter((city) =>
-        city.toLowerCase().startsWith(value.toLowerCase())
-      ).slice(0, 5);
-      setSuggestions(filtered);
-      setShowSuggestions(filtered.length > 0 && !hasAutoLocated);
-    } else {
-      setSuggestions([]);
-      setShowSuggestions(false);
-    }
-    setSelectedIndex(-1);
-  }, [value, hasAutoLocated]);
+    const searchCities = async () => {
+      if (debouncedValue.length < 2 || hasAutoLocated) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+        return;
+      }
+
+      setIsSearching(true);
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?` +
+            new URLSearchParams({
+              q: debouncedValue,
+              format: "json",
+              addressdetails: "1",
+              limit: "5",
+              featuretype: "city",
+              "accept-language": "de",
+            }),
+          {
+            headers: {
+              "User-Agent": "TherapyMatchingApp/1.0",
+            },
+          }
+        );
+
+        if (!response.ok) throw new Error("Search failed");
+
+        const data = await response.json();
+
+        const cityResults: LocationSuggestion[] = data
+          .filter((item: any) => {
+            // Filter for cities, towns, villages
+            const type = item.type;
+            return ["city", "town", "village", "municipality", "administrative"].includes(type);
+          })
+          .map((item: any) => {
+            const city =
+              item.address?.city ||
+              item.address?.town ||
+              item.address?.village ||
+              item.address?.municipality ||
+              item.name;
+            const country = item.address?.country || "";
+            const state = item.address?.state || "";
+
+            return {
+              name: city,
+              displayName: state ? `${city}, ${state}` : `${city}, ${country}`,
+            };
+          })
+          // Remove duplicates by name
+          .filter(
+            (item: LocationSuggestion, index: number, self: LocationSuggestion[]) =>
+              index === self.findIndex((t) => t.name === item.name)
+          );
+
+        setSuggestions(cityResults);
+        setShowSuggestions(cityResults.length > 0);
+      } catch (error) {
+        console.error("City search error:", error);
+        setSuggestions([]);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    searchCities();
+  }, [debouncedValue, hasAutoLocated]);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -206,6 +132,7 @@ export function LocationInput({
           {
             headers: {
               "Accept-Language": "de",
+              "User-Agent": "TherapyMatchingApp/1.0",
             },
           }
         );
@@ -223,7 +150,6 @@ export function LocationInput({
     },
     []
   );
-
 
   // Manual locate button
   const handleLocate = async () => {
@@ -279,7 +205,7 @@ export function LocationInput({
       case "Enter":
         e.preventDefault();
         if (selectedIndex >= 0) {
-          onChange(suggestions[selectedIndex]);
+          onChange(suggestions[selectedIndex].name);
           setShowSuggestions(false);
           setHasAutoLocated(true);
         }
@@ -290,8 +216,8 @@ export function LocationInput({
     }
   };
 
-  const handleSelectSuggestion = (city: string) => {
-    onChange(city);
+  const handleSelectSuggestion = (suggestion: LocationSuggestion) => {
+    onChange(suggestion.name);
     setShowSuggestions(false);
     setHasAutoLocated(true);
     inputRef.current?.focus();
@@ -330,11 +256,12 @@ export function LocationInput({
             )}
             autoComplete="off"
           />
-          {/* Success indicator or clear button */}
-          {value && (
+          {/* Loading, success indicator or clear button */}
+          {(value || isSearching) && (
             <button
               type="button"
               onClick={handleClear}
+              disabled={isSearching}
               className={cn(
                 "absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-0.5 transition-colors",
                 hasAutoLocated
@@ -342,7 +269,9 @@ export function LocationInput({
                   : "text-muted-foreground hover:bg-muted"
               )}
             >
-              {hasAutoLocated ? (
+              {isSearching ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : hasAutoLocated ? (
                 <Check className="h-3.5 w-3.5" />
               ) : (
                 <X className="h-3.5 w-3.5" />
@@ -378,9 +307,9 @@ export function LocationInput({
       {showSuggestions && suggestions.length > 0 && (
         <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-md">
           <ul className="py-0.5" role="listbox">
-            {suggestions.map((city, index) => (
+            {suggestions.map((suggestion, index) => (
               <li
-                key={city}
+                key={`${suggestion.name}-${index}`}
                 role="option"
                 aria-selected={index === selectedIndex}
                 className={cn(
@@ -389,11 +318,11 @@ export function LocationInput({
                     ? "bg-accent text-accent-foreground"
                     : "hover:bg-muted"
                 )}
-                onClick={() => handleSelectSuggestion(city)}
+                onClick={() => handleSelectSuggestion(suggestion)}
                 onMouseEnter={() => setSelectedIndex(index)}
               >
-                <MapPin className="h-3 w-3 text-muted-foreground" />
-                {city}
+                <MapPin className="h-3 w-3 shrink-0 text-muted-foreground" />
+                <span className="truncate">{suggestion.displayName}</span>
               </li>
             ))}
           </ul>
