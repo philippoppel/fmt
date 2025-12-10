@@ -28,13 +28,9 @@ export function TopicSelection() {
     startTransition(async () => {
       const result = await analyzeSituation(freetextValue);
 
-      // Only trigger crisis flow for actual crisis detection
-      // The screening questions at the end will also check for this
-      if (result.crisisDetected && result.crisisType) {
-        // Handle crisis - go to screening step (2.5)
-        actions.setStep(2.5);
-        return;
-      }
+      // Note: We do NOT navigate away on crisis detection here.
+      // The actual safety screening happens at step 2.5 (end of wizard).
+      // Here we just analyze topics and stay on this page.
 
       const topics = result.suggestedTopics || [];
       setDetectedTopics(topics);
