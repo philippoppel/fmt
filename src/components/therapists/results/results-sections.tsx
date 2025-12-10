@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { TherapistGrid } from "./therapist-grid";
 import { KnowledgeSection } from "./knowledge-section";
@@ -39,6 +39,11 @@ export function ResultsSections({
 }: ResultsSectionsProps) {
   const t = useTranslations("therapists");
   const [showAllResults, setShowAllResults] = useState(false);
+
+  // Reset to TopMatches view when filters change (therapist list changes)
+  useEffect(() => {
+    setShowAllResults(false);
+  }, [therapists.length, JSON.stringify(filters)]);
 
   if (isLoading) {
     return (
