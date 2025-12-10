@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
@@ -9,11 +10,24 @@ import { Menu, X, User, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 
+// Routes where header should be hidden (fullscreen experiences)
+const HIDDEN_HEADER_ROUTES = ["/therapists/matching"];
+
 export function Header() {
   const t = useTranslations("navigation");
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data: session, status } = useSession();
   const isAuthenticated = status === "authenticated";
+
+  // Check if current path matches any hidden route (supports localized paths)
+  const shouldHide = HIDDEN_HEADER_ROUTES.some(route =>
+    pathname.includes(route)
+  );
+
+  if (shouldHide) {
+    return null;
+  }
 
   const navItems = [
     { href: "/", label: t("home") },

@@ -1,11 +1,25 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+
+// Routes where footer should be hidden (fullscreen experiences)
+const HIDDEN_FOOTER_ROUTES = ["/therapists/matching"];
 
 export function Footer() {
   const t = useTranslations("footer");
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+
+  // Check if current path matches any hidden route (supports localized paths)
+  const shouldHide = HIDDEN_FOOTER_ROUTES.some(route =>
+    pathname.includes(route)
+  );
+
+  if (shouldHide) {
+    return null;
+  }
 
   return (
     <footer className="border-t bg-background" role="contentinfo">
