@@ -24,10 +24,10 @@ export function CriteriaSelection() {
         </p>
       </div>
 
-      {/* 2x2 Grid on mobile, 2 columns on larger */}
-      <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
-        {/* Location - full width on mobile */}
-        <div className="space-y-1.5 sm:col-span-2 md:col-span-1">
+      {/* 2x2 Grid - always 2 columns */}
+      <div className="grid flex-1 grid-cols-2 gap-3">
+        {/* Location - full width */}
+        <div className="col-span-2 space-y-1.5">
           <Label className="flex items-center gap-1.5 text-xs font-medium">
             <MapPinned className="h-3.5 w-3.5 text-primary" />
             {t("matching.criteria.location")}
@@ -39,8 +39,8 @@ export function CriteriaSelection() {
           />
         </div>
 
-        {/* Session Type */}
-        <div className="space-y-1.5 sm:col-span-2 md:col-span-1">
+        {/* Session Type - full width */}
+        <div className="col-span-2 space-y-1.5">
           <Label className="flex items-center gap-1.5 text-xs font-medium">
             <Video className="h-3.5 w-3.5 text-muted-foreground" />
             {t("matching.criteria.sessionType")}
