@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight, Sparkles, SkipForward, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MatchingProvider, useMatching, type FreetextAnalysis } from "./matching-context";
 import { PrecisionMeter } from "./precision-meter";
-import { StepIndicator, TopicSelection, CriteriaSelection } from "./steps";
+import { StepIndicator, TopicSelection, SubTopicSelection, CriteriaSelection } from "./steps";
 import { SuicideScreening } from "./steps/suicide-screening";
 import { CrisisResources } from "./steps/crisis-resources";
 import { IntensityAssessment } from "./steps/intensity-assessment";
@@ -20,6 +20,7 @@ function WizardContent() {
 
   const stepLabels = {
     topics: t("matching.wizard.stepLabels.topics"),
+    subtopics: t("matching.wizard.stepLabels.subtopics"),
     intensity: t("matching.wizard.stepLabels.intensity"),
     preferences: t("matching.wizard.stepLabels.preferences"),
   };
@@ -27,20 +28,23 @@ function WizardContent() {
   // Determine step position for display (freetext counts as topics step)
   const getStepPosition = () => {
     if (state.currentStep === 0.75 || state.currentStep === 1) return 1;
-    if (state.currentStep === 1.5) return 2;
-    if (state.currentStep === 2) return 3;
-    if (state.currentStep === 2.5) return 4;
+    if (state.currentStep === 1.25) return 2;
+    if (state.currentStep === 1.5) return 3;
+    if (state.currentStep === 2) return 4;
+    if (state.currentStep === 2.5) return 5;
     return 1;
   };
 
   const activeStepLabel =
     state.currentStep === 0.75 || state.currentStep === 1
       ? stepLabels.topics
-      : state.currentStep === 1.5
-        ? stepLabels.intensity
-        : stepLabels.preferences;
+      : state.currentStep === 1.25
+        ? stepLabels.subtopics
+        : state.currentStep === 1.5
+          ? stepLabels.intensity
+          : stepLabels.preferences;
   const stepPosition = getStepPosition();
-  const totalSteps = 4; // Topics, Intensity, Preferences, Safety Check
+  const totalSteps = 5; // Topics, SubTopics, Intensity, Preferences, Safety Check
 
   const handleShowResults = () => {
     // Encode matching data for URL
@@ -193,6 +197,7 @@ function WizardContent() {
       <main className="min-h-0 flex-1 overflow-auto px-3 py-2">
         <div className="mx-auto h-full max-w-6xl">
           {state.currentStep === 1 && <TopicSelection />}
+          {state.currentStep === 1.25 && <SubTopicSelection />}
           {state.currentStep === 1.5 && <IntensityAssessment />}
           {state.currentStep === 2 && <CriteriaSelection />}
         </div>

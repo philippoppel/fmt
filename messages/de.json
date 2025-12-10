@@ -484,10 +484,15 @@
       "refinementOptional": "Diese Angaben sind optional und können übersprungen werden",
       "stepLabels": {
         "topics": "Themen",
+        "subtopics": "Details",
         "intensity": "Intensität",
         "preferences": "Präferenzen",
         "style": "Arbeitsstil"
       },
+      "step1_25Title": "Beschreiben Sie genauer",
+      "subtopicHint": "Wählen Sie spezifische Bereiche für bessere Ergebnisse",
+      "selectedSubTopics": "{count} Details ausgewählt",
+      "subtopicBenefit": "Je genauer Sie beschreiben, desto passender die Therapeuten-Empfehlungen",
       "continue": "Weiter zum Matching"
     },
     "precision": {

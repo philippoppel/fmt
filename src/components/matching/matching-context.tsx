@@ -25,9 +25,9 @@ import {
   type SubTopic,
 } from "@/lib/matching/topics";
 
-// Steps: 1 = Topics, 1.5 = Intensity (optional), 2 = Criteria, 2.5 = Screening (before results)
+// Steps: 1 = Topics, 1.25 = SubTopics, 1.5 = Intensity (optional), 2 = Criteria, 2.5 = Screening (before results)
 // Optional: 0.75 = Freetext (alternative to topic selection)
-export type WizardStep = 0.75 | 1 | 1.5 | 2 | 2.5;
+export type WizardStep = 0.75 | 1 | 1.25 | 1.5 | 2 | 2.5;
 
 export type IntensityLevel = "low" | "medium" | "high";
 export type MatchingMode = "quick" | "full";
@@ -476,18 +476,29 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SWITCH_TO_FREETEXT" });
   }, []);
 
-  // Navigation: 1 -> 1.5 -> 2 -> 2.5 (screening) -> results
+  // Navigation: 1 -> 1.25 (subtopics) -> 1.5 -> 2 -> 2.5 (screening) -> results
   // Alternative: 0.75 (freetext) -> 1 -> ...
+  // SubTopics step (1.25) is skipped if no topics selected
   const goNext = useCallback(() => {
-    const stepOrder: WizardStep[] = [0.75, 1, 1.5, 2, 2.5];
+    const stepOrder: WizardStep[] = [0.75, 1, 1.25, 1.5, 2, 2.5];
     const currentIndex = stepOrder.indexOf(state.currentStep);
+
+    // Skip SubTopics step if no available subtopics
+    if (state.currentStep === 1) {
+      const availableSubs = getSubTopicsForTopics(state.selectedTopics);
+      if (availableSubs.length === 0) {
+        dispatch({ type: "SET_STEP", step: 1.5 }); // Skip to intensity
+        return;
+      }
+    }
+
     if (currentIndex < stepOrder.length - 1) {
       dispatch({ type: "SET_STEP", step: stepOrder[currentIndex + 1] });
     }
-  }, [state.currentStep]);
+  }, [state.currentStep, state.selectedTopics]);
 
   const goBack = useCallback(() => {
-    const stepOrder: WizardStep[] = [0.75, 1, 1.5, 2, 2.5];
+    const stepOrder: WizardStep[] = [0.75, 1, 1.25, 1.5, 2, 2.5];
     const currentIndex = stepOrder.indexOf(state.currentStep);
     // Can go back from any step except the first (freetext or topics)
     if (currentIndex > 0) {
@@ -497,11 +508,17 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
       } else if (state.currentStep === 1) {
         // Can't go back from topics if no freetext
         return;
-      } else {
-        dispatch({ type: "SET_STEP", step: stepOrder[currentIndex - 1] });
+      } else if (state.currentStep === 1.5) {
+        // From intensity, check if we should skip subtopics
+        const availableSubs = getSubTopicsForTopics(state.selectedTopics);
+        if (availableSubs.length === 0) {
+          dispatch({ type: "SET_STEP", step: 1 }); // Skip back to topics
+          return;
+        }
       }
+      dispatch({ type: "SET_STEP", step: stepOrder[currentIndex - 1] });
     }
-  }, [state.currentStep, state.freetextAnalysis]);
+  }, [state.currentStep, state.freetextAnalysis, state.selectedTopics]);
 
   // Computed values
   const selectedTopicDetails = useMemo(
@@ -520,6 +537,8 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
         return true; // Freetext is optional
       case 1:
         return state.selectedTopics.length > 0;
+      case 1.25:
+        return true; // SubTopics are optional (but recommended)
       case 1.5:
         return true; // Intensity is optional
       case 2:
@@ -531,14 +550,15 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     }
   }, [state.currentStep, state.screeningCompleted, state.crisisDetected, state.selectedTopics.length]);
 
-  // Progress: 1 = 20%, 1.5 = 40%, 2 = 60%, 2.5 = 80%, results = 100%
+  // Progress: 1 = 20%, 1.25 = 35%, 1.5 = 50%, 2 = 70%, 2.5 = 90%, results = 100%
   const progress = useMemo(() => {
     const stepProgress: Record<WizardStep, number> = {
       0.75: 10,
-      1: 25,
-      1.5: 45,
-      2: 65,
-      2.5: 85,
+      1: 20,
+      1.25: 35,
+      1.5: 50,
+      2: 70,
+      2.5: 90,
     };
     return stepProgress[state.currentStep] ?? 0;
   }, [state.currentStep]);

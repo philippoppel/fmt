@@ -484,10 +484,15 @@
       "refinementOptional": "These details are optional and can be skipped",
       "stepLabels": {
         "topics": "Topics",
+        "subtopics": "Details",
         "intensity": "Intensity",
         "preferences": "Preferences",
         "style": "Work Style"
       },
+      "step1_25Title": "Describe more specifically",
+      "subtopicHint": "Select specific areas for better results",
+      "selectedSubTopics": "{count} details selected",
+      "subtopicBenefit": "The more specific you are, the better your therapist recommendations",
       "continue": "Continue to Matching"
     },
     "precision": {
