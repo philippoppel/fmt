@@ -46,8 +46,8 @@ export function TopicSelection() {
 
       {/* Topic Grid + Freetext Card */}
       <div className="grid flex-1 auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 md:gap-4 lg:grid-cols-6">
-        {/* Topic Cards */}
-        {MATCHING_TOPICS.map((topic) => (
+        {/* First 4 Topic Cards */}
+        {MATCHING_TOPICS.slice(0, 4).map((topic) => (
           <TopicCard
             key={topic.id}
             topic={topic}
@@ -57,7 +57,7 @@ export function TopicSelection() {
           />
         ))}
 
-        {/* Freetext Card - spans 2 columns, positioned at end */}
+        {/* Freetext Card - positioned after first 4 topics */}
         <div
           onClick={handleCardClick}
           className={cn(
@@ -118,6 +118,17 @@ export function TopicSelection() {
             </div>
           )}
         </div>
+
+        {/* Remaining Topic Cards */}
+        {MATCHING_TOPICS.slice(4).map((topic) => (
+          <TopicCard
+            key={topic.id}
+            topic={topic}
+            label={t(topic.labelKey)}
+            isSelected={state.selectedTopics.includes(topic.id)}
+            onToggle={() => actions.toggleTopic(topic.id)}
+          />
+        ))}
       </div>
     </div>
   );
