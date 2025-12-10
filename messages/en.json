@@ -493,6 +493,17 @@
       "subtopicHint": "Select specific areas for better results",
       "selectedSubTopics": "{count} details selected",
       "subtopicBenefit": "The more specific you are, the better your therapist recommendations",
+      "customSubtopicPrompt": "Nothing fits? Describe it in your own words",
+      "customSubtopicPlaceholder": "e.g. I have trouble controlling my impulses during anger outbursts...",
+      "findClosestMatch": "Find closest match",
+      "cancel": "Cancel",
+      "aiMatchFound": "AI found matching areas",
+      "aiMatchLow": "No exact match found",
+      "aiMatchLowHint": "You can still continue - therapists with related specializations will be prioritized",
+      "customIntensityPrompt": "Prefer to describe in your own words?",
+      "customIntensityPlaceholder": "e.g. It strongly affects my daily life, I can barely work anymore...",
+      "analyzeIntensity": "Get assessment",
+      "aiIntensityResult": "AI intensity assessment",
       "continue": "Continue to Matching"
     },
     "precision": {

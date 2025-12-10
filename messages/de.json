@@ -493,6 +493,17 @@
       "subtopicHint": "Wählen Sie spezifische Bereiche für bessere Ergebnisse",
       "selectedSubTopics": "{count} Details ausgewählt",
       "subtopicBenefit": "Je genauer Sie beschreiben, desto passender die Therapeuten-Empfehlungen",
+      "customSubtopicPrompt": "Nichts Passendes dabei? Beschreiben Sie es in eigenen Worten",
+      "customSubtopicPlaceholder": "z.B. Ich habe Probleme mit der Impulskontrolle bei Wutanfällen...",
+      "findClosestMatch": "Passenden Bereich finden",
+      "cancel": "Abbrechen",
+      "aiMatchFound": "AI hat passende Bereiche gefunden",
+      "aiMatchLow": "Kein exakter Match gefunden",
+      "aiMatchLowHint": "Sie können trotzdem fortfahren - Therapeuten mit verwandten Spezialisierungen werden priorisiert",
+      "customIntensityPrompt": "Lieber in eigenen Worten beschreiben?",
+      "customIntensityPlaceholder": "z.B. Es belastet mich stark im Alltag, ich kann kaum noch arbeiten...",
+      "analyzeIntensity": "Einschätzung erhalten",
+      "aiIntensityResult": "AI-Einschätzung der Intensität",
       "continue": "Weiter zum Matching"
     },
     "precision": {

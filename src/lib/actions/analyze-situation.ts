@@ -1376,3 +1376,152 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
     };
   }
 }
+
+// ============================================================================
+// AI CLOSEST MATCH - For custom descriptions
+// ============================================================================
+
+export interface ClosestMatchResult {
+  matchedIds: string[];
+  explanation: string;
+  confidence: "high" | "medium" | "low";
+}
+
+/**
+ * Find the closest matching SubTopics for a custom description
+ */
+export async function findClosestSubTopics(
+  description: string,
+  availableSubTopics: { id: string; label: string }[]
+): Promise<ClosestMatchResult> {
+  if (!description.trim() || availableSubTopics.length === 0) {
+    return { matchedIds: [], explanation: "", confidence: "low" };
+  }
+
+  const lang = detectLanguage(description);
+  const subTopicList = availableSubTopics.map(st => `- ${st.id}: ${st.label}`).join("\n");
+
+  const systemPrompt = lang === "de"
+    ? `Du bist ein Experte für psychische Gesundheit. Der Nutzer beschreibt ein Problem, das nicht genau zu den vorgegebenen Kategorien passt.
+
+Verfügbare Kategorien:
+${subTopicList}
+
+Antworte NUR mit JSON:
+{
+  "matchedIds": ["id1", "id2"],
+  "explanation": "Kurze Erklärung warum diese Kategorien am besten passen (1 Satz, auf Deutsch)",
+  "confidence": "high" | "medium" | "low"
+}
+
+Wähle 1-3 Kategorien, die am besten passen. Wenn nichts wirklich passt, setze confidence auf "low".`
+    : `You are a mental health expert. The user describes an issue that doesn't exactly fit the predefined categories.
+
+Available categories:
+${subTopicList}
+
+Respond ONLY with JSON:
+{
+  "matchedIds": ["id1", "id2"],
+  "explanation": "Brief explanation why these categories are the best match (1 sentence)",
+  "confidence": "high" | "medium" | "low"
+}
+
+Choose 1-3 categories that fit best. If nothing really fits, set confidence to "low".`;
+
+  try {
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: description }
+      ],
+      temperature: 0.3,
+      max_tokens: 200,
+      response_format: { type: "json_object" },
+    });
+
+    const content = completion.choices[0]?.message?.content;
+    if (!content) {
+      return { matchedIds: [], explanation: "", confidence: "low" };
+    }
+
+    const result = JSON.parse(content);
+    const validIds = availableSubTopics.map(st => st.id);
+    const matchedIds = (result.matchedIds || []).filter((id: string) => validIds.includes(id));
+
+    return {
+      matchedIds,
+      explanation: result.explanation || "",
+      confidence: result.confidence || "medium",
+    };
+  } catch {
+    return { matchedIds: [], explanation: "", confidence: "low" };
+  }
+}
+
+/**
+ * Find the closest matching intensity level for a custom description
+ */
+export async function findClosestIntensity(
+  description: string
+): Promise<{ level: IntensityLevel; explanation: string }> {
+  if (!description.trim()) {
+    return { level: "medium", explanation: "" };
+  }
+
+  const lang = detectLanguage(description);
+
+  const systemPrompt = lang === "de"
+    ? `Du bist ein Experte für psychische Gesundheit. Schätze die Intensität/Dringlichkeit des beschriebenen Problems ein.
+
+Antworte NUR mit JSON:
+{
+  "level": "low" | "medium" | "high",
+  "explanation": "Kurze Begründung (1 Satz, auf Deutsch)"
+}
+
+- low: Leichte Belastung, präventiv, Selbstoptimierung
+- medium: Moderate Belastung, beeinträchtigt Alltag teilweise
+- high: Starke Belastung, dringender Handlungsbedarf, akute Symptome`
+    : `You are a mental health expert. Assess the intensity/urgency of the described issue.
+
+Respond ONLY with JSON:
+{
+  "level": "low" | "medium" | "high",
+  "explanation": "Brief reasoning (1 sentence)"
+}
+
+- low: Mild distress, preventive, self-improvement
+- medium: Moderate distress, partially affects daily life
+- high: Severe distress, urgent action needed, acute symptoms`;
+
+  try {
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: description }
+      ],
+      temperature: 0.3,
+      max_tokens: 150,
+      response_format: { type: "json_object" },
+    });
+
+    const content = completion.choices[0]?.message?.content;
+    if (!content) {
+      return { level: "medium", explanation: "" };
+    }
+
+    const result = JSON.parse(content);
+    const validLevels: IntensityLevel[] = ["low", "medium", "high"];
+    const level = validLevels.includes(result.level) ? result.level : "medium";
+
+    return {
+      level,
+      explanation: result.explanation || "",
+    };
+  } catch {
+    return { level: "medium", explanation: "" };
+  }
+}
