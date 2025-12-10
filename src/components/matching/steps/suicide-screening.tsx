@@ -140,12 +140,12 @@ function ScreeningButton({ isSelected, onClick, label, variant }: ScreeningButto
         variant === "danger" && [
           isSelected
             ? "border-red-600 bg-red-600 text-white focus-visible:ring-red-600"
-            : "border-red-500 bg-white text-red-600 hover:border-red-600 hover:bg-red-50 focus-visible:ring-red-500 dark:border-red-600 dark:bg-red-950/40 dark:text-red-400 dark:hover:border-red-500 dark:hover:bg-red-950/60",
+            : "border-red-300 bg-red-50 text-red-700 hover:border-red-400 hover:bg-red-100 focus-visible:ring-red-500 dark:border-red-700 dark:bg-red-950/40 dark:text-red-400 dark:hover:border-red-600 dark:hover:bg-red-950/60",
         ],
         variant === "safe" && [
           isSelected
             ? "border-green-600 bg-green-600 text-white focus-visible:ring-green-600"
-            : "border-green-500 bg-white text-green-600 hover:border-green-600 hover:bg-green-50 focus-visible:ring-green-500 dark:border-green-600 dark:bg-green-950/40 dark:text-green-400 dark:hover:border-green-500 dark:hover:bg-green-950/60",
+            : "border-green-300 bg-green-50 text-green-700 hover:border-green-400 hover:bg-green-100 focus-visible:ring-green-500 dark:border-green-700 dark:bg-green-950/40 dark:text-green-400 dark:hover:border-green-600 dark:hover:bg-green-950/60",
         ]
       )}
       aria-pressed={isSelected}
