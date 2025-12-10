@@ -37,8 +37,8 @@ export function TopicSelection() {
         </Button>
       </div>
 
-      {/* Topic Grid - 6 columns, 2 rows */}
-      <div className="grid flex-1 auto-rows-fr grid-cols-3 gap-1.5 sm:grid-cols-4 md:grid-cols-6">
+      {/* Topic Grid - responsive columns */}
+      <div className="grid flex-1 auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 md:gap-4 lg:grid-cols-6">
         {MATCHING_TOPICS.map((topic) => (
           <TopicCard
             key={topic.id}

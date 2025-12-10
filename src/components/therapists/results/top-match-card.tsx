@@ -22,6 +22,8 @@ import {
   BadgeCheck,
   Sparkles,
   GitCompare,
+  User,
+  MessageCircle,
 } from "lucide-react";
 import type { MatchedTherapist } from "@/types/therapist";
 import { cn } from "@/lib/utils";
@@ -249,7 +251,7 @@ export function TopMatchCard({
           </div>
 
           {/* Footer Actions - 3 equal buttons */}
-          <div className="grid grid-cols-3 gap-2 border-t bg-muted/30 p-2 sm:p-3">
+          <div className="grid grid-cols-3 gap-1.5 border-t bg-muted/30 p-2 sm:gap-2 sm:p-3">
             {onCompareToggle && (
               <Button
                 variant={isComparing ? "default" : "outline"}
@@ -261,16 +263,18 @@ export function TopMatchCard({
                 onClick={() => onCompareToggle(therapist.id)}
               >
                 <GitCompare className="h-3.5 w-3.5 shrink-0" />
-                <span className="truncate">{isComparing ? t("matching.compare.added") : t("matching.compare.add")}</span>
+                <span className="hidden truncate sm:inline">{isComparing ? t("matching.compare.added") : t("matching.compare.add")}</span>
               </Button>
             )}
-            <Button asChild variant="ghost" size="sm" className="h-9 px-2 text-xs">
+            <Button asChild variant="ghost" size="sm" className="h-9 gap-1 px-2 text-xs">
               <Link href={`/therapists/${therapist.id}`}>
-                {t("therapists.viewProfile")}
+                <User className="h-3.5 w-3.5 shrink-0" />
+                <span className="hidden sm:inline">{t("therapists.viewProfile")}</span>
               </Link>
             </Button>
-            <Button size="sm" className="h-9 px-2 text-xs">
-              {t("therapists.contact")}
+            <Button size="sm" className="h-9 gap-1 px-2 text-xs">
+              <MessageCircle className="h-3.5 w-3.5 shrink-0" />
+              <span className="hidden sm:inline">{t("therapists.contact")}</span>
             </Button>
           </div>
         </CardContent>

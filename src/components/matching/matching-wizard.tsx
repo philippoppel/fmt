@@ -153,7 +153,7 @@ function WizardContent() {
     <div className="flex h-screen flex-col overflow-hidden bg-background">
       {/* Combined Header + Progress - single compact row */}
       <header className="shrink-0 border-b bg-card px-3 py-2">
-        <div className="mx-auto flex max-w-4xl items-center gap-2">
+        <div className="mx-auto flex max-w-6xl items-center gap-2">
           {/* Close Button */}
           <Button
             variant="ghost"
@@ -190,7 +190,7 @@ function WizardContent() {
 
       {/* Main Content - scrollable if needed */}
       <main className="min-h-0 flex-1 overflow-auto px-3 py-2">
-        <div className="mx-auto h-full max-w-4xl">
+        <div className="mx-auto h-full max-w-6xl">
           {state.currentStep === 1 && <TopicSelection />}
           {state.currentStep === 1.5 && <IntensityAssessment />}
           {state.currentStep === 2 && <CriteriaSelection />}
@@ -199,7 +199,7 @@ function WizardContent() {
 
       {/* Fixed Footer Navigation - more compact */}
       <nav className="shrink-0 border-t bg-card px-3 py-2">
-        <div className="mx-auto flex max-w-4xl items-center justify-between">
+        <div className="mx-auto flex max-w-6xl items-center justify-between">
           <Button
             variant="ghost"
             size="sm"
