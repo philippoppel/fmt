@@ -51,10 +51,10 @@ export function SuicideScreening() {
 
       <div className="mx-auto max-w-xl space-y-6">
         {/* Important notice */}
-        <div className="rounded-lg border-2 border-amber-400 bg-amber-100 p-4 dark:border-amber-700 dark:bg-amber-950/30">
+        <div className="rounded-lg border-2 border-amber-500 bg-amber-50 p-4 dark:border-amber-600 dark:bg-amber-950/40">
           <div className="flex gap-3">
             <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
-            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+            <p className="text-sm font-semibold text-amber-900 dark:text-amber-100">
               {t("matching.screening.notice")}
             </p>
           </div>
@@ -104,16 +104,16 @@ export function SuicideScreening() {
 
         {/* Status indicator */}
         {canProceed && (
-          <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-center dark:border-green-800 dark:bg-green-950/20">
-            <p className="text-sm text-green-800 dark:text-green-200">
+          <div className="rounded-lg border-2 border-green-500 bg-green-50 p-4 text-center dark:border-green-600 dark:bg-green-950/30">
+            <p className="text-sm font-semibold text-green-800 dark:text-green-200">
               {t("matching.screening.canProceed")}
             </p>
           </div>
         )}
 
         {crisisDetected && (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-center dark:border-red-800 dark:bg-red-950/20">
-            <p className="text-sm font-medium text-red-800 dark:text-red-200">
+          <div className="rounded-lg border-2 border-red-500 bg-red-50 p-4 text-center dark:border-red-600 dark:bg-red-950/30">
+            <p className="text-sm font-semibold text-red-800 dark:text-red-200">
               {t("matching.screening.crisisDetected")}
             </p>
           </div>
@@ -136,16 +136,16 @@ function ScreeningButton({ isSelected, onClick, label, variant }: ScreeningButto
       type="button"
       onClick={onClick}
       className={cn(
-        "flex-1 rounded-lg border-2 px-6 py-3 text-base font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+        "flex-1 rounded-lg border-2 px-6 py-4 text-lg font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
         variant === "danger" && [
           isSelected
-            ? "border-red-600 bg-red-600 text-white focus-visible:ring-red-600"
-            : "border-red-300 bg-red-50 text-red-700 hover:border-red-400 hover:bg-red-100 focus-visible:ring-red-500 dark:border-red-700 dark:bg-red-950/40 dark:text-red-400 dark:hover:border-red-600 dark:hover:bg-red-950/60",
+            ? "border-red-700 bg-red-600 text-white shadow-lg focus-visible:ring-red-600"
+            : "border-red-500 bg-white text-red-700 hover:bg-red-50 focus-visible:ring-red-500 dark:border-red-600 dark:bg-red-950/50 dark:text-red-300 dark:hover:bg-red-950/70",
         ],
         variant === "safe" && [
           isSelected
-            ? "border-green-600 bg-green-600 text-white focus-visible:ring-green-600"
-            : "border-green-300 bg-green-50 text-green-700 hover:border-green-400 hover:bg-green-100 focus-visible:ring-green-500 dark:border-green-700 dark:bg-green-950/40 dark:text-green-400 dark:hover:border-green-600 dark:hover:bg-green-950/60",
+            ? "border-green-700 bg-green-600 text-white shadow-lg focus-visible:ring-green-600"
+            : "border-green-500 bg-white text-green-700 hover:bg-green-50 focus-visible:ring-green-500 dark:border-green-600 dark:bg-green-950/50 dark:text-green-300 dark:hover:bg-green-950/70",
         ]
       )}
       aria-pressed={isSelected}
