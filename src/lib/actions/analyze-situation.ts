@@ -1,5 +1,6 @@
 "use server";
 
+import Groq from "groq-sdk";
 import type { Specialty, CommunicationStyle, TherapyFocus } from "@/types/therapist";
 
 export type IntensityLevel = "low" | "medium" | "high";
@@ -17,6 +18,11 @@ export interface SituationAnalysis {
   crisisDetected: boolean;
   crisisType: "suicidal" | "self_harm" | "acute_danger" | null;
 }
+
+// Initialize Groq client
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 
 // ============================================================================
 // COMPREHENSIVE BILINGUAL KEYWORD MAPPINGS (DE + EN)
@@ -826,8 +832,39 @@ function generateSummary(
 }
 
 // ============================================================================
-// MAIN ANALYSIS FUNCTION
+// AI-POWERED ANALYSIS FUNCTION (using Groq)
 // ============================================================================
+
+const AVAILABLE_TOPICS = [
+  "depression", "anxiety", "trauma", "relationships", "family",
+  "burnout", "addiction", "eating_disorders", "adhd", "self_care", "stress", "sleep"
+];
+
+const AI_SYSTEM_PROMPT = `Du bist ein einfühlsamer Psychologie-Assistent, der Menschen hilft, ihre Situation zu verstehen.
+
+Analysiere den Text und antworte NUR mit einem JSON-Objekt (keine Erklärung, kein Markdown):
+
+{
+  "topics": ["topic1", "topic2"],
+  "intensity": "low" | "medium" | "high",
+  "summary": "Kurze, einfühlsame Zusammenfassung auf Deutsch (1-2 Sätze)",
+  "crisis": false,
+  "crisisType": null
+}
+
+WICHTIG - Krisenprüfung (höchste Priorität):
+- Setze "crisis": true wenn Suizidgedanken, Selbstverletzung oder akute Gefahr erkennbar sind
+- crisisType: "suicidal" | "self_harm" | "acute_danger" | null
+
+Verfügbare Topics (wähle 1-3 passende):
+${AVAILABLE_TOPICS.join(", ")}
+
+Intensität:
+- "high": Dringend, akute Belastung, kann nicht mehr
+- "medium": Belastend aber bewältigbar
+- "low": Leichte Beschwerden, präventiv
+
+Antworte IMMER auf Deutsch, auch wenn der Input auf Englisch ist.`;
 
 export async function analyzeSituation(text: string): Promise<SituationAnalysis> {
   if (!text || text.trim().length < 10) {
@@ -845,15 +882,12 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
     };
   }
 
-  // Detect language first
+  // Detect language for fallback
   const lang = detectLanguage(text);
 
-  // PRIORITY: Check for crisis indicators FIRST
-  const crisis = detectCrisis(text, lang);
-
-  // If crisis detected, return immediately with crisis flag
-  // This ensures immediate intervention without further processing
-  if (crisis.crisisDetected) {
+  // SAFETY: Always check for crisis with keywords first (fast, reliable)
+  const keywordCrisis = detectCrisis(text, lang);
+  if (keywordCrisis.crisisDetected) {
     return {
       suggestedTopics: [],
       suggestedSpecialties: [],
@@ -864,36 +898,92 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       suggestedMethods: [],
       keywords: [],
       crisisDetected: true,
-      crisisType: crisis.crisisType,
+      crisisType: keywordCrisis.crisisType,
     };
   }
 
-  // No crisis detected - proceed with normal analysis
-  const topics = detectTopics(text, lang);
-  const intensity = detectIntensity(text, lang);
-  const methods = detectMethods(text, lang);
-  const communicationStyle = detectCommunicationStyle(text, lang);
-  const therapyFocus = detectTherapyFocus(text, lang);
-  const keywords = extractKeywords(text, lang);
+  try {
+    // Use Groq AI for analysis
+    const completion = await groq.chat.completions.create({
+      messages: [
+        { role: "system", content: AI_SYSTEM_PROMPT },
+        { role: "user", content: text }
+      ],
+      model: "llama-3.1-8b-instant",
+      temperature: 0.3,
+      max_tokens: 500,
+      response_format: { type: "json_object" },
+    });
 
-  // Map topics to specialties
-  const specialties = [...new Set(
-    topics.map((t) => SPECIALTY_MAPPING[t]).filter((s): s is Specialty => !!s)
-  )];
+    const responseText = completion.choices[0]?.message?.content || "{}";
+    const aiResult = JSON.parse(responseText);
 
-  // Generate summary
-  const summary = generateSummary(topics, intensity, lang);
+    // Validate and sanitize AI response
+    const topics = (aiResult.topics || [])
+      .filter((t: string) => AVAILABLE_TOPICS.includes(t))
+      .slice(0, 4);
 
-  return {
-    suggestedTopics: topics,
-    suggestedSpecialties: specialties,
-    suggestedCommunicationStyle: communicationStyle,
-    suggestedTherapyFocus: therapyFocus,
-    suggestedIntensityLevel: intensity,
-    understandingSummary: summary,
-    suggestedMethods: methods,
-    keywords,
-    crisisDetected: false,
-    crisisType: null,
-  };
+    const intensity = ["low", "medium", "high"].includes(aiResult.intensity)
+      ? aiResult.intensity as IntensityLevel
+      : "medium";
+
+    // Check if AI detected crisis
+    if (aiResult.crisis === true) {
+      return {
+        suggestedTopics: [],
+        suggestedSpecialties: [],
+        suggestedCommunicationStyle: null,
+        suggestedTherapyFocus: null,
+        suggestedIntensityLevel: "high",
+        understandingSummary: "",
+        suggestedMethods: [],
+        keywords: [],
+        crisisDetected: true,
+        crisisType: aiResult.crisisType || "acute_danger",
+      };
+    }
+
+    // Map topics to specialties
+    const mappedSpecialties = topics
+      .map((t: string) => SPECIALTY_MAPPING[t])
+      .filter((s: Specialty | undefined): s is Specialty => !!s);
+    const specialties = Array.from(new Set(mappedSpecialties)) as Specialty[];
+
+    return {
+      suggestedTopics: topics,
+      suggestedSpecialties: specialties,
+      suggestedCommunicationStyle: null,
+      suggestedTherapyFocus: null,
+      suggestedIntensityLevel: intensity,
+      understandingSummary: aiResult.summary || "",
+      suggestedMethods: [],
+      keywords: [],
+      crisisDetected: false,
+      crisisType: null,
+    };
+
+  } catch (error) {
+    console.error("Groq AI analysis failed, using fallback:", error);
+
+    // Fallback to keyword-based analysis
+    const topics = detectTopics(text, lang);
+    const intensity = detectIntensity(text, lang);
+    const specialties = [...new Set(
+      topics.map((t) => SPECIALTY_MAPPING[t]).filter((s): s is Specialty => !!s)
+    )];
+    const summary = generateSummary(topics, intensity, lang);
+
+    return {
+      suggestedTopics: topics,
+      suggestedSpecialties: specialties,
+      suggestedCommunicationStyle: null,
+      suggestedTherapyFocus: null,
+      suggestedIntensityLevel: intensity,
+      understandingSummary: summary,
+      suggestedMethods: [],
+      keywords: [],
+      crisisDetected: false,
+      crisisType: null,
+    };
+  }
 }
