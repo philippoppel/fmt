@@ -319,7 +319,7 @@
     },
     "title": "Therapeuten finden",
     "subtitle": "Finden Sie den passenden Therapeuten für Ihre Bedürfnisse",
-    "viewProfile": "Profil ansehen",
+    "viewProfile": "Profil",
     "readMore": "Weiterlesen",
     "blog": "Blog-Artikel",
     "therapist": "Therapeut",
@@ -453,7 +453,7 @@
       "sectionKnowledge": "Wissen & Selbsthilfe",
       "viewDetails": "Details anzeigen"
     },
-    "contact": "Kontakt aufnehmen"
+    "contact": "Kontakt"
   },
   "matching": {
     "meta": {

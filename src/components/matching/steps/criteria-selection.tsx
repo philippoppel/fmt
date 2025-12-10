@@ -1,7 +1,19 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { User, Video, Building2, Shield, Laptop, MapPinned } from "lucide-react";
+import {
+  User,
+  Video,
+  Building2,
+  Shield,
+  Laptop,
+  MapPinned,
+  Heart,
+  Users,
+  Sparkles,
+  CreditCard,
+  Wallet
+} from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type { Gender, SessionType, Insurance } from "@/types/therapist";
@@ -14,22 +26,24 @@ export function CriteriaSelection() {
 
   return (
     <div className="flex h-full flex-col">
-      {/* Header - compact */}
-      <div className="mb-3">
-        <h2 className="text-base font-semibold sm:text-lg">
+      {/* Header */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold sm:text-2xl">
           {t("matching.wizard.step2Title")}
         </h2>
-        <p className="text-xs text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground">
           {t("matching.wizard.allOptional")}
         </p>
       </div>
 
-      {/* 2x2 Grid - always 2 columns */}
-      <div className="grid flex-1 grid-cols-2 gap-3">
-        {/* Location - full width */}
-        <div className="col-span-2 space-y-1.5">
-          <Label className="flex items-center gap-1.5 text-xs font-medium">
-            <MapPinned className="h-3.5 w-3.5 text-primary" />
+      {/* Main Content */}
+      <div className="flex flex-1 flex-col gap-8">
+        {/* Location */}
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+              <MapPinned className="h-4 w-4 text-primary" />
+            </div>
             {t("matching.criteria.location")}
           </Label>
           <LocationInput
@@ -39,13 +53,15 @@ export function CriteriaSelection() {
           />
         </div>
 
-        {/* Session Type - full width */}
-        <div className="col-span-2 space-y-1.5">
-          <Label className="flex items-center gap-1.5 text-xs font-medium">
-            <Video className="h-3.5 w-3.5 text-muted-foreground" />
+        {/* Session Type */}
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500/10">
+              <Video className="h-4 w-4 text-blue-600" />
+            </div>
             {t("matching.criteria.sessionType")}
           </Label>
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 gap-3">
             {(["online", "in_person", "both", null] as const).map(
               (sessionType) => (
                 <SessionTypeCard
@@ -65,14 +81,16 @@ export function CriteriaSelection() {
         </div>
 
         {/* Gender */}
-        <div className="space-y-1.5">
-          <Label className="flex items-center gap-1.5 text-xs font-medium">
-            <User className="h-3.5 w-3.5 text-muted-foreground" />
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-pink-500/10">
+              <Users className="h-4 w-4 text-pink-600" />
+            </div>
             {t("matching.criteria.gender")}
           </Label>
-          <div className="flex flex-wrap gap-1">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {([null, "female", "male", "diverse"] as const).map((gender) => (
-              <GenderButton
+              <GenderCard
                 key={gender ?? "any"}
                 gender={gender}
                 isSelected={state.criteria.gender === gender}
@@ -88,12 +106,14 @@ export function CriteriaSelection() {
         </div>
 
         {/* Insurance */}
-        <div className="space-y-1.5">
-          <Label className="flex items-center gap-1.5 text-xs font-medium">
-            <Shield className="h-3.5 w-3.5 text-muted-foreground" />
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10">
+              <Shield className="h-4 w-4 text-emerald-600" />
+            </div>
             {t("matching.criteria.insurance")}
           </Label>
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 gap-3">
             {(["public", "private"] as Insurance[]).map((insurance) => (
               <InsuranceCard
                 key={insurance}
@@ -110,31 +130,55 @@ export function CriteriaSelection() {
   );
 }
 
-interface GenderButtonProps {
+interface GenderCardProps {
   gender: Gender | null;
   isSelected: boolean;
   onClick: () => void;
   label: string;
 }
 
-function GenderButton({
+function GenderCard({
+  gender,
   isSelected,
   onClick,
   label,
-}: GenderButtonProps) {
+}: GenderCardProps) {
+  const Icon = gender === "female"
+    ? Heart
+    : gender === "male"
+      ? User
+      : gender === "diverse"
+        ? Sparkles
+        : Users;
+
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-full border px-3 py-1.5 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+        "flex flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         isSelected
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-input bg-background hover:border-primary/50"
+          ? "border-primary bg-primary/10 shadow-md"
+          : "border-input bg-background hover:border-primary/50 hover:bg-muted/50"
       )}
       aria-pressed={isSelected}
     >
-      {label}
+      <div
+        className={cn(
+          "flex h-10 w-10 items-center justify-center rounded-full transition-colors",
+          isSelected
+            ? "bg-primary text-primary-foreground"
+            : "bg-muted text-muted-foreground"
+        )}
+      >
+        <Icon className="h-5 w-5" />
+      </div>
+      <span className={cn(
+        "text-sm font-medium",
+        isSelected ? "text-primary" : "text-foreground"
+      )}>
+        {label}
+      </span>
     </button>
   );
 }
@@ -158,22 +202,44 @@ function SessionTypeCard({
       ? Building2
       : sessionType === "both"
         ? Video
-        : null;
+        : Sparkles;
+
+  const iconBgColor = sessionType === "online"
+    ? "bg-blue-500"
+    : sessionType === "in_person"
+      ? "bg-amber-500"
+      : sessionType === "both"
+        ? "bg-violet-500"
+        : "bg-primary";
 
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        "flex items-center justify-center gap-1.5 rounded-lg border px-2 py-2 text-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+        "flex flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         isSelected
-          ? "border-primary bg-primary/10 text-primary"
-          : "border-input bg-background hover:border-primary/50"
+          ? "border-primary bg-primary/10 shadow-md"
+          : "border-input bg-background hover:border-primary/50 hover:bg-muted/50"
       )}
       aria-pressed={isSelected}
     >
-      {Icon && <Icon className="h-3.5 w-3.5" />}
-      <span className="text-xs font-medium">{label}</span>
+      <div
+        className={cn(
+          "flex h-12 w-12 items-center justify-center rounded-full transition-colors",
+          isSelected
+            ? `${iconBgColor} text-white`
+            : "bg-muted text-muted-foreground"
+        )}
+      >
+        <Icon className="h-6 w-6" />
+      </div>
+      <span className={cn(
+        "text-sm font-medium",
+        isSelected ? "text-primary" : "text-foreground"
+      )}>
+        {label}
+      </span>
     </button>
   );
 }
@@ -186,32 +252,44 @@ interface InsuranceCardProps {
 }
 
 function InsuranceCard({
+  insurance,
   isSelected,
   onClick,
   label,
 }: InsuranceCardProps) {
+  const Icon = insurance === "public" ? Wallet : CreditCard;
+
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        "flex items-center gap-2 rounded-lg border px-3 py-2 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+        "relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         isSelected
-          ? "border-primary bg-primary/10 text-primary"
-          : "border-input bg-background hover:border-primary/50"
+          ? "border-emerald-500 bg-emerald-500/10 shadow-md"
+          : "border-input bg-background hover:border-emerald-500/50 hover:bg-muted/50"
       )}
       aria-pressed={isSelected}
     >
       <div
         className={cn(
-          "flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 transition-colors",
+          "flex h-12 w-12 items-center justify-center rounded-full transition-colors",
           isSelected
-            ? "border-primary bg-primary text-primary-foreground"
-            : "border-muted-foreground/30"
+            ? "bg-emerald-500 text-white"
+            : "bg-muted text-muted-foreground"
         )}
       >
-        {isSelected && (
-          <svg className="h-2.5 w-2.5" viewBox="0 0 12 12" fill="none">
+        <Icon className="h-6 w-6" />
+      </div>
+      <span className={cn(
+        "text-sm font-medium",
+        isSelected ? "text-emerald-600" : "text-foreground"
+      )}>
+        {label}
+      </span>
+      {isSelected && (
+        <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white">
+          <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none">
             <path
               d="M2 6L5 9L10 3"
               stroke="currentColor"
@@ -220,9 +298,8 @@ function InsuranceCard({
               strokeLinejoin="round"
             />
           </svg>
-        )}
-      </div>
-      <span className="text-xs font-medium">{label}</span>
+        </div>
+      )}
     </button>
   );
 }
