@@ -236,10 +236,13 @@ export function TopMatchCard({
               )}
             </div>
 
-            {/* Mini Score Bars - Transparency */}
+            {/* Why this Match - Transparency */}
             <MiniScoreBars
               scoreBreakdown={therapist.scoreBreakdown}
               onClick={() => setShowBreakdown(true)}
+              therapistName={therapist.name}
+              rank={rank}
+              matchScore={therapist.matchScore}
             />
 
             {/* Personalized Reason */}
