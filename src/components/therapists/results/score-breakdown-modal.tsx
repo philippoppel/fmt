@@ -33,6 +33,7 @@ interface ScoreBreakdownModalProps {
 
 const categoryIcons = {
   specialization: Target,
+  subSpecialization: Sparkles,
   intensityExperience: TrendingUp,
   therapyStyle: Brain,
   practicalCriteria: Briefcase,
@@ -41,6 +42,7 @@ const categoryIcons = {
 
 const categoryColors = {
   specialization: "text-blue-500",
+  subSpecialization: "text-cyan-500",
   intensityExperience: "text-purple-500",
   therapyStyle: "text-pink-500",
   practicalCriteria: "text-green-500",

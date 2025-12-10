@@ -770,6 +770,7 @@
     },
     "scoreBreakdown": {
       "specialization": "Spezialisierung",
+      "subSpecialization": "Detaillierte Schwerpunkte",
       "therapyStyle": "Therapiestil",
       "practicalCriteria": "Praktische Kriterien",
       "intensityExperience": "Erfahrung & Intensität",
