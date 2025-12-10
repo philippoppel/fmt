@@ -28,9 +28,11 @@ export function TopicSelection() {
     startTransition(async () => {
       const result = await analyzeSituation(freetextValue);
 
-      if (result.crisisDetected) {
-        // Handle crisis - go to screening
-        actions.goNext();
+      // Only trigger crisis flow for actual crisis detection
+      // The screening questions at the end will also check for this
+      if (result.crisisDetected && result.crisisType) {
+        // Handle crisis - go to screening step (2.5)
+        actions.setStep(2.5);
         return;
       }
 
