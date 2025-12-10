@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { ScoreBreakdown } from "@/types/therapist";
+import { useScoreDetailsFormatter } from "./use-score-details";
 
 interface ScoreBreakdownCardProps {
   breakdown: ScoreBreakdown;
@@ -25,6 +26,7 @@ export function ScoreBreakdownCard({
   compact = false,
 }: ScoreBreakdownCardProps) {
   const t = useTranslations();
+  const formatDetails = useScoreDetailsFormatter();
 
   // Get reason translations
   const getReasonLabel = (reason: string): string => {
@@ -103,6 +105,7 @@ export function ScoreBreakdownCard({
           .map(([key, category]) => {
           const Icon = categoryIcons[key as keyof typeof categoryIcons];
           const percentage = Math.round((category.score / category.maxScore) * 100);
+          const formattedDetails = formatDetails(category.details);
 
           return (
             <div key={key} className="space-y-1">
@@ -124,9 +127,9 @@ export function ScoreBreakdownCard({
                   percentage < 50 && "[&>div]:bg-orange-500"
                 )}
               />
-              {category.details && (
+              {formattedDetails && (
                 <p className="text-xs text-muted-foreground pl-6">
-                  {category.details}
+                  {formattedDetails}
                 </p>
               )}
             </div>

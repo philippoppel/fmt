@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import type { ScoreBreakdown, MatchedTherapist } from "@/types/therapist";
 import { cn } from "@/lib/utils";
+import { useScoreDetailsFormatter } from "./use-score-details";
 
 interface ScoreBreakdownModalProps {
   open: boolean;
@@ -64,6 +65,7 @@ export function ScoreBreakdownModal({
 }: ScoreBreakdownModalProps) {
   const t = useTranslations();
   const tSpec = useTranslations("therapists.specialties");
+  const formatDetails = useScoreDetailsFormatter();
 
   const breakdown = therapist.scoreBreakdown;
   const fitLevel = getFitLevel(therapist.matchScore);
@@ -143,6 +145,7 @@ export function ScoreBreakdownModal({
               const color = categoryColors[key as keyof typeof categoryColors] || "text-primary";
               const percentage = Math.round((category.score / category.maxScore) * 100);
               const isTopContributor = key === topContributor;
+              const formattedDetails = formatDetails(category.details);
 
               return (
                 <div
@@ -171,9 +174,9 @@ export function ScoreBreakdownModal({
                     </span>
                   </div>
                   <Progress value={percentage} className="h-1.5 sm:h-2" />
-                  {category.details && (
+                  {formattedDetails && (
                     <p className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs text-muted-foreground">
-                      {category.details}
+                      {formattedDetails}
                     </p>
                   )}
                 </div>

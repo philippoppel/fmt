@@ -762,6 +762,10 @@
       "smartMatching": "Smart Matching",
       "topMatches": "Deine Top Matches",
       "topMatchesSubtitle": "Basierend auf deinen Angaben haben wir diese Therapeuten für dich gefunden",
+      "aiSummaryTitle": "KI-Begründung",
+      "aiSummaryDescription": "Unsere KI sortiert nach deinem Match-Score: Platz {rank} ist {name}, besonders stark in {category} ({score}%).",
+      "aiSummaryDescriptionFallback": "Unsere KI sortiert nach deinem Match-Score: Platz {rank} ist {name} mit {score}% Übereinstimmung.",
+      "aiSummaryCta": "Tippe auf \"Warum ist {name} auf Platz {rank}?\" für die Details.",
       "bestMatch": "Beste Übereinstimmung",
       "veryGoodMatch": "Sehr gute Übereinstimmung",
       "goodMatch": "Gute Übereinstimmung",
@@ -787,6 +791,15 @@
       "intensityExperience": "Erfahrung & Intensität",
       "profileQuality": "Profilqualität",
       "matchDetails": "Warum dieses Matching?"
+    },
+    "scoreBreakdownDetails": {
+      "yearsExperience": "{count, plural, one {# Jahr Erfahrung} other {# Jahre Erfahrung}}",
+      "homework": "Gibt Übungen für zuhause",
+      "noHomework": "Arbeitet ohne Hausaufgaben",
+      "image": "Profilfoto vorhanden",
+      "description": "Ausführliche Beschreibung",
+      "verified": "Verifiziertes Profil",
+      "premium": "Premium-Profil"
     },
     "freetext": {
       "badge": "Schnellanalyse",

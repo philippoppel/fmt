@@ -61,6 +61,45 @@ export function TopMatches({
 
   const compareTherapists = topTherapists.filter((t) => compareIds.includes(t.id));
 
+  const getTopContributorLabel = () => {
+    const first = topTherapists[0];
+    const categories = first?.scoreBreakdown?.categories;
+    if (!first || !categories) return null;
+
+    const sorted = Object.entries(categories)
+      .filter(([, cat]) => cat && cat.maxScore > 0)
+      .sort(
+        ([, a], [, b]) => (b.score / b.maxScore) - (a.score / a.maxScore)
+      );
+
+    const top = sorted[0];
+    if (!top) return null;
+    return t(`matching.scoreBreakdown.${top[0]}`);
+  };
+
+  const aiSummaryText = (() => {
+    const first = topTherapists[0];
+    if (!first) return "";
+
+    const topCategory = getTopContributorLabel();
+    const score = first.matchScore ?? 0;
+
+    if (topCategory) {
+      return t("matching.results.aiSummaryDescription", {
+        rank: 1,
+        name: first.name,
+        category: topCategory,
+        score,
+      });
+    }
+
+    return t("matching.results.aiSummaryDescriptionFallback", {
+      rank: 1,
+      name: first.name,
+      score,
+    });
+  })();
+
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header - more compact on mobile */}
@@ -120,6 +159,25 @@ export function TopMatches({
           />
         ))}
       </div>
+
+      {/* AI ordering hint */}
+      {aiSummaryText && (
+        <div className="flex gap-3 rounded-lg border border-primary/20 bg-primary/5 px-3 py-3 sm:px-4 sm:py-3">
+          <Sparkles className="h-5 w-5 text-primary shrink-0" />
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">
+              {t("matching.results.aiSummaryTitle")}
+            </p>
+            <p className="text-sm text-foreground">{aiSummaryText}</p>
+            <p className="text-xs font-medium text-primary">
+              {t("matching.results.aiSummaryCta", {
+                name: topTherapists[0]?.name,
+                rank: 1,
+              })}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Show More Button */}
       {remaining > 0 && (

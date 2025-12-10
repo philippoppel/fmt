@@ -762,6 +762,10 @@
       "smartMatching": "Smart Matching",
       "topMatches": "Your Top Matches",
       "topMatchesSubtitle": "Based on your preferences, we found these therapists for you",
+      "aiSummaryTitle": "AI ordering",
+      "aiSummaryDescription": "Our AI orders by your match score: #{rank} is {name}, strongest in {category} ({score}%).",
+      "aiSummaryDescriptionFallback": "Our AI orders by your match score: #{rank} is {name} with a {score}% match.",
+      "aiSummaryCta": "Tap \"Why is {name} ranked #{rank}?\" to open the full breakdown.",
       "bestMatch": "Best Match",
       "veryGoodMatch": "Very Good Match",
       "goodMatch": "Good Match",
@@ -787,6 +791,15 @@
       "intensityExperience": "Experience & Intensity",
       "profileQuality": "Profile Quality",
       "matchDetails": "Why this match?"
+    },
+    "scoreBreakdownDetails": {
+      "yearsExperience": "{count, plural, one {# year experience} other {# years experience}}",
+      "homework": "Provides homework between sessions",
+      "noHomework": "Focuses on session work without homework",
+      "image": "Profile photo added",
+      "description": "Detailed profile description",
+      "verified": "Verified profile",
+      "premium": "Premium profile"
     },
     "freetext": {
       "badge": "Quick Analysis",
