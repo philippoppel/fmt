@@ -23,6 +23,7 @@ interface SearchResultsSeparated {
   articles: BlogPost[];
   isLoading: boolean;
   error?: string;
+  alternativeTherapists?: Therapist[];
 }
 
 export function useSearchResults(
@@ -30,11 +31,39 @@ export function useSearchResults(
   matchingCriteria?: MatchingCriteria | null
 ): SearchResultsSeparated {
   const [therapists, setTherapists] = useState<Therapist[]>([]);
+  const [allTherapists, setAllTherapists] = useState<Therapist[]>([]);
   const [matchedTherapists, setMatchedTherapists] = useState<MatchedTherapist[]>([]);
   const [matchedBlogs, setMatchedBlogs] = useState<BlogPost[]>([]);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>();
   const [initialized, setInitialized] = useState(false);
+
+  // Load all therapists once for alternatives when no results
+  useEffect(() => {
+    const loadAllTherapists = async () => {
+      try {
+        const defaultFilters: FilterState = {
+          contentType: "all",
+          searchQuery: "",
+          location: "",
+          specialties: [],
+          therapyTypes: [],
+          languages: [],
+          priceRange: { min: 0, max: 300 },
+          sessionType: null,
+          insurance: [],
+          availability: null,
+          gender: null,
+          minRating: 0,
+        };
+        const data = await searchTherapistsAction(defaultFilters);
+        setAllTherapists(data);
+      } catch {
+        // Silently fail - alternatives are optional
+      }
+    };
+    loadAllTherapists();
+  }, []);
 
   // Fetch with matching if criteria provided
   useEffect(() => {
@@ -173,10 +202,23 @@ export function useSearchResults(
     filters.specialties,
   ]);
 
+  // Determine alternatives if no results found
+  const alternativeTherapists = useMemo(() => {
+    const hasResults =
+      separatedResults.therapists.length > 0 || separatedResults.articles.length > 0;
+    if (hasResults) return undefined;
+
+    // Return random selection of all therapists as alternatives
+    return allTherapists
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 4);
+  }, [separatedResults.therapists.length, separatedResults.articles.length, allTherapists]);
+
   return {
     therapists: separatedResults.therapists,
     articles: separatedResults.articles,
     isLoading: isPending || !initialized,
     error,
+    alternativeTherapists,
   };
 }

@@ -8,7 +8,7 @@ import { NoResults } from "./no-results";
 import { TopMatches } from "./top-matches";
 import { Loader2, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { Therapist, BlogPost, ScoreBreakdown, MatchedTherapist } from "@/types/therapist";
+import type { Therapist, BlogPost, ScoreBreakdown, MatchedTherapist, FilterState } from "@/types/therapist";
 
 interface TherapistResult {
   therapist: Therapist;
@@ -23,6 +23,8 @@ interface ResultsSectionsProps {
   isLoading?: boolean;
   isMatchingMode?: boolean;
   error?: string;
+  filters?: Partial<FilterState>;
+  alternativeTherapists?: Therapist[];
 }
 
 export function ResultsSections({
@@ -32,6 +34,8 @@ export function ResultsSections({
   isLoading,
   isMatchingMode,
   error,
+  filters,
+  alternativeTherapists,
 }: ResultsSectionsProps) {
   const t = useTranslations("therapists");
   const [showAllResults, setShowAllResults] = useState(false);
@@ -61,7 +65,13 @@ export function ResultsSections({
   const hasResults = therapists.length > 0 || articles.length > 0;
 
   if (!hasResults) {
-    return <NoResults onClearFilters={onClearFilters} />;
+    return (
+      <NoResults
+        onClearFilters={onClearFilters}
+        filters={filters}
+        alternativeTherapists={alternativeTherapists}
+      />
+    );
   }
 
   // In matching mode: show Top 6 with breakdown, then "show more" for rest
