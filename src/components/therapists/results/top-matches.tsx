@@ -62,48 +62,50 @@ export function TopMatches({
   const compareTherapists = topTherapists.filter((t) => compareIds.includes(t.id));
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      {/* Header - more compact on mobile */}
+      <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-primary">
-            <Sparkles className="h-4 w-4" />
+          <div className="mb-1.5 sm:mb-2 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-primary">
+            <Sparkles className="h-3.5 w-3.5" />
             <span className="text-xs font-medium">
               {t("matching.results.smartMatching")}
             </span>
           </div>
-          <h2 className="text-xl font-bold sm:text-2xl">
+          <h2 className="text-lg font-bold sm:text-xl md:text-2xl">
             {t("matching.results.topMatches")}
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground">
             {t("matching.results.topMatchesSubtitle")}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {compareIds.length > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowCompare(true)}
-              className="gap-2"
-            >
-              <GitCompare className="h-4 w-4" />
-              {t("matching.compare.compareNow")}
-              <Badge variant="secondary" className="ml-1">
-                {compareIds.length}
-              </Badge>
-            </Button>
-          )}
           <HowMatchingWorksTrigger onClick={() => setShowHowItWorks(true)} />
         </div>
       </div>
 
-      {/* Compare Hint */}
-      {compareIds.length === 0 && (
-        <p className="text-center text-xs text-muted-foreground">
-          Klicke auf <GitCompare className="inline h-3 w-3" /> um Therapeuten zu vergleichen
-        </p>
-      )}
+      {/* Compare Hint - more prominent on mobile */}
+      <div className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/30 px-3 py-2">
+        <GitCompare className="h-4 w-4 text-muted-foreground" />
+        <span className="text-xs sm:text-sm text-muted-foreground">
+          {compareIds.length === 0
+            ? t("matching.compare.hint")
+            : t("matching.compare.selected", { count: compareIds.length })}
+        </span>
+        {compareIds.length > 0 && (
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => setShowCompare(true)}
+            className="ml-auto gap-1.5 h-7 px-2.5 text-xs"
+          >
+            {t("matching.compare.compareNow")}
+            <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground">
+              {compareIds.length}
+            </Badge>
+          </Button>
+        )}
+      </div>
 
       {/* Cards - Responsive grid for vertical cards with large photos */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

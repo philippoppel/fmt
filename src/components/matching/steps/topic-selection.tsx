@@ -26,12 +26,13 @@ export function TopicSelection() {
           </span>
         </div>
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
           onClick={actions.switchToFreetext}
-          className="h-7 gap-1 px-2 text-xs text-muted-foreground"
+          className="h-7 gap-1.5 px-2 text-xs"
         >
-          <MessageSquareText className="h-3 w-3" />
+          <MessageSquareText className="h-3.5 w-3.5" />
+          <span className="sm:hidden">{t("matching.wizard.describe")}</span>
           <span className="hidden sm:inline">{t("matching.wizard.preferToDescribe")}</span>
         </Button>
       </div>

@@ -15,100 +15,94 @@ export function CriteriaSelection() {
   return (
     <div className="flex h-full flex-col">
       {/* Header - compact */}
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold sm:text-xl">
+      <div className="mb-3">
+        <h2 className="text-base font-semibold sm:text-lg">
           {t("matching.wizard.step2Title")}
         </h2>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           {t("matching.wizard.allOptional")}
         </p>
       </div>
 
-      {/* Two-column layout for larger screens */}
-      <div className="grid flex-1 gap-4 md:grid-cols-2 md:gap-6">
-        {/* Left column: Location + Session Type */}
-        <div className="space-y-4">
-          {/* Location */}
-          <div className="space-y-2">
-            <Label className="flex items-center gap-1.5 text-sm font-medium">
-              <MapPinned className="h-3.5 w-3.5 text-primary" />
-              {t("matching.criteria.location")}
-            </Label>
-            <LocationInput
-              value={state.criteria.location}
-              onChange={actions.setLocation}
-              placeholder={t("matching.criteria.locationPlaceholder")}
-            />
-          </div>
+      {/* 2x2 Grid on mobile, 2 columns on larger */}
+      <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
+        {/* Location - full width on mobile */}
+        <div className="space-y-1.5 sm:col-span-2 md:col-span-1">
+          <Label className="flex items-center gap-1.5 text-xs font-medium">
+            <MapPinned className="h-3.5 w-3.5 text-primary" />
+            {t("matching.criteria.location")}
+          </Label>
+          <LocationInput
+            value={state.criteria.location}
+            onChange={actions.setLocation}
+            placeholder={t("matching.criteria.locationPlaceholder")}
+          />
+        </div>
 
-          {/* Session Type */}
-          <div className="space-y-2">
-            <Label className="flex items-center gap-1.5 text-sm font-medium">
-              <Video className="h-3.5 w-3.5 text-muted-foreground" />
-              {t("matching.criteria.sessionType")}
-            </Label>
-            <div className="grid grid-cols-2 gap-2">
-              {(["online", "in_person", "both", null] as const).map(
-                (sessionType) => (
-                  <SessionTypeCard
-                    key={sessionType ?? "any"}
-                    sessionType={sessionType}
-                    isSelected={state.criteria.sessionType === sessionType}
-                    onClick={() => actions.setSessionType(sessionType)}
-                    label={
-                      sessionType
-                        ? t(`therapists.filters.sessionType.${sessionType}`)
-                        : t("matching.criteria.anySessionType")
-                    }
-                  />
-                )
-              )}
-            </div>
+        {/* Session Type */}
+        <div className="space-y-1.5 sm:col-span-2 md:col-span-1">
+          <Label className="flex items-center gap-1.5 text-xs font-medium">
+            <Video className="h-3.5 w-3.5 text-muted-foreground" />
+            {t("matching.criteria.sessionType")}
+          </Label>
+          <div className="grid grid-cols-2 gap-1.5">
+            {(["online", "in_person", "both", null] as const).map(
+              (sessionType) => (
+                <SessionTypeCard
+                  key={sessionType ?? "any"}
+                  sessionType={sessionType}
+                  isSelected={state.criteria.sessionType === sessionType}
+                  onClick={() => actions.setSessionType(sessionType)}
+                  label={
+                    sessionType
+                      ? t(`therapists.filters.sessionType.${sessionType}`)
+                      : t("matching.criteria.anySessionType")
+                  }
+                />
+              )
+            )}
           </div>
         </div>
 
-        {/* Right column: Gender + Insurance */}
-        <div className="space-y-4">
-          {/* Gender */}
-          <div className="space-y-2">
-            <Label className="flex items-center gap-1.5 text-sm font-medium">
-              <User className="h-3.5 w-3.5 text-muted-foreground" />
-              {t("matching.criteria.gender")}
-            </Label>
-            <div className="flex flex-wrap gap-1.5">
-              {([null, "female", "male", "diverse"] as const).map((gender) => (
-                <GenderButton
-                  key={gender ?? "any"}
-                  gender={gender}
-                  isSelected={state.criteria.gender === gender}
-                  onClick={() => actions.setGender(gender)}
-                  label={
-                    gender
-                      ? t(`therapists.filters.gender.${gender}`)
-                      : t("matching.criteria.anyGender")
-                  }
-                />
-              ))}
-            </div>
+        {/* Gender */}
+        <div className="space-y-1.5">
+          <Label className="flex items-center gap-1.5 text-xs font-medium">
+            <User className="h-3.5 w-3.5 text-muted-foreground" />
+            {t("matching.criteria.gender")}
+          </Label>
+          <div className="flex flex-wrap gap-1">
+            {([null, "female", "male", "diverse"] as const).map((gender) => (
+              <GenderButton
+                key={gender ?? "any"}
+                gender={gender}
+                isSelected={state.criteria.gender === gender}
+                onClick={() => actions.setGender(gender)}
+                label={
+                  gender
+                    ? t(`therapists.filters.gender.${gender}`)
+                    : t("matching.criteria.anyGender")
+                }
+              />
+            ))}
           </div>
+        </div>
 
-          {/* Insurance */}
-          <div className="space-y-2">
-            <Label className="flex items-center gap-1.5 text-sm font-medium">
-              <Shield className="h-3.5 w-3.5 text-muted-foreground" />
-              {t("matching.criteria.insurance")}
-            </Label>
-            <div className="grid grid-cols-2 gap-2">
-              {(["public", "private"] as Insurance[]).map((insurance) => (
-                <InsuranceCard
-                  key={insurance}
-                  insurance={insurance}
-                  isSelected={state.criteria.insurance.includes(insurance)}
-                  onClick={() => actions.toggleInsurance(insurance)}
-                  label={t(`therapists.filters.insurance.${insurance}`)}
-                />
-              ))}
-            </div>
+        {/* Insurance */}
+        <div className="space-y-1.5">
+          <Label className="flex items-center gap-1.5 text-xs font-medium">
+            <Shield className="h-3.5 w-3.5 text-muted-foreground" />
+            {t("matching.criteria.insurance")}
+          </Label>
+          <div className="grid grid-cols-2 gap-1.5">
+            {(["public", "private"] as Insurance[]).map((insurance) => (
+              <InsuranceCard
+                key={insurance}
+                insurance={insurance}
+                isSelected={state.criteria.insurance.includes(insurance)}
+                onClick={() => actions.toggleInsurance(insurance)}
+                label={t(`therapists.filters.insurance.${insurance}`)}
+              />
+            ))}
           </div>
         </div>
       </div>

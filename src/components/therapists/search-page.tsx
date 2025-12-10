@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, Sparkles } from "lucide-react";
+import { SlidersHorizontal, Sparkles, RotateCcw } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { FilterSidebar, FilterSheet } from "./filters";
@@ -59,33 +59,45 @@ export function SearchPage() {
   const totalResults = therapists.length + articles.length;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Page Header */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div className="container mx-auto px-4 py-4 sm:py-8">
+      {/* Page Header - more compact on mobile */}
+      <div className="mb-4 sm:mb-6 flex flex-col gap-2 sm:gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
             {t("title")}
           </h1>
-          <p className="mt-2 text-muted-foreground">{t("subtitle")}</p>
+          <p className="mt-1 text-sm text-muted-foreground sm:mt-2 sm:text-base">{t("subtitle")}</p>
         </div>
-        <Button asChild className="gap-2 shrink-0">
-          <Link href="/therapists/matching">
-            <Sparkles className="h-4 w-4" />
-            {tMatching("startButton")}
-          </Link>
-        </Button>
+        {/* Show different button based on matching mode */}
+        {matchingCriteria ? (
+          <Button asChild variant="outline" size="sm" className="gap-1.5 shrink-0">
+            <Link href="/therapists/matching">
+              <RotateCcw className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{tMatching("results.restart")}</span>
+              <span className="sm:hidden">{tMatching("results.restartShort")}</span>
+            </Link>
+          </Button>
+        ) : (
+          <Button asChild className="gap-2 shrink-0">
+            <Link href="/therapists/matching">
+              <Sparkles className="h-4 w-4" />
+              <span className="hidden sm:inline">{tMatching("startButton")}</span>
+              <span className="sm:hidden">{tMatching("startButtonShort")}</span>
+            </Link>
+          </Button>
+        )}
       </div>
 
-      {/* Matching Mode Banner */}
+      {/* Matching Mode Banner - more compact */}
       {matchingCriteria && (
-        <div className="mb-6 flex items-center justify-between rounded-lg border border-primary/20 bg-primary/5 p-4">
+        <div className="mb-4 sm:mb-6 flex items-center justify-between rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 sm:p-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <span className="font-medium text-primary">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-primary">
               {tMatching("results.matchingActive")}
             </span>
           </div>
-          <Button variant="ghost" size="sm" onClick={clearMatching}>
+          <Button variant="ghost" size="sm" onClick={clearMatching} className="h-7 px-2 text-xs">
             {tMatching("results.clearMatching")}
           </Button>
         </div>
