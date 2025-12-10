@@ -64,7 +64,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
   const t = useTranslations();
   const tSpec = useTranslations("therapists.specialties");
   const tLang = useTranslations("therapists.languages");
-  const tIns = useTranslations("therapists.insurance");
+  const tIns = useTranslations("therapists.filters.insurance");
 
   if (therapists.length === 0) return null;
 

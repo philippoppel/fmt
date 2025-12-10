@@ -49,6 +49,7 @@ interface TopMatchCardProps {
   rank: number;
   onCompareToggle?: (id: string) => void;
   isComparing?: boolean;
+  previousScore?: number;
 }
 
 const rankConfig: Record<number, { Icon: typeof Crown; color: string; bg: string; ring: string }> = {
@@ -83,6 +84,7 @@ export function TopMatchCard({
   rank,
   onCompareToggle,
   isComparing,
+  previousScore,
 }: TopMatchCardProps) {
   const t = useTranslations();
   const tSpec = useTranslations("therapists.specialties");
@@ -243,6 +245,8 @@ export function TopMatchCard({
               therapistName={therapist.name}
               rank={rank}
               matchScore={therapist.matchScore}
+              matchReasons={therapist.scoreBreakdown?.matchReasons}
+              previousScore={previousScore}
             />
 
             {/* Personalized Reason */}

@@ -116,6 +116,7 @@ export function TopMatches({
             rank={index + 1}
             onCompareToggle={handleCompareToggle}
             isComparing={compareIds.includes(therapist.id)}
+            previousScore={index > 0 ? topTherapists[index - 1].matchScore : undefined}
           />
         ))}
       </div>
