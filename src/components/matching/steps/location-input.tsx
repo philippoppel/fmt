@@ -165,29 +165,6 @@ export function LocationInput({
     []
   );
 
-  // Auto-locate on mount if no value
-  useEffect(() => {
-    if (!value && !hasAutoLocated && "geolocation" in navigator) {
-      setIsLocating(true);
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const city = await reverseGeocode(
-            position.coords.latitude,
-            position.coords.longitude
-          );
-          if (city) {
-            onChange(city);
-            setHasAutoLocated(true);
-          }
-          setIsLocating(false);
-        },
-        () => {
-          setIsLocating(false);
-        },
-        { timeout: 5000, maximumAge: 300000 }
-      );
-    }
-  }, [value, hasAutoLocated, onChange, reverseGeocode]);
 
   // Manual locate button
   const handleLocate = async () => {
