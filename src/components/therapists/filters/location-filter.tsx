@@ -1,9 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { MapPin } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { FilterSection } from "./filter-section";
+import { LocationInput } from "@/components/matching/steps/location-input";
 
 interface LocationFilterProps {
   value: string;
@@ -15,20 +14,11 @@ export function LocationFilter({ value, onChange }: LocationFilterProps) {
 
   return (
     <FilterSection title={t("label")}>
-      <div className="relative">
-        <MapPin
-          className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-          aria-hidden="true"
-        />
-        <Input
-          type="text"
-          placeholder={t("placeholder")}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="pl-9"
-          aria-label={t("label")}
-        />
-      </div>
+      <LocationInput
+        value={value}
+        onChange={onChange}
+        placeholder={t("placeholder")}
+      />
     </FilterSection>
   );
 }
