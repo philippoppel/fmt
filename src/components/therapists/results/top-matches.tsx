@@ -102,6 +102,25 @@ export function TopMatches({
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* AI summary - prominent at top */}
+      {aiSummaryText && (
+        <div className="flex gap-3 rounded-xl border border-primary/25 bg-primary/10 px-3 py-3 sm:px-4 sm:py-4">
+          <Sparkles className="h-5 w-5 text-primary shrink-0" />
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">
+              {t("matching.results.aiSummaryTitle")}
+            </p>
+            <p className="text-sm text-foreground leading-relaxed">{aiSummaryText}</p>
+            <p className="text-xs font-medium text-primary">
+              {t("matching.results.aiSummaryCta", {
+                name: topTherapists[0]?.name,
+                rank: 1,
+              })}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Header - more compact on mobile */}
       <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -159,25 +178,6 @@ export function TopMatches({
           />
         ))}
       </div>
-
-      {/* AI ordering hint */}
-      {aiSummaryText && (
-        <div className="flex gap-3 rounded-lg border border-primary/20 bg-primary/5 px-3 py-3 sm:px-4 sm:py-3">
-          <Sparkles className="h-5 w-5 text-primary shrink-0" />
-          <div className="space-y-1">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">
-              {t("matching.results.aiSummaryTitle")}
-            </p>
-            <p className="text-sm text-foreground">{aiSummaryText}</p>
-            <p className="text-xs font-medium text-primary">
-              {t("matching.results.aiSummaryCta", {
-                name: topTherapists[0]?.name,
-                rank: 1,
-              })}
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* Show More Button */}
       {remaining > 0 && (

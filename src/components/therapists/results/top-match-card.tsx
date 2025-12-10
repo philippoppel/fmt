@@ -87,7 +87,6 @@ export function TopMatchCard({
   previousScore,
 }: TopMatchCardProps) {
   const t = useTranslations();
-  const tSpec = useTranslations("therapists.specialties");
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showBreakdown, setShowBreakdown] = useState(false);
 
@@ -95,27 +94,6 @@ export function TopMatchCard({
   const RankIcon = config.Icon;
   const fitLevel = getFitLevel(therapist.matchScore);
   const nextSlotText = formatNextSlot(therapist.nextAvailableSlot, t);
-
-  // Generate personalized reason
-  const getPersonalizedReason = () => {
-    const reasons: string[] = [];
-    const specs = therapist.specializations.slice(0, 2).map(s => tSpec(s)).join(" & ");
-
-    if (specs) {
-      reasons.push(t("matching.personalized.expertInTopics", { topics: specs }));
-    }
-    if (therapist.experienceYears && therapist.experienceYears >= 5) {
-      reasons.push(t("matching.personalized.experienceMatch", { years: therapist.experienceYears }));
-    }
-    if (therapist.sessionType === "online" || therapist.sessionType === "both") {
-      reasons.push(t("matching.personalized.onlineMatch"));
-    }
-    if (therapist.nextAvailableSlot) {
-      reasons.push(t("matching.personalized.availabilityMatch"));
-    }
-
-    return reasons[0] || specs;
-  };
 
   return (
     <>
@@ -248,13 +226,6 @@ export function TopMatchCard({
               matchReasons={therapist.scoreBreakdown?.matchReasons}
               previousScore={previousScore}
             />
-
-            {/* Personalized Reason */}
-            <div className="rounded-lg bg-primary/5 p-3">
-              <p className="text-sm font-medium text-foreground">
-                {getPersonalizedReason()}
-              </p>
-            </div>
           </div>
 
           {/* Footer Actions - 3 equal buttons */}
