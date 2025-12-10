@@ -248,35 +248,30 @@ export function TopMatchCard({
             </div>
           </div>
 
-          {/* Footer Actions - stack on mobile */}
-          <div className="flex flex-col gap-2 border-t bg-muted/30 px-3 py-2 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3">
-            <div className="flex items-center gap-2">
-              {onCompareToggle && (
-                <Button
-                  variant={isComparing ? "default" : "outline"}
-                  size="sm"
-                  className={cn(
-                    "h-8 gap-1.5 text-xs",
-                    isComparing && "bg-primary text-primary-foreground"
-                  )}
-                  onClick={() => onCompareToggle(therapist.id)}
-                >
-                  <GitCompare className="h-3.5 w-3.5" />
-                  <span className="sm:hidden">{isComparing ? t("matching.compare.added") : t("matching.compare.add")}</span>
-                  <span className="hidden sm:inline">{isComparing ? t("matching.compare.added") : t("matching.compare.addToCompare")}</span>
-                </Button>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Button asChild variant="ghost" size="sm" className="h-8 flex-1 text-xs sm:flex-initial">
-                <Link href={`/therapists/${therapist.id}`}>
-                  {t("therapists.viewProfile")}
-                </Link>
+          {/* Footer Actions - 3 equal buttons */}
+          <div className="grid grid-cols-3 gap-2 border-t bg-muted/30 p-2 sm:p-3">
+            {onCompareToggle && (
+              <Button
+                variant={isComparing ? "default" : "outline"}
+                size="sm"
+                className={cn(
+                  "h-9 gap-1 px-2 text-xs",
+                  isComparing && "bg-primary text-primary-foreground"
+                )}
+                onClick={() => onCompareToggle(therapist.id)}
+              >
+                <GitCompare className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">{isComparing ? t("matching.compare.added") : t("matching.compare.add")}</span>
               </Button>
-              <Button size="sm" className="h-8 flex-1 px-3 text-xs sm:flex-initial sm:px-4">
-                {t("therapists.contact")}
-              </Button>
-            </div>
+            )}
+            <Button asChild variant="ghost" size="sm" className="h-9 px-2 text-xs">
+              <Link href={`/therapists/${therapist.id}`}>
+                {t("therapists.viewProfile")}
+              </Link>
+            </Button>
+            <Button size="sm" className="h-9 px-2 text-xs">
+              {t("therapists.contact")}
+            </Button>
           </div>
         </CardContent>
       </Card>

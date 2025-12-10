@@ -772,20 +772,27 @@
       "matchDetails": "Warum dieses Matching?"
     },
     "freetext": {
-      "badge": "KI-gestützte Analyse",
-      "title": "Erzähl uns, was dich beschäftigt",
-      "subtitle": "Beschreibe in 2-3 Sätzen deine aktuelle Situation. Unsere KI hilft, die passenden Therapeuten zu finden.",
+      "badge": "Schnellanalyse",
+      "title": "Beschreibe deine Situation",
+      "subtitle": "In eigenen Worten: Was beschäftigt dich? Wir erkennen automatisch passende Themen und Schwerpunkte.",
       "placeholder": "z.B. Ich fühle mich seit Wochen erschöpft und habe das Gefühl, dass mir alles über den Kopf wächst. Meine Beziehung leidet darunter...",
-      "examples": "Beispiele zum Starten:",
+      "examples": "Beispiele:",
       "example1": "Ich habe seit Monaten Schlafprobleme und fühle mich tagsüber erschöpft. Die Arbeit belastet mich sehr.",
       "example2": "Nach der Trennung fällt es mir schwer, wieder Vertrauen aufzubauen. Ich grübele viel über die Vergangenheit.",
       "example3": "Ich habe regelmäßig Panikattacken, besonders in sozialen Situationen. Das schränkt mein Leben ein.",
-      "analyze": "Analysieren",
+      "analyze": "Themen erkennen",
       "analyzing": "Wird analysiert...",
-      "continue": "Weiter mit diesen Themen",
-      "skip": "Lieber Themen selbst wählen",
+      "continue": "Mit diesen Themen weiter",
+      "skip": "Themen selbst wählen",
       "detectedTopics": "Erkannte Themen:",
-      "suggestedMethods": "Mögliche Therapieansätze:"
+      "suggestedMethods": "Passende Ansätze:",
+      "methods": {
+        "cbt": "Verhaltenstherapie",
+        "psychodynamic": "Tiefenpsychologie",
+        "mindfulness": "Achtsamkeit",
+        "emdr": "EMDR",
+        "systemic": "Systemisch"
+      }
     },
     "fitLevel": {
       "excellent": "Ausgezeichnetes Matching",

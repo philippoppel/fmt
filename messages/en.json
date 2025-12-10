@@ -772,20 +772,27 @@
       "matchDetails": "Why this match?"
     },
     "freetext": {
-      "badge": "AI-Powered Analysis",
-      "title": "Tell us what's on your mind",
-      "subtitle": "Describe your current situation in 2-3 sentences. Our AI helps find the right therapists for you.",
+      "badge": "Quick Analysis",
+      "title": "Describe your situation",
+      "subtitle": "In your own words: What's on your mind? We'll automatically identify relevant topics and focus areas.",
       "placeholder": "e.g. I've been feeling exhausted for weeks and everything feels overwhelming. My relationship is suffering...",
-      "examples": "Examples to get started:",
+      "examples": "Examples:",
       "example1": "I've had sleep problems for months and feel exhausted during the day. Work is very stressful.",
       "example2": "After the breakup, it's hard to trust again. I keep thinking about the past.",
       "example3": "I have regular panic attacks, especially in social situations. It's limiting my life.",
-      "analyze": "Analyze",
+      "analyze": "Identify Topics",
       "analyzing": "Analyzing...",
       "continue": "Continue with these topics",
       "skip": "Choose topics manually",
-      "detectedTopics": "Detected topics:",
-      "suggestedMethods": "Suggested therapy approaches:"
+      "detectedTopics": "Identified topics:",
+      "suggestedMethods": "Matching approaches:",
+      "methods": {
+        "cbt": "Cognitive Behavioral",
+        "psychodynamic": "Psychodynamic",
+        "mindfulness": "Mindfulness",
+        "emdr": "EMDR",
+        "systemic": "Systemic"
+      }
     },
     "fitLevel": {
       "excellent": "Excellent Fit",
