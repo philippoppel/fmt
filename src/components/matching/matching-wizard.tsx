@@ -151,36 +151,34 @@ function WizardContent() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background">
-      {/* Fixed Header */}
-      <header className="shrink-0 border-b bg-card px-4 py-3">
-        <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Sparkles className="h-4 w-4" />
+      {/* Combined Header + Progress - single compact row */}
+      <header className="shrink-0 border-b bg-card px-3 py-2">
+        <div className="mx-auto flex max-w-4xl items-center gap-3">
+          {/* Logo + Title */}
+          <div className="flex shrink-0 items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Sparkles className="h-3.5 w-3.5" />
             </div>
-            <span className="font-semibold">{t("matching.wizard.badge")}</span>
-            <span className="hidden rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground sm:inline">
-              {stepPosition}/{totalSteps}
-            </span>
+            <span className="hidden text-sm font-semibold sm:inline">{t("matching.wizard.badge")}</span>
           </div>
-          <div className="w-28">
+
+          {/* Step Indicator - takes remaining space */}
+          <div className="min-w-0 flex-1">
+            <StepIndicator
+              labels={stepLabels}
+              optionalLabel={t("matching.intensity.optional")}
+            />
+          </div>
+
+          {/* Precision Meter */}
+          <div className="w-24 shrink-0">
             <PrecisionMeter compact />
           </div>
         </div>
       </header>
 
-      {/* Progress Bar - minimal */}
-      <div className="shrink-0 bg-muted/30 px-4 py-2">
-        <div className="mx-auto max-w-4xl">
-          <StepIndicator
-            labels={stepLabels}
-            optionalLabel={t("matching.intensity.optional")}
-          />
-        </div>
-      </div>
-
       {/* Main Content - scrollable if needed */}
-      <main className="min-h-0 flex-1 overflow-auto px-4 py-4">
+      <main className="min-h-0 flex-1 overflow-auto px-3 py-2">
         <div className="mx-auto h-full max-w-4xl">
           {state.currentStep === 1 && <TopicSelection />}
           {state.currentStep === 1.5 && <IntensityAssessment />}
@@ -188,18 +186,18 @@ function WizardContent() {
         </div>
       </main>
 
-      {/* Fixed Footer Navigation */}
-      <nav className="shrink-0 border-t bg-card px-4 py-3">
+      {/* Fixed Footer Navigation - more compact */}
+      <nav className="shrink-0 border-t bg-card px-3 py-2">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
           <Button
             variant="ghost"
             size="sm"
             onClick={actions.goBack}
             disabled={state.currentStep === 1}
-            className="gap-1.5"
+            className="h-8 gap-1 px-2"
           >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">{t("matching.wizard.back")}</span>
+            <ArrowLeft className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline text-sm">{t("matching.wizard.back")}</span>
           </Button>
 
           <div className="flex items-center gap-2">
@@ -208,10 +206,10 @@ function WizardContent() {
                 variant="ghost"
                 size="sm"
                 onClick={actions.skipIntensity}
-                className="gap-1.5 text-muted-foreground"
+                className="h-8 gap-1 px-2 text-muted-foreground"
               >
-                <SkipForward className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("matching.wizard.skip")}</span>
+                <SkipForward className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline text-sm">{t("matching.wizard.skip")}</span>
               </Button>
             )}
 
@@ -219,10 +217,10 @@ function WizardContent() {
               size="sm"
               onClick={actions.goNext}
               disabled={!computed.canProceed}
-              className="gap-1.5"
+              className="h-8 gap-1 px-3"
             >
-              {t("matching.wizard.next")}
-              <ArrowRight className="h-4 w-4" />
+              <span className="text-sm">{t("matching.wizard.next")}</span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>

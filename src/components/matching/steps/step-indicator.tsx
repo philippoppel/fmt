@@ -25,27 +25,27 @@ export function StepIndicator({ labels }: StepIndicatorProps) {
 
   return (
     <nav aria-label="Progress" className="w-full">
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5">
         {steps.map(({ step, label }, index) => {
           const isCurrent = currentStep === step;
           const isCompleted = currentStep > step;
           const isLast = index === steps.length - 1;
 
           return (
-            <div key={step} className="flex flex-1 items-center gap-1">
-              {/* Step pill */}
+            <div key={step} className="flex flex-1 items-center gap-0.5">
+              {/* Step pill - very compact */}
               <div
                 className={cn(
-                  "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-all",
+                  "flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium transition-all",
                   isCompleted && "bg-primary/10 text-primary",
                   isCurrent && !isCompleted && "bg-primary text-primary-foreground",
                   !isCompleted && !isCurrent && "bg-muted text-muted-foreground"
                 )}
               >
                 {isCompleted ? (
-                  <Check className="h-3 w-3" />
+                  <Check className="h-2.5 w-2.5" />
                 ) : (
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-current/20 text-[10px]">
+                  <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-current/20 text-[9px]">
                     {index + 1}
                   </span>
                 )}

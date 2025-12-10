@@ -13,31 +13,31 @@ export function TopicSelection() {
 
   return (
     <div className="flex h-full flex-col">
-      {/* Header - compact */}
-      <div className="mb-3 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold sm:text-xl">
+      {/* Header - single line, very compact */}
+      <div className="mb-2 flex items-center justify-between">
+        <div className="flex items-baseline gap-2">
+          <h2 className="text-base font-semibold">
             {t("matching.wizard.step1Title")}
           </h2>
-          <p className="text-sm text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             {state.selectedTopics.length === 0
               ? t("matching.wizard.selectAtLeastOne")
               : t("matching.wizard.selectedCount", { count: state.selectedTopics.length })}
-          </p>
+          </span>
         </div>
         <Button
           variant="ghost"
           size="sm"
           onClick={actions.switchToFreetext}
-          className="gap-1.5 text-xs text-muted-foreground"
+          className="h-7 gap-1 px-2 text-xs text-muted-foreground"
         >
-          <MessageSquareText className="h-3.5 w-3.5" />
+          <MessageSquareText className="h-3 w-3" />
           <span className="hidden sm:inline">{t("matching.wizard.preferToDescribe")}</span>
         </Button>
       </div>
 
-      {/* Topic Grid - compact 4x3 or 6x2 */}
-      <div className="grid flex-1 auto-rows-fr grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+      {/* Topic Grid - 6 columns, 2 rows */}
+      <div className="grid flex-1 auto-rows-fr grid-cols-3 gap-1.5 sm:grid-cols-4 md:grid-cols-6">
         {MATCHING_TOPICS.map((topic) => (
           <TopicCard
             key={topic.id}

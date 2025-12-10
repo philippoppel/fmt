@@ -134,33 +134,27 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
 
   if (compact) {
     return (
-      <div className={cn("flex flex-col gap-2", className)}>
-        {/* Header row */}
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-muted-foreground">
-            {t("label")}
-          </span>
-          <span className={cn("text-sm font-bold tabular-nums", color.text)}>
+      <div className={cn("flex flex-col gap-0.5", className)}>
+        {/* Percentage + progress bar in one row */}
+        <div className="flex items-center gap-2">
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/50">
+            <div
+              className={cn(
+                "h-full rounded-full transition-all duration-500",
+                level === "low" && "bg-orange-500",
+                level === "medium" && "bg-yellow-500",
+                level === "high" && "bg-emerald-500",
+                level === "excellent" && "bg-primary"
+              )}
+              style={{ width: `${displayPrecision}%` }}
+            />
+          </div>
+          <span className={cn("text-xs font-bold tabular-nums", color.text)}>
             {displayPrecision}%
           </span>
         </div>
-
-        {/* Progress bar */}
-        <div className="h-2 w-full overflow-hidden rounded-full bg-muted/50">
-          <div
-            className={cn(
-              "h-full rounded-full transition-all duration-500",
-              level === "low" && "bg-orange-500",
-              level === "medium" && "bg-yellow-500",
-              level === "high" && "bg-emerald-500",
-              level === "excellent" && "bg-primary"
-            )}
-            style={{ width: `${displayPrecision}%` }}
-          />
-        </div>
-
-        {/* Level label */}
-        <span className={cn("text-xs font-medium", color.text)}>
+        {/* Level label - small */}
+        <span className={cn("text-[10px] text-right", color.text)}>
           {t(`levels.${level}`)}
         </span>
       </div>
