@@ -65,7 +65,7 @@ export function SituationInput({ onAnalysisComplete, onSkip, onCrisisDetected }:
       <div className="space-y-6">
         {/* Header - same style as screening */}
         <div className="text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
             <Heart className="h-6 w-6 text-red-600 dark:text-red-400" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
@@ -79,11 +79,11 @@ export function SituationInput({ onAnalysisComplete, onSkip, onCrisisDetected }:
         </div>
 
         <div className="mx-auto max-w-xl space-y-6">
-          {/* Notice box - same style as screening notice */}
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950/20">
+          {/* Notice box - high contrast */}
+          <div className="rounded-lg border-2 border-red-500 bg-white p-4 dark:border-red-600 dark:bg-red-950/40">
             <div className="flex gap-3">
               <Phone className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
-              <p className="text-sm text-red-800 dark:text-red-200">
+              <p className="text-sm font-semibold text-red-800 dark:text-red-200">
                 {locale === "de"
                   ? "Kostenlose & anonyme Hilfe, rund um die Uhr erreichbar."
                   : "Free & anonymous help, available 24/7."}
@@ -91,49 +91,45 @@ export function SituationInput({ onAnalysisComplete, onSkip, onCrisisDetected }:
             </div>
           </div>
 
-          {/* Hotline buttons - same style as screening buttons */}
+          {/* Hotline buttons - high contrast */}
           <div className="space-y-3">
-            <p className="text-base font-medium leading-relaxed">
+            <p className="text-base font-semibold leading-relaxed">
               {locale === "de" ? "Telefonseelsorge anrufen:" : "Call crisis hotline:"}
             </p>
-            <div className="flex gap-3">
-              <a
-                href={`tel:${crisisHotline.replace(/\s/g, "")}`}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-red-500 bg-red-500 px-6 py-3 text-base font-medium text-white transition-all hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
-              >
-                <Phone className="h-5 w-5" />
-                {crisisHotline}
-              </a>
-            </div>
-            <div className="flex gap-3">
-              <a
-                href={`tel:${crisisHotlineAlt.replace(/\s/g, "")}`}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-red-200 bg-red-50 px-6 py-3 text-base font-medium text-red-700 transition-all hover:border-red-300 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:border-red-800 dark:bg-red-950/20 dark:text-red-300 dark:hover:border-red-700 dark:hover:bg-red-950/40"
-              >
-                <Phone className="h-5 w-5" />
-                {crisisHotlineAlt}
-              </a>
-            </div>
+            <a
+              href={`tel:${crisisHotline.replace(/\s/g, "")}`}
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-red-600 bg-red-600 px-6 py-4 text-lg font-bold text-white shadow-lg transition-all hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+            >
+              <Phone className="h-5 w-5" />
+              {crisisHotline}
+            </a>
+            <a
+              href={`tel:${crisisHotlineAlt.replace(/\s/g, "")}`}
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-red-500 bg-white px-6 py-4 text-lg font-bold text-red-700 transition-all hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:border-red-600 dark:bg-red-950/50 dark:text-red-300 dark:hover:bg-red-950/70"
+            >
+              <Phone className="h-5 w-5" />
+              {crisisHotlineAlt}
+            </a>
           </div>
 
           {/* Online option */}
           <div className="space-y-3">
-            <p className="text-base font-medium leading-relaxed">
+            <p className="text-base font-semibold leading-relaxed">
               {locale === "de" ? "Oder schriftlich:" : "Or in writing:"}
             </p>
             <a
               href="https://online.telefonseelsorge.de"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-primary/20 bg-primary/5 px-6 py-3 text-base font-medium text-primary transition-all hover:border-primary/40 hover:bg-primary/10"
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-amber-600 bg-white px-6 py-4 text-lg font-bold text-amber-800 transition-all hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 dark:border-amber-500 dark:bg-amber-950/50 dark:text-amber-200 dark:hover:bg-amber-950/70"
             >
               {locale === "de" ? "Online-Beratung (Chat/E-Mail)" : "Online counseling (Chat/Email)"}
             </a>
           </div>
 
-          {/* Info box - same style as status indicator */}
-          <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-center dark:border-green-800 dark:bg-green-950/20">
-            <p className="text-sm text-green-800 dark:text-green-200">
+          {/* Info box - high contrast */}
+          <div className="rounded-lg border-2 border-green-500 bg-green-50 p-4 text-center dark:border-green-600 dark:bg-green-950/30">
+            <p className="text-sm font-semibold text-green-800 dark:text-green-200">
               {locale === "de"
                 ? "24/7 erreichbar • Kostenlos • Anonym"
                 : "Available 24/7 • Free • Anonymous"}
