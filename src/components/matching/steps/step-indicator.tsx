@@ -22,45 +22,61 @@ export function StepIndicator({ labels, optionalLabel }: StepIndicatorProps) {
   ];
 
   const currentStep = state.currentStep;
-  const currentIndex = Math.max(
-    0,
-    steps.findIndex((step) => step.step === currentStep)
-  );
-  const progress = Math.round(((currentIndex + 1) / steps.length) * 100);
-  const optionalText = optionalLabel ?? "Optional";
 
   return (
-    <nav aria-label="Progress" className="space-y-2">
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1 rounded-full bg-muted">
-          <div
-            className="h-1.5 rounded-full bg-primary transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
-          <div className="absolute inset-0 flex items-center justify-between px-2 text-[11px] font-semibold text-muted-foreground">
-            {steps.map(({ step }, index) => {
-              const isCurrent = currentStep === step;
-              const isCompleted = currentStep > step;
-              const displayNumber = index + 1;
-              return (
+    <nav aria-label="Progress" className="w-full">
+      <div className="flex items-center justify-between">
+        {steps.map(({ step, label, optional }, index) => {
+          const isCurrent = currentStep === step;
+          const isCompleted = currentStep > step;
+          const isLast = index === steps.length - 1;
+
+          return (
+            <div key={step} className="flex flex-1 items-center">
+              {/* Step with label */}
+              <div className="flex items-center gap-3">
                 <div
-                  key={step}
                   className={cn(
-                    "flex h-6 w-6 items-center justify-center rounded-full border text-[10px]",
-                    isCompleted && "border-primary bg-primary text-primary-foreground",
-                    isCurrent && !isCompleted && "border-primary bg-primary/10 text-primary",
-                    !isCompleted && !isCurrent && "border-muted-foreground/40 text-muted-foreground"
+                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-all duration-300",
+                    isCompleted && "bg-primary text-primary-foreground shadow-sm",
+                    isCurrent && !isCompleted && "bg-primary/10 text-primary ring-2 ring-primary",
+                    !isCompleted && !isCurrent && "bg-muted text-muted-foreground"
                   )}
                 >
-                  {isCompleted ? <Check className="h-3.5 w-3.5" /> : displayNumber}
+                  {isCompleted ? <Check className="h-4 w-4" /> : index + 1}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-        <span className="text-[11px] font-semibold text-primary tabular-nums">
-          {progress}%
-        </span>
+                <div className="hidden flex-col sm:flex">
+                  <span
+                    className={cn(
+                      "text-sm font-medium",
+                      isCurrent ? "text-foreground" : "text-muted-foreground"
+                    )}
+                  >
+                    {label}
+                  </span>
+                  {optional && (
+                    <span className="text-[10px] text-muted-foreground/70">
+                      {optionalLabel}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Connector line */}
+              {!isLast && (
+                <div className="mx-4 h-px flex-1 bg-border">
+                  <div
+                    className={cn(
+                      "h-full transition-all duration-500",
+                      isCompleted ? "bg-primary" : "bg-transparent"
+                    )}
+                    style={{ width: isCompleted ? "100%" : "0%" }}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </nav>
   );

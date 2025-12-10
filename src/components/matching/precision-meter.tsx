@@ -134,47 +134,35 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
 
   if (compact) {
     return (
-      <div className={cn("flex items-center gap-3", className)}>
-        {/* Compact circular meter */}
-        <div className="relative">
-          <svg width={size} height={size} className="transform -rotate-90">
-            {/* Background circle */}
-            <circle
-              cx={size / 2}
-              cy={size / 2}
-              r={radius}
-              fill="none"
-              strokeWidth={strokeWidth}
-              className="stroke-muted/30"
-            />
-            {/* Progress arc */}
-            <circle
-              cx={size / 2}
-              cy={size / 2}
-              r={radius}
-              fill="none"
-              strokeWidth={strokeWidth}
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              className={cn(color.stroke, "transition-all duration-500")}
-            />
-          </svg>
-          {/* Center text */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className={cn("text-sm font-bold", color.text)}>
-              {displayPrecision}%
-            </span>
-          </div>
+      <div className={cn("flex flex-col gap-2", className)}>
+        {/* Header row */}
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-medium text-muted-foreground">
+            {t("label")}
+          </span>
+          <span className={cn("text-sm font-bold tabular-nums", color.text)}>
+            {displayPrecision}%
+          </span>
         </div>
 
-        {/* Label */}
-        <div className="text-xs text-muted-foreground">
-          <div className="font-medium">{t("label")}</div>
-          <div className={cn("font-semibold", color.text)}>
-            {t(`levels.${level}`)}
-          </div>
+        {/* Progress bar */}
+        <div className="h-2 w-full overflow-hidden rounded-full bg-muted/50">
+          <div
+            className={cn(
+              "h-full rounded-full transition-all duration-500",
+              level === "low" && "bg-orange-500",
+              level === "medium" && "bg-yellow-500",
+              level === "high" && "bg-emerald-500",
+              level === "excellent" && "bg-primary"
+            )}
+            style={{ width: `${displayPrecision}%` }}
+          />
         </div>
+
+        {/* Level label */}
+        <span className={cn("text-xs font-medium", color.text)}>
+          {t(`levels.${level}`)}
+        </span>
       </div>
     );
   }

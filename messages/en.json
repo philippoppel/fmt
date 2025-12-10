@@ -717,6 +717,17 @@
       "anySessionType": "Any",
       "insurance": "Insurance"
     },
+    "location": {
+      "placeholder": "Enter city or detect automatically",
+      "useMyLocation": "Use my location",
+      "hint": "We detect your location automatically or you can enter a city",
+      "detecting": "Detecting location...",
+      "detected": "Location detected",
+      "notSupported": "Location detection not supported",
+      "denied": "Location access denied",
+      "notFound": "Could not determine city",
+      "error": "Error detecting location"
+    },
     "results": {
       "title": "Your Matches",
       "matchScore": "{score}% Match",
@@ -726,7 +737,7 @@
       "matchingActive": "Matching Mode Active",
       "clearMatching": "Exit Matching",
       "smartMatching": "Smart Matching",
-      "topMatches": "Your Top 3 Matches",
+      "topMatches": "Your Top Matches",
       "topMatchesSubtitle": "Based on your preferences, we found these therapists for you",
       "bestMatch": "Best Match",
       "veryGoodMatch": "Very Good Match",
