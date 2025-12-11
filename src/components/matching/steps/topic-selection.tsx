@@ -175,11 +175,11 @@ export function TopicSelection() {
           />
         ))}
 
-        {/* Freetext Card - at the end */}
+        {/* Freetext Card - at the end, full width and centered */}
         <div
           onClick={handleCardClick}
           className={cn(
-            "col-span-2 row-span-1 flex cursor-text flex-col overflow-hidden rounded-lg border-2 transition-all",
+            "col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-4 lg:col-start-2 row-span-1 flex cursor-text flex-col overflow-hidden rounded-lg border-2 transition-all",
             analysisState === "success"
               ? "border-green-600 bg-green-50 dark:border-green-500 dark:bg-green-950/30"
               : analysisState === "empty"
