@@ -150,8 +150,8 @@ export function TopMatchCard({
             </div>
           </div>
 
-          {/* Content Section */}
-          <div className="space-y-3 p-4">
+          {/* Content Section - Fixed height structure */}
+          <div className="flex min-h-[180px] flex-col p-4">
             {/* Fit Level Badge - Prominent */}
             <div className="flex items-center justify-between">
               <Badge
@@ -174,7 +174,7 @@ export function TopMatchCard({
             </div>
 
             {/* Quick Info Row */}
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" />
                 {therapist.location.city}
@@ -188,8 +188,8 @@ export function TopMatchCard({
               )}
             </div>
 
-            {/* Availability Highlights */}
-            <div className="flex flex-wrap gap-1.5">
+            {/* Availability Highlights - Fixed height area */}
+            <div className="mt-3 flex min-h-[28px] flex-wrap gap-1.5">
               {therapist.avgResponseTimeHours && therapist.avgResponseTimeHours <= 24 && (
                 <Badge variant="secondary" className="gap-1 text-[10px]">
                   <Clock className="h-3 w-3" />
@@ -214,10 +214,10 @@ export function TopMatchCard({
               )}
             </div>
 
-            {/* Score with Details Button */}
+            {/* Score with Details Button - Push to bottom */}
             <button
               onClick={() => setShowBreakdown(true)}
-              className="flex w-full items-center justify-between rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 transition-all hover:border-primary/40 hover:bg-primary/10"
+              className="mt-auto flex w-full items-center justify-between rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 transition-all hover:border-primary/40 hover:bg-primary/10"
             >
               <div className="flex items-center gap-2">
                 <span className="text-2xl font-bold text-primary">{therapist.matchScore}%</span>
@@ -229,32 +229,33 @@ export function TopMatchCard({
             </button>
           </div>
 
-          {/* Footer Actions - 3 equal buttons */}
-          <div className="grid grid-cols-3 gap-1 border-t bg-muted/30 p-2">
+          {/* Footer Actions - Clean icon buttons with labels */}
+          <div className="grid grid-cols-3 border-t">
             {onCompareToggle && (
-              <Button
-                variant={isComparing ? "default" : "outline"}
-                size="sm"
+              <button
                 className={cn(
-                  "h-9 gap-1 px-1.5 text-xs lg:px-2",
-                  isComparing && "bg-primary text-primary-foreground"
+                  "flex flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] transition-colors hover:bg-muted/50",
+                  isComparing ? "bg-primary/10 text-primary" : "text-muted-foreground"
                 )}
                 onClick={() => onCompareToggle(therapist.id)}
               >
-                <GitCompare className="h-4 w-4 shrink-0" />
-                <span className="hidden truncate xl:inline">{isComparing ? t("matching.compare.added") : t("matching.compare.add")}</span>
-              </Button>
+                <GitCompare className="h-4 w-4" />
+                <span>{isComparing ? t("matching.compare.added") : t("matching.compare.addShort")}</span>
+              </button>
             )}
-            <Button asChild variant="ghost" size="sm" className="h-9 gap-1 px-1.5 text-xs lg:px-2">
-              <Link href={`/therapists/${therapist.id}`}>
-                <User className="h-4 w-4 shrink-0" />
-                <span className="hidden truncate xl:inline">{t("therapists.viewProfile")}</span>
-              </Link>
-            </Button>
-            <Button size="sm" className="h-9 gap-1 px-1.5 text-xs lg:px-2">
-              <MessageCircle className="h-4 w-4 shrink-0" />
-              <span className="hidden truncate xl:inline">{t("therapists.contact")}</span>
-            </Button>
+            <Link
+              href={`/therapists/${therapist.id}`}
+              className="flex flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+            >
+              <User className="h-4 w-4" />
+              <span>{t("therapists.viewProfile")}</span>
+            </Link>
+            <button
+              className="flex flex-col items-center justify-center gap-0.5 rounded-br-lg bg-primary/10 py-2.5 text-[10px] text-primary transition-colors hover:bg-primary/20"
+            >
+              <MessageCircle className="h-4 w-4" />
+              <span>{t("therapists.contact")}</span>
+            </button>
           </div>
         </CardContent>
       </Card>
