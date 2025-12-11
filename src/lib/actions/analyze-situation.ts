@@ -22,10 +22,16 @@ export interface SituationAnalysis {
   crisisType: "suicidal" | "self_harm" | "acute_danger" | null;
 }
 
-// Initialize Groq client
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+// Initialize Groq client lazily to avoid errors during test imports
+let groq: Groq | null = null;
+function getGroqClient(): Groq {
+  if (!groq) {
+    groq = new Groq({
+      apiKey: process.env.GROQ_API_KEY,
+    });
+  }
+  return groq;
+}
 
 // ============================================================================
 // COMPREHENSIVE BILINGUAL KEYWORD MAPPINGS (DE + EN)
@@ -550,7 +556,7 @@ const INTENSITY_MARKERS: Record<IntensityLevel, IntensityMarkers> = {
 // These keywords trigger immediate display of crisis resources
 // ============================================================================
 
-type CrisisType = "suicidal" | "self_harm" | "acute_danger";
+export type CrisisType = "suicidal" | "self_harm" | "acute_danger";
 
 const CRISIS_KEYWORDS: Record<CrisisType, { de: string[]; en: string[] }> = {
   suicidal: {
@@ -719,10 +725,10 @@ const THERAPY_FOCUS_MARKERS: Record<TherapyFocus, { de: string[]; en: string[] }
 };
 
 // ============================================================================
-// ANALYSIS FUNCTIONS
+// ANALYSIS FUNCTIONS (exported for testing)
 // ============================================================================
 
-function detectLanguage(text: string): "de" | "en" {
+export function detectLanguage(text: string): "de" | "en" {
   const germanIndicators = ["ich", "und", "der", "die", "das", "ist", "bin", "habe", "mich", "mir", "meine", "für", "nicht", "auch", "sehr"];
   const englishIndicators = ["i", "and", "the", "is", "am", "have", "my", "me", "for", "not", "also", "very", "with", "been", "feeling"];
 
@@ -743,7 +749,7 @@ function detectLanguage(text: string): "de" | "en" {
   return germanScore >= englishScore ? "de" : "en";
 }
 
-function detectTopics(text: string, lang: "de" | "en"): string[] {
+export function detectTopics(text: string, lang: "de" | "en"): string[] {
   const lowerText = text.toLowerCase();
   const detectedTopics: Map<string, number> = new Map();
 
@@ -777,7 +783,7 @@ function detectTopics(text: string, lang: "de" | "en"): string[] {
     .map(([topic]) => topic);
 }
 
-function detectSubTopics(text: string, lang: "de" | "en"): string[] {
+export function detectSubTopics(text: string, lang: "de" | "en"): string[] {
   const lowerText = text.toLowerCase();
   const detectedSubTopics: Map<string, number> = new Map();
 
@@ -854,13 +860,13 @@ function detectIntensity(text: string, lang: "de" | "en"): IntensityLevel {
 // CRISIS DETECTION - Priority check before all other analysis
 // ============================================================================
 
-interface CrisisDetectionResult {
+export interface CrisisDetectionResult {
   crisisDetected: boolean;
   crisisType: CrisisType | null;
   matchedKeyword: string | null;
 }
 
-function detectCrisis(text: string, lang: "de" | "en"): CrisisDetectionResult {
+export function detectCrisis(text: string, lang: "de" | "en"): CrisisDetectionResult {
   const lowerText = text.toLowerCase();
 
   // Check each crisis type in order of severity
@@ -1185,30 +1191,28 @@ function ensureParentTopics(topics: string[], subTopics: string[]): string[] {
   return Array.from(topicSet);
 }
 
-const AI_SYSTEM_PROMPT = `Du bist ein einfühlsamer Psychologie-Assistent, der Menschen hilft, ihre Situation zu verstehen.
+// ============================================================================
+// AI PROMPTS - Optimized according to Groq Best Practices
+// ============================================================================
 
+const AI_SYSTEM_PROMPT = `### Role
+Du bist ein einfühlsamer Psychologie-Assistent für die Analyse von Situationsbeschreibungen.
+
+### Instructions
+- Analysiere den Text und extrahiere psychologische Themen
+- Prüfe ZUERST auf Krisenindikatoren (Suizid, Selbstverletzung, akute Gefahr)
+- Wähle 1-3 passende Topics aus der verfügbaren Liste
+- Wähle 1-4 passende SubTopics nur wenn spezifisch erkennbar
+- Bestimme die Intensität (low/medium/high)
+- Schreibe eine kurze, einfühlsame Zusammenfassung
+- Antworte NUR mit validem JSON, keine Erklärung, kein Markdown
+
+### Context
 DATENSCHUTZ: Der Text wurde bereits anonymisiert. Platzhalter wie [NAME], [ORT], [FIRMA] sind normal.
 
-Analysiere den Text und antworte NUR mit einem JSON-Objekt (keine Erklärung, kein Markdown):
+Verfügbare Topics: ${AVAILABLE_TOPICS.join(", ")}
 
-{
-  "topics": ["topic1", "topic2"],
-  "subTopics": ["subtopic1", "subtopic2"],
-  "reasoning": "1-2 Sätze auf Deutsch, warum diese Themen erkannt wurden",
-  "intensity": "low" | "medium" | "high",
-  "summary": "Kurze, einfühlsame Zusammenfassung auf Deutsch (1-2 Sätze)",
-  "crisis": false,
-  "crisisType": null
-}
-
-WICHTIG - Krisenprüfung (höchste Priorität):
-- Setze "crisis": true wenn Suizidgedanken, Selbstverletzung oder akute Gefahr erkennbar sind
-- crisisType: "suicidal" | "self_harm" | "acute_danger" | null
-
-Verfügbare Topics (wähle 1-3 passende):
-${AVAILABLE_TOPICS.join(", ")}
-
-Verfügbare SubTopics (wähle 1-4 passende, nur wenn spezifisch erkennbar):
+SubTopics nach Kategorie:
 - Angst: social_anxiety, panic_attacks, phobias, generalized_anxiety
 - Depression: chronic_sadness, lack_motivation, grief, loneliness
 - Beziehungen: couple_conflicts, breakup, dating_issues, intimacy, divorce, parenting, family_conflicts
@@ -1221,15 +1225,31 @@ Verfügbare SubTopics (wähle 1-4 passende, nur wenn spezifisch erkennbar):
 - Stress: chronic_stress, exam_anxiety, performance_pressure
 - Schlaf: insomnia, nightmares, sleep_anxiety
 
-Intensität:
-- "high": Dringend, akute Belastung, kann nicht mehr
-- "medium": Belastend aber bewältigbar
-- "low": Leichte Beschwerden, präventiv
+Intensitäts-Kriterien:
+- "high": Dringend, akute Belastung, kann nicht mehr, Krise
+- "medium": Belastend aber bewältigbar, beeinträchtigt Alltag
+- "low": Leichte Beschwerden, präventiv, Selbstoptimierung
 
-Beispiel für "reasoning":
-- "Du beschreibst Erschöpfung und fehlende Motivation bei der Arbeit – typische Anzeichen für Burnout. Die Schlafprobleme deuten auf zusätzliche Belastung hin."
+### WICHTIG: Krisen-Erkennung
+Setze crisis=true NUR bei EXPLIZITEN Hinweisen auf:
+- "suicidal": DIREKTE Äußerungen zu Suizid, Sterben wollen, Abschiedsbrief
+- "self_harm": DIREKTE Äußerungen zu Selbstverletzung, Ritzen, sich weh tun
+- "acute_danger": DIREKTE Äußerungen wie "ich kann nicht mehr", "keinen Ausweg", "hoffnungslos"
 
-Antworte IMMER auf Deutsch, auch wenn der Input auf Englisch ist.`;
+KEINE Krise bei:
+- Burnout, Erschöpfung, Überlastung → Das sind Topics, keine Krisen
+- Panikattacken, Angst → Das sind Topics, keine Krisen
+- Beziehungsprobleme, Trauer → Das sind Topics, keine Krisen
+- Allgemeiner Stress → Das ist ein Topic, keine Krise
+
+crisis=true bedeutet SOFORTIGE Hilfsanzeige - nur bei echten Krisenindikatoren setzen!
+
+### Expected Output Format
+{"topics":["topic1","topic2"],"subTopics":["subtopic1"],"reasoning":"Begründung auf Deutsch","intensity":"medium","summary":"Einfühlsame Zusammenfassung","crisis":false,"crisisType":null}
+
+### Example
+Input: "Ich bin bei der Arbeit völlig erschöpft und kann nachts nicht schlafen."
+Output: {"topics":["burnout","sleep"],"subTopics":["exhaustion","insomnia"],"reasoning":"Du beschreibst Erschöpfung bei der Arbeit und Schlafprobleme – typische Anzeichen für Burnout mit begleitender Schlafstörung.","intensity":"medium","summary":"Du erlebst gerade eine belastende Phase mit Erschöpfung und Schlafproblemen. Das sind wichtige Signale, auf die wir achten sollten.","crisis":false,"crisisType":null}`;
 
 export async function analyzeSituation(text: string): Promise<SituationAnalysis> {
   if (!text || text.trim().length < 10) {
@@ -1275,14 +1295,16 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
     // PRIVACY: Anonymize text before sending to external AI
     const anonymizedText = anonymizeText(text);
 
-    // Use Groq AI for analysis
-    const completion = await groq.chat.completions.create({
+    // Use Groq AI for analysis (optimized settings per Groq Best Practices)
+    // Note: Using response_format: json_object guarantees JSON output,
+    // so assistant prefilling is not needed and can cause parsing issues
+    const completion = await getGroqClient().chat.completions.create({
       messages: [
         { role: "system", content: AI_SYSTEM_PROMPT },
         { role: "user", content: anonymizedText }
       ],
       model: "llama-3.1-8b-instant",
-      temperature: 0.3,
+      temperature: 0.2, // Lower temperature for data extraction tasks
       max_tokens: 500,
       response_format: { type: "json_object" },
     });
@@ -1402,41 +1424,49 @@ export async function findClosestSubTopics(
   const subTopicList = availableSubTopics.map(st => `- ${st.id}: ${st.label}`).join("\n");
 
   const systemPrompt = lang === "de"
-    ? `Du bist ein Experte für psychische Gesundheit. Der Nutzer beschreibt ein Problem, das nicht genau zu den vorgegebenen Kategorien passt.
+    ? `### Role
+Du bist ein Experte für psychische Gesundheit, der Nutzerbeschreibungen den passendsten Kategorien zuordnet.
 
-Verfügbare Kategorien:
+### Instructions
+- Analysiere die Beschreibung und finde 1-3 passende Kategorien
+- Bewerte deine Zuversicht: high (klar erkennbar), medium (wahrscheinlich), low (unsicher)
+- Antworte NUR mit validem JSON
+
+### Available Categories
 ${subTopicList}
 
-Antworte NUR mit JSON:
-{
-  "matchedIds": ["id1", "id2"],
-  "explanation": "Kurze Erklärung warum diese Kategorien am besten passen (1 Satz, auf Deutsch)",
-  "confidence": "high" | "medium" | "low"
-}
+### Expected Output
+{"matchedIds":["id1","id2"],"explanation":"Begründung","confidence":"high"}
 
-Wähle 1-3 Kategorien, die am besten passen. Wenn nichts wirklich passt, setze confidence auf "low".`
-    : `You are a mental health expert. The user describes an issue that doesn't exactly fit the predefined categories.
+### Example
+Input: "Ich habe ständig Herzrasen und Angst unter Menschen"
+Output: {"matchedIds":["panic_attacks","social_anxiety"],"explanation":"Herzrasen deutet auf Panikattacken hin, die Angst unter Menschen auf soziale Ängste.","confidence":"high"}`
+    : `### Role
+You are a mental health expert who matches user descriptions to the most appropriate categories.
 
-Available categories:
+### Instructions
+- Analyze the description and find 1-3 matching categories
+- Rate your confidence: high (clearly identifiable), medium (likely), low (uncertain)
+- Respond ONLY with valid JSON
+
+### Available Categories
 ${subTopicList}
 
-Respond ONLY with JSON:
-{
-  "matchedIds": ["id1", "id2"],
-  "explanation": "Brief explanation why these categories are the best match (1 sentence)",
-  "confidence": "high" | "medium" | "low"
-}
+### Expected Output
+{"matchedIds":["id1","id2"],"explanation":"Reasoning","confidence":"high"}
 
-Choose 1-3 categories that fit best. If nothing really fits, set confidence to "low".`;
+### Example
+Input: "I have constant racing heart and fear of being around people"
+Output: {"matchedIds":["panic_attacks","social_anxiety"],"explanation":"Racing heart suggests panic attacks, fear of people points to social anxiety.","confidence":"high"}`;
 
   try {
-    const completion = await groq.chat.completions.create({
+    const completion = await getGroqClient().chat.completions.create({
       model: "llama-3.1-8b-instant",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: description }
       ],
-      temperature: 0.3,
+      temperature: 0.2,
       max_tokens: 200,
       response_format: { type: "json_object" },
     });
@@ -1473,37 +1503,53 @@ export async function findClosestIntensity(
   const lang = detectLanguage(description);
 
   const systemPrompt = lang === "de"
-    ? `Du bist ein Experte für psychische Gesundheit. Schätze die Intensität/Dringlichkeit des beschriebenen Problems ein.
+    ? `### Role
+Du bist ein Experte für psychische Gesundheit, der die Intensität von Problemen einschätzt.
 
-Antworte NUR mit JSON:
-{
-  "level": "low" | "medium" | "high",
-  "explanation": "Kurze Begründung (1 Satz, auf Deutsch)"
-}
+### Instructions
+- Bewerte die Dringlichkeit/Intensität des beschriebenen Problems
+- Wähle: low, medium oder high
+- Antworte NUR mit validem JSON
 
-- low: Leichte Belastung, präventiv, Selbstoptimierung
-- medium: Moderate Belastung, beeinträchtigt Alltag teilweise
-- high: Starke Belastung, dringender Handlungsbedarf, akute Symptome`
-    : `You are a mental health expert. Assess the intensity/urgency of the described issue.
+### Intensity Levels
+- low: Leichte Belastung, präventiv, Selbstoptimierung, "manchmal", "gelegentlich"
+- medium: Moderate Belastung, beeinträchtigt Alltag teilweise, "oft", "belastend"
+- high: Starke Belastung, dringend, akute Symptome, "kann nicht mehr", "verzweifelt"
 
-Respond ONLY with JSON:
-{
-  "level": "low" | "medium" | "high",
-  "explanation": "Brief reasoning (1 sentence)"
-}
+### Expected Output
+{"level":"medium","explanation":"Begründung"}
 
-- low: Mild distress, preventive, self-improvement
-- medium: Moderate distress, partially affects daily life
-- high: Severe distress, urgent action needed, acute symptoms`;
+### Example
+Input: "Ich bin manchmal gestresst bei der Arbeit"
+Output: {"level":"low","explanation":"Gelegentlicher Arbeitsstress ist normal und deutet auf leichte, bewältigbare Belastung hin."}`
+    : `### Role
+You are a mental health expert who assesses the intensity of problems.
+
+### Instructions
+- Evaluate the urgency/intensity of the described issue
+- Choose: low, medium or high
+- Respond ONLY with valid JSON
+
+### Intensity Levels
+- low: Mild distress, preventive, self-improvement, "sometimes", "occasionally"
+- medium: Moderate distress, partially affects daily life, "often", "stressful"
+- high: Severe distress, urgent, acute symptoms, "can't cope", "desperate"
+
+### Expected Output
+{"level":"medium","explanation":"Reasoning"}
+
+### Example
+Input: "I'm sometimes stressed at work"
+Output: {"level":"low","explanation":"Occasional work stress is normal and indicates mild, manageable distress."}`;
 
   try {
-    const completion = await groq.chat.completions.create({
+    const completion = await getGroqClient().chat.completions.create({
       model: "llama-3.1-8b-instant",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: description }
       ],
-      temperature: 0.3,
+      temperature: 0.2,
       max_tokens: 150,
       response_format: { type: "json_object" },
     });
