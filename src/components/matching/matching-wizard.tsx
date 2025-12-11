@@ -156,39 +156,35 @@ function WizardContent() {
 
   return (
     <div className="flex h-[100dvh] flex-col overflow-hidden bg-background">
-      {/* Combined Header + Progress - single compact row */}
-      <header className="shrink-0 border-b bg-card px-3 py-2 pt-[calc(0.5rem+env(safe-area-inset-top))]">
-        <div className="mx-auto flex max-w-6xl items-center gap-2">
-          {/* Close Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/therapists")}
-            className="h-7 w-7 shrink-0 p-0"
-            aria-label={t("matching.wizard.close")}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-
-          {/* Logo + Title */}
-          <div className="flex shrink-0 items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Sparkles className="h-3.5 w-3.5" />
+      {/* Clean Header with Steps */}
+      <header className="shrink-0 border-b bg-card/95 backdrop-blur-sm">
+        {/* Top bar - minimal */}
+        <div className="flex items-center justify-between px-4 py-2 pt-[calc(0.5rem+env(safe-area-inset-top))]">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push("/therapists")}
+              className="h-8 w-8 p-0"
+              aria-label={t("matching.wizard.close")}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span className="text-sm font-semibold">{t("matching.wizard.badge")}</span>
             </div>
-            <span className="hidden text-sm font-semibold sm:inline">{t("matching.wizard.badge")}</span>
           </div>
+          <PrecisionMeter compact />
+        </div>
 
-          {/* Step Indicator - takes remaining space */}
-          <div className="min-w-0 flex-1">
+        {/* Step Indicator - full width, clean */}
+        <div className="px-4 pb-3">
+          <div className="mx-auto max-w-xl">
             <StepIndicator
               labels={stepLabels}
               optionalLabel={t("matching.intensity.optional")}
             />
-          </div>
-
-          {/* Precision Meter */}
-          <div className="w-24 shrink-0">
-            <PrecisionMeter compact />
           </div>
         </div>
       </header>

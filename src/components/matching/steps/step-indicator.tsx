@@ -7,6 +7,7 @@ import { useMatching, type WizardStep } from "../matching-context";
 interface StepIndicatorProps {
   labels: {
     topics: string;
+    subtopics: string;
     intensity: string;
     preferences: string;
   };
@@ -15,56 +16,83 @@ interface StepIndicatorProps {
 
 export function StepIndicator({ labels }: StepIndicatorProps) {
   const { state } = useMatching();
+
+  // All 4 wizard steps
   const steps: { step: WizardStep; label: string }[] = [
     { step: 1, label: labels.topics },
+    { step: 1.25, label: labels.subtopics },
     { step: 1.5, label: labels.intensity },
     { step: 2, label: labels.preferences },
   ];
 
   const currentStep = state.currentStep;
 
+  // Determine if a step is active or completed
+  const isStepActive = (step: WizardStep) => {
+    // Step 1 is active for both 0.75 (freetext) and 1 (topic selection)
+    if (step === 1) return currentStep === 0.75 || currentStep === 1;
+    return currentStep === step;
+  };
+
+  const isStepCompleted = (step: WizardStep) => {
+    // Step 1 is completed when we're past topic selection
+    if (step === 1) return currentStep > 1;
+    return currentStep > step;
+  };
+
   return (
     <nav aria-label="Progress" className="w-full">
-      <div className="flex items-center gap-0.5">
+      <ol className="flex items-center">
         {steps.map(({ step, label }, index) => {
-          const isCurrent = currentStep === step;
-          const isCompleted = currentStep > step;
+          const isActive = isStepActive(step);
+          const isCompleted = isStepCompleted(step);
           const isLast = index === steps.length - 1;
 
           return (
-            <div key={step} className="flex flex-1 items-center gap-0.5">
-              {/* Step pill - very compact */}
-              <div
-                className={cn(
-                  "flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium transition-all",
-                  isCompleted && "bg-primary/10 text-primary",
-                  isCurrent && !isCompleted && "bg-primary text-primary-foreground",
-                  !isCompleted && !isCurrent && "bg-muted text-muted-foreground"
-                )}
-              >
-                {isCompleted ? (
-                  <Check className="h-2.5 w-2.5" />
-                ) : (
-                  <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-current/20 text-[9px]">
-                    {index + 1}
-                  </span>
-                )}
-                <span className="hidden sm:inline">{label}</span>
-              </div>
-
-              {/* Connector */}
-              {!isLast && (
+            <li key={step} className={cn("flex items-center", !isLast && "flex-1")}>
+              {/* Step Circle + Label */}
+              <div className="flex items-center gap-1.5">
                 <div
                   className={cn(
-                    "h-px flex-1",
-                    isCompleted ? "bg-primary/50" : "bg-border"
+                    "flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold transition-all",
+                    isCompleted && "bg-primary text-primary-foreground",
+                    isActive && !isCompleted && "bg-primary text-primary-foreground ring-2 ring-primary/30",
+                    !isCompleted && !isActive && "bg-muted text-muted-foreground"
                   )}
-                />
+                >
+                  {isCompleted ? (
+                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                  ) : (
+                    <span>{index + 1}</span>
+                  )}
+                </div>
+                <span
+                  className={cn(
+                    "hidden text-xs font-medium sm:inline",
+                    isActive && "text-foreground",
+                    isCompleted && "text-primary",
+                    !isCompleted && !isActive && "text-muted-foreground"
+                  )}
+                >
+                  {label}
+                </span>
+              </div>
+
+              {/* Connector Line */}
+              {!isLast && (
+                <div className="mx-2 flex-1">
+                  <div
+                    className={cn(
+                      "h-0.5 w-full rounded-full transition-colors",
+                      isCompleted ? "bg-primary" : "bg-muted"
+                    )}
+                  />
+                </div>
               )}
-            </div>
+            </li>
           );
         })}
-      </div>
+      </ol>
     </nav>
   );
 }

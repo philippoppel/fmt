@@ -134,29 +134,36 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
 
   if (compact) {
     return (
-      <div className={cn("flex flex-col gap-0.5", className)}>
-        {/* Percentage + progress bar in one row */}
-        <div className="flex items-center gap-2">
-          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/50">
-            <div
-              className={cn(
-                "h-full rounded-full transition-all duration-500",
-                level === "low" && "bg-orange-500",
-                level === "medium" && "bg-yellow-500",
-                level === "high" && "bg-emerald-500",
-                level === "excellent" && "bg-primary"
-              )}
-              style={{ width: `${displayPrecision}%` }}
+      <div className={cn("flex items-center gap-2", className)}>
+        {/* Circular mini progress */}
+        <div className="relative h-10 w-10">
+          <svg width={40} height={40} className="transform -rotate-90">
+            <circle
+              cx={20}
+              cy={20}
+              r={16}
+              fill="none"
+              strokeWidth={3}
+              className="stroke-muted/30"
             />
+            <circle
+              cx={20}
+              cy={20}
+              r={16}
+              fill="none"
+              strokeWidth={3}
+              strokeLinecap="round"
+              strokeDasharray={100.53}
+              strokeDashoffset={100.53 - (displayPrecision / 100) * 100.53}
+              className={cn(color.stroke, "transition-all duration-500")}
+            />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className={cn("text-[10px] font-bold", color.text)}>
+              {displayPrecision}%
+            </span>
           </div>
-          <span className={cn("text-xs font-bold tabular-nums", color.text)}>
-            {displayPrecision}%
-          </span>
         </div>
-        {/* Level label - small */}
-        <span className={cn("text-[10px] text-right", color.text)}>
-          {t(`levels.${level}`)}
-        </span>
       </div>
     );
   }
