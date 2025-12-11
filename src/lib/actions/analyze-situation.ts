@@ -367,67 +367,19 @@ function ensureParentTopics(topics: string[], subTopics: string[]): string[] {
 // AI PROMPTS - Optimized according to Groq Best Practices
 // ============================================================================
 
-const AI_SYSTEM_PROMPT = `### Role
-Du bist ein einfühlsamer Psychologie-Assistent für die Analyse von Situationsbeschreibungen.
+// OPTIMIZED PROMPT - ~800 tokens (down from ~2000)
+// Crisis detection handled by keywords before AI call
+const AI_SYSTEM_PROMPT = `Analysiere psychologische Themen. Antworte NUR mit JSON.
 
-### Instructions
-- Analysiere den Text und extrahiere psychologische Themen
-- Prüfe ZUERST auf Krisenindikatoren (Suizid, Selbstverletzung, akute Gefahr)
-- Wähle 1-3 passende Topics aus der verfügbaren Liste
-- Wähle 1-4 passende SubTopics nur wenn spezifisch erkennbar
-- Bestimme die Intensität (low/medium/high)
-- WICHTIG für "reasoning": Beziehe dich DIREKT auf die Worte des Nutzers. Erkläre in 1-2 Sätzen, WARUM die erkannten Themen zur Beschreibung passen.
-- Antworte NUR mit validem JSON, keine Erklärung, kein Markdown
+Topics: ${AVAILABLE_TOPICS.join(",")}
+SubTopics: social_anxiety,panic_attacks,phobias,generalized_anxiety,chronic_sadness,lack_motivation,grief,loneliness,couple_conflicts,breakup,dating_issues,intimacy,divorce,parenting,family_conflicts,ptsd,childhood_trauma,accident_trauma,loss,work_stress,exhaustion,work_life_balance,alcohol,drugs,behavioral_addiction,gaming,anorexia,bulimia,binge_eating,concentration,impulsivity,adult_adhd,self_esteem,boundaries,life_changes,chronic_stress,exam_anxiety,performance_pressure,insomnia,nightmares,sleep_anxiety
 
-### Context
-DATENSCHUTZ: Der Text wurde bereits anonymisiert. Platzhalter wie [NAME], [ORT], [FIRMA] sind normal.
+Intensität: low (leicht/präventiv), medium (belastend), high (akut/dringend)
 
-Verfügbare Topics: ${AVAILABLE_TOPICS.join(", ")}
+Output: {"topics":["..."],"subTopics":["..."],"reasoning":"1-2 Sätze bezogen auf Nutzereingabe","intensity":"medium"}
 
-SubTopics nach Kategorie:
-- Angst: social_anxiety, panic_attacks, phobias, generalized_anxiety
-- Depression: chronic_sadness, lack_motivation, grief, loneliness
-- Beziehungen: couple_conflicts, breakup, dating_issues, intimacy, divorce, parenting, family_conflicts
-- Trauma: ptsd, childhood_trauma, accident_trauma, loss
-- Burnout: work_stress, exhaustion, work_life_balance
-- Sucht: alcohol, drugs, behavioral_addiction, gaming
-- Essstörungen: anorexia, bulimia, binge_eating
-- ADHS: concentration, impulsivity, adult_adhd
-- Selbstfürsorge: self_esteem, boundaries, life_changes
-- Stress: chronic_stress, exam_anxiety, performance_pressure
-- Schlaf: insomnia, nightmares, sleep_anxiety
-
-Intensitäts-Kriterien:
-- "high": Dringend, akute Belastung, kann nicht mehr, Krise
-- "medium": Belastend aber bewältigbar, beeinträchtigt Alltag
-- "low": Leichte Beschwerden, präventiv, Selbstoptimierung
-
-### WICHTIG: Krisen-Erkennung
-Setze crisis=true NUR bei EXPLIZITEN Hinweisen auf:
-- "suicidal": DIREKTE Äußerungen zu Suizid, Sterben wollen, Abschiedsbrief
-- "self_harm": DIREKTE Äußerungen zu Selbstverletzung, Ritzen, sich weh tun
-- "acute_danger": DIREKTE Äußerungen wie "ich kann nicht mehr", "keinen Ausweg", "hoffnungslos"
-
-KEINE Krise bei:
-- Burnout, Erschöpfung, Überlastung → Das sind Topics, keine Krisen
-- Panikattacken, Angst → Das sind Topics, keine Krisen
-- Beziehungsprobleme, Trauer → Das sind Topics, keine Krisen
-- Allgemeiner Stress → Das ist ein Topic, keine Krise
-
-crisis=true bedeutet SOFORTIGE Hilfsanzeige - nur bei echten Krisenindikatoren setzen!
-
-### Expected Output Format
-{"topics":["topic1","topic2"],"subTopics":["subtopic1"],"reasoning":"1-2 Sätze die sich DIREKT auf die Eingabe beziehen","intensity":"medium","summary":"Einfühlsame Zusammenfassung","crisis":false,"crisisType":null}
-
-### Examples
-Input: "Ich bin bei der Arbeit völlig erschöpft und kann nachts nicht schlafen."
-Output: {"topics":["burnout","sleep"],"subTopics":["exhaustion","insomnia"],"reasoning":"Du sprichst von Erschöpfung bei der Arbeit und Schlafproblemen - das sind typische Anzeichen für Burnout.","intensity":"medium","summary":"Du erlebst gerade eine belastende Phase mit Erschöpfung und Schlafproblemen.","crisis":false,"crisisType":null}
-
-Input: "Meine Freundin mobbt mich ständig."
-Output: {"topics":["relationships"],"subTopics":["couple_conflicts"],"reasoning":"Mobbing durch deine Freundin ist ein Beziehungskonflikt, der sehr belastend sein kann.","intensity":"medium","summary":"Konflikte in der Beziehung können sehr belastend sein. Es ist gut, dass du Unterstützung suchst.","crisis":false,"crisisType":null}
-
-Input: "Ich habe Panikattacken in der U-Bahn."
-Output: {"topics":["anxiety"],"subTopics":["panic_attacks","phobias"],"reasoning":"Deine Panikattacken in der U-Bahn deuten auf Angststörung mit einer möglichen Phobie hin.","intensity":"medium","summary":"Panikattacken in bestimmten Situationen sind behandelbar.","crisis":false,"crisisType":null}`;
+Beispiel:
+"Erschöpft bei Arbeit, kann nicht schlafen" → {"topics":["burnout","sleep"],"subTopics":["exhaustion","insomnia"],"reasoning":"Erschöpfung und Schlafprobleme deuten auf Burnout hin.","intensity":"medium"}`;
 
 export async function analyzeSituation(text: string): Promise<SituationAnalysis> {
   // PROTECTION: Rate limiting per IP
@@ -499,53 +451,32 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
     const anonymizedText = anonymizeText(sanitizedText);
 
     // Use Groq AI for analysis (optimized settings per Groq Best Practices)
-    // Note: Using response_format: json_object guarantees JSON output,
-    // so assistant prefilling is not needed and can cause parsing issues
     const completion = await getGroqClient().chat.completions.create({
       messages: [
         { role: "system", content: AI_SYSTEM_PROMPT },
         { role: "user", content: anonymizedText }
       ],
       model: "llama-3.1-8b-instant",
-      temperature: 0.2, // Lower temperature for data extraction tasks
-      max_tokens: 500,
+      temperature: 0.2,
+      max_tokens: 250, // Reduced from 500 - we only need topics, subtopics, reasoning, intensity
       response_format: { type: "json_object" },
     });
 
     const responseText = completion.choices[0]?.message?.content || "{}";
     const aiResult = JSON.parse(responseText);
 
-    // Validate and sanitize AI response
+    // Validate AI response
     let topics = (aiResult.topics || [])
       .filter((t: string) => AVAILABLE_TOPICS.includes(t))
       .slice(0, 4);
 
-    const intensity = ["low", "medium", "high"].includes(aiResult.intensity)
-      ? aiResult.intensity as IntensityLevel
-      : "medium";
-
-    // Check if AI detected crisis
-    if (aiResult.crisis === true) {
-      return {
-        suggestedTopics: [],
-        suggestedSubTopics: [],
-        suggestedSpecialties: [],
-        suggestedCommunicationStyle: null,
-        suggestedTherapyFocus: null,
-        suggestedIntensityLevel: "high",
-        understandingSummary: "",
-        suggestedMethods: [],
-        keywords: [],
-        topicReasons: "",
-        crisisDetected: true,
-        crisisType: aiResult.crisisType || "acute_danger",
-      };
-    }
-
-    // Validate and sanitize AI subTopics response
     const subTopics = (aiResult.subTopics || [])
       .filter((st: string) => AVAILABLE_SUBTOPICS.includes(st))
       .slice(0, 5);
+
+    const intensity = ["low", "medium", "high"].includes(aiResult.intensity)
+      ? aiResult.intensity as IntensityLevel
+      : "medium";
 
     // Ensure parent topics are included when subTopics are detected
     topics = ensureParentTopics(topics, subTopics);
@@ -563,11 +494,11 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       suggestedCommunicationStyle: null,
       suggestedTherapyFocus: null,
       suggestedIntensityLevel: intensity,
-      understandingSummary: aiResult.summary || "",
+      understandingSummary: "", // Not from AI anymore - generated locally if needed
       suggestedMethods: [],
       keywords: [],
       topicReasons: aiResult.reasoning || "",
-      crisisDetected: false,
+      crisisDetected: false, // Crisis handled by keywords before AI call
       crisisType: null,
     };
 
@@ -735,45 +666,16 @@ export async function findClosestIntensity(
 
   const lang = detectLanguage(sanitizedDesc);
 
+  // OPTIMIZED PROMPT - ~150 tokens (down from ~350)
   const systemPrompt = lang === "de"
-    ? `### Role
-Du bist ein Experte für psychische Gesundheit, der die Intensität von Problemen einschätzt.
-
-### Instructions
-- Bewerte die Dringlichkeit/Intensität des beschriebenen Problems
-- Wähle: low, medium oder high
-- Antworte NUR mit validem JSON
-
-### Intensity Levels
-- low: Leichte Belastung, präventiv, Selbstoptimierung, "manchmal", "gelegentlich"
-- medium: Moderate Belastung, beeinträchtigt Alltag teilweise, "oft", "belastend"
-- high: Starke Belastung, dringend, akute Symptome, "kann nicht mehr", "verzweifelt"
-
-### Expected Output
-{"level":"medium","explanation":"Begründung"}
-
-### Example
-Input: "Ich bin manchmal gestresst bei der Arbeit"
-Output: {"level":"low","explanation":"Gelegentlicher Arbeitsstress ist normal und deutet auf leichte, bewältigbare Belastung hin."}`
-    : `### Role
-You are a mental health expert who assesses the intensity of problems.
-
-### Instructions
-- Evaluate the urgency/intensity of the described issue
-- Choose: low, medium or high
-- Respond ONLY with valid JSON
-
-### Intensity Levels
-- low: Mild distress, preventive, self-improvement, "sometimes", "occasionally"
-- medium: Moderate distress, partially affects daily life, "often", "stressful"
-- high: Severe distress, urgent, acute symptoms, "can't cope", "desperate"
-
-### Expected Output
-{"level":"medium","explanation":"Reasoning"}
-
-### Example
-Input: "I'm sometimes stressed at work"
-Output: {"level":"low","explanation":"Occasional work stress is normal and indicates mild, manageable distress."}`;
+    ? `Bewerte Intensität. Antworte NUR mit JSON.
+Levels: low (leicht/präventiv), medium (belastend), high (akut/dringend)
+Output: {"level":"medium","explanation":"Kurze Begründung"}
+Beispiel: "manchmal gestresst" → {"level":"low","explanation":"Leichte Belastung."}`
+    : `Rate intensity. Reply ONLY with JSON.
+Levels: low (mild/preventive), medium (distressing), high (acute/urgent)
+Output: {"level":"medium","explanation":"Brief reason"}
+Example: "sometimes stressed" → {"level":"low","explanation":"Mild distress."}`;
 
   try {
     const completion = await getGroqClient().chat.completions.create({
@@ -783,7 +685,7 @@ Output: {"level":"low","explanation":"Occasional work stress is normal and indic
         { role: "user", content: sanitizedDesc }
       ],
       temperature: 0.2,
-      max_tokens: 150,
+      max_tokens: 80, // Reduced - only need level + short explanation
       response_format: { type: "json_object" },
     });
 
