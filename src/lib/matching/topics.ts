@@ -24,8 +24,8 @@ export const MATCHING_TOPICS: Topic[] = [
     subTopics: [
       { id: "divorce", labelKey: "matching.subtopics.divorce", weight: 1.0, unsplashId: "photo-1516589091380-5d8e87df6999" },
       { id: "parenting", labelKey: "matching.subtopics.parenting", weight: 0.8, unsplashId: "photo-1476703993599-0035a21b17a9" },
-      { id: "family_conflicts", labelKey: "matching.subtopics.familyConflicts", weight: 0.9, unsplashId: "photo-1594608661623-aa0bd3a69799" },
-      { id: "generation_conflicts", labelKey: "matching.subtopics.generationConflicts", weight: 0.7, unsplashId: "photo-1581579438747-104c53d7fbc4" },
+      { id: "family_conflicts", labelKey: "matching.subtopics.familyConflicts", weight: 0.9, unsplashId: "photo-1511895426328-dc8714191300" },
+      { id: "generation_conflicts", labelKey: "matching.subtopics.generationConflicts", weight: 0.7, unsplashId: "photo-1529156069898-49953e39b3ac" },
     ],
   },
   {
@@ -151,7 +151,7 @@ export const MATCHING_TOPICS: Topic[] = [
     subTopics: [
       { id: "insomnia", labelKey: "matching.subtopics.insomnia", weight: 1.0, unsplashId: "photo-1515894203077-9cd36032142f" },
       { id: "nightmares", labelKey: "matching.subtopics.nightmares", weight: 0.9, unsplashId: "photo-1518837695005-2083093ee35b" },
-      { id: "sleep_anxiety", labelKey: "matching.subtopics.sleepAnxiety", weight: 0.8, unsplashId: "photo-1495197359483-d092478c5e4a" },
+      { id: "sleep_anxiety", labelKey: "matching.subtopics.sleepAnxiety", weight: 0.8, unsplashId: "photo-1541781774459-bb2af2f05b55" },
     ],
   },
 ];
