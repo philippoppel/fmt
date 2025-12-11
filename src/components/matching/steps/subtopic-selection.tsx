@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useState, useRef, useTransition } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
-import { Check, Sparkles, MessageSquare, Loader2, Bot, AlertCircle } from "lucide-react";
+import { Check, Sparkles, Loader2, MessageSquareText, ArrowRight, CheckCircle2, RefreshCw, Phone, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getTopicImageUrl, type SubTopic } from "@/lib/matching/topics";
 import { useMatching } from "../matching-context";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { findClosestSubTopics, type ClosestMatchResult } from "@/lib/actions/analyze-situation";
+import { Badge } from "@/components/ui/badge";
+import { analyzeSituation } from "@/lib/actions/analyze-situation";
 
 interface SubTopicCardProps {
   subTopic: SubTopic;
@@ -64,7 +64,7 @@ function SubTopicCard({ subTopic, label, isSelected, isAiSuggested, onToggle }: 
       {/* AI Suggested Badge */}
       {isAiSuggested && !isSelected && (
         <div className="absolute left-1.5 top-1.5 flex items-center gap-1 rounded-full bg-cyan-500 px-1.5 py-0.5 text-[10px] font-medium text-white">
-          <Bot className="h-2.5 w-2.5" />
+          <Sparkles className="h-2.5 w-2.5" />
           <span>AI</span>
         </div>
       )}
@@ -91,11 +91,17 @@ function SubTopicCard({ subTopic, label, isSelected, isAiSuggested, onToggle }: 
 
 export function SubTopicSelection() {
   const t = useTranslations();
+  const locale = useLocale();
   const { state, actions, computed } = useMatching();
-  const [showCustomInput, setShowCustomInput] = useState(false);
-  const [customText, setCustomText] = useState("");
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [aiMatch, setAiMatch] = useState<ClosestMatchResult | null>(null);
+  const [freetextValue, setFreetextValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [detectedTopics, setDetectedTopics] = useState<string[]>([]);
+  const [detectedSubTopics, setDetectedSubTopics] = useState<string[]>([]);
+  const [topicReasons, setTopicReasons] = useState<string>("");
+  const [analysisState, setAnalysisState] = useState<"idle" | "success" | "empty" | "crisis">("idle");
+  const [showCrisisAlert, setShowCrisisAlert] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Group subtopics by their parent topic
   const groupedSubTopics = computed.selectedTopicDetails.map((topic) => ({
@@ -103,36 +109,115 @@ export function SubTopicSelection() {
     subTopics: topic.subTopics,
   }));
 
-  const allSubTopics = groupedSubTopics.flatMap(g => g.subTopics);
-
   const totalSubTopics = groupedSubTopics.reduce(
     (acc, g) => acc + g.subTopics.length,
     0
   );
 
-  const handleAnalyze = async () => {
-    if (!customText.trim()) return;
+  const handleAnalyze = () => {
+    if (freetextValue.trim().length < 10) return;
 
-    setIsAnalyzing(true);
-    try {
-      const availableSubTopics = allSubTopics.map(st => ({
-        id: st.id,
-        label: t(st.labelKey),
-      }));
+    startTransition(async () => {
+      const result = await analyzeSituation(freetextValue);
 
-      const result = await findClosestSubTopics(customText, availableSubTopics);
-      setAiMatch(result);
-
-      // Auto-select the matched subtopics
-      for (const id of result.matchedIds) {
-        if (!state.selectedSubTopics.includes(id)) {
-          actions.toggleSubTopic(id);
-        }
+      // Check for crisis detection
+      if (result.crisisDetected) {
+        setShowCrisisAlert(true);
+        setAnalysisState("crisis");
+        return;
       }
-    } finally {
-      setIsAnalyzing(false);
-    }
+
+      const topics = result.suggestedTopics || [];
+      const subTopics = result.suggestedSubTopics || [];
+      setDetectedTopics(topics);
+      setDetectedSubTopics(subTopics);
+      setTopicReasons(result.topicReasons || "");
+
+      if (topics.length > 0 || subTopics.length > 0) {
+        setAnalysisState("success");
+        // Auto-select detected topics
+        topics.forEach(topic => {
+          if (!state.selectedTopics.includes(topic)) {
+            actions.toggleTopic(topic);
+          }
+        });
+        // Auto-select detected subTopics
+        subTopics.forEach(subTopic => {
+          if (!state.selectedSubTopics.includes(subTopic)) {
+            actions.toggleSubTopic(subTopic);
+          }
+        });
+      } else {
+        setAnalysisState("empty");
+      }
+    });
   };
+
+  const handleCardClick = () => {
+    textareaRef.current?.focus();
+  };
+
+  const resetAnalysis = () => {
+    setAnalysisState("idle");
+    setDetectedTopics([]);
+    setDetectedSubTopics([]);
+    setTopicReasons("");
+  };
+
+  // Crisis hotlines
+  const crisisHotline = "0800 111 0 111";
+  const crisisHotlineAlt = "0800 111 0 222";
+
+  // If crisis detected, show immediate help
+  if (showCrisisAlert) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+            <Heart className="h-6 w-6 text-red-600 dark:text-red-400" />
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            {locale === "de" ? "Du bist nicht allein" : "You're not alone"}
+          </h2>
+          <p className="mx-auto mt-2 max-w-md text-muted-foreground">
+            {locale === "de"
+              ? "Bitte wende dich an professionelle Hilfe."
+              : "Please reach out to professional help."}
+          </p>
+        </div>
+
+        <div className="mx-auto max-w-xl space-y-6">
+          <div className="rounded-lg border-2 border-red-500 bg-white p-4 dark:border-red-600 dark:bg-red-950/40">
+            <div className="flex gap-3">
+              <Phone className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
+              <p className="text-sm font-semibold text-red-800 dark:text-red-200">
+                {locale === "de"
+                  ? "Kostenlose & anonyme Hilfe, rund um die Uhr erreichbar."
+                  : "Free & anonymous help, available 24/7."}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <a
+              href={`tel:${crisisHotline.replace(/\s/g, "")}`}
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-red-600 bg-red-600 px-6 py-4 text-lg font-bold text-white shadow-lg transition-all hover:bg-red-700"
+            >
+              <Phone className="h-5 w-5" />
+              {crisisHotline}
+            </a>
+            <a
+              href={`tel:${crisisHotlineAlt.replace(/\s/g, "")}`}
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-red-500 bg-white px-6 py-4 text-lg font-bold text-red-700 transition-all hover:bg-red-50 dark:border-red-600 dark:bg-red-950/50 dark:text-red-300"
+            >
+              <Phone className="h-5 w-5" />
+              {crisisHotlineAlt}
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (totalSubTopics === 0) {
     return null;
@@ -181,7 +266,7 @@ export function SubTopicSelection() {
                   subTopic={subTopic}
                   label={t(subTopic.labelKey)}
                   isSelected={state.selectedSubTopics.includes(subTopic.id)}
-                  isAiSuggested={aiMatch?.matchedIds.includes(subTopic.id) && !state.selectedSubTopics.includes(subTopic.id)}
+                  isAiSuggested={detectedSubTopics.includes(subTopic.id) && !state.selectedSubTopics.includes(subTopic.id)}
                   onToggle={() => actions.toggleSubTopic(subTopic.id)}
                 />
               ))}
@@ -189,88 +274,165 @@ export function SubTopicSelection() {
           </div>
         ))}
 
-        {/* Custom Input Section */}
-        <div className="mt-4 rounded-lg border border-dashed border-muted-foreground/30 p-3">
-          {!showCustomInput ? (
-            <button
-              onClick={() => setShowCustomInput(true)}
-              className="flex w-full items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <MessageSquare className="h-4 w-4" />
-              {t("matching.wizard.customSubtopicPrompt")}
-            </button>
-          ) : (
-            <div className="space-y-3">
-              <Textarea
-                value={customText}
-                onChange={(e) => setCustomText(e.target.value)}
-                placeholder={t("matching.wizard.customSubtopicPlaceholder")}
-                className="min-h-[80px] resize-none text-sm"
-              />
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  onClick={handleAnalyze}
-                  disabled={!customText.trim() || isAnalyzing}
-                  className="gap-2"
-                >
-                  {isAnalyzing ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Bot className="h-3.5 w-3.5" />
-                  )}
-                  {t("matching.wizard.findClosestMatch")}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    setShowCustomInput(false);
-                    setCustomText("");
-                    setAiMatch(null);
-                  }}
-                >
-                  {t("matching.wizard.cancel")}
-                </Button>
-              </div>
-
-              {/* AI Match Result */}
-              {aiMatch && (
-                <div className={cn(
-                  "rounded-lg p-3 text-sm",
-                  aiMatch.confidence === "high"
-                    ? "bg-green-50 border border-green-200 dark:bg-green-950/30 dark:border-green-800"
-                    : aiMatch.confidence === "medium"
-                      ? "bg-cyan-50 border border-cyan-200 dark:bg-cyan-950/30 dark:border-cyan-800"
-                      : "bg-amber-50 border border-amber-200 dark:bg-amber-950/30 dark:border-amber-800"
-                )}>
-                  <div className="flex items-start gap-2">
-                    <Bot className={cn(
-                      "h-4 w-4 mt-0.5 shrink-0",
-                      aiMatch.confidence === "high" ? "text-green-600" :
-                      aiMatch.confidence === "medium" ? "text-cyan-600" : "text-amber-600"
-                    )} />
-                    <div>
-                      <p className="font-medium">
-                        {aiMatch.confidence === "low"
-                          ? t("matching.wizard.aiMatchLow")
-                          : t("matching.wizard.aiMatchFound")}
-                      </p>
-                      {aiMatch.explanation && (
-                        <p className="mt-1 text-muted-foreground text-xs">
-                          {aiMatch.explanation}
-                        </p>
-                      )}
-                      {aiMatch.confidence === "low" && (
-                        <p className="mt-1 text-xs flex items-center gap-1 text-amber-600">
-                          <AlertCircle className="h-3 w-3" />
-                          {t("matching.wizard.aiMatchLowHint")}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+        {/* AI Re-Analysis Card - Prominent */}
+        <div
+          onClick={handleCardClick}
+          className={cn(
+            "cursor-text rounded-lg border-2 transition-all",
+            analysisState === "success"
+              ? "border-green-600 bg-green-50 dark:border-green-500 dark:bg-green-950/30"
+              : analysisState === "empty"
+                ? "border-amber-600 bg-amber-50 dark:border-amber-500 dark:bg-amber-950/30"
+                : isFocused || freetextValue.length > 0
+                  ? "border-primary shadow-md bg-card"
+                  : "border-dashed border-muted-foreground/40 hover:border-primary/50 bg-muted/30"
+          )}
+        >
+          {/* Card Header */}
+          <div className={cn(
+            "flex items-center gap-2 px-3 py-2 border-b",
+            analysisState === "success" ? "border-green-600/30" : analysisState === "empty" ? "border-amber-600/30" : "border-border"
+          )}>
+            <div className={cn(
+              "flex h-6 w-6 items-center justify-center rounded-full",
+              analysisState === "success" ? "bg-green-600/20" : analysisState === "empty" ? "bg-amber-600/20" : "bg-primary/15"
+            )}>
+              {isPending ? (
+                <Loader2 className="h-3.5 w-3.5 text-primary animate-spin" />
+              ) : analysisState === "success" ? (
+                <CheckCircle2 className="h-3.5 w-3.5 text-green-700 dark:text-green-400" />
+              ) : (
+                <RefreshCw className="h-3.5 w-3.5 text-primary" />
               )}
+            </div>
+            <span className={cn(
+              "text-sm font-semibold",
+              analysisState === "success" ? "text-green-800 dark:text-green-300" : analysisState === "empty" ? "text-amber-800 dark:text-amber-300" : "text-foreground"
+            )}>
+              {isPending
+                ? (locale === "de" ? "Analysiere..." : "Analyzing...")
+                : analysisState === "success"
+                  ? (locale === "de" ? "Neue Themen erkannt" : "New topics detected")
+                  : (locale === "de" ? "Nicht das richtige dabei?" : "Can't find what you're looking for?")}
+            </span>
+            {freetextValue.length >= 10 && analysisState === "idle" && !isPending && (
+              <Sparkles className="ml-auto h-3.5 w-3.5 text-primary animate-pulse" />
+            )}
+          </div>
+
+          {/* Content Area */}
+          <div className="p-3">
+            {analysisState === "success" ? (
+              <div className="space-y-2">
+                {detectedTopics.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {detectedTopics.map((topic) => {
+                      const translationKey = topic.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+                      return (
+                        <Badge key={topic} className="bg-green-600/20 text-green-800 dark:bg-green-500/30 dark:text-green-200 text-[10px] font-medium">
+                          {t(`matching.topics.${translationKey}`)}
+                        </Badge>
+                      );
+                    })}
+                    {detectedSubTopics.map((subTopic) => {
+                      const translationKey = subTopic.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+                      return (
+                        <Badge key={subTopic} variant="outline" className="border-green-600/50 text-green-700 dark:text-green-300 text-[10px] font-medium">
+                          {t(`matching.subTopics.${translationKey}`)}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                )}
+                {topicReasons && (
+                  <p className="text-xs text-foreground/80 leading-snug">
+                    {topicReasons}
+                  </p>
+                )}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    resetAnalysis();
+                    textareaRef.current?.focus();
+                  }}
+                  className="mt-2 flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground hover:bg-muted/80"
+                >
+                  <RefreshCw className="h-3 w-3" />
+                  {locale === "de" ? "Nochmal versuchen" : "Try again"}
+                </button>
+              </div>
+            ) : analysisState === "empty" ? (
+              <div className="space-y-2">
+                <p className="text-xs text-amber-700 dark:text-amber-400">
+                  {locale === "de"
+                    ? "Keine neuen Themen erkannt. Beschreibe deine Situation genauer oder wähle manuell aus."
+                    : "No new topics detected. Describe your situation in more detail or select manually."}
+                </p>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    resetAnalysis();
+                    textareaRef.current?.focus();
+                  }}
+                  className="flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground hover:bg-muted/80"
+                >
+                  <RefreshCw className="h-3 w-3" />
+                  {locale === "de" ? "Nochmal versuchen" : "Try again"}
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">
+                  {locale === "de"
+                    ? "Beschreibe deine Situation nochmal und wir finden passende Themen."
+                    : "Describe your situation again and we'll find matching topics."}
+                </p>
+                <Textarea
+                  ref={textareaRef}
+                  value={freetextValue}
+                  onChange={(e) => {
+                    setFreetextValue(e.target.value);
+                    resetAnalysis();
+                  }}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  placeholder={locale === "de" ? "z.B. Ich habe Angst vor Menschenmengen..." : "e.g. I'm afraid of crowds..."}
+                  disabled={isPending}
+                  className="min-h-[60px] resize-none border-0 bg-transparent p-0 text-sm placeholder:text-muted-foreground/60 focus-visible:ring-0"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Action Footer */}
+          {freetextValue.length > 0 && analysisState === "idle" && (
+            <div className="flex items-center justify-between border-t border-border px-3 py-2">
+              <span className="text-[10px] text-muted-foreground">
+                {freetextValue.length}/500
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAnalyze();
+                }}
+                disabled={freetextValue.trim().length < 10 || isPending}
+                className={cn(
+                  "flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-all",
+                  freetextValue.trim().length >= 10 && !isPending
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                    : "bg-muted text-muted-foreground"
+                )}
+              >
+                {isPending ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <>
+                    <MessageSquareText className="h-3 w-3" />
+                    {locale === "de" ? "Analysieren" : "Analyze"}
+                    <ArrowRight className="h-3 w-3" />
+                  </>
+                )}
+              </button>
             </div>
           )}
         </div>
