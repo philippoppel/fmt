@@ -111,7 +111,7 @@ export function ScoreBreakdownModal({
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-xs sm:text-sm text-muted-foreground">Rang</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">{t("matching.transparency.rank")}</p>
                 <span className="text-xl sm:text-2xl font-bold text-primary">#{rank}</span>
               </div>
             </div>

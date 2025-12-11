@@ -63,6 +63,7 @@ function getScoreColor(percentage: number): string {
 export function CompareModal({ open, onOpenChange, therapists, onRemove }: CompareModalProps) {
   const t = useTranslations();
   const tSpec = useTranslations("therapists.specialties");
+  const tSub = useTranslations("matching.subtopics");
   const tLang = useTranslations("therapists.languages");
   const tIns = useTranslations("therapists.filters.insurance");
 
@@ -139,17 +140,19 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                     </div>
 
                     {/* Match Score */}
-                    <div className="w-full mt-1">
-                      <div className="flex items-center justify-between text-[10px] sm:text-xs mb-1">
-                        <span className="text-muted-foreground">Match</span>
-                        <span className={cn("font-bold", fitLevel.color)}>{th.matchScore}%</span>
-                      </div>
-                      <div className="h-1.5 sm:h-2 w-full overflow-hidden rounded-full bg-muted">
+                    <div className="w-full mt-2">
+                      <div className="h-2.5 sm:h-3 w-full overflow-hidden rounded-full bg-muted">
                         <div
                           className={cn("h-full rounded-full transition-all", fitLevel.bgColor)}
                           style={{ width: `${th.matchScore}%` }}
                         />
                       </div>
+                      <div className="flex items-center justify-center gap-2 mt-1.5">
+                        <span className={cn("text-base sm:text-lg font-bold", fitLevel.color)}>{th.matchScore}%</span>
+                      </div>
+                      <p className={cn("text-xs sm:text-sm font-medium text-center", fitLevel.color)}>
+                        {t(`matching.fitLevel.${fitLevel.key}`)}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -163,12 +166,12 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
             <div className="rounded-lg border p-3 sm:p-4">
               <h4 className="text-xs sm:text-sm font-semibold mb-3 flex items-center gap-2">
                 <Target className="h-3.5 w-3.5 text-primary" />
-                Score-Vergleich
+                {t("matching.compare.title")}
               </h4>
               <div className="space-y-3">
                 {/* Specialization */}
                 <CompareRow
-                  label="Spezialisierung"
+                  label={t("matching.compare.specialization")}
                   icon={<Target className="h-3 w-3 text-blue-500" />}
                 >
                   {therapists.map((th) => {
@@ -189,7 +192,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
 
                 {/* Experience */}
                 <CompareRow
-                  label="Erfahrung"
+                  label={t("matching.compare.experience")}
                   icon={<TrendingUp className="h-3 w-3 text-purple-500" />}
                 >
                   {therapists.map((th) => {
@@ -210,7 +213,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
 
                 {/* Practical Criteria */}
                 <CompareRow
-                  label="Kriterien"
+                  label={t("matching.compare.criteria")}
                   icon={<Briefcase className="h-3 w-3 text-green-500" />}
                 >
                   {therapists.map((th) => {
@@ -235,11 +238,11 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
             <div className="rounded-lg border p-3 sm:p-4">
               <h4 className="text-xs sm:text-sm font-semibold mb-3 flex items-center gap-2">
                 <Briefcase className="h-3.5 w-3.5 text-primary" />
-                Praktische Infos
+                {t("matching.compare.practicalDetails")}
               </h4>
               <div className="space-y-3">
                 {/* Price */}
-                <CompareRow label="Preis/Sitzung" icon={<Euro className="h-3 w-3 text-amber-500" />}>
+                <CompareRow label={t("matching.compare.pricePerSession")} icon={<Euro className="h-3 w-3 text-amber-500" />}>
                   {therapists.map((th) => (
                     <div key={th.id} className="flex-1 text-center">
                       <span className={cn(
@@ -250,7 +253,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                       </span>
                       {th.pricePerSession === lowestPrice && (
                         <Badge variant="secondary" className="ml-1 text-[8px] px-1 py-0 bg-green-500/10 text-green-600">
-                          Günstigster
+                          {t("matching.compare.cheapest")}
                         </Badge>
                       )}
                     </div>
@@ -258,7 +261,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                 </CompareRow>
 
                 {/* Experience Years */}
-                <CompareRow label="Erfahrung" icon={<TrendingUp className="h-3 w-3 text-purple-500" />}>
+                <CompareRow label={t("matching.compare.experience")} icon={<TrendingUp className="h-3 w-3 text-purple-500" />}>
                   {therapists.map((th) => (
                     <div key={th.id} className="flex-1 text-center">
                       <span className={cn(
@@ -272,19 +275,19 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                 </CompareRow>
 
                 {/* Session Type */}
-                <CompareRow label="Format" icon={<Video className="h-3 w-3 text-blue-500" />}>
+                <CompareRow label={t("matching.compare.format")} icon={<Video className="h-3 w-3 text-blue-500" />}>
                   {therapists.map((th) => (
                     <div key={th.id} className="flex-1 flex justify-center gap-1">
                       {(th.sessionType === "online" || th.sessionType === "both") && (
                         <Badge variant="outline" className="text-[9px] px-1.5 py-0.5">
                           <Video className="mr-0.5 h-2.5 w-2.5" />
-                          Online
+                          {t("therapists.filters.sessionType.online")}
                         </Badge>
                       )}
                       {(th.sessionType === "in_person" || th.sessionType === "both") && (
                         <Badge variant="outline" className="text-[9px] px-1.5 py-0.5">
                           <Building2 className="mr-0.5 h-2.5 w-2.5" />
-                          Vor Ort
+                          {t("therapists.filters.sessionType.inPerson")}
                         </Badge>
                       )}
                     </div>
@@ -292,7 +295,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                 </CompareRow>
 
                 {/* Availability */}
-                <CompareRow label="Verfügbar" icon={<Calendar className="h-3 w-3 text-green-500" />}>
+                <CompareRow label={t("matching.compare.availability")} icon={<Calendar className="h-3 w-3 text-green-500" />}>
                   {therapists.map((th) => (
                     <div key={th.id} className="flex-1 text-center">
                       {th.nextAvailableSlot ? (
@@ -303,7 +306,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                           if (diffDays <= 7) {
                             return (
                               <Badge className="bg-green-500/15 text-green-600 text-[9px]">
-                                Diese Woche
+                                {t("matching.compare.thisWeek")}
                               </Badge>
                             );
                           }
@@ -321,7 +324,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                 </CompareRow>
 
                 {/* Languages */}
-                <CompareRow label="Sprachen" icon={<Globe className="h-3 w-3 text-indigo-500" />}>
+                <CompareRow label={t("matching.compare.languages")} icon={<Globe className="h-3 w-3 text-indigo-500" />}>
                   {therapists.map((th) => (
                     <div key={th.id} className="flex-1 flex justify-center flex-wrap gap-0.5">
                       {th.languages.slice(0, 3).map((lang) => (
@@ -334,7 +337,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                 </CompareRow>
 
                 {/* Insurance */}
-                <CompareRow label="Versicherung" icon={<Shield className="h-3 w-3 text-teal-500" />}>
+                <CompareRow label={t("matching.compare.insurance")} icon={<Shield className="h-3 w-3 text-teal-500" />}>
                   {therapists.map((th) => (
                     <div key={th.id} className="flex-1 flex justify-center flex-wrap gap-0.5">
                       {th.insurance.map((ins) => (
@@ -352,7 +355,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
             <div className="rounded-lg border p-3 sm:p-4">
               <h4 className="text-xs sm:text-sm font-semibold mb-3 flex items-center gap-2">
                 <Target className="h-3.5 w-3.5 text-primary" />
-                Spezialisierungen
+                {t("matching.compare.specialization")}
               </h4>
               <div className={cn(
                 "grid gap-2",
@@ -375,7 +378,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
             <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-3 sm:p-4">
               <h4 className="text-xs sm:text-sm font-semibold mb-3 flex items-center gap-2 text-green-700 dark:text-green-400">
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                Warum sie passen
+                {t("matching.compare.whyMatch")}
               </h4>
               <div className={cn(
                 "grid gap-3",
@@ -388,15 +391,18 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                       let displayReason = reason;
                       if (reason.startsWith("expertIn:")) {
                         const specs = reason.replace("expertIn:", "").split(", ");
-                        displayReason = `Expert:in für ${specs.map(s => tSpec(s.trim())).join(", ")}`;
-                      } else if (reason === "offersOnline") {
-                        displayReason = "Online verfügbar";
-                      } else if (reason === "offersInPerson") {
-                        displayReason = "Vor Ort verfügbar";
-                      } else if (reason === "availableNow") {
-                        displayReason = "Kurzfristig verfügbar";
-                      } else if (reason === "nearLocation") {
-                        displayReason = "In deiner Nähe";
+                        displayReason = t("matching.results.reasons.expertIn", {
+                          specialties: specs.map(s => tSpec(s.trim())).join(", ")
+                        });
+                      } else if (reason.startsWith("preciseMatch:")) {
+                        const subTopics = reason.replace("preciseMatch:", "").split(", ");
+                        const translated = subTopics.map(st => {
+                          const key = st.trim().replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+                          return tSub(key);
+                        }).join(", ");
+                        displayReason = t("matching.results.reasons.preciseMatch", { topics: translated });
+                      } else if (t.has(`matching.results.reasons.${reason}`)) {
+                        displayReason = t(`matching.results.reasons.${reason}`);
                       }
                       return (
                         <div key={i} className="flex items-start gap-1.5 text-[10px] sm:text-xs text-muted-foreground">

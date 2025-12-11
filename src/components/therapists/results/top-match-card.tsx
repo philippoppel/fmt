@@ -184,7 +184,7 @@ export function TopMatchCard({
                 {therapist.pricePerSession}€
               </span>
               {therapist.experienceYears && (
-                <span>{therapist.experienceYears}J Erfahrung</span>
+                <span>{t("matching.therapistCard.yearsExperience", { years: therapist.experienceYears })}</span>
               )}
             </div>
 

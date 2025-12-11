@@ -183,12 +183,10 @@ export function SubTopicSelection() {
             <Heart className="h-6 w-6 text-red-600 dark:text-red-400" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            {locale === "de" ? "Du bist nicht allein" : "You're not alone"}
+            {t("matching.crisis.notAloneInformal")}
           </h2>
           <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-            {locale === "de"
-              ? "Bitte wende dich an professionelle Hilfe."
-              : "Please reach out to professional help."}
+            {t("matching.crisis.helpAvailable")}
           </p>
         </div>
 
@@ -197,9 +195,7 @@ export function SubTopicSelection() {
             <div className="flex gap-3">
               <Phone className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
               <p className="text-sm font-semibold text-red-800 dark:text-red-200">
-                {locale === "de"
-                  ? "Kostenlose & anonyme Hilfe, rund um die Uhr erreichbar."
-                  : "Free & anonymous help, available 24/7."}
+                {t("matching.crisis.available247")}
               </p>
             </div>
           </div>
@@ -316,10 +312,10 @@ export function SubTopicSelection() {
               analysisState === "success" ? "text-green-800 dark:text-green-300" : analysisState === "empty" ? "text-amber-800 dark:text-amber-300" : "text-foreground"
             )}>
               {isPending
-                ? (locale === "de" ? "Analysiere..." : "Analyzing...")
+                ? t("matching.freetext.analyzing")
                 : analysisState === "success"
-                  ? (locale === "de" ? "Neue Themen erkannt" : "New topics detected")
-                  : (locale === "de" ? "Nicht das richtige dabei?" : "Can't find what you're looking for?")}
+                  ? t("matching.freetext.newTopicsDetected")
+                  : t("matching.freetext.cantFind")}
             </span>
             {freetextValue.length >= 10 && analysisState === "idle" && !isPending && (
               <Sparkles className="ml-auto h-3.5 w-3.5 text-primary animate-pulse" />
@@ -364,15 +360,13 @@ export function SubTopicSelection() {
                   className="mt-2 flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground hover:bg-muted/80"
                 >
                   <RefreshCw className="h-3 w-3" />
-                  {locale === "de" ? "Nochmal versuchen" : "Try again"}
+                  {t("matching.freetext.tryAgain")}
                 </button>
               </div>
             ) : analysisState === "empty" ? (
               <div className="space-y-2">
                 <p className="text-xs text-amber-700 dark:text-amber-400">
-                  {locale === "de"
-                    ? "Keine neuen Themen erkannt. Beschreibe deine Situation genauer oder wähle manuell aus."
-                    : "No new topics detected. Describe your situation in more detail or select manually."}
+                  {t("matching.freetext.noTopicsDetected")}
                 </p>
                 <button
                   onClick={(e) => {
@@ -383,15 +377,13 @@ export function SubTopicSelection() {
                   className="flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground hover:bg-muted/80"
                 >
                   <RefreshCw className="h-3 w-3" />
-                  {locale === "de" ? "Nochmal versuchen" : "Try again"}
+                  {t("matching.freetext.tryAgain")}
                 </button>
               </div>
             ) : (
               <div className="space-y-2">
                 <p className="text-xs text-muted-foreground">
-                  {locale === "de"
-                    ? "Beschreibe deine Situation nochmal und wir finden passende Themen."
-                    : "Describe your situation again and we'll find matching topics."}
+                  {t("matching.freetext.describeAgain")}
                 </p>
                 <Textarea
                   ref={textareaRef}
@@ -402,7 +394,7 @@ export function SubTopicSelection() {
                   }}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  placeholder={locale === "de" ? "z.B. Ich habe Angst vor Menschenmengen..." : "e.g. I'm afraid of crowds..."}
+                  placeholder={t("matching.freetext.shortPlaceholder2")}
                   disabled={isPending}
                   className="min-h-[60px] resize-none border-0 bg-transparent p-0 text-sm placeholder:text-muted-foreground/60 focus-visible:ring-0"
                 />
@@ -434,7 +426,7 @@ export function SubTopicSelection() {
                 ) : (
                   <>
                     <MessageSquareText className="h-3 w-3" />
-                    {locale === "de" ? "Analysieren" : "Analyze"}
+                    {t("matching.freetext.analyze")}
                     <ArrowRight className="h-3 w-3" />
                   </>
                 )}

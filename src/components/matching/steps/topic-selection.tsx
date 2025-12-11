@@ -85,12 +85,10 @@ export function TopicSelection() {
             <Heart className="h-6 w-6 text-red-600 dark:text-red-400" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            {locale === "de" ? "Du bist nicht allein" : "You're not alone"}
+            {t("matching.crisis.notAloneInformal")}
           </h2>
           <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-            {locale === "de"
-              ? "Bitte wende dich an professionelle Hilfe."
-              : "Please reach out to professional help."}
+            {t("matching.crisis.helpAvailable")}
           </p>
         </div>
 
@@ -99,16 +97,14 @@ export function TopicSelection() {
             <div className="flex gap-3">
               <Phone className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
               <p className="text-sm font-semibold text-red-800 dark:text-red-200">
-                {locale === "de"
-                  ? "Kostenlose & anonyme Hilfe, rund um die Uhr erreichbar."
-                  : "Free & anonymous help, available 24/7."}
+                {t("matching.crisis.available247")}
               </p>
             </div>
           </div>
 
           <div className="space-y-3">
             <p className="text-base font-semibold leading-relaxed">
-              {locale === "de" ? "Telefonseelsorge anrufen:" : "Call crisis hotline:"}
+              {t("matching.crisis.callHotline")}
             </p>
             <a
               href={`tel:${crisisHotline.replace(/\s/g, "")}`}
@@ -128,7 +124,7 @@ export function TopicSelection() {
 
           <div className="space-y-3">
             <p className="text-base font-semibold leading-relaxed">
-              {locale === "de" ? "Oder schriftlich:" : "Or in writing:"}
+              {t("matching.crisis.orWritten")}
             </p>
             <a
               href="https://online.telefonseelsorge.de"
@@ -136,15 +132,13 @@ export function TopicSelection() {
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 rounded-lg border-2 border-amber-600 bg-white px-6 py-4 text-lg font-bold text-amber-800 transition-all hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 dark:border-amber-500 dark:bg-amber-950/50 dark:text-amber-200 dark:hover:bg-amber-950/70"
             >
-              {locale === "de" ? "Online-Beratung (Chat/E-Mail)" : "Online counseling (Chat/Email)"}
+              {t("matching.crisis.onlineCounseling")}
             </a>
           </div>
 
           <div className="rounded-lg border-2 border-green-500 bg-green-50 p-4 text-center dark:border-green-600 dark:bg-green-950/30">
             <p className="text-sm font-semibold text-green-800 dark:text-green-200">
-              {locale === "de"
-                ? "24/7 erreichbar • Kostenlos • Anonym"
-                : "Available 24/7 • Free • Anonymous"}
+              {t("matching.crisis.availableInfo")}
             </p>
           </div>
         </div>
@@ -254,7 +248,7 @@ export function TopicSelection() {
               </div>
             ) : analysisState === "empty" ? (
               <p className="p-1 text-xs text-amber-700 dark:text-amber-400">
-                Bitte wähle manuell Themen aus oder beschreibe genauer.
+                {t("matching.freetext.selectManually")}
               </p>
             ) : (
               <Textarea

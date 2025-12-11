@@ -536,7 +536,16 @@
       "resourcesTitle": "Crisis Hotlines",
       "additionalInfo": "These services are free and anonymous. You can call anytime.",
       "alternativeText": "When you feel better, you can return anytime.",
-      "backToHome": "Back to Home"
+      "backToHome": "Back to Home",
+      "notAloneInformal": "You're not alone",
+      "helpAvailable": "If you're in crisis, please reach out to professional help.",
+      "callHotline": "Call crisis hotline:",
+      "orWritten": "Or in writing:",
+      "onlineCounseling": "Online counseling (Chat/Email)",
+      "available247": "Free, available 24/7",
+      "availableInfo": "Available 24/7 • Free • Anonymous",
+      "free": "Free",
+      "close": "Close and continue"
     },
     "intensity": {
       "title": "How much is this affecting you?",
@@ -827,7 +836,16 @@
         "mindfulness": "Mindfulness",
         "emdr": "EMDR",
         "systemic": "Systemic"
-      }
+      },
+      "tryAgain": "Try again",
+      "noTopicsDetected": "No new topics detected. Describe your situation in more detail or select manually.",
+      "selectManually": "Please select topics manually or describe in more detail.",
+      "describeAgain": "Describe your situation again and we'll find matching topics.",
+      "analyze": "Analyze",
+      "analyzing": "Analyzing...",
+      "newTopicsDetected": "New topics detected",
+      "cantFind": "Can't find what you're looking for?",
+      "shortPlaceholder2": "e.g. I'm afraid of crowds..."
     },
     "fitLevel": {
       "excellent": "Excellent Fit",
@@ -881,7 +899,16 @@
       "availability": "Availability",
       "price": "Price",
       "rating": "Rating",
-      "methods": "Methods"
+      "methods": "Methods",
+      "format": "Format",
+      "languages": "Languages",
+      "insurance": "Insurance",
+      "criteria": "Criteria",
+      "whyMatch": "Why they match",
+      "thisWeek": "This week",
+      "pricePerSession": "Price/Session",
+      "cheapest": "Cheapest",
+      "practicalDetails": "Practical Details"
     },
     "therapistCard": {
       "responseTime": "Responds in ~{hours}h",
@@ -910,6 +937,7 @@
       "title": "Why this match?",
       "clickToSee": "Click for details",
       "overallFit": "Overall fit",
+      "rank": "Rank",
       "whyThisRank": "Why is {name} ranked #{rank}?",
       "rankExplanation": "With {score}% match – particularly strong in {category}.",
       "breakdown": "Score breakdown",

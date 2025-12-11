@@ -536,7 +536,16 @@
       "resourcesTitle": "Krisenhotlines",
       "additionalInfo": "Diese Dienste sind kostenlos und anonym. Sie können jederzeit anrufen.",
       "alternativeText": "Wenn Sie sich besser fühlen, können Sie jederzeit zurückkehren.",
-      "backToHome": "Zur Startseite"
+      "backToHome": "Zur Startseite",
+      "notAloneInformal": "Du bist nicht allein",
+      "helpAvailable": "Wenn du dich gerade in einer Krise befindest, wende dich bitte an professionelle Hilfe.",
+      "callHotline": "Telefonseelsorge anrufen:",
+      "orWritten": "Oder schriftlich:",
+      "onlineCounseling": "Online-Beratung (Chat/E-Mail)",
+      "available247": "Kostenlos, 24/7 erreichbar",
+      "availableInfo": "24/7 erreichbar • Kostenlos • Anonym",
+      "free": "Kostenlos",
+      "close": "Schließen und fortfahren"
     },
     "intensity": {
       "title": "Wie stark belastet Sie das?",
@@ -827,7 +836,16 @@
         "mindfulness": "Achtsamkeit",
         "emdr": "EMDR",
         "systemic": "Systemisch"
-      }
+      },
+      "tryAgain": "Nochmal versuchen",
+      "noTopicsDetected": "Keine neuen Themen erkannt. Beschreibe deine Situation genauer oder wähle manuell aus.",
+      "selectManually": "Bitte wähle manuell Themen aus oder beschreibe genauer.",
+      "describeAgain": "Beschreibe deine Situation nochmal und wir finden passende Themen.",
+      "analyze": "Analysieren",
+      "analyzing": "Analysiere...",
+      "newTopicsDetected": "Neue Themen erkannt",
+      "cantFind": "Nicht das richtige dabei?",
+      "shortPlaceholder2": "z.B. Ich habe Angst vor Menschenmengen..."
     },
     "fitLevel": {
       "excellent": "Ausgezeichnetes Matching",
@@ -881,7 +899,16 @@
       "availability": "Verfügbarkeit",
       "price": "Preis",
       "rating": "Bewertung",
-      "methods": "Methoden"
+      "methods": "Methoden",
+      "format": "Format",
+      "languages": "Sprachen",
+      "insurance": "Versicherung",
+      "criteria": "Kriterien",
+      "whyMatch": "Warum sie passen",
+      "thisWeek": "Diese Woche",
+      "pricePerSession": "Preis/Sitzung",
+      "cheapest": "Günstigster",
+      "practicalDetails": "Praktische Details"
     },
     "therapistCard": {
       "responseTime": "Antwortet in ~{hours}h",
@@ -910,6 +937,7 @@
       "title": "Warum dieser Match?",
       "clickToSee": "Klicken für Details",
       "overallFit": "Gesamt-Matching",
+      "rank": "Rang",
       "whyThisRank": "Warum ist {name} auf Platz {rank}?",
       "rankExplanation": "Mit {score}% Übereinstimmung – besonders stark in {category}.",
       "breakdown": "Score-Zusammensetzung",

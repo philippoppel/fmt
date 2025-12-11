@@ -89,7 +89,7 @@ export function CompactTherapistCard({
           {therapist.sessionType === "online" && (
             <span className="flex items-center gap-1">
               <Video className="h-3 w-3" />
-              Online
+              {t("online")}
             </span>
           )}
           {therapist.sessionType === "in_person" && (

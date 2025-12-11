@@ -26,13 +26,25 @@ export function ScoreBreakdownCard({
   compact = false,
 }: ScoreBreakdownCardProps) {
   const t = useTranslations();
+  const tSpec = useTranslations("therapists.specialties");
+  const tSub = useTranslations("matching.subtopics");
   const formatDetails = useScoreDetailsFormatter();
 
   // Get reason translations
   const getReasonLabel = (reason: string): string => {
     if (reason.startsWith("expertIn:")) {
-      const specs = reason.replace("expertIn:", "");
-      return t("matching.results.expertIn", { specialties: specs });
+      const specs = reason.replace("expertIn:", "").split(", ");
+      const translated = specs.map(s => tSpec(s.trim())).join(", ");
+      return t("matching.results.reasons.expertIn", { specialties: translated });
+    }
+
+    if (reason.startsWith("preciseMatch:")) {
+      const subTopics = reason.replace("preciseMatch:", "").split(", ");
+      const translated = subTopics.map(st => {
+        const key = st.trim().replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+        return tSub(key);
+      }).join(", ");
+      return t("matching.results.reasons.preciseMatch", { topics: translated });
     }
 
     const reasonKeys: Record<string, string> = {
