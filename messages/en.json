@@ -806,6 +806,7 @@
       "title": "Describe your situation",
       "subtitle": "In your own words: What's on your mind? We'll automatically identify relevant topics and focus areas.",
       "placeholder": "e.g. I've been feeling exhausted for weeks and everything feels overwhelming. My relationship is suffering...",
+      "shortPlaceholder": "Briefly describe what's on your mind...",
       "examples": "Examples:",
       "example1": "I've had sleep problems for months and feel exhausted during the day. Work is very stressful.",
       "example2": "After the breakup, it's hard to trust again. I keep thinking about the past.",
