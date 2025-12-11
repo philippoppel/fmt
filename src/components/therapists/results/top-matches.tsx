@@ -61,10 +61,9 @@ export function TopMatches({
 
   const compareTherapists = topTherapists.filter((t) => compareIds.includes(t.id));
 
-  const getTopContributorLabel = () => {
-    const first = topTherapists[0];
-    const categories = first?.scoreBreakdown?.categories;
-    if (!first || !categories) return null;
+  const getTopContributorLabel = (therapist: MatchedTherapist) => {
+    const categories = therapist?.scoreBreakdown?.categories;
+    if (!categories) return null;
 
     const sorted = Object.entries(categories)
       .filter(([, cat]) => cat && cat.maxScore > 0)
@@ -74,49 +73,99 @@ export function TopMatches({
 
     const top = sorted[0];
     if (!top) return null;
-    return t(`matching.scoreBreakdown.${top[0]}`);
+    return { key: top[0], label: t(`matching.scoreBreakdown.${top[0]}`) };
   };
 
-  const aiSummaryText = (() => {
-    const first = topTherapists[0];
-    if (!first) return "";
+  const buildAiSummary = () => {
+    if (topTherapists.length === 0) return null;
 
-    const topCategory = getTopContributorLabel();
-    const score = first.matchScore ?? 0;
+    const summaryParts: string[] = [];
+    const top3 = topTherapists.slice(0, 3);
 
-    if (topCategory) {
-      return t("matching.results.aiSummaryDescription", {
-        rank: 1,
-        name: first.name,
-        category: topCategory,
-        score,
-      });
+    // First therapist - why they're #1
+    const first = top3[0];
+    if (first) {
+      const topCat = getTopContributorLabel(first);
+      if (topCat) {
+        summaryParts.push(
+          t("matching.results.aiDetailedFirst", {
+            name: first.name,
+            score: first.matchScore,
+            category: topCat.label,
+          })
+        );
+      }
     }
 
-    return t("matching.results.aiSummaryDescriptionFallback", {
-      rank: 1,
-      name: first.name,
-      score,
-    });
-  })();
+    // Second therapist - what differentiates them
+    const second = top3[1];
+    if (second) {
+      const secondCat = getTopContributorLabel(second);
+      const scoreDiff = (first?.matchScore ?? 0) - (second.matchScore ?? 0);
+      if (secondCat && scoreDiff > 0) {
+        summaryParts.push(
+          t("matching.results.aiDetailedSecond", {
+            name: second.name,
+            score: second.matchScore,
+            diff: scoreDiff,
+            category: secondCat.label,
+          })
+        );
+      } else if (secondCat) {
+        summaryParts.push(
+          t("matching.results.aiDetailedSecondEqual", {
+            name: second.name,
+            score: second.matchScore,
+            category: secondCat.label,
+          })
+        );
+      }
+    }
+
+    // Third therapist - brief mention
+    const third = top3[2];
+    if (third) {
+      const thirdCat = getTopContributorLabel(third);
+      if (thirdCat) {
+        summaryParts.push(
+          t("matching.results.aiDetailedThird", {
+            name: third.name,
+            score: third.matchScore,
+            category: thirdCat.label,
+          })
+        );
+      }
+    }
+
+    return summaryParts;
+  };
+
+  const aiSummaryParts = buildAiSummary();
 
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* AI summary - prominent at top */}
-      {aiSummaryText && (
-        <div className="flex gap-3 rounded-xl border border-primary/25 bg-primary/10 px-3 py-3 sm:px-4 sm:py-4">
-          <Sparkles className="h-5 w-5 text-primary shrink-0" />
-          <div className="space-y-1">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">
-              {t("matching.results.aiSummaryTitle")}
-            </p>
-            <p className="text-sm text-foreground leading-relaxed">{aiSummaryText}</p>
-            <p className="text-xs font-medium text-primary">
-              {t("matching.results.aiSummaryCta", {
-                name: topTherapists[0]?.name,
-                rank: 1,
-              })}
-            </p>
+      {aiSummaryParts && aiSummaryParts.length > 0 && (
+        <div className="rounded-xl border border-primary/25 bg-primary/5 p-4 sm:p-5">
+          <div className="flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/15">
+              <Sparkles className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1 space-y-2">
+              <p className="text-sm font-semibold text-primary">
+                {t("matching.results.aiSummaryTitle")}
+              </p>
+              <div className="space-y-1.5">
+                {aiSummaryParts.map((part, i) => (
+                  <p key={i} className="text-sm text-foreground leading-relaxed">
+                    {part}
+                  </p>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground pt-1">
+                {t("matching.results.aiSummaryHint")}
+              </p>
+            </div>
           </div>
         </div>
       )}
@@ -174,7 +223,6 @@ export function TopMatches({
             rank={index + 1}
             onCompareToggle={handleCompareToggle}
             isComparing={compareIds.includes(therapist.id)}
-            previousScore={index > 0 ? topTherapists[index - 1].matchScore : undefined}
           />
         ))}
       </div>

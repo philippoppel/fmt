@@ -24,6 +24,7 @@ import {
   GitCompare,
   User,
   MessageCircle,
+  HelpCircle,
 } from "lucide-react";
 import type { MatchedTherapist } from "@/types/therapist";
 import { cn } from "@/lib/utils";
@@ -34,7 +35,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScoreBreakdownModal } from "./score-breakdown-modal";
-import { MiniScoreBars } from "./mini-score-bars";
 
 interface TopMatchCardProps {
   therapist: MatchedTherapist & {
@@ -49,7 +49,6 @@ interface TopMatchCardProps {
   rank: number;
   onCompareToggle?: (id: string) => void;
   isComparing?: boolean;
-  previousScore?: number;
 }
 
 const rankConfig: Record<number, { Icon: typeof Crown; color: string; bg: string; ring: string }> = {
@@ -84,7 +83,6 @@ export function TopMatchCard({
   rank,
   onCompareToggle,
   isComparing,
-  previousScore,
 }: TopMatchCardProps) {
   const t = useTranslations();
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -216,16 +214,19 @@ export function TopMatchCard({
               )}
             </div>
 
-            {/* Why this Match - Transparency */}
-            <MiniScoreBars
-              scoreBreakdown={therapist.scoreBreakdown}
+            {/* Score with Details Button */}
+            <button
               onClick={() => setShowBreakdown(true)}
-              therapistName={therapist.name}
-              rank={rank}
-              matchScore={therapist.matchScore}
-              matchReasons={therapist.scoreBreakdown?.matchReasons}
-              previousScore={previousScore}
-            />
+              className="flex w-full items-center justify-between rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 transition-all hover:border-primary/40 hover:bg-primary/10"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold text-primary">{therapist.matchScore}%</span>
+                <span className="text-xs text-muted-foreground">{t("matching.results.matchScore")}</span>
+              </div>
+              <div className="flex items-center gap-1 text-primary/70 hover:text-primary">
+                <HelpCircle className="h-5 w-5" />
+              </div>
+            </button>
           </div>
 
           {/* Footer Actions - 3 equal buttons */}
