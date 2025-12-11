@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useTransition } from "react";
-import { useTranslations } from "next-intl";
-import { MessageSquareText, ArrowRight, Sparkles, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
+import { MessageSquareText, ArrowRight, Sparkles, Loader2, CheckCircle2, AlertCircle, Phone, Heart } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { MATCHING_TOPICS } from "@/lib/matching/topics";
@@ -13,13 +13,15 @@ import { analyzeSituation } from "@/lib/actions/analyze-situation";
 
 export function TopicSelection() {
   const t = useTranslations();
+  const locale = useLocale();
   const { state, actions } = useMatching();
   const [freetextValue, setFreetextValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [detectedTopics, setDetectedTopics] = useState<string[]>([]);
   const [topicReasons, setTopicReasons] = useState<string>("");
-  const [analysisState, setAnalysisState] = useState<"idle" | "success" | "empty">("idle");
+  const [analysisState, setAnalysisState] = useState<"idle" | "success" | "empty" | "crisis">("idle");
+  const [showCrisisAlert, setShowCrisisAlert] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleAnalyze = () => {
@@ -28,9 +30,12 @@ export function TopicSelection() {
     startTransition(async () => {
       const result = await analyzeSituation(freetextValue);
 
-      // Note: We do NOT navigate away on crisis detection here.
-      // The actual safety screening happens at step 2.5 (end of wizard).
-      // Here we just analyze topics and stay on this page.
+      // IMPORTANT: Check for crisis detection FIRST
+      if (result.crisisDetected) {
+        setShowCrisisAlert(true);
+        setAnalysisState("crisis");
+        return;
+      }
 
       const topics = result.suggestedTopics || [];
       const subTopics = result.suggestedSubTopics || [];
@@ -66,6 +71,86 @@ export function TopicSelection() {
     setDetectedTopics([]);
     setTopicReasons("");
   };
+
+  // Crisis hotlines
+  const crisisHotline = "0800 111 0 111";
+  const crisisHotlineAlt = "0800 111 0 222";
+
+  // If crisis detected, show immediate help
+  if (showCrisisAlert) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+            <Heart className="h-6 w-6 text-red-600 dark:text-red-400" />
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            {locale === "de" ? "Du bist nicht allein" : "You're not alone"}
+          </h2>
+          <p className="mx-auto mt-2 max-w-md text-muted-foreground">
+            {locale === "de"
+              ? "Bitte wende dich an professionelle Hilfe."
+              : "Please reach out to professional help."}
+          </p>
+        </div>
+
+        <div className="mx-auto max-w-xl space-y-6">
+          <div className="rounded-lg border-2 border-red-500 bg-white p-4 dark:border-red-600 dark:bg-red-950/40">
+            <div className="flex gap-3">
+              <Phone className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
+              <p className="text-sm font-semibold text-red-800 dark:text-red-200">
+                {locale === "de"
+                  ? "Kostenlose & anonyme Hilfe, rund um die Uhr erreichbar."
+                  : "Free & anonymous help, available 24/7."}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <p className="text-base font-semibold leading-relaxed">
+              {locale === "de" ? "Telefonseelsorge anrufen:" : "Call crisis hotline:"}
+            </p>
+            <a
+              href={`tel:${crisisHotline.replace(/\s/g, "")}`}
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-red-600 bg-red-600 px-6 py-4 text-lg font-bold text-white shadow-lg transition-all hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+            >
+              <Phone className="h-5 w-5" />
+              {crisisHotline}
+            </a>
+            <a
+              href={`tel:${crisisHotlineAlt.replace(/\s/g, "")}`}
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-red-500 bg-white px-6 py-4 text-lg font-bold text-red-700 transition-all hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:border-red-600 dark:bg-red-950/50 dark:text-red-300 dark:hover:bg-red-950/70"
+            >
+              <Phone className="h-5 w-5" />
+              {crisisHotlineAlt}
+            </a>
+          </div>
+
+          <div className="space-y-3">
+            <p className="text-base font-semibold leading-relaxed">
+              {locale === "de" ? "Oder schriftlich:" : "Or in writing:"}
+            </p>
+            <a
+              href="https://online.telefonseelsorge.de"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-amber-600 bg-white px-6 py-4 text-lg font-bold text-amber-800 transition-all hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 dark:border-amber-500 dark:bg-amber-950/50 dark:text-amber-200 dark:hover:bg-amber-950/70"
+            >
+              {locale === "de" ? "Online-Beratung (Chat/E-Mail)" : "Online counseling (Chat/Email)"}
+            </a>
+          </div>
+
+          <div className="rounded-lg border-2 border-green-500 bg-green-50 p-4 text-center dark:border-green-600 dark:bg-green-950/30">
+            <p className="text-sm font-semibold text-green-800 dark:text-green-200">
+              {locale === "de"
+                ? "24/7 erreichbar • Kostenlos • Anonym"
+                : "Available 24/7 • Free • Anonymous"}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col">
