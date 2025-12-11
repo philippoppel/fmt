@@ -506,10 +506,17 @@
       "aiIntensityResult": "AI-Einschätzung der Intensität",
       "continue": "Weiter zum Matching",
       "motivation": {
-        "topics": "Jedes Thema hilft uns, den richtigen Therapeuten zu finden",
-        "subtopics": "Details machen Ihre Ergebnisse deutlich präziser",
-        "intensity": "Ihre Einschätzung hilft, erfahrene Therapeuten zu priorisieren",
-        "preferences": "Fast geschafft! Noch ein paar Präferenzen für perfekte Matches"
+        "topics": "Der erste Schritt ist oft der schwerste – gut, dass Sie ihn gehen",
+        "subtopics": "Je mehr wir verstehen, desto besser können wir helfen",
+        "intensity": "Es ist mutig, ehrlich zu sich selbst zu sein",
+        "preferences": "Gleich haben wir jemanden gefunden, der wirklich zu Ihnen passt"
+      },
+      "encouragement": {
+        "started": "Schön, dass Sie hier sind",
+        "progress": "Sie machen das großartig",
+        "almostDone": "Nur noch ein kleiner Schritt",
+        "topicsSelected": "Gute Wahl – Sie wissen, was Sie brauchen",
+        "detailsAdded": "Danke fürs Teilen – das hilft uns sehr"
       }
     },
     "precision": {

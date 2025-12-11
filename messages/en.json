@@ -506,10 +506,17 @@
       "aiIntensityResult": "AI intensity assessment",
       "continue": "Continue to Matching",
       "motivation": {
-        "topics": "Each topic helps us find the right therapist for you",
-        "subtopics": "Details make your results significantly more precise",
-        "intensity": "Your assessment helps prioritize experienced therapists",
-        "preferences": "Almost there! A few more preferences for perfect matches"
+        "topics": "The first step is often the hardest – we're glad you're taking it",
+        "subtopics": "The more we understand, the better we can help",
+        "intensity": "It takes courage to be honest with yourself",
+        "preferences": "Soon we'll find someone who truly fits you"
+      },
+      "encouragement": {
+        "started": "We're glad you're here",
+        "progress": "You're doing great",
+        "almostDone": "Just one small step left",
+        "topicsSelected": "Good choice – you know what you need",
+        "detailsAdded": "Thanks for sharing – this really helps"
       }
     },
     "precision": {

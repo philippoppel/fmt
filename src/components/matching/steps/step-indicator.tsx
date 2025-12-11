@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Lightbulb, TrendingUp, Heart, Sparkles } from "lucide-react";
+import { Check, Heart, Sparkles, Star, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useMatching, type WizardStep } from "../matching-context";
@@ -17,7 +17,7 @@ interface StepIndicatorProps {
 
 export function StepIndicator({ labels }: StepIndicatorProps) {
   const { state } = useMatching();
-  const t = useTranslations("matching.wizard.motivation");
+  const t = useTranslations("matching.wizard");
 
   // All 4 wizard steps
   const steps: { step: WizardStep; label: string }[] = [
@@ -42,29 +42,52 @@ export function StepIndicator({ labels }: StepIndicatorProps) {
     return currentStep > step;
   };
 
-  // Get motivational message and icon for current step
+  // Get emotional motivational message based on step and progress
   const getMotivation = () => {
+    // Context-aware encouragement based on user progress
+    const hasTopics = state.selectedTopics.length > 0;
+    const hasSubtopics = state.selectedSubTopics.length > 0;
+    const hasIntensity = state.intensityLevel !== null;
+
     switch (currentStep) {
       case 0.75:
       case 1:
+        if (hasTopics) {
+          return {
+            icon: <Star className="h-3.5 w-3.5 text-amber-500" />,
+            text: t("encouragement.topicsSelected"),
+          };
+        }
         return {
-          icon: <Lightbulb className="h-3.5 w-3.5 text-amber-500" />,
-          text: t("topics"),
+          icon: <Sun className="h-3.5 w-3.5 text-amber-500" />,
+          text: t("motivation.topics"),
         };
       case 1.25:
+        if (hasSubtopics) {
+          return {
+            icon: <Heart className="h-3.5 w-3.5 text-rose-500" />,
+            text: t("encouragement.detailsAdded"),
+          };
+        }
         return {
-          icon: <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />,
-          text: t("subtopics"),
+          icon: <Heart className="h-3.5 w-3.5 text-rose-400" />,
+          text: t("motivation.subtopics"),
         };
       case 1.5:
+        if (hasIntensity) {
+          return {
+            icon: <Star className="h-3.5 w-3.5 text-amber-500" />,
+            text: t("encouragement.progress"),
+          };
+        }
         return {
           icon: <Heart className="h-3.5 w-3.5 text-rose-500" />,
-          text: t("intensity"),
+          text: t("motivation.intensity"),
         };
       case 2:
         return {
           icon: <Sparkles className="h-3.5 w-3.5 text-primary" />,
-          text: t("preferences"),
+          text: t("motivation.preferences"),
         };
       default:
         return null;
