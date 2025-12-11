@@ -5,7 +5,7 @@ import {
   detectSubTopics,
   detectLanguage,
   type CrisisType,
-} from "@/lib/actions/analyze-situation";
+} from "@/lib/matching/situation-detection";
 
 // ============================================================================
 // CRISIS DETECTION TESTS - Suicide, Self-Harm, Acute Danger

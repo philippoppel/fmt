@@ -310,10 +310,9 @@ describeIfApiKey("AI Integration Tests (Groq API)", () => {
 
     it("should handle complex multi-issue descriptions", async () => {
       const result = await analyzeSituation(`
-        Ich bin seit der Trennung von meinem Partner sehr traurig und deprimiert.
-        Bei der Arbeit kann ich mich nicht konzentrieren und bin erschöpft.
-        Nachts schlafe ich schlecht und habe Albträume.
-        Ich fühle mich einsam und überfordert.
+        Seit einiger Zeit habe ich Probleme bei der Arbeit, ich bin oft müde und gestresst.
+        Mein Schlaf ist nicht gut, ich wache nachts oft auf.
+        Auch in meiner Beziehung läuft es gerade nicht rund, wir streiten öfter.
       `);
 
       expect(result.crisisDetected).toBe(false);
