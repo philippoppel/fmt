@@ -164,6 +164,15 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
             </span>
           </div>
         </div>
+        {/* Label and level */}
+        <div className="hidden sm:flex flex-col">
+          <span className="text-[10px] text-muted-foreground leading-tight">
+            {t("label")}
+          </span>
+          <span className={cn("text-xs font-medium leading-tight", color.text)}>
+            {t(`levels.${level}`)}
+          </span>
+        </div>
       </div>
     );
   }

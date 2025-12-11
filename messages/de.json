@@ -504,7 +504,13 @@
       "customIntensityPlaceholder": "z.B. Es belastet mich stark im Alltag, ich kann kaum noch arbeiten...",
       "analyzeIntensity": "Einschätzung erhalten",
       "aiIntensityResult": "AI-Einschätzung der Intensität",
-      "continue": "Weiter zum Matching"
+      "continue": "Weiter zum Matching",
+      "motivation": {
+        "topics": "Jedes Thema hilft uns, den richtigen Therapeuten zu finden",
+        "subtopics": "Details machen Ihre Ergebnisse deutlich präziser",
+        "intensity": "Ihre Einschätzung hilft, erfahrene Therapeuten zu priorisieren",
+        "preferences": "Fast geschafft! Noch ein paar Präferenzen für perfekte Matches"
+      }
     },
     "precision": {
       "label": "Matching-Präzision",

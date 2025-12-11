@@ -504,7 +504,13 @@
       "customIntensityPlaceholder": "e.g. It strongly affects my daily life, I can barely work anymore...",
       "analyzeIntensity": "Get assessment",
       "aiIntensityResult": "AI intensity assessment",
-      "continue": "Continue to Matching"
+      "continue": "Continue to Matching",
+      "motivation": {
+        "topics": "Each topic helps us find the right therapist for you",
+        "subtopics": "Details make your results significantly more precise",
+        "intensity": "Your assessment helps prioritize experienced therapists",
+        "preferences": "Almost there! A few more preferences for perfect matches"
+      }
     },
     "precision": {
       "label": "Match Precision",

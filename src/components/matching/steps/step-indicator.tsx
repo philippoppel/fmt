@@ -1,6 +1,7 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, Lightbulb, TrendingUp, Heart, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useMatching, type WizardStep } from "../matching-context";
 
@@ -16,6 +17,7 @@ interface StepIndicatorProps {
 
 export function StepIndicator({ labels }: StepIndicatorProps) {
   const { state } = useMatching();
+  const t = useTranslations("matching.wizard.motivation");
 
   // All 4 wizard steps
   const steps: { step: WizardStep; label: string }[] = [
@@ -40,8 +42,39 @@ export function StepIndicator({ labels }: StepIndicatorProps) {
     return currentStep > step;
   };
 
+  // Get motivational message and icon for current step
+  const getMotivation = () => {
+    switch (currentStep) {
+      case 0.75:
+      case 1:
+        return {
+          icon: <Lightbulb className="h-3.5 w-3.5 text-amber-500" />,
+          text: t("topics"),
+        };
+      case 1.25:
+        return {
+          icon: <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />,
+          text: t("subtopics"),
+        };
+      case 1.5:
+        return {
+          icon: <Heart className="h-3.5 w-3.5 text-rose-500" />,
+          text: t("intensity"),
+        };
+      case 2:
+        return {
+          icon: <Sparkles className="h-3.5 w-3.5 text-primary" />,
+          text: t("preferences"),
+        };
+      default:
+        return null;
+    }
+  };
+
+  const motivation = getMotivation();
+
   return (
-    <nav aria-label="Progress" className="w-full">
+    <nav aria-label="Progress" className="w-full space-y-2">
       <ol className="flex items-center">
         {steps.map(({ step, label }, index) => {
           const isActive = isStepActive(step);
@@ -93,6 +126,14 @@ export function StepIndicator({ labels }: StepIndicatorProps) {
           );
         })}
       </ol>
+
+      {/* Motivational message */}
+      {motivation && (
+        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground animate-in fade-in slide-in-from-bottom-1 duration-300">
+          {motivation.icon}
+          <span>{motivation.text}</span>
+        </div>
+      )}
     </nav>
   );
 }
