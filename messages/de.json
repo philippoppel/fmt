@@ -388,6 +388,7 @@
         "label": "Sitzungsart",
         "online": "Online",
         "in_person": "Vor Ort",
+        "inPerson": "Vor Ort",
         "both": "Beides"
       },
       "insurance": {

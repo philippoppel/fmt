@@ -388,6 +388,7 @@
         "label": "Session Type",
         "online": "Online",
         "in_person": "In Person",
+        "inPerson": "In Person",
         "both": "Both"
       },
       "insurance": {
