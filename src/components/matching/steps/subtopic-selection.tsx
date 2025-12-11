@@ -338,7 +338,7 @@ export function SubTopicSelection() {
                       const translationKey = subTopic.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
                       return (
                         <Badge key={subTopic} variant="outline" className="border-green-600/50 text-green-700 dark:text-green-300 text-[10px] font-medium">
-                          {t(`matching.subTopics.${translationKey}`)}
+                          {t(`matching.subtopics.${translationKey}`)}
                         </Badge>
                       );
                     })}

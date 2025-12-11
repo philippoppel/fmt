@@ -71,7 +71,7 @@ export const MATCHING_TOPICS: Topic[] = [
     mappedSpecialties: ["burnout"],
     subTopics: [
       { id: "work_stress", labelKey: "matching.subtopics.workStress", weight: 1.0, unsplashId: "photo-1454165804606-c3d57bc86b40" },
-      { id: "exhaustion", labelKey: "matching.subtopics.exhaustion", weight: 0.9, unsplashId: "photo-1531747056146-e8bf88e87d33" },
+      { id: "exhaustion", labelKey: "matching.subtopics.exhaustion", weight: 0.9, unsplashId: "photo-1509909756405-be0199881695" },
       { id: "work_life_balance", labelKey: "matching.subtopics.workLifeBalance", weight: 0.7, unsplashId: "photo-1522202176988-66273c2fd55f" },
     ],
   },
@@ -93,7 +93,7 @@ export const MATCHING_TOPICS: Topic[] = [
     unsplashId: "photo-1527137342181-19aab11a8ee8",
     mappedSpecialties: ["addiction"],
     subTopics: [
-      { id: "alcohol", labelKey: "matching.subtopics.alcohol", weight: 1.0, unsplashId: "photo-1569924256755-91c5ee8aabe2" },
+      { id: "alcohol", labelKey: "matching.subtopics.alcohol", weight: 1.0, unsplashId: "photo-1514362545857-3bc16c4c7d1b" },
       { id: "drugs", labelKey: "matching.subtopics.drugs", weight: 1.0, unsplashId: "photo-1584308666744-24d5c474f2ae" },
       { id: "behavioral_addiction", labelKey: "matching.subtopics.behavioralAddiction", weight: 0.8, unsplashId: "photo-1511512578047-dfb367046420" },
       { id: "gaming", labelKey: "matching.subtopics.gaming", weight: 0.7, unsplashId: "photo-1538481199705-c710c4e965fc" },
@@ -105,7 +105,7 @@ export const MATCHING_TOPICS: Topic[] = [
     unsplashId: "photo-1490645935967-10de6ba17061",
     mappedSpecialties: ["eating_disorders"],
     subTopics: [
-      { id: "anorexia", labelKey: "matching.subtopics.anorexia", weight: 1.0, unsplashId: "photo-1499744937866-d7e6d56f8b20" },
+      { id: "anorexia", labelKey: "matching.subtopics.anorexia", weight: 1.0, unsplashId: "photo-1490818387583-1baba5e638af" },
       { id: "bulimia", labelKey: "matching.subtopics.bulimia", weight: 1.0, unsplashId: "photo-1484723091739-30a097e8f929" },
       { id: "binge_eating", labelKey: "matching.subtopics.bingeEating", weight: 0.9, unsplashId: "photo-1504674900247-0877df9cc836" },
     ],
