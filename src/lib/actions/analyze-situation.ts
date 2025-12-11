@@ -376,7 +376,7 @@ Du bist ein einfühlsamer Psychologie-Assistent für die Analyse von Situationsb
 - Wähle 1-3 passende Topics aus der verfügbaren Liste
 - Wähle 1-4 passende SubTopics nur wenn spezifisch erkennbar
 - Bestimme die Intensität (low/medium/high)
-- Schreibe eine kurze, einfühlsame Zusammenfassung
+- WICHTIG für "reasoning": Beziehe dich DIREKT auf die Worte des Nutzers. Erkläre in 1-2 Sätzen, WARUM die erkannten Themen zur Beschreibung passen.
 - Antworte NUR mit validem JSON, keine Erklärung, kein Markdown
 
 ### Context
@@ -417,11 +417,17 @@ KEINE Krise bei:
 crisis=true bedeutet SOFORTIGE Hilfsanzeige - nur bei echten Krisenindikatoren setzen!
 
 ### Expected Output Format
-{"topics":["topic1","topic2"],"subTopics":["subtopic1"],"reasoning":"Begründung auf Deutsch","intensity":"medium","summary":"Einfühlsame Zusammenfassung","crisis":false,"crisisType":null}
+{"topics":["topic1","topic2"],"subTopics":["subtopic1"],"reasoning":"1-2 Sätze die sich DIREKT auf die Eingabe beziehen","intensity":"medium","summary":"Einfühlsame Zusammenfassung","crisis":false,"crisisType":null}
 
-### Example
+### Examples
 Input: "Ich bin bei der Arbeit völlig erschöpft und kann nachts nicht schlafen."
-Output: {"topics":["burnout","sleep"],"subTopics":["exhaustion","insomnia"],"reasoning":"Du beschreibst Erschöpfung bei der Arbeit und Schlafprobleme – typische Anzeichen für Burnout mit begleitender Schlafstörung.","intensity":"medium","summary":"Du erlebst gerade eine belastende Phase mit Erschöpfung und Schlafproblemen. Das sind wichtige Signale, auf die wir achten sollten.","crisis":false,"crisisType":null}`;
+Output: {"topics":["burnout","sleep"],"subTopics":["exhaustion","insomnia"],"reasoning":"Du sprichst von Erschöpfung bei der Arbeit und Schlafproblemen - das sind typische Anzeichen für Burnout.","intensity":"medium","summary":"Du erlebst gerade eine belastende Phase mit Erschöpfung und Schlafproblemen.","crisis":false,"crisisType":null}
+
+Input: "Meine Freundin mobbt mich ständig."
+Output: {"topics":["relationships"],"subTopics":["couple_conflicts"],"reasoning":"Mobbing durch deine Freundin ist ein Beziehungskonflikt, der sehr belastend sein kann.","intensity":"medium","summary":"Konflikte in der Beziehung können sehr belastend sein. Es ist gut, dass du Unterstützung suchst.","crisis":false,"crisisType":null}
+
+Input: "Ich habe Panikattacken in der U-Bahn."
+Output: {"topics":["anxiety"],"subTopics":["panic_attacks","phobias"],"reasoning":"Deine Panikattacken in der U-Bahn deuten auf Angststörung mit einer möglichen Phobie hin.","intensity":"medium","summary":"Panikattacken in bestimmten Situationen sind behandelbar.","crisis":false,"crisisType":null}`;
 
 export async function analyzeSituation(text: string): Promise<SituationAnalysis> {
   // PROTECTION: Rate limiting per IP
@@ -638,34 +644,42 @@ Du bist ein Experte für psychische Gesundheit, der Nutzerbeschreibungen den pas
 ### Instructions
 - Analysiere die Beschreibung und finde 1-3 passende Kategorien
 - Bewerte deine Zuversicht: high (klar erkennbar), medium (wahrscheinlich), low (unsicher)
+- WICHTIG: Die Begründung muss sich DIREKT auf die Worte des Nutzers beziehen - erkläre WARUM diese spezifische Beschreibung zu den gewählten Kategorien passt
 - Antworte NUR mit validem JSON
 
 ### Available Categories
 ${subTopicList}
 
 ### Expected Output
-{"matchedIds":["id1","id2"],"explanation":"Begründung","confidence":"high"}
+{"matchedIds":["id1","id2"],"explanation":"Personalisierte Begründung basierend auf der Nutzereingabe","confidence":"high"}
 
 ### Example
 Input: "Ich habe ständig Herzrasen und Angst unter Menschen"
-Output: {"matchedIds":["panic_attacks","social_anxiety"],"explanation":"Herzrasen deutet auf Panikattacken hin, die Angst unter Menschen auf soziale Ängste.","confidence":"high"}`
+Output: {"matchedIds":["panic_attacks","social_anxiety"],"explanation":"Dein Herzrasen deutet auf Panikattacken hin, und die Angst unter Menschen weist auf soziale Ängste hin.","confidence":"high"}
+
+Input: "Meine Freundin mobbt mich"
+Output: {"matchedIds":["couple_conflicts"],"explanation":"Mobbing durch eine Freundin beschreibt einen Beziehungskonflikt, der belastend sein kann.","confidence":"high"}`
     : `### Role
 You are a mental health expert who matches user descriptions to the most appropriate categories.
 
 ### Instructions
 - Analyze the description and find 1-3 matching categories
 - Rate your confidence: high (clearly identifiable), medium (likely), low (uncertain)
+- IMPORTANT: The explanation must DIRECTLY reference the user's words - explain WHY this specific description matches the chosen categories
 - Respond ONLY with valid JSON
 
 ### Available Categories
 ${subTopicList}
 
 ### Expected Output
-{"matchedIds":["id1","id2"],"explanation":"Reasoning","confidence":"high"}
+{"matchedIds":["id1","id2"],"explanation":"Personalized reasoning based on user input","confidence":"high"}
 
 ### Example
 Input: "I have constant racing heart and fear of being around people"
-Output: {"matchedIds":["panic_attacks","social_anxiety"],"explanation":"Racing heart suggests panic attacks, fear of people points to social anxiety.","confidence":"high"}`;
+Output: {"matchedIds":["panic_attacks","social_anxiety"],"explanation":"Your racing heart suggests panic attacks, and fear around people points to social anxiety.","confidence":"high"}
+
+Input: "My friend is bullying me"
+Output: {"matchedIds":["couple_conflicts"],"explanation":"Being bullied by a friend describes a relationship conflict that can be distressing.","confidence":"high"}`;
 
   try {
     const completion = await getGroqClient().chat.completions.create({
