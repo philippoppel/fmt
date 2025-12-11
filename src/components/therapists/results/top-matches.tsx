@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Sparkles, ChevronDown, GitCompare } from "lucide-react";
+import { Sparkles, ChevronDown, GitCompare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { TopMatchCard } from "./top-match-card";
 import { CompareModal } from "./compare-modal";
 import {
@@ -191,28 +192,15 @@ export function TopMatches({
         </div>
       </div>
 
-      {/* Compare Hint - more prominent on mobile */}
-      <div className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/30 px-3 py-2">
-        <GitCompare className="h-4 w-4 text-muted-foreground" />
-        <span className="text-xs sm:text-sm text-muted-foreground">
-          {compareIds.length === 0
-            ? t("matching.compare.hint")
-            : t("matching.compare.selected", { count: compareIds.length })}
-        </span>
-        {compareIds.length > 0 && (
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => setShowCompare(true)}
-            className="ml-auto gap-1.5 h-7 px-2.5 text-xs"
-          >
-            {t("matching.compare.compareNow")}
-            <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground">
-              {compareIds.length}
-            </Badge>
-          </Button>
-        )}
-      </div>
+      {/* Compare Hint - only show when nothing selected */}
+      {compareIds.length === 0 && (
+        <div className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/30 px-3 py-2">
+          <GitCompare className="h-4 w-4 text-muted-foreground" />
+          <span className="text-xs sm:text-sm text-muted-foreground">
+            {t("matching.compare.hint")}
+          </span>
+        </div>
+      )}
 
       {/* Cards - Responsive grid for vertical cards with large photos */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -240,6 +228,70 @@ export function TopMatches({
           </Button>
         </div>
       )}
+
+      {/* Floating Compare Bar - appears when therapists selected */}
+      <div
+        className={cn(
+          "fixed bottom-0 left-0 right-0 z-50 transform transition-all duration-300 ease-out",
+          compareIds.length > 0
+            ? "translate-y-0 opacity-100"
+            : "translate-y-full opacity-0 pointer-events-none"
+        )}
+      >
+        <div className="mx-auto max-w-3xl px-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+          <div className="flex items-center justify-between gap-3 rounded-xl border bg-card/95 px-4 py-3 shadow-lg backdrop-blur-sm">
+            {/* Selected count with avatars */}
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-2">
+                {compareTherapists.slice(0, 3).map((therapist) => (
+                  <div
+                    key={therapist.id}
+                    className="h-8 w-8 overflow-hidden rounded-full border-2 border-background"
+                  >
+                    <img
+                      src={therapist.imageUrl}
+                      alt={therapist.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-sm font-medium">
+                  {t("matching.compare.selected", { count: compareIds.length })}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {compareIds.length < 2
+                    ? t("matching.compare.selectMore")
+                    : t("matching.compare.readyToCompare")}
+                </p>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setCompareIds([])}
+                className="h-9 px-2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+                <span className="ml-1 hidden sm:inline">{t("matching.compare.clear")}</span>
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => setShowCompare(true)}
+                disabled={compareIds.length < 2}
+                className="h-9 gap-1.5 px-4"
+              >
+                <GitCompare className="h-4 w-4" />
+                {t("matching.compare.compareNow")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Compare Modal */}
       <CompareModal
