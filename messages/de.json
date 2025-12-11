@@ -783,7 +783,8 @@
         "offersInPerson": "Vor-Ort Termine möglich",
         "availableNow": "Kurzfristig verfügbar",
         "nearLocation": "In deiner Nähe",
-        "expertIn": "Expert:in für {specialties}"
+        "expertIn": "Expert:in für {specialties}",
+        "preciseMatch": "Passt zu: {topics}"
       }
     },
     "scoreBreakdown": {

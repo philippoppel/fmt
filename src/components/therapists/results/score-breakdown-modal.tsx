@@ -65,6 +65,7 @@ export function ScoreBreakdownModal({
 }: ScoreBreakdownModalProps) {
   const t = useTranslations();
   const tSpec = useTranslations("therapists.specialties");
+  const tSub = useTranslations("matching.subtopics");
   const formatDetails = useScoreDetailsFormatter();
 
   const breakdown = therapist.scoreBreakdown;
@@ -192,12 +193,22 @@ export function ScoreBreakdownModal({
               </h4>
               <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {breakdown.matchReasons.map((reason, i) => {
-                  // Parse reason format like "expertIn:anxiety, depression"
+                  // Parse reason format like "expertIn:anxiety, depression" or "preciseMatch:social_anxiety, work_stress"
                   let displayReason = reason;
                   if (reason.startsWith("expertIn:")) {
                     const specs = reason.replace("expertIn:", "").split(", ");
                     displayReason = t("matching.results.reasons.expertIn", {
                       specialties: specs.map(s => tSpec(s.trim())).join(", ")
+                    });
+                  } else if (reason.startsWith("preciseMatch:")) {
+                    const subTopics = reason.replace("preciseMatch:", "").split(", ");
+                    const translatedTopics = subTopics.map(st => {
+                      // Convert snake_case to camelCase for translation key
+                      const key = st.trim().replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+                      return tSub(key);
+                    }).join(", ");
+                    displayReason = t("matching.results.reasons.preciseMatch", {
+                      topics: translatedTopics
                     });
                   } else if (t.has(`matching.results.reasons.${reason}`)) {
                     displayReason = t(`matching.results.reasons.${reason}`);

@@ -783,7 +783,8 @@
         "offersInPerson": "In-person appointments available",
         "availableNow": "Available soon",
         "nearLocation": "Near your location",
-        "expertIn": "Expert in {specialties}"
+        "expertIn": "Expert in {specialties}",
+        "preciseMatch": "Matches: {topics}"
       }
     },
     "scoreBreakdown": {
