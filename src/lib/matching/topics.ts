@@ -154,6 +154,13 @@ export const MATCHING_TOPICS: Topic[] = [
       { id: "sleep_anxiety", labelKey: "matching.subtopics.sleepAnxiety", weight: 0.8, unsplashId: "photo-1541781774459-bb2af2f05b55" },
     ],
   },
+  {
+    id: "other",
+    labelKey: "matching.topics.other",
+    unsplashId: "photo-1499750310107-5fef28a66643",
+    mappedSpecialties: [], // Will be determined by AI matching against freetext
+    subTopics: [], // No predefined subtopics - user describes in freetext
+  },
 ];
 
 export function getTopicById(id: string): Topic | undefined {

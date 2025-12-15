@@ -12,11 +12,16 @@ import {
   Users,
   Sparkles,
   CreditCard,
-  Wallet
+  Wallet,
+  Globe,
+  BookOpen,
+  Check,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import type { Gender, SessionType, Insurance } from "@/types/therapist";
+import type { Gender, SessionType, Insurance, Language, TherapyType } from "@/types/therapist";
+import { LANGUAGES, THERAPY_TYPES } from "@/types/therapist";
 import { useMatching } from "../matching-context";
 import { LocationInput } from "./location-input";
 
@@ -61,8 +66,8 @@ export function CriteriaSelection() {
             </div>
             {t("matching.criteria.sessionType")}
           </Label>
-          <div className="grid grid-cols-2 gap-3">
-            {(["online", "in_person", "both", null] as const).map(
+          <div className="grid grid-cols-3 gap-3">
+            {(["online", "in_person", null] as const).map(
               (sessionType) => (
                 <SessionTypeCard
                   key={sessionType ?? "any"}
@@ -121,6 +126,48 @@ export function CriteriaSelection() {
                 isSelected={state.criteria.insurance.includes(insurance)}
                 onClick={() => actions.toggleInsurance(insurance)}
                 label={t(`therapists.filters.insurance.${insurance}`)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Language */}
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500/10">
+              <Globe className="h-4 w-4 text-violet-600" />
+            </div>
+            {t("matching.criteria.language")}
+          </Label>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {LANGUAGES.map((language) => (
+              <LanguageCard
+                key={language}
+                language={language}
+                isSelected={state.criteria.languages.includes(language)}
+                onClick={() => actions.toggleLanguage(language)}
+                label={t(`therapists.languages.${language}`)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Therapy Type */}
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500/10">
+              <BookOpen className="h-4 w-4 text-orange-600" />
+            </div>
+            {t("matching.criteria.therapyType")}
+          </Label>
+          <div className="flex flex-wrap gap-2">
+            {THERAPY_TYPES.map((type) => (
+              <TherapyTypeChip
+                key={type}
+                type={type}
+                isSelected={state.criteria.therapyTypes.includes(type)}
+                onClick={() => actions.toggleTherapyType(type)}
+                label={t(`therapists.therapyTypes.${type}`)}
               />
             ))}
           </div>
@@ -200,17 +247,13 @@ function SessionTypeCard({
     ? Laptop
     : sessionType === "in_person"
       ? Building2
-      : sessionType === "both"
-        ? Video
-        : Sparkles;
+      : Sparkles;
 
   const iconBgColor = sessionType === "online"
     ? "bg-blue-500"
     : sessionType === "in_person"
       ? "bg-amber-500"
-      : sessionType === "both"
-        ? "bg-violet-500"
-        : "bg-primary";
+      : "bg-primary";
 
   return (
     <button
@@ -300,6 +343,86 @@ function InsuranceCard({
           </svg>
         </div>
       )}
+    </button>
+  );
+}
+
+interface LanguageCardProps {
+  language: Language;
+  isSelected: boolean;
+  onClick: () => void;
+  label: string;
+}
+
+function LanguageCard({
+  language,
+  isSelected,
+  onClick,
+  label,
+}: LanguageCardProps) {
+  // Language flag emojis
+  const flagEmoji: Record<Language, string> = {
+    de: "🇩🇪",
+    en: "🇬🇧",
+    tr: "🇹🇷",
+    ar: "🇸🇦",
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "relative flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        isSelected
+          ? "border-violet-500 bg-violet-500/10 shadow-md"
+          : "border-input bg-background hover:border-violet-500/50 hover:bg-muted/50"
+      )}
+      aria-pressed={isSelected}
+    >
+      <span className="text-2xl">{flagEmoji[language]}</span>
+      <span className={cn(
+        "text-sm font-medium",
+        isSelected ? "text-violet-600" : "text-foreground"
+      )}>
+        {label}
+      </span>
+      {isSelected && (
+        <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-violet-500 text-white">
+          <Check className="h-3 w-3" />
+        </div>
+      )}
+    </button>
+  );
+}
+
+interface TherapyTypeChipProps {
+  type: TherapyType;
+  isSelected: boolean;
+  onClick: () => void;
+  label: string;
+}
+
+function TherapyTypeChip({
+  type,
+  isSelected,
+  onClick,
+  label,
+}: TherapyTypeChipProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        isSelected
+          ? "border-orange-500 bg-orange-500/10 text-orange-600"
+          : "border-input bg-background text-foreground hover:border-orange-500/50 hover:bg-muted/50"
+      )}
+      aria-pressed={isSelected}
+    >
+      {isSelected && <Check className="h-4 w-4" />}
+      {label}
     </button>
   );
 }

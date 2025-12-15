@@ -494,6 +494,19 @@
       "subtopicHint": "Select specific areas for better results",
       "selectedSubTopics": "{count} details selected",
       "subtopicBenefit": "The more specific you are, the better your therapist recommendations",
+      "selected": "selected",
+      "optionsAvailable": "options available",
+      "tapToSelect": "Tap an option to select it",
+      "noneOfThese": "None of these",
+      "noneSelected": "Skipped",
+      "describeYourSituation": "Describe your situation",
+      "noneSelectedHint": "For topics without a matching option: Describe here and we'll find the best match.",
+      "noneSelectedPlaceholder": "e.g. I'm having difficulties with...",
+      "priority": "Priority",
+      "priorityHint": "Order = Priority.",
+      "priorityExplanation": "Use the arrows to reorder topics by importance. The top topic has the highest priority for matching.",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
       "customSubtopicPrompt": "Nothing fits? Describe it in your own words",
       "customSubtopicPlaceholder": "e.g. I have trouble controlling my impulses during anger outbursts...",
       "findClosestMatch": "Find closest match",
@@ -563,9 +576,18 @@
     },
     "intensity": {
       "title": "How much is this affecting you?",
-      "subtitle": "Check what applies to you. This helps us find experienced therapists.",
+      "subtitle": "Describe the intensity for each topic - select statements or describe in your own words.",
       "optional": "These details are optional and can be skipped.",
       "currentLevel": "Current assessment",
+      "overallLevel": "Overall assessment",
+      "statementsAvailable": "statements available",
+      "describeOnly": "Describe your situation",
+      "describeInstead": "Or describe it in your own words",
+      "describePlaceholder": "e.g. It affects me especially strongly when...",
+      "analyzeButton": "AI assessment",
+      "aiAssessment": "AI assessment",
+      "reassess": "Reassess",
+      "weightedExplanation": "Weighted average based on topic priority",
       "level": {
         "low": "Mild",
         "medium": "Moderate",
@@ -706,7 +728,20 @@
       "adhd": "ADHD",
       "selfCare": "Self-Care",
       "stress": "Stress",
-      "sleep": "Sleep"
+      "sleep": "Sleep",
+      "other": "Other"
+    },
+    "other": {
+      "title": "Describe your concern",
+      "subtitle": "We'll find the right specialization for you",
+      "instructions": "Describe in your own words what's on your mind. We'll match it to the appropriate therapist specialization.",
+      "placeholder": "e.g. I'm being bullied at school and don't know how to deal with it...",
+      "findMatch": "Find matching specialization",
+      "matchFound": "Matching specialization found",
+      "matchedTo": "Matches",
+      "noMatch": "No clear match found",
+      "tryAgainHint": "Try describing your concern more specifically. Alternatively, you can go back and choose a different topic.",
+      "describeAgain": "Describe again"
     },
     "subtopics": {
       "divorce": "Divorce",
@@ -759,7 +794,9 @@
       "anyGender": "Any",
       "sessionType": "Session Type",
       "anySessionType": "Any",
-      "insurance": "Insurance"
+      "insurance": "Insurance",
+      "language": "Language",
+      "therapyType": "Therapy Approach"
     },
     "location": {
       "placeholder": "Enter city or detect automatically",
@@ -857,9 +894,18 @@
       "describeAgain": "Describe your situation again and we'll find matching topics.",
       "analyze": "Analyze",
       "analyzing": "Analyzing...",
+      "resetInput": "Start over",
       "newTopicsDetected": "New topics detected",
       "cantFind": "Can't find what you're looking for?",
-      "shortPlaceholder2": "e.g. I'm afraid of crowds..."
+      "shortPlaceholder2": "e.g. I'm afraid of crowds...",
+      "understood": "Understood",
+      "couldNotUnderstand": "Please select manually",
+      "chooseTopicsBelow": "Choose the topics below that fit best.",
+      "chooseSubtopicsAbove": "Choose the details above that fit best.",
+      "autoSelected": "Selected",
+      "suggested": "Suggested",
+      "placeholderWithPrivacy": "What's troubling you? (no names/places)",
+      "privacyHint": "Don't include names or personal data"
     },
     "fitLevel": {
       "excellent": "Excellent Fit",

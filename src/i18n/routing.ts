@@ -9,6 +9,9 @@ export const routing = defineRouting({
 
   // URL-Präfix nur für nicht-Standard-Sprachen
   localePrefix: "as-needed",
+
+  // Browser-Spracherkennung deaktivieren - immer Deutsch als Standard
+  localeDetection: false,
 });
 
 export type Locale = (typeof routing.locales)[number];

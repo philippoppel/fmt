@@ -1,63 +1,77 @@
 "use client";
 
 import { useState, useRef, useTransition } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import { MessageSquareText, ArrowRight, Sparkles, Loader2, CheckCircle2, AlertCircle, Phone, Heart } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { MessageSquareText, ArrowRight, Sparkles, Loader2, CheckCircle2, AlertCircle, Phone, Heart, Info } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { MATCHING_TOPICS } from "@/lib/matching/topics";
 import { useMatching } from "../matching-context";
 import { TopicCard } from "./topic-card";
 import { cn } from "@/lib/utils";
-import { analyzeSituation } from "@/lib/actions/analyze-situation";
+import { analyzeSituation, type ConfidenceLevel } from "@/lib/actions/analyze-situation";
 
 export function TopicSelection() {
   const t = useTranslations();
-  const locale = useLocale();
   const { state, actions } = useMatching();
-  const [freetextValue, setFreetextValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [detectedTopics, setDetectedTopics] = useState<string[]>([]);
-  const [topicReasons, setTopicReasons] = useState<string>("");
-  const [analysisState, setAnalysisState] = useState<"idle" | "success" | "empty" | "crisis">("idle");
+  const [understandingSummary, setUnderstandingSummary] = useState<string>("");
+  const [recommendation, setRecommendation] = useState<string>("");
+  const [confidence, setConfidence] = useState<ConfidenceLevel>("medium");
+  const [autoSelectedTopics, setAutoSelectedTopics] = useState<string[]>([]);
   const [showCrisisAlert, setShowCrisisAlert] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Use global state for freetext
+  const freetextValue = state.inlineFreetextValue;
+  const analysisState = state.inlineFreetextAnalysisState;
 
   const handleAnalyze = () => {
     if (freetextValue.trim().length < 10) return;
 
+    actions.setInlineFreetextAnalysisState("pending");
     startTransition(async () => {
       const result = await analyzeSituation(freetextValue);
 
       // IMPORTANT: Check for crisis detection FIRST
       if (result.crisisDetected) {
         setShowCrisisAlert(true);
-        setAnalysisState("crisis");
+        actions.setInlineFreetextAnalysisState("crisis");
         return;
       }
 
+      const summary = result.understandingSummary || "";
+      const rec = result.recommendation || "";
+      const conf = result.confidence || "medium";
       const topics = result.suggestedTopics || [];
-      const subTopics = result.suggestedSubTopics || [];
-      setDetectedTopics(topics);
-      setTopicReasons(result.topicReasons || "");
 
-      if (topics.length > 0) {
-        setAnalysisState("success");
-        // Auto-select detected topics
-        topics.forEach(topic => {
-          if (!state.selectedTopics.includes(topic)) {
-            actions.toggleTopic(topic);
+      setUnderstandingSummary(summary);
+      setRecommendation(rec);
+      setConfidence(conf);
+
+      // HIGH CONFIDENCE: Auto-select topics
+      if (conf === "high" && topics.length > 0) {
+        // Select the suggested topics
+        topics.forEach(topicId => {
+          if (!state.selectedTopics.includes(topicId)) {
+            actions.toggleTopic(topicId);
           }
         });
-        // Auto-select detected subTopics for precise matching
-        subTopics.forEach(subTopic => {
-          if (!state.selectedSubTopics.includes(subTopic)) {
-            actions.toggleSubTopic(subTopic);
-          }
-        });
-      } else {
-        setAnalysisState("empty");
+        setAutoSelectedTopics(topics);
+        actions.setInlineFreetextAnalysisState("success");
+      }
+      // MEDIUM CONFIDENCE: Show summary, no auto-select
+      else if (conf === "medium" && topics.length > 0) {
+        setAutoSelectedTopics(topics); // Store for display only
+        actions.setInlineFreetextAnalysisState("success");
+      }
+      // LOW CONFIDENCE or no topics: Off-topic / unclear
+      else if (summary.length > 0) {
+        actions.setInlineFreetextAnalysisState("empty"); // Will show off-topic message
+      }
+      // Nothing found at all
+      else {
+        actions.setInlineFreetextAnalysisState("empty");
       }
     });
   };
@@ -67,9 +81,11 @@ export function TopicSelection() {
   };
 
   const resetAnalysis = () => {
-    setAnalysisState("idle");
-    setDetectedTopics([]);
-    setTopicReasons("");
+    actions.setInlineFreetextAnalysisState("idle");
+    setUnderstandingSummary("");
+    setRecommendation("");
+    setConfidence("medium");
+    setAutoSelectedTopics([]);
   };
 
   // Crisis hotlines
@@ -215,9 +231,9 @@ export function TopicSelection() {
               {isPending
                 ? t("matching.freetext.analyzing")
                 : analysisState === "success"
-                  ? `${detectedTopics.length} ${detectedTopics.length === 1 ? "Thema" : "Themen"} erkannt`
+                  ? t("matching.freetext.understood")
                   : analysisState === "empty"
-                    ? "Kein Thema erkannt"
+                    ? t("matching.freetext.couldNotUnderstand")
                     : t("matching.wizard.preferToDescribe")}
             </span>
             {freetextValue.length >= 10 && analysisState === "idle" && !isPending && (
@@ -229,63 +245,98 @@ export function TopicSelection() {
           <div className="flex-1 p-2 overflow-y-auto">
             {analysisState === "success" ? (
               <div className="flex flex-col gap-2 p-1">
-                <div className="flex flex-wrap gap-1">
-                  {detectedTopics.map((topic) => {
-                    // Convert snake_case to camelCase for translation key
-                    const translationKey = topic.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
-                    return (
-                      <Badge key={topic} className="bg-green-600/20 text-green-800 dark:bg-green-500/30 dark:text-green-200 text-[10px] font-medium">
-                        {t(`matching.topics.${translationKey}`)}
-                      </Badge>
-                    );
-                  })}
-                </div>
-                {topicReasons && (
-                  <p className="text-xs text-foreground/80 leading-snug">
-                    {topicReasons}
+                {/* Understanding summary - short and direct */}
+                {understandingSummary && (
+                  <p className="text-sm text-foreground leading-relaxed">
+                    {understandingSummary}
+                  </p>
+                )}
+                {/* Show what was auto-selected (high confidence) or suggested (medium) */}
+                {autoSelectedTopics.length > 0 && (
+                  <div className={cn(
+                    "rounded-md p-2 text-xs",
+                    confidence === "high"
+                      ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
+                      : "bg-primary/10 text-primary"
+                  )}>
+                    {confidence === "high" ? (
+                      <span>{t("matching.freetext.autoSelected")}: {autoSelectedTopics.map(id => {
+                        const topic = MATCHING_TOPICS.find(t => t.id === id);
+                        return topic ? t(topic.labelKey) : id;
+                      }).join(", ")}</span>
+                    ) : (
+                      <span>{t("matching.freetext.suggested")}: {autoSelectedTopics.map(id => {
+                        const topic = MATCHING_TOPICS.find(t => t.id === id);
+                        return topic ? t(topic.labelKey) : id;
+                      }).join(", ")}</span>
+                    )}
+                  </div>
+                )}
+                {/* Recommendation (only for high confidence) */}
+                {recommendation && confidence === "high" && (
+                  <p className="text-xs text-muted-foreground">
+                    {recommendation}
                   </p>
                 )}
               </div>
             ) : analysisState === "empty" ? (
-              <p className="p-1 text-xs text-amber-700 dark:text-amber-400">
-                {t("matching.freetext.selectManually")}
-              </p>
+              <div className="flex flex-col gap-2 p-1">
+                {/* Show the understanding even for off-topic */}
+                {understandingSummary && (
+                  <p className="text-sm text-amber-800 dark:text-amber-300">
+                    {understandingSummary}
+                  </p>
+                )}
+                <p className="text-xs text-amber-700 dark:text-amber-400">
+                  {t("matching.freetext.selectManually")}
+                </p>
+              </div>
             ) : (
-              <Textarea
-                ref={textareaRef}
-                value={freetextValue}
-                onChange={(e) => {
-                  setFreetextValue(e.target.value);
-                  resetAnalysis();
-                }}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                placeholder={t("matching.freetext.shortPlaceholder")}
-                disabled={isPending}
-                className="h-full min-h-0 resize-none border-0 bg-transparent p-1 text-sm placeholder:text-muted-foreground/60 focus-visible:ring-0"
-              />
+              <div className="flex flex-col h-full">
+                <Textarea
+                  ref={textareaRef}
+                  value={freetextValue}
+                  onChange={(e) => {
+                    actions.setInlineFreetext(e.target.value);
+                    resetAnalysis();
+                  }}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  placeholder={t("matching.freetext.placeholderWithPrivacy")}
+                  disabled={isPending}
+                  className="flex-1 min-h-0 resize-none border-0 bg-transparent p-1 text-sm placeholder:text-muted-foreground/60 focus-visible:ring-0"
+                />
+                {/* Privacy hint */}
+                {isFocused && freetextValue.length === 0 && (
+                  <div className="flex items-center gap-1.5 px-1 py-1 text-xs text-muted-foreground/70">
+                    <Info className="h-3 w-3" />
+                    <span>{t("matching.freetext.privacyHint")}</span>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
           {/* Action Footer */}
           {(freetextValue.length > 0 || analysisState !== "idle") && (
             <div className={cn(
-              "flex items-center justify-between border-t px-3 py-1.5",
+              "flex items-center justify-between border-t px-3 py-2",
               analysisState === "success" ? "border-green-600/30" : analysisState === "empty" ? "border-amber-600/30" : "border-border"
             )}>
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 {freetextValue.length}/500
               </span>
-              {analysisState !== "idle" ? (
+              {analysisState !== "idle" && analysisState !== "pending" ? (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
+                    actions.setInlineFreetext("");
                     resetAnalysis();
                     textareaRef.current?.focus();
                   }}
-                  className="flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium text-muted-foreground hover:bg-muted/80"
+                  className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/80"
                 >
-                  Neu eingeben
+                  {t("matching.freetext.resetInput")}
                 </button>
               ) : (
                 <button
@@ -295,18 +346,22 @@ export function TopicSelection() {
                   }}
                   disabled={freetextValue.trim().length < 10 || isPending}
                   className={cn(
-                    "flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all",
+                    "flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all",
                     freetextValue.trim().length >= 10 && !isPending
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
                       : "bg-muted text-muted-foreground"
                   )}
                 >
                   {isPending ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>{t("matching.freetext.analyzing")}</span>
+                    </>
                   ) : (
                     <>
+                      <Sparkles className="h-4 w-4" />
                       {t("matching.freetext.analyze")}
-                      <ArrowRight className="h-3 w-3" />
+                      <ArrowRight className="h-4 w-4" />
                     </>
                   )}
                 </button>

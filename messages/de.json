@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Meine App - Ihre Lösung für...",
+    "title": "Meine App - Deine Lösung für...",
     "description": "Eine barrierefreie, mehrsprachige Webanwendung mit höchster Qualität und Benutzerfreundlichkeit.",
     "keywords": "webapp, barrierefreiheit, mehrsprachig, seo"
   },
@@ -41,7 +41,7 @@
   },
   "home": {
     "hero": {
-      "title": "Willkommen bei Ihrer App",
+      "title": "Willkommen bei Deiner App",
       "subtitle": "Eine moderne, barrierefreie Webanwendung",
       "cta": "Jetzt starten",
       "ctaSecondary": "Los geht's"
@@ -65,11 +65,11 @@
   "auth": {
     "login": {
       "title": "Anmelden",
-      "description": "Melden Sie sich mit Ihrem Konto an",
+      "description": "Melde dich mit deinem Konto an",
       "email": "E-Mail-Adresse",
       "emailPlaceholder": "name@beispiel.de",
       "password": "Passwort",
-      "passwordPlaceholder": "Ihr Passwort",
+      "passwordPlaceholder": "dein Passwort",
       "rememberMe": "Angemeldet bleiben",
       "forgotPassword": "Passwort vergessen?",
       "submit": "Anmelden",
@@ -79,14 +79,14 @@
       "orContinueWith": "Oder weiter mit",
       "errors": {
         "invalidCredentials": "E-Mail oder Passwort ist falsch",
-        "accountLocked": "Ihr Konto wurde gesperrt. Bitte kontaktieren Sie den Support.",
-        "emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse ein",
-        "passwordRequired": "Bitte geben Sie Ihr Passwort ein"
+        "accountLocked": "Dein Konto wurde gesperrt. Bitte kontaktieren den Support.",
+        "emailRequired": "Bitte gib deine E-Mail-Adresse ein",
+        "passwordRequired": "Bitte gib dein Passwort ein"
       }
     },
     "register": {
       "title": "Registrieren",
-      "description": "Erstellen Sie ein neues Konto",
+      "description": "Erstelle ein neues Konto",
       "name": "Vollständiger Name",
       "namePlaceholder": "Max Mustermann",
       "email": "E-Mail-Adresse",
@@ -113,19 +113,19 @@
         "special": "Mindestens ein Sonderzeichen"
       },
       "errors": {
-        "nameRequired": "Bitte geben Sie Ihren Namen ein",
-        "emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse ein",
-        "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+        "nameRequired": "Bitte gib deinen Namen ein",
+        "emailRequired": "Bitte gib deine E-Mail-Adresse ein",
+        "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein",
         "emailExists": "Diese E-Mail-Adresse ist bereits registriert",
-        "passwordRequired": "Bitte geben Sie ein Passwort ein",
+        "passwordRequired": "Bitte gib ein Passwort ein",
         "passwordWeak": "Das Passwort erfüllt nicht alle Anforderungen",
         "passwordMismatch": "Die Passwörter stimmen nicht überein",
-        "termsRequired": "Bitte akzeptieren Sie die Nutzungsbedingungen"
+        "termsRequired": "Bitte akzeptiere die Nutzungsbedingungen"
       }
     },
     "twoFactor": {
       "title": "Zwei-Faktor-Authentifizierung",
-      "description": "Geben Sie den Code aus Ihrer Authenticator-App ein",
+      "description": "Gib den Code aus deiner Authenticator-App ein",
       "code": "Authentifizierungscode",
       "codePlaceholder": "000000",
       "submit": "Verifizieren",
@@ -134,54 +134,54 @@
       "backupCodePlaceholder": "Ihr Backup-Code",
       "errors": {
         "invalidCode": "Der eingegebene Code ist ungültig",
-        "codeExpired": "Der Code ist abgelaufen. Bitte versuchen Sie es erneut."
+        "codeExpired": "Der Code ist abgelaufen. Bitte versuch es erneut."
       }
     },
     "forgotPassword": {
       "title": "Passwort zurücksetzen",
-      "description": "Geben Sie Ihre E-Mail-Adresse ein, um einen Reset-Link zu erhalten",
+      "description": "Gib deine E-Mail-Adresse ein, um einen Reset-Link zu erhalten",
       "email": "E-Mail-Adresse",
       "emailPlaceholder": "name@beispiel.de",
       "submit": "Reset-Link senden",
       "backToLogin": "Zurück zur Anmeldung",
-      "success": "Wenn ein Konto mit dieser E-Mail existiert, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen."
+      "success": "Wenn ein Konto mit dieser E-Mail existiert, erhältst du in Kürze eine E-Mail mit weiteren Anweisungen."
     }
   },
   "dashboard": {
     "settings": {
       "title": "Profileinstellungen",
-      "subtitle": "Verwalten Sie Ihre Therapeuten-Profilinformationen",
+      "subtitle": "Verwalte deine Therapeuten-Profilinformationen",
       "saveChanges": "Änderungen speichern",
       "saving": "Speichern...",
       "saved": "Änderungen erfolgreich gespeichert",
       "sections": {
         "basicInfo": {
           "title": "Grundinformationen",
-          "description": "Name, Titel und Beschreibung Ihres Profils",
+          "description": "Name, Titel und Beschreibung deines Profils",
           "name": "Anzeigename",
           "namePlaceholder": "Dr. Max Mustermann",
           "professionalTitle": "Berufstitel",
           "titlePlaceholder": "z.B. Psychologische Psychotherapeutin",
           "image": "Profilbild-URL",
           "description": "Kurzbeschreibung",
-          "descriptionPlaceholder": "Beschreiben Sie Ihren therapeutischen Ansatz und Ihre Schwerpunkte..."
+          "descriptionPlaceholder": "Beschreibe deinen therapeutischen Ansatz und deine Schwerpunkte..."
         },
         "location": {
           "title": "Standort",
-          "description": "Wo finden Ihre Sitzungen statt?",
+          "description": "Wo finden deine Sitzungen statt?",
           "city": "Stadt",
           "cityPlaceholder": "z.B. Berlin",
           "postalCode": "Postleitzahl",
           "postalCodePlaceholder": "z.B. 10115"
         },
         "specializations": {
-          "description": "Wählen Sie Ihre Fachgebiete"
+          "description": "Wähle deine Fachgebiete"
         },
         "therapyTypes": {
-          "description": "Welche Therapieformen bieten Sie an?"
+          "description": "Welche Therapieformen bietest du an?"
         },
         "languages": {
-          "description": "In welchen Sprachen bieten Sie Therapie an?"
+          "description": "In welchen Sprachen bietest du Therapie an?"
         },
         "pricing": {
           "title": "Preis & Versicherung",
@@ -190,7 +190,7 @@
         },
         "availability": {
           "title": "Verfügbarkeit & Präferenzen",
-          "description": "Wann und wie sind Sie verfügbar?"
+          "description": "Wann und wie bist du verfügbar?"
         }
       }
     }
@@ -204,7 +204,7 @@
       "accessibility": "Barrierefreiheit"
     },
     "social": {
-      "followUs": "Folgen Sie uns",
+      "followUs": "Folge uns",
       "twitter": "Twitter",
       "linkedin": "LinkedIn",
       "github": "GitHub"
@@ -229,7 +229,7 @@
     },
     "500": {
       "title": "Serverfehler",
-      "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
+      "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuch es später erneut.",
       "backHome": "Zurück zur Startseite"
     }
   },
@@ -270,7 +270,7 @@
     "editor": {
       "title": "Neuer Artikel",
       "titlePlaceholder": "Artikel-Titel...",
-      "contentPlaceholder": "Schreiben Sie hier oder drücken Sie '/' für Befehle...",
+      "contentPlaceholder": "Schreibe hier oder drücke '/' für Befehle...",
       "summary": {
         "short": "Kurze Zusammenfassung (max. 280 Zeichen)",
         "shortPlaceholder": "TLDR: Worum geht es?",
@@ -309,16 +309,16 @@
   },
   "therapists": {
     "meta": {
-      "title": "Therapeuten finden - Psychotherapie in Ihrer Nähe",
-      "description": "Finden Sie qualifizierte Therapeuten und Psychologen in Ihrer Nähe. Vergleichen Sie Profile, Spezialisierungen und Bewertungen."
+      "title": "Therapeuten finden - Psychotherapie in Deiner Nähe",
+      "description": "Finde qualifizierte Therapeuten und Psychologen in deiner Nähe. Vergleiche Profile, Spezialisierungen und Bewertungen."
     },
     "error": {
       "title": "Verbindungsproblem",
-      "description": "Die Therapeuten-Daten konnten nicht geladen werden. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
+      "description": "Die Therapeuten-Daten konnten nicht geladen werden. Bitte überprüfe deine Internetverbindung und versuch es erneut.",
       "retry": "Erneut laden"
     },
     "title": "Therapeuten finden",
-    "subtitle": "Finden Sie den passenden Therapeuten für Ihre Bedürfnisse",
+    "subtitle": "Finde den passenden Therapeuten für deine Bedürfnisse",
     "viewProfile": "Profil",
     "readMore": "Weiterlesen",
     "blog": "Blog-Artikel",
@@ -458,8 +458,8 @@
   },
   "matching": {
     "meta": {
-      "title": "Therapeuten-Matching - Finden Sie Ihren perfekten Therapeuten",
-      "description": "Finden Sie durch unser geführtes Matching-System den idealen Therapeuten für Ihre individuellen Bedürfnisse."
+      "title": "Therapeuten-Matching - Finde Deinen perfekten Therapeuten",
+      "description": "Finde durch unser geführtes Matching-System den idealen Therapeuten für deine individuellen Bedürfnisse."
     },
     "startButton": "Geführtes Matching",
     "startButtonShort": "Matching",
@@ -467,17 +467,17 @@
       "badge": "Geführtes Matching",
       "close": "Wizard schließen",
       "describe": "Beschreiben",
-      "step1Title": "Was beschäftigt Sie?",
-      "step1Subtitle": "Wählen Sie ein oder mehrere Themen aus",
-      "step2Title": "Ihre Präferenzen",
+      "step1Title": "Was beschäftigt dich?",
+      "step1Subtitle": "Wähle ein oder mehrere Themen aus",
+      "step2Title": "Deine Präferenzen",
       "step2Subtitle": "Diese Angaben helfen uns, passende Therapeuten zu finden",
-      "step3Title": "Möchten Sie konkretisieren?",
+      "step3Title": "Möchtest du konkretisieren?",
       "step3Subtitle": "Optionale Angaben für noch bessere Ergebnisse",
       "back": "Zurück",
       "next": "Weiter",
       "skip": "Überspringen",
       "showResults": "Ergebnisse anzeigen",
-      "selectAtLeastOne": "Bitte wählen Sie mindestens ein Thema aus",
+      "selectAtLeastOne": "Bitte wähle mindestens ein Thema aus",
       "selectedCount": "{count} Themen ausgewählt",
       "preferToDescribe": "Lieber beschreiben",
       "allOptional": "Alle Angaben sind optional",
@@ -490,33 +490,46 @@
         "preferences": "Präferenzen",
         "style": "Arbeitsstil"
       },
-      "step1_25Title": "Beschreiben Sie genauer",
-      "subtopicHint": "Wählen Sie spezifische Bereiche für bessere Ergebnisse",
+      "step1_25Title": "Beschreibe genauer",
+      "subtopicHint": "Wähle spezifische Bereiche für bessere Ergebnisse",
       "selectedSubTopics": "{count} Details ausgewählt",
-      "subtopicBenefit": "Je genauer Sie beschreiben, desto passender die Therapeuten-Empfehlungen",
-      "customSubtopicPrompt": "Nichts Passendes dabei? Beschreiben Sie es in eigenen Worten",
+      "subtopicBenefit": "Je genauer du beschreibst, desto passender die Therapeuten-Empfehlungen",
+      "selected": "ausgewählt",
+      "optionsAvailable": "Optionen verfügbar",
+      "tapToSelect": "Tippe auf eine Option, um sie auszuwählen",
+      "noneOfThese": "Keines davon",
+      "noneSelected": "Übersprungen",
+      "describeYourSituation": "Beschreibe deine Situation",
+      "noneSelectedHint": "Für Themen ohne passende Option: Beschreibe es hier genauer und wir finden den besten Match.",
+      "noneSelectedPlaceholder": "z.B. Ich habe Schwierigkeiten mit...",
+      "priority": "Priorität",
+      "priorityHint": "Reihenfolge = Priorität.",
+      "priorityExplanation": "Verschiebe die Themen mit den Pfeilen, um festzulegen, welches Thema dir am wichtigsten ist. Das oberste Thema hat die höchste Priorität beim Matching.",
+      "moveUp": "Nach oben verschieben",
+      "moveDown": "Nach unten verschieben",
+      "customSubtopicPrompt": "Nichts Passendes dabei? Beschreibe es in eigenen Worten",
       "customSubtopicPlaceholder": "z.B. Ich habe Probleme mit der Impulskontrolle bei Wutanfällen...",
       "findClosestMatch": "Passenden Bereich finden",
       "cancel": "Abbrechen",
       "aiMatchFound": "AI hat passende Bereiche gefunden",
       "aiMatchLow": "Kein exakter Match gefunden",
-      "aiMatchLowHint": "Sie können trotzdem fortfahren - Therapeuten mit verwandten Spezialisierungen werden priorisiert",
+      "aiMatchLowHint": "Du kannst trotzdem fortfahren - Therapeuten mit verwandten Spezialisierungen werden priorisiert",
       "customIntensityPrompt": "Lieber in eigenen Worten beschreiben?",
       "customIntensityPlaceholder": "z.B. Es belastet mich stark im Alltag, ich kann kaum noch arbeiten...",
       "analyzeIntensity": "Einschätzung erhalten",
       "aiIntensityResult": "AI-Einschätzung der Intensität",
       "continue": "Weiter zum Matching",
       "motivation": {
-        "topics": "Der erste Schritt ist oft der schwerste – gut, dass Sie ihn gehen",
+        "topics": "Der erste Schritt ist oft der schwerste – gut, dass du ihn gehst",
         "subtopics": "Je mehr wir verstehen, desto besser können wir helfen",
         "intensity": "Es ist mutig, ehrlich zu sich selbst zu sein",
-        "preferences": "Gleich haben wir jemanden gefunden, der wirklich zu Ihnen passt"
+        "preferences": "Gleich haben wir jemanden gefunden, der wirklich zu dir passt"
       },
       "encouragement": {
-        "started": "Schön, dass Sie hier sind",
-        "progress": "Sie machen das großartig",
+        "started": "Schön, dass du hier bist",
+        "progress": "Du machst das großartig",
         "almostDone": "Nur noch ein kleiner Schritt",
-        "topicsSelected": "Gute Wahl – Sie wissen, was Sie brauchen",
+        "topicsSelected": "Gute Wahl – du weißt, was du brauchst",
         "detailsAdded": "Danke fürs Teilen – das hilft uns sehr"
       }
     },
@@ -528,28 +541,28 @@
         "high": "Präzises Matching",
         "excellent": "Optimales Matching"
       },
-      "motivation": "Weitere Angaben verbessern Ihre Ergebnisse",
+      "motivation": "Weitere Angaben verbessern deine Ergebnisse",
       "excellent": "Bestmögliche Übereinstimmung"
     },
     "screening": {
       "title": "Kurze Sicherheitsfragen",
-      "subtitle": "Bevor wir beginnen, möchten wir sicherstellen, dass wir Ihnen die richtige Unterstützung bieten können.",
-      "notice": "Ihre Antworten werden nicht gespeichert und dienen nur dazu, Ihnen die beste Hilfe zu vermitteln.",
-      "question1": "Haben Sie aktuell Gedanken daran, sich selbst zu verletzen oder das Leben zu nehmen?",
-      "question2": "Haben Sie in den letzten 2 Wochen daran gedacht, dass es besser wäre, nicht mehr zu leben?",
+      "subtitle": "Bevor wir beginnen, möchten wir sicherstellen, dass wir dir die richtige Unterstützung bieten können.",
+      "notice": "Deine Antworten werden nicht gespeichert und dienen nur dazu, dir die beste Hilfe zu vermitteln.",
+      "question1": "Hast du aktuell Gedanken daran, dich selbst zu verletzen oder das Leben zu nehmen?",
+      "question2": "Hast du in den letzten 2 Wochen daran gedacht, dass es besser wäre, nicht mehr zu leben?",
       "yes": "Ja",
       "no": "Nein",
-      "canProceed": "Vielen Dank. Sie können jetzt mit dem Matching fortfahren.",
-      "crisisDetected": "Wir möchten Ihnen sofort Hilfe vermitteln."
+      "canProceed": "Vielen Dank. Du kannst jetzt mit dem Matching fortfahren.",
+      "crisisDetected": "Wir möchten dir sofort Hilfe vermitteln."
     },
     "crisis": {
-      "title": "Sie sind nicht allein",
-      "subtitle": "Es ist mutig, dass Sie hier sind. Es gibt Menschen, die Ihnen helfen können.",
-      "immediateHelp": "Bitte wenden Sie sich jetzt an eine Krisenhotline.",
-      "notAlone": "Geschulte Berater:innen sind rund um die Uhr für Sie da.",
+      "title": "Du bist nicht allein",
+      "subtitle": "Es ist mutig, dass du hier bist. Es gibt Menschen, die dir helfen können.",
+      "immediateHelp": "Bitte wende dich jetzt an eine Krisenhotline.",
+      "notAlone": "Geschulte Berater:innen sind rund um die Uhr für dich da.",
       "resourcesTitle": "Krisenhotlines",
-      "additionalInfo": "Diese Dienste sind kostenlos und anonym. Sie können jederzeit anrufen.",
-      "alternativeText": "Wenn Sie sich besser fühlen, können Sie jederzeit zurückkehren.",
+      "additionalInfo": "Diese Dienste sind kostenlos und anonym. Du kannst jederzeit anrufen.",
+      "alternativeText": "Wenn du dich besser fühlst, kannst du jederzeit zurückkehren.",
       "backToHome": "Zur Startseite",
       "notAloneInformal": "Du bist nicht allein",
       "helpAvailable": "Wenn du dich gerade in einer Krise befindest, wende dich bitte an professionelle Hilfe.",
@@ -562,10 +575,19 @@
       "close": "Schließen und fortfahren"
     },
     "intensity": {
-      "title": "Wie stark belastet Sie das?",
-      "subtitle": "Kreuzen Sie an, was auf Sie zutrifft. Das hilft uns, erfahrene Therapeuten zu finden.",
+      "title": "Wie stark belastet dich das?",
+      "subtitle": "Beschreibe die Intensität für jedes Thema - wähle Aussagen oder beschreibe es in eigenen Worten.",
       "optional": "Diese Angaben sind optional und können übersprungen werden.",
       "currentLevel": "Aktuelle Einschätzung",
+      "overallLevel": "Gesamteinschätzung",
+      "statementsAvailable": "Aussagen verfügbar",
+      "describeOnly": "Beschreibe deine Situation",
+      "describeInstead": "Oder beschreibe es in eigenen Worten",
+      "describePlaceholder": "z.B. Es belastet mich besonders stark wenn...",
+      "analyzeButton": "KI-Einschätzung",
+      "aiAssessment": "KI-Einschätzung",
+      "reassess": "Neu bewerten",
+      "weightedExplanation": "Gewichteter Durchschnitt basierend auf Themen-Priorität",
       "level": {
         "low": "Leicht",
         "medium": "Mittel",
@@ -706,7 +728,20 @@
       "adhd": "ADHS",
       "selfCare": "Selbstfürsorge",
       "stress": "Stress",
-      "sleep": "Schlaf"
+      "sleep": "Schlaf",
+      "other": "Sonstiges"
+    },
+    "other": {
+      "title": "Beschreibe dein Anliegen",
+      "subtitle": "Wir finden die passende Spezialisierung für dich",
+      "instructions": "Beschreibe in eigenen Worten, was dich beschäftigt. Wir ordnen es dann der passenden Therapeuten-Spezialisierung zu.",
+      "placeholder": "z.B. Ich werde in der Schule gemobbt und weiß nicht, wie ich damit umgehen soll...",
+      "findMatch": "Passende Spezialisierung finden",
+      "matchFound": "Passende Spezialisierung gefunden",
+      "matchedTo": "Passt zu",
+      "noMatch": "Keine eindeutige Zuordnung möglich",
+      "tryAgainHint": "Versuche, dein Anliegen genauer zu beschreiben. Alternativ kannst du zurückgehen und ein anderes Thema wählen.",
+      "describeAgain": "Nochmal beschreiben"
     },
     "subtopics": {
       "divorce": "Scheidung",
@@ -759,12 +794,14 @@
       "anyGender": "Egal",
       "sessionType": "Sitzungsart",
       "anySessionType": "Egal",
-      "insurance": "Versicherung"
+      "insurance": "Versicherung",
+      "language": "Sprache",
+      "therapyType": "Therapieform"
     },
     "location": {
       "placeholder": "Stadt eingeben oder automatisch erkennen",
       "useMyLocation": "Meinen Standort verwenden",
-      "hint": "Wir ermitteln Ihren Standort automatisch oder Sie geben eine Stadt ein",
+      "hint": "Wir ermitteln deinen Standort automatisch oder du gibst eine Stadt ein",
       "detecting": "Standort wird ermittelt...",
       "detected": "Standort erkannt",
       "notSupported": "Standorterkennung wird nicht unterstützt",
@@ -773,7 +810,7 @@
       "error": "Fehler bei der Standorterkennung"
     },
     "results": {
-      "title": "Ihre Matches",
+      "title": "Deine Matches",
       "matchScore": "{score}% Match",
       "relatedArticles": "Passende Artikel",
       "continueSearch": "Weitere Filter anwenden",
@@ -857,9 +894,18 @@
       "describeAgain": "Beschreibe deine Situation nochmal und wir finden passende Themen.",
       "analyze": "Analysieren",
       "analyzing": "Analysiere...",
+      "resetInput": "Neu eingeben",
       "newTopicsDetected": "Neue Themen erkannt",
       "cantFind": "Nicht das richtige dabei?",
-      "shortPlaceholder2": "z.B. Ich habe Angst vor Menschenmengen..."
+      "shortPlaceholder2": "z.B. Ich habe Angst vor Menschenmengen...",
+      "understood": "Verstanden",
+      "couldNotUnderstand": "Bitte wähle manuell",
+      "chooseTopicsBelow": "Wähle unten die Themen, die am besten passen.",
+      "chooseSubtopicsAbove": "Wähle oben die Details, die am besten passen.",
+      "autoSelected": "Ausgewählt",
+      "suggested": "Vorschlag",
+      "placeholderWithPrivacy": "Was belastet dich? (keine Namen/Orte)",
+      "privacyHint": "Keine Namen oder persönliche Daten angeben"
     },
     "fitLevel": {
       "excellent": "Ausgezeichnetes Matching",
@@ -1002,18 +1048,18 @@
     }
   },
   "feedback": {
-    "title": "Wie war Ihre Erfahrung?",
-    "description": "Ihr Feedback hilft uns, bessere Matches zu finden.",
-    "foundMatch": "Haben Sie jemanden gefunden, der zu Ihnen passt?",
+    "title": "Wie war deine Erfahrung?",
+    "description": "Dein Feedback hilft uns, bessere Matches zu finden.",
+    "foundMatch": "Hast du jemanden gefunden, der zu dir passt?",
     "yes": "Ja",
     "no": "Nein",
     "relevance": "Wie passend waren die Vorschläge?",
     "skip": "Überspringen",
     "submit": "Feedback senden",
     "thankYou": "Vielen Dank!",
-    "thankYouMessage": "Ihr Feedback hilft uns, unseren Service zu verbessern.",
+    "thankYouMessage": "Dein Feedback hilft uns, unseren Service zu verbessern.",
     "rating": {
-      "placeholder": "Klicken Sie, um zu bewerten",
+      "placeholder": "Klicke, um zu bewerten",
       "1": "Nicht passend",
       "2": "Wenig passend",
       "3": "Teilweise passend",

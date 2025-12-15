@@ -93,6 +93,8 @@ function sanitizeAndTruncateInput(text: string): string {
   return sanitized;
 }
 
+export type ConfidenceLevel = "high" | "medium" | "low";
+
 export interface SituationAnalysis {
   suggestedTopics: string[];
   suggestedSubTopics: string[];
@@ -101,6 +103,8 @@ export interface SituationAnalysis {
   suggestedTherapyFocus: string | null;
   suggestedIntensityLevel: IntensityLevel | null;
   understandingSummary: string;
+  recommendation: string;
+  confidence: ConfidenceLevel;
   suggestedMethods: string[];
   keywords: string[];
   topicReasons: string;
@@ -367,19 +371,26 @@ function ensureParentTopics(topics: string[], subTopics: string[]): string[] {
 // AI PROMPTS - Optimized according to Groq Best Practices
 // ============================================================================
 
-// OPTIMIZED PROMPT - ~800 tokens (down from ~2000)
-// Crisis detection handled by keywords before AI call
-const AI_SYSTEM_PROMPT = `Analysiere psychologische Themen. Antworte NUR mit JSON.
+// OPTIMIZED PROMPT - Focused on matching, not therapy advice
+const AI_SYSTEM_PROMPT = `Therapeuten-Matching-Assistent. Ordne psychische Themen zu. NUR JSON.
 
 Topics: ${AVAILABLE_TOPICS.join(",")}
 SubTopics: social_anxiety,panic_attacks,phobias,generalized_anxiety,chronic_sadness,lack_motivation,grief,loneliness,couple_conflicts,breakup,dating_issues,intimacy,divorce,parenting,family_conflicts,ptsd,childhood_trauma,accident_trauma,loss,work_stress,exhaustion,work_life_balance,alcohol,drugs,behavioral_addiction,gaming,anorexia,bulimia,binge_eating,concentration,impulsivity,adult_adhd,self_esteem,boundaries,life_changes,chronic_stress,exam_anxiety,performance_pressure,insomnia,nightmares,sleep_anxiety
 
-Intensität: low (leicht/präventiv), medium (belastend), high (akut/dringend)
+Regeln:
+- confidence: high (klar psychisches Thema), medium (könnte passen), low (unklar/off-topic)
+- Bei körperlichen Beschwerden (Blähungen, Kopfschmerzen etc.) ohne psychischen Bezug: topics=[], confidence=low
+- understanding: 1 kurzer Satz, direkt, KEINE Floskeln ("Hey", "Ich höre", "Das klingt")
+- recommendation: NUR wenn confidence=high, 1 Satz warum diese Topics passen
 
-Output: {"topics":["..."],"subTopics":["..."],"reasoning":"1-2 Sätze bezogen auf Nutzereingabe","intensity":"medium"}
+Output: {"topics":[],"subTopics":[],"understanding":"...","recommendation":"","confidence":"medium","intensity":"medium"}
 
-Beispiel:
-"Erschöpft bei Arbeit, kann nicht schlafen" → {"topics":["burnout","sleep"],"subTopics":["exhaustion","insomnia"],"reasoning":"Erschöpfung und Schlafprobleme deuten auf Burnout hin.","intensity":"medium"}`;
+Beispiele:
+"Erschöpft, kann nicht schlafen" → {"topics":["burnout","sleep"],"subTopics":["exhaustion","insomnia"],"understanding":"Erschöpfung und Schlafprobleme können zusammenhängen.","recommendation":"Burnout und Schlaf-Spezialisierung passen, da beides oft verbunden ist.","confidence":"high","intensity":"medium"}
+
+"Ich habe Blähungen" → {"topics":[],"subTopics":[],"understanding":"Das klingt nach einem körperlichen Thema.","recommendation":"","confidence":"low","intensity":"low"}
+
+"Mein Chef nervt mich" → {"topics":["stress","burnout"],"subTopics":["work_stress"],"understanding":"Konflikte am Arbeitsplatz können belasten.","recommendation":"","confidence":"medium","intensity":"low"}`;
 
 export async function analyzeSituation(text: string): Promise<SituationAnalysis> {
   // PROTECTION: Rate limiting per IP
@@ -396,6 +407,8 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       suggestedTherapyFocus: null,
       suggestedIntensityLevel: null,
       understandingSummary: "Bitte warte einen Moment bevor du eine weitere Analyse startest.",
+      recommendation: "",
+      confidence: "low",
       suggestedMethods: [],
       keywords: [],
       topicReasons: "",
@@ -416,6 +429,8 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       suggestedTherapyFocus: null,
       suggestedIntensityLevel: null,
       understandingSummary: "",
+      recommendation: "",
+      confidence: "low",
       suggestedMethods: [],
       keywords: [],
       topicReasons: "",
@@ -438,6 +453,8 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       suggestedTherapyFocus: null,
       suggestedIntensityLevel: "high",
       understandingSummary: "",
+      recommendation: "",
+      confidence: "high",
       suggestedMethods: [],
       keywords: [],
       topicReasons: "",
@@ -478,6 +495,10 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       ? aiResult.intensity as IntensityLevel
       : "medium";
 
+    const confidence = ["high", "medium", "low"].includes(aiResult.confidence)
+      ? aiResult.confidence as ConfidenceLevel
+      : "medium";
+
     // Ensure parent topics are included when subTopics are detected
     topics = ensureParentTopics(topics, subTopics);
 
@@ -494,10 +515,12 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       suggestedCommunicationStyle: null,
       suggestedTherapyFocus: null,
       suggestedIntensityLevel: intensity,
-      understandingSummary: "", // Not from AI anymore - generated locally if needed
+      understandingSummary: aiResult.understanding || "",
+      recommendation: aiResult.recommendation || "",
+      confidence,
       suggestedMethods: [],
       keywords: [],
-      topicReasons: aiResult.reasoning || "",
+      topicReasons: "",
       crisisDetected: false, // Crisis handled by keywords before AI call
       crisisType: null,
     };
@@ -524,9 +547,11 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
       suggestedTherapyFocus: null,
       suggestedIntensityLevel: intensity,
       understandingSummary: summary,
+      recommendation: "",
+      confidence: topics.length > 0 ? "medium" : "low",
       suggestedMethods: [],
       keywords: [],
-      topicReasons: "Basierend auf Schlüsselwörtern in deiner Beschreibung.",
+      topicReasons: "",
       crisisDetected: false,
       crisisType: null,
     };
@@ -705,4 +730,127 @@ Example: "sometimes stressed" → {"level":"low","explanation":"Mild distress."}
   } catch {
     return { level: "medium", explanation: "" };
   }
+}
+
+// ============================================================================
+// SPECIALTY MATCHING - For "Other" topic
+// ============================================================================
+
+const ALL_SPECIALTIES = [
+  { id: "depression", de: "Depression & Niedergeschlagenheit", en: "Depression & Low Mood" },
+  { id: "anxiety", de: "Angst & Panik", en: "Anxiety & Panic" },
+  { id: "trauma", de: "Trauma & Belastung", en: "Trauma & Stress" },
+  { id: "relationships", de: "Beziehungen & Familie", en: "Relationships & Family" },
+  { id: "addiction", de: "Sucht & Abhängigkeit", en: "Addiction" },
+  { id: "eating_disorders", de: "Essstörungen", en: "Eating Disorders" },
+  { id: "adhd", de: "ADHS & Konzentration", en: "ADHD & Concentration" },
+  { id: "burnout", de: "Burnout & Stress", en: "Burnout & Stress" },
+];
+
+export interface SpecialtyMatchResult {
+  matchedSpecialties: string[];
+  explanation: string;
+  confidence: "high" | "medium" | "low";
+}
+
+/**
+ * Match freetext description against all available therapist specialties.
+ * Used for "Other" topic when no predefined category fits.
+ */
+export async function matchFreetextToSpecialties(
+  description: string
+): Promise<SpecialtyMatchResult> {
+  // PROTECTION: Rate limiting per IP
+  const clientIP = await getClientIP();
+  const rateLimit = checkRateLimit(clientIP);
+  if (!rateLimit.allowed) {
+    console.warn(`Rate limit exceeded for IP: ${clientIP}`);
+    return { matchedSpecialties: [], explanation: "Bitte warte einen Moment.", confidence: "low" };
+  }
+
+  // PROTECTION: Sanitize and truncate input
+  const sanitizedDesc = sanitizeAndTruncateInput(description);
+
+  if (!sanitizedDesc || sanitizedDesc.length < 10) {
+    return { matchedSpecialties: [], explanation: "", confidence: "low" };
+  }
+
+  const lang = detectLanguage(sanitizedDesc);
+  const specialtyList = ALL_SPECIALTIES.map(s => `- ${s.id}: ${lang === "de" ? s.de : s.en}`).join("\n");
+
+  const systemPrompt = lang === "de"
+    ? `Therapeuten-Matching. Ordne die Beschreibung der passendsten Spezialisierung zu. NUR JSON.
+
+Spezialisierungen:
+${specialtyList}
+
+Regeln:
+- Wähle 1-2 passende Spezialisierungen
+- confidence: high (klar erkennbar), medium (könnte passen), low (unklar)
+- explanation: 1 Satz, warum diese Spezialisierung passt, direkt, ohne Floskeln
+
+Output: {"specialties":["id"],"explanation":"Grund","confidence":"medium"}
+
+Beispiel:
+"Mobbing in der Schule" → {"specialties":["relationships"],"explanation":"Mobbing ist ein Beziehungskonflikt, der therapeutisch bearbeitet werden kann.","confidence":"high"}`
+    : `Therapist matching. Match the description to the best specialty. JSON only.
+
+Specialties:
+${specialtyList}
+
+Rules:
+- Choose 1-2 matching specialties
+- confidence: high (clearly matches), medium (might fit), low (unclear)
+- explanation: 1 sentence why this specialty fits, direct, no fluff
+
+Output: {"specialties":["id"],"explanation":"Reason","confidence":"medium"}
+
+Example:
+"Bullying at school" → {"specialties":["relationships"],"explanation":"Bullying is a relationship conflict that can be addressed therapeutically.","confidence":"high"}`;
+
+  try {
+    // PRIVACY: Anonymize text before sending to external AI
+    const anonymizedText = anonymizeText(sanitizedDesc);
+
+    const completion = await getGroqClient().chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: anonymizedText }
+      ],
+      temperature: 0.2,
+      max_tokens: 150,
+      response_format: { type: "json_object" },
+    });
+
+    const content = completion.choices[0]?.message?.content;
+    if (!content) {
+      return { matchedSpecialties: [], explanation: "", confidence: "low" };
+    }
+
+    const result = JSON.parse(content);
+    const validIds = ALL_SPECIALTIES.map(s => s.id);
+    const matchedSpecialties = (result.specialties || []).filter((id: string) => validIds.includes(id));
+
+    return {
+      matchedSpecialties,
+      explanation: result.explanation || "",
+      confidence: ["high", "medium", "low"].includes(result.confidence) ? result.confidence : "medium",
+    };
+  } catch (error) {
+    console.error("Specialty matching failed:", error);
+    return { matchedSpecialties: [], explanation: "", confidence: "low" };
+  }
+}
+
+/**
+ * Get specialty label for display (exported via SpecialtyMatchResult)
+ */
+export async function getSpecialtyLabels(specialtyIds: string[], lang: "de" | "en" = "de"): Promise<Record<string, string>> {
+  const labels: Record<string, string> = {};
+  for (const id of specialtyIds) {
+    const specialty = ALL_SPECIALTIES.find(s => s.id === id);
+    labels[id] = specialty ? specialty[lang] : id;
+  }
+  return labels;
 }

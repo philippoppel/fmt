@@ -12,6 +12,8 @@ import type {
   Gender,
   SessionType,
   Insurance,
+  Language,
+  TherapyType,
   TherapyStylePreferences,
   CommunicationStyle,
   TherapyFocus,
@@ -44,6 +46,14 @@ export interface FreetextAnalysis {
   keywords: string[];
 }
 
+// Per-topic intensity tracking
+export interface TopicIntensity {
+  level: IntensityLevel;
+  score: number;
+  source: "statements" | "ai";
+  aiDescription?: string;
+}
+
 export interface MatchingState {
   currentStep: WizardStep;
   // Mode Selection
@@ -54,19 +64,29 @@ export interface MatchingState {
   // Freetext Analysis (Step 0.75)
   freetextInput: string;
   freetextAnalysis: FreetextAnalysis | null;
+  // Inline freetext (in TopicSelection card)
+  inlineFreetextValue: string;
+  inlineFreetextAnalysisState: "idle" | "pending" | "success" | "empty" | "crisis";
   // Topics (Step 1)
   selectedTopics: string[];
   selectedSubTopics: string[];
+  // Topic priority order (from subtopic-selection step)
+  topicPriorityOrder: string[];
+  // "Other" topic specialties (matched via AI)
+  otherTopicSpecialties: string[];
   // Intensity Assessment (Step 1.5)
   selectedIntensityStatements: string[];
-  intensityScore: number;
-  intensityLevel: IntensityLevel | null;
+  topicIntensities: Record<string, TopicIntensity>; // Per-topic intensities
+  intensityScore: number; // Overall weighted score
+  intensityLevel: IntensityLevel | null; // Overall level
   // Criteria (Step 2)
   criteria: {
     location: string;
     gender: Gender | null;
     sessionType: SessionType | null;
     insurance: Insurance[];
+    languages: Language[];
+    therapyTypes: TherapyType[];
   };
   // Therapy Style Quiz (Step 3)
   therapyStyle: TherapyStylePreferences;
@@ -80,23 +100,74 @@ type MatchingAction =
   | { type: "SWITCH_TO_FREETEXT" }
   | { type: "SET_FREETEXT"; text: string }
   | { type: "SET_FREETEXT_ANALYSIS"; analysis: FreetextAnalysis }
+  | { type: "SET_INLINE_FREETEXT"; value: string }
+  | { type: "SET_INLINE_FREETEXT_ANALYSIS_STATE"; state: "idle" | "pending" | "success" | "empty" | "crisis" }
   | { type: "APPLY_FREETEXT_ANALYSIS" }
   | { type: "SKIP_FREETEXT" }
   | { type: "TOGGLE_TOPIC"; topicId: string }
   | { type: "TOGGLE_SUBTOPIC"; subTopicId: string }
+  | { type: "SET_OTHER_TOPIC_SPECIALTIES"; specialties: string[] }
+  | { type: "SET_TOPIC_PRIORITY_ORDER"; order: string[] }
   | { type: "TOGGLE_INTENSITY_STATEMENT"; statementId: string }
+  | { type: "SET_TOPIC_INTENSITY"; topicId: string; intensity: TopicIntensity }
+  | { type: "CLEAR_TOPIC_INTENSITY"; topicId: string }
   | { type: "SET_INTENSITY"; score: number; level: IntensityLevel | null }
   | { type: "SKIP_INTENSITY" }
   | { type: "SET_LOCATION"; location: string }
   | { type: "SET_GENDER"; gender: Gender | null }
   | { type: "SET_SESSION_TYPE"; sessionType: SessionType | null }
   | { type: "TOGGLE_INSURANCE"; insurance: Insurance }
+  | { type: "TOGGLE_LANGUAGE"; language: Language }
+  | { type: "TOGGLE_THERAPY_TYPE"; therapyType: TherapyType }
   | { type: "SET_COMMUNICATION_STYLE"; style: CommunicationStyle | null }
   | { type: "SET_PREFERS_HOMEWORK"; value: boolean | null }
   | { type: "SET_THERAPY_FOCUS"; focus: TherapyFocus | null }
   | { type: "SET_TALK_PREFERENCE"; value: "more_self" | "guided" | null }
   | { type: "SET_THERAPY_DEPTH"; depth: TherapyDepth | null }
   | { type: "RESET" };
+
+// Helper function to calculate weighted overall intensity from per-topic intensities
+function calculateOverallIntensity(
+  topicIntensities: Record<string, TopicIntensity>,
+  priorityOrder: string[]
+): { overallScore: number; overallLevel: IntensityLevel | null } {
+  const topics = Object.keys(topicIntensities);
+  if (topics.length === 0) {
+    return { overallScore: 0, overallLevel: null };
+  }
+
+  // Priority weights: first topic = 3, second = 2, third = 1.5, rest = 1
+  const getWeight = (topicId: string): number => {
+    const index = priorityOrder.indexOf(topicId);
+    if (index === 0) return 3;
+    if (index === 1) return 2;
+    if (index === 2) return 1.5;
+    return 1;
+  };
+
+  let totalWeightedScore = 0;
+  let totalWeight = 0;
+
+  for (const topicId of topics) {
+    const intensity = topicIntensities[topicId];
+    const weight = getWeight(topicId);
+    totalWeightedScore += intensity.score * weight;
+    totalWeight += weight;
+  }
+
+  const overallScore = Math.round(totalWeightedScore / totalWeight);
+
+  let overallLevel: IntensityLevel;
+  if (overallScore < 30) {
+    overallLevel = "low";
+  } else if (overallScore < 70) {
+    overallLevel = "medium";
+  } else {
+    overallLevel = "high";
+  }
+
+  return { overallScore, overallLevel };
+}
 
 const initialState: MatchingState = {
   currentStep: 1, // Start with topic selection
@@ -105,9 +176,14 @@ const initialState: MatchingState = {
   crisisDetected: false,
   freetextInput: "",
   freetextAnalysis: null,
+  inlineFreetextValue: "",
+  inlineFreetextAnalysisState: "idle",
   selectedTopics: [],
   selectedSubTopics: [],
+  topicPriorityOrder: [],
+  otherTopicSpecialties: [],
   selectedIntensityStatements: [],
+  topicIntensities: {},
   intensityScore: 0,
   intensityLevel: null,
   criteria: {
@@ -115,6 +191,8 @@ const initialState: MatchingState = {
     gender: null,
     sessionType: null,
     insurance: [],
+    languages: [],
+    therapyTypes: [],
   },
   therapyStyle: defaultTherapyStylePreferences,
 };
@@ -157,6 +235,12 @@ function matchingReducer(
 
     case "SET_FREETEXT_ANALYSIS":
       return { ...state, freetextAnalysis: action.analysis };
+
+    case "SET_INLINE_FREETEXT":
+      return { ...state, inlineFreetextValue: action.value };
+
+    case "SET_INLINE_FREETEXT_ANALYSIS_STATE":
+      return { ...state, inlineFreetextAnalysisState: action.state };
 
     case "APPLY_FREETEXT_ANALYSIS": {
       if (!state.freetextAnalysis) return state;
@@ -233,6 +317,50 @@ function matchingReducer(
       };
     }
 
+    case "SET_OTHER_TOPIC_SPECIALTIES":
+      return {
+        ...state,
+        otherTopicSpecialties: action.specialties,
+      };
+
+    case "SET_TOPIC_PRIORITY_ORDER":
+      return {
+        ...state,
+        topicPriorityOrder: action.order,
+      };
+
+    case "SET_TOPIC_INTENSITY": {
+      const newTopicIntensities = {
+        ...state.topicIntensities,
+        [action.topicId]: action.intensity,
+      };
+      // Recalculate overall intensity from per-topic intensities
+      const { overallScore, overallLevel } = calculateOverallIntensity(
+        newTopicIntensities,
+        state.topicPriorityOrder.length > 0 ? state.topicPriorityOrder : state.selectedTopics
+      );
+      return {
+        ...state,
+        topicIntensities: newTopicIntensities,
+        intensityScore: overallScore,
+        intensityLevel: overallLevel,
+      };
+    }
+
+    case "CLEAR_TOPIC_INTENSITY": {
+      const { [action.topicId]: _, ...remainingIntensities } = state.topicIntensities;
+      const { overallScore, overallLevel } = calculateOverallIntensity(
+        remainingIntensities,
+        state.topicPriorityOrder.length > 0 ? state.topicPriorityOrder : state.selectedTopics
+      );
+      return {
+        ...state,
+        topicIntensities: remainingIntensities,
+        intensityScore: overallScore,
+        intensityLevel: overallLevel,
+      };
+    }
+
     case "SET_LOCATION":
       return {
         ...state,
@@ -260,6 +388,32 @@ function matchingReducer(
           insurance: isSelected
             ? state.criteria.insurance.filter((i) => i !== action.insurance)
             : [...state.criteria.insurance, action.insurance],
+        },
+      };
+    }
+
+    case "TOGGLE_LANGUAGE": {
+      const isSelected = state.criteria.languages.includes(action.language);
+      return {
+        ...state,
+        criteria: {
+          ...state.criteria,
+          languages: isSelected
+            ? state.criteria.languages.filter((l) => l !== action.language)
+            : [...state.criteria.languages, action.language],
+        },
+      };
+    }
+
+    case "TOGGLE_THERAPY_TYPE": {
+      const isSelected = state.criteria.therapyTypes.includes(action.therapyType);
+      return {
+        ...state,
+        criteria: {
+          ...state.criteria,
+          therapyTypes: isSelected
+            ? state.criteria.therapyTypes.filter((t) => t !== action.therapyType)
+            : [...state.criteria.therapyTypes, action.therapyType],
         },
       };
     }
@@ -332,11 +486,18 @@ interface MatchingContextValue {
     applyFreetextAnalysis: () => void;
     skipFreetext: () => void;
     switchToFreetext: () => void;
+    // Inline freetext actions
+    setInlineFreetext: (value: string) => void;
+    setInlineFreetextAnalysisState: (state: "idle" | "pending" | "success" | "empty" | "crisis") => void;
     // Topic actions
     toggleTopic: (topicId: string) => void;
     toggleSubTopic: (subTopicId: string) => void;
+    setOtherTopicSpecialties: (specialties: string[]) => void;
+    setTopicPriorityOrder: (order: string[]) => void;
     // Intensity actions
     toggleIntensityStatement: (statementId: string) => void;
+    setTopicIntensity: (topicId: string, intensity: TopicIntensity) => void;
+    clearTopicIntensity: (topicId: string) => void;
     setIntensity: (score: number, level: IntensityLevel | null) => void;
     skipIntensity: () => void;
     // Criteria actions
@@ -344,6 +505,8 @@ interface MatchingContextValue {
     setGender: (gender: Gender | null) => void;
     setSessionType: (sessionType: SessionType | null) => void;
     toggleInsurance: (insurance: Insurance) => void;
+    toggleLanguage: (language: Language) => void;
+    toggleTherapyType: (therapyType: TherapyType) => void;
     // Therapy Style actions
     setCommunicationStyle: (style: CommunicationStyle | null) => void;
     setPrefersHomework: (value: boolean | null) => void;
@@ -390,9 +553,25 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "TOGGLE_SUBTOPIC", subTopicId });
   }, []);
 
+  const setOtherTopicSpecialties = useCallback((specialties: string[]) => {
+    dispatch({ type: "SET_OTHER_TOPIC_SPECIALTIES", specialties });
+  }, []);
+
+  const setTopicPriorityOrder = useCallback((order: string[]) => {
+    dispatch({ type: "SET_TOPIC_PRIORITY_ORDER", order });
+  }, []);
+
   // Intensity actions
   const toggleIntensityStatement = useCallback((statementId: string) => {
     dispatch({ type: "TOGGLE_INTENSITY_STATEMENT", statementId });
+  }, []);
+
+  const setTopicIntensity = useCallback((topicId: string, intensity: TopicIntensity) => {
+    dispatch({ type: "SET_TOPIC_INTENSITY", topicId, intensity });
+  }, []);
+
+  const clearTopicIntensity = useCallback((topicId: string) => {
+    dispatch({ type: "CLEAR_TOPIC_INTENSITY", topicId });
   }, []);
 
   const setIntensity = useCallback((score: number, level: IntensityLevel | null) => {
@@ -417,6 +596,14 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
 
   const toggleInsurance = useCallback((insurance: Insurance) => {
     dispatch({ type: "TOGGLE_INSURANCE", insurance });
+  }, []);
+
+  const toggleLanguage = useCallback((language: Language) => {
+    dispatch({ type: "TOGGLE_LANGUAGE", language });
+  }, []);
+
+  const toggleTherapyType = useCallback((therapyType: TherapyType) => {
+    dispatch({ type: "TOGGLE_THERAPY_TYPE", therapyType });
   }, []);
 
   // Therapy Style actions
@@ -476,6 +663,14 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SWITCH_TO_FREETEXT" });
   }, []);
 
+  const setInlineFreetext = useCallback((value: string) => {
+    dispatch({ type: "SET_INLINE_FREETEXT", value });
+  }, []);
+
+  const setInlineFreetextAnalysisState = useCallback((state: "idle" | "pending" | "success" | "empty" | "crisis") => {
+    dispatch({ type: "SET_INLINE_FREETEXT_ANALYSIS_STATE", state });
+  }, []);
+
   // Navigation: 1 -> 1.25 (subtopics) -> 1.5 -> 2 -> 2.5 (screening) -> results
   // Alternative: 0.75 (freetext) -> 1 -> ...
   // SubTopics step (1.25) is skipped if no topics selected
@@ -483,10 +678,12 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
     const stepOrder: WizardStep[] = [0.75, 1, 1.25, 1.5, 2, 2.5];
     const currentIndex = stepOrder.indexOf(state.currentStep);
 
-    // Skip SubTopics step if no available subtopics
+    // Skip SubTopics step if no available subtopics AND "other" not selected
     if (state.currentStep === 1) {
+      const hasOtherTopic = state.selectedTopics.includes("other");
       const availableSubs = getSubTopicsForTopics(state.selectedTopics);
-      if (availableSubs.length === 0) {
+      // Don't skip if "other" is selected - they need to describe in freetext
+      if (availableSubs.length === 0 && !hasOtherTopic) {
         dispatch({ type: "SET_STEP", step: 1.5 }); // Skip to intensity
         return;
       }
@@ -510,8 +707,9 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
         return;
       } else if (state.currentStep === 1.5) {
         // From intensity, check if we should skip subtopics
+        const hasOtherTopic = state.selectedTopics.includes("other");
         const availableSubs = getSubTopicsForTopics(state.selectedTopics);
-        if (availableSubs.length === 0) {
+        if (availableSubs.length === 0 && !hasOtherTopic) {
           dispatch({ type: "SET_STEP", step: 1 }); // Skip back to topics
           return;
         }
@@ -577,11 +775,18 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
       applyFreetextAnalysis,
       skipFreetext,
       switchToFreetext,
+      // Inline freetext
+      setInlineFreetext,
+      setInlineFreetextAnalysisState,
       // Topics
       toggleTopic,
       toggleSubTopic,
+      setOtherTopicSpecialties,
+      setTopicPriorityOrder,
       // Intensity
       toggleIntensityStatement,
+      setTopicIntensity,
+      clearTopicIntensity,
       setIntensity,
       skipIntensity,
       // Criteria
@@ -589,6 +794,8 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
       setGender,
       setSessionType,
       toggleInsurance,
+      toggleLanguage,
+      toggleTherapyType,
       // Therapy Style
       setCommunicationStyle,
       setPrefersHomework,
