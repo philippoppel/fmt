@@ -47,6 +47,7 @@ export function SuicideScreening() {
   const handleContinueAnyway = () => {
     // User acknowledged but wants to continue with matching
     actions.completeScreening(false);
+    actions.goNext();
   };
 
   const handleBack = () => {
