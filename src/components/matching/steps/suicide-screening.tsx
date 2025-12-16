@@ -11,7 +11,7 @@ type ScreeningPhase = "questions" | "support";
 
 export function SuicideScreening() {
   const t = useTranslations();
-  const { state, actions } = useMatching();
+  const { actions } = useMatching();
 
   const [phase, setPhase] = useState<ScreeningPhase>("questions");
   const [responses, setResponses] = useState<{
@@ -23,18 +23,17 @@ export function SuicideScreening() {
   });
 
   const handleResponse = (question: "question1" | "question2", value: boolean) => {
-    setResponses({ ...responses, [question]: value });
-  };
+    const newResponses = { ...responses, [question]: value };
+    setResponses(newResponses);
 
-  const bothAnswered = responses.question1 !== null && responses.question2 !== null;
-  const crisisDetected = responses.question1 === true || responses.question2 === true;
-
-  const handleContinue = () => {
-    if (crisisDetected) {
-      // Show support options first, don't immediately block
+    // If "yes" clicked, immediately show support
+    if (value === true) {
       setPhase("support");
-    } else {
-      // No crisis - complete screening and proceed
+      return;
+    }
+
+    // If both answered "no", automatically proceed
+    if (newResponses.question1 === false && newResponses.question2 === false) {
       actions.completeScreening(false);
     }
   };
@@ -46,7 +45,6 @@ export function SuicideScreening() {
 
   const handleContinueAnyway = () => {
     // User acknowledged but wants to continue with matching
-    // We complete screening as "safe" but the resources were shown
     actions.completeScreening(false);
   };
 
@@ -157,7 +155,7 @@ export function SuicideScreening() {
     );
   }
 
-  // Questions phase
+  // Questions phase - no continue button, auto-proceeds on both "no"
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 space-y-4">
@@ -226,17 +224,6 @@ export function SuicideScreening() {
               </div>
             </div>
           </div>
-
-          {/* Continue button */}
-          {bothAnswered && (
-            <Button
-              onClick={handleContinue}
-              className="w-full justify-center gap-2 h-12"
-            >
-              {t("matching.wizard.next")}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          )}
         </div>
       </div>
 
