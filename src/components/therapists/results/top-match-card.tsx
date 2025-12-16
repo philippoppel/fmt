@@ -58,9 +58,9 @@ const rankConfig: Record<number, { Icon: typeof Crown; color: string; bg: string
 };
 
 function getFitLevel(score: number): { key: string; color: string; bgColor: string } {
-  if (score >= 85) return { key: "excellent", color: "text-green-600", bgColor: "bg-green-500/15" };
-  if (score >= 70) return { key: "high", color: "text-emerald-600", bgColor: "bg-emerald-500/15" };
-  if (score >= 50) return { key: "good", color: "text-blue-600", bgColor: "bg-blue-500/15" };
+  if (score >= 85) return { key: "excellent", color: "text-success-foreground", bgColor: "bg-success-muted" };
+  if (score >= 70) return { key: "high", color: "text-accent-emerald-foreground", bgColor: "bg-accent-emerald-muted" };
+  if (score >= 50) return { key: "good", color: "text-info-foreground", bgColor: "bg-info-muted" };
   return { key: "moderate", color: "text-muted-foreground", bgColor: "bg-muted" };
 }
 
@@ -199,13 +199,13 @@ export function TopMatchCard({
                 </Badge>
               )}
               {nextSlotText && (
-                <Badge variant="secondary" className="gap-1 text-[10px] bg-green-500/10 text-green-600">
+                <Badge variant="secondary" className="gap-1 text-[10px] bg-success-muted text-success-foreground">
                   <Calendar className="h-3 w-3" />
                   {nextSlotText}
                 </Badge>
               )}
               {therapist.offersTrialSession && (
-                <Badge variant="secondary" className="gap-1 text-[10px] bg-blue-500/10 text-blue-600">
+                <Badge variant="secondary" className="gap-1 text-[10px] bg-info-muted text-info-foreground">
                   <Sparkles className="h-3 w-3" />
                   {therapist.trialSessionPrice === 0
                     ? t("matching.therapistCard.trialSessionFree")

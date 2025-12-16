@@ -48,9 +48,9 @@ interface CompareModalProps {
 }
 
 function getFitLevel(score: number): { key: string; color: string; bgColor: string } {
-  if (score >= 85) return { key: "excellent", color: "text-green-600", bgColor: "bg-green-500" };
-  if (score >= 70) return { key: "high", color: "text-emerald-600", bgColor: "bg-emerald-500" };
-  if (score >= 50) return { key: "good", color: "text-blue-600", bgColor: "bg-blue-500" };
+  if (score >= 85) return { key: "excellent", color: "text-success-foreground", bgColor: "bg-success" };
+  if (score >= 70) return { key: "high", color: "text-accent-emerald-foreground", bgColor: "bg-accent-emerald" };
+  if (score >= 50) return { key: "good", color: "text-info-foreground", bgColor: "bg-info" };
   return { key: "moderate", color: "text-muted-foreground", bgColor: "bg-muted-foreground" };
 }
 
@@ -252,7 +252,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                         {th.pricePerSession}€
                       </span>
                       {th.pricePerSession === lowestPrice && (
-                        <Badge variant="secondary" className="ml-1 text-[8px] px-1 py-0 bg-green-500/10 text-green-600">
+                        <Badge variant="secondary" className="ml-1 text-[8px] px-1 py-0 bg-success-muted text-success-foreground">
                           {t("matching.compare.cheapest")}
                         </Badge>
                       )}
@@ -305,7 +305,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                           const diffDays = Math.ceil((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
                           if (diffDays <= 7) {
                             return (
-                              <Badge className="bg-green-500/15 text-green-600 text-[9px]">
+                              <Badge className="bg-success-muted text-success-foreground text-[9px]">
                                 {t("matching.compare.thisWeek")}
                               </Badge>
                             );
@@ -375,8 +375,8 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
             </div>
 
             {/* Match Reasons */}
-            <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-3 sm:p-4">
-              <h4 className="text-xs sm:text-sm font-semibold mb-3 flex items-center gap-2 text-green-700 dark:text-green-400">
+            <div className="rounded-lg border border-success-border bg-success-muted p-3 sm:p-4">
+              <h4 className="text-xs sm:text-sm font-semibold mb-3 flex items-center gap-2 text-success-foreground">
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 {t("matching.compare.whyMatch")}
               </h4>

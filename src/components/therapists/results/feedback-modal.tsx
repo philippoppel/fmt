@@ -107,7 +107,7 @@ export function FeedbackModal({
                   "flex flex-1 items-center justify-center gap-2 rounded-lg border p-3 transition-all",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                   foundMatch === true
-                    ? "border-green-500 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400"
+                    ? "border-success bg-success-muted text-success-foreground"
                     : "border-input hover:bg-accent"
                 )}
               >
@@ -121,7 +121,7 @@ export function FeedbackModal({
                   "flex flex-1 items-center justify-center gap-2 rounded-lg border p-3 transition-all",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                   foundMatch === false
-                    ? "border-orange-500 bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400"
+                    ? "border-accent-orange bg-accent-orange-muted text-accent-orange-foreground"
                     : "border-input hover:bg-accent"
                 )}
               >

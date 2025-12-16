@@ -61,8 +61,8 @@ export function CriteriaSelection() {
         {/* Session Type */}
         <div className="space-y-3">
           <Label className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500/10">
-              <Video className="h-4 w-4 text-blue-600" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-blue-muted">
+              <Video className="h-4 w-4 text-accent-blue" />
             </div>
             {t("matching.criteria.sessionType")}
           </Label>
@@ -88,8 +88,8 @@ export function CriteriaSelection() {
         {/* Gender */}
         <div className="space-y-3">
           <Label className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-pink-500/10">
-              <Users className="h-4 w-4 text-pink-600" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-pink-muted">
+              <Users className="h-4 w-4 text-accent-pink" />
             </div>
             {t("matching.criteria.gender")}
           </Label>
@@ -113,8 +113,8 @@ export function CriteriaSelection() {
         {/* Insurance */}
         <div className="space-y-3">
           <Label className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10">
-              <Shield className="h-4 w-4 text-emerald-600" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-emerald-muted">
+              <Shield className="h-4 w-4 text-accent-emerald" />
             </div>
             {t("matching.criteria.insurance")}
           </Label>
@@ -134,8 +134,8 @@ export function CriteriaSelection() {
         {/* Language */}
         <div className="space-y-3">
           <Label className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500/10">
-              <Globe className="h-4 w-4 text-violet-600" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-violet-muted">
+              <Globe className="h-4 w-4 text-accent-violet" />
             </div>
             {t("matching.criteria.language")}
           </Label>
@@ -155,8 +155,8 @@ export function CriteriaSelection() {
         {/* Therapy Type */}
         <div className="space-y-3">
           <Label className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500/10">
-              <BookOpen className="h-4 w-4 text-orange-600" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-orange-muted">
+              <BookOpen className="h-4 w-4 text-accent-orange" />
             </div>
             {t("matching.criteria.therapyType")}
           </Label>
@@ -250,9 +250,9 @@ function SessionTypeCard({
       : Sparkles;
 
   const iconBgColor = sessionType === "online"
-    ? "bg-blue-500"
+    ? "bg-accent-blue"
     : sessionType === "in_person"
-      ? "bg-amber-500"
+      ? "bg-accent-amber"
       : "bg-primary";
 
   return (
@@ -309,8 +309,8 @@ function InsuranceCard({
       className={cn(
         "relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         isSelected
-          ? "border-emerald-500 bg-emerald-500/10 shadow-md"
-          : "border-input bg-background hover:border-emerald-500/50 hover:bg-muted/50"
+          ? "border-accent-emerald bg-accent-emerald-muted shadow-md"
+          : "border-input bg-background hover:border-accent-emerald/50 hover:bg-muted/50"
       )}
       aria-pressed={isSelected}
     >
@@ -318,7 +318,7 @@ function InsuranceCard({
         className={cn(
           "flex h-12 w-12 items-center justify-center rounded-full transition-colors",
           isSelected
-            ? "bg-emerald-500 text-white"
+            ? "bg-accent-emerald text-white"
             : "bg-muted text-muted-foreground"
         )}
       >
@@ -326,12 +326,12 @@ function InsuranceCard({
       </div>
       <span className={cn(
         "text-sm font-medium",
-        isSelected ? "text-emerald-600" : "text-foreground"
+        isSelected ? "text-accent-emerald-foreground" : "text-foreground"
       )}>
         {label}
       </span>
       {isSelected && (
-        <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white">
+        <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent-emerald text-white">
           <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none">
             <path
               d="M2 6L5 9L10 3"
@@ -375,20 +375,20 @@ function LanguageCard({
       className={cn(
         "relative flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         isSelected
-          ? "border-violet-500 bg-violet-500/10 shadow-md"
-          : "border-input bg-background hover:border-violet-500/50 hover:bg-muted/50"
+          ? "border-accent-violet bg-accent-violet-muted shadow-md"
+          : "border-input bg-background hover:border-accent-violet/50 hover:bg-muted/50"
       )}
       aria-pressed={isSelected}
     >
       <span className="text-2xl">{flagEmoji[language]}</span>
       <span className={cn(
         "text-sm font-medium",
-        isSelected ? "text-violet-600" : "text-foreground"
+        isSelected ? "text-accent-violet-foreground" : "text-foreground"
       )}>
         {label}
       </span>
       {isSelected && (
-        <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-violet-500 text-white">
+        <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent-violet text-white">
           <Check className="h-3 w-3" />
         </div>
       )}
@@ -416,8 +416,8 @@ function TherapyTypeChip({
       className={cn(
         "flex items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         isSelected
-          ? "border-orange-500 bg-orange-500/10 text-orange-600"
-          : "border-input bg-background text-foreground hover:border-orange-500/50 hover:bg-muted/50"
+          ? "border-accent-orange bg-accent-orange-muted text-accent-orange-foreground"
+          : "border-input bg-background text-foreground hover:border-accent-orange/50 hover:bg-muted/50"
       )}
       aria-pressed={isSelected}
     >

@@ -22,6 +22,56 @@
   --color-input: oklch(85% 0.02 65);
   --color-ring: oklch(42% 0.095 50);
 
+  /* Semantic Status Colors - Light Mode (WCAG AA compliant) */
+  /* Info - Blue tones */
+  --color-info: oklch(45% 0.15 250);
+  --color-info-foreground: oklch(25% 0.08 250);
+  --color-info-muted: oklch(94% 0.03 250);
+  --color-info-border: oklch(80% 0.08 250);
+
+  /* Success - Green tones */
+  --color-success: oklch(50% 0.15 145);
+  --color-success-foreground: oklch(25% 0.08 145);
+  --color-success-muted: oklch(94% 0.04 145);
+  --color-success-border: oklch(75% 0.1 145);
+
+  /* Warning - Amber/Orange tones */
+  --color-warning: oklch(55% 0.15 70);
+  --color-warning-foreground: oklch(30% 0.08 50);
+  --color-warning-muted: oklch(95% 0.04 70);
+  --color-warning-border: oklch(80% 0.1 70);
+
+  /* Error/Danger - Red tones */
+  --color-error: oklch(50% 0.2 25);
+  --color-error-foreground: oklch(30% 0.1 25);
+  --color-error-muted: oklch(95% 0.03 25);
+  --color-error-border: oklch(75% 0.12 25);
+
+  /* Accent Colors for categories - with high contrast foregrounds */
+  --color-accent-blue: oklch(55% 0.18 250);
+  --color-accent-blue-foreground: oklch(25% 0.1 250);
+  --color-accent-blue-muted: oklch(94% 0.03 250);
+
+  --color-accent-violet: oklch(50% 0.2 290);
+  --color-accent-violet-foreground: oklch(25% 0.1 290);
+  --color-accent-violet-muted: oklch(94% 0.04 290);
+
+  --color-accent-pink: oklch(55% 0.18 350);
+  --color-accent-pink-foreground: oklch(28% 0.1 350);
+  --color-accent-pink-muted: oklch(95% 0.03 350);
+
+  --color-accent-emerald: oklch(50% 0.15 160);
+  --color-accent-emerald-foreground: oklch(25% 0.08 160);
+  --color-accent-emerald-muted: oklch(94% 0.04 160);
+
+  --color-accent-orange: oklch(55% 0.18 50);
+  --color-accent-orange-foreground: oklch(28% 0.1 50);
+  --color-accent-orange-muted: oklch(95% 0.04 50);
+
+  --color-accent-amber: oklch(58% 0.15 85);
+  --color-accent-amber-foreground: oklch(30% 0.08 70);
+  --color-accent-amber-muted: oklch(95% 0.04 85);
+
   /* Border Radius - Slightly more rounded for modern look */
   --radius-lg: 0.75rem;
   --radius-md: calc(var(--radius-lg) - 2px);
@@ -52,6 +102,52 @@
   --color-border: oklch(28% 0.025 50);
   --color-input: oklch(22% 0.02 50);
   --color-ring: oklch(70% 0.1 55);
+
+  /* Semantic Status Colors - Dark Mode */
+  --color-info: oklch(65% 0.15 250);
+  --color-info-foreground: oklch(85% 0.06 250);
+  --color-info-muted: oklch(22% 0.04 250);
+  --color-info-border: oklch(40% 0.1 250);
+
+  --color-success: oklch(65% 0.15 145);
+  --color-success-foreground: oklch(85% 0.06 145);
+  --color-success-muted: oklch(22% 0.05 145);
+  --color-success-border: oklch(40% 0.1 145);
+
+  --color-warning: oklch(70% 0.15 70);
+  --color-warning-foreground: oklch(88% 0.06 70);
+  --color-warning-muted: oklch(22% 0.04 70);
+  --color-warning-border: oklch(45% 0.1 70);
+
+  --color-error: oklch(65% 0.18 25);
+  --color-error-foreground: oklch(88% 0.06 25);
+  --color-error-muted: oklch(22% 0.04 25);
+  --color-error-border: oklch(40% 0.12 25);
+
+  /* Accent Colors - Dark Mode */
+  --color-accent-blue: oklch(65% 0.15 250);
+  --color-accent-blue-foreground: oklch(85% 0.06 250);
+  --color-accent-blue-muted: oklch(22% 0.04 250);
+
+  --color-accent-violet: oklch(65% 0.18 290);
+  --color-accent-violet-foreground: oklch(88% 0.06 290);
+  --color-accent-violet-muted: oklch(22% 0.05 290);
+
+  --color-accent-pink: oklch(70% 0.15 350);
+  --color-accent-pink-foreground: oklch(88% 0.05 350);
+  --color-accent-pink-muted: oklch(22% 0.04 350);
+
+  --color-accent-emerald: oklch(65% 0.12 160);
+  --color-accent-emerald-foreground: oklch(88% 0.05 160);
+  --color-accent-emerald-muted: oklch(22% 0.04 160);
+
+  --color-accent-orange: oklch(70% 0.15 50);
+  --color-accent-orange-foreground: oklch(90% 0.05 50);
+  --color-accent-orange-muted: oklch(22% 0.04 50);
+
+  --color-accent-amber: oklch(72% 0.12 85);
+  --color-accent-amber-foreground: oklch(90% 0.05 85);
+  --color-accent-amber-muted: oklch(22% 0.04 85);
 }
 
 @layer base {

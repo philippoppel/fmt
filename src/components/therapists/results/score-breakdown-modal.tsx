@@ -51,9 +51,9 @@ const categoryColors = {
 };
 
 function getFitLevel(score: number): { label: string; color: string } {
-  if (score >= 85) return { label: "excellent", color: "text-green-500 bg-green-500/10" };
-  if (score >= 70) return { label: "high", color: "text-emerald-500 bg-emerald-500/10" };
-  if (score >= 50) return { label: "good", color: "text-blue-500 bg-blue-500/10" };
+  if (score >= 85) return { label: "excellent", color: "text-success-foreground bg-success-muted" };
+  if (score >= 70) return { label: "high", color: "text-accent-emerald-foreground bg-accent-emerald-muted" };
+  if (score >= 50) return { label: "good", color: "text-info-foreground bg-info-muted" };
   return { label: "moderate", color: "text-muted-foreground bg-muted" };
 }
 
@@ -118,11 +118,11 @@ export function ScoreBreakdownModal({
           </div>
 
           {/* Why this rank explanation */}
-          <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 p-2.5 sm:p-3">
+          <div className="rounded-lg border border-info-border bg-info-muted p-2.5 sm:p-3">
             <div className="flex gap-2">
-              <Info className="h-4 w-4 shrink-0 text-blue-500 mt-0.5" />
+              <Info className="h-4 w-4 shrink-0 text-info mt-0.5" />
               <div className="text-xs sm:text-sm">
-                <p className="font-medium text-blue-700 dark:text-blue-400">
+                <p className="font-medium text-info-foreground">
                   {t("matching.transparency.whyThisRank", { name: therapist.name, rank })}
                 </p>
                 <p className="mt-0.5 sm:mt-1 text-muted-foreground">

@@ -98,22 +98,22 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
   // Color based on precision level
   const colors = {
     low: {
-      stroke: "stroke-orange-500",
-      text: "text-orange-600",
-      bg: "bg-orange-500/10",
-      glow: "shadow-orange-500/20",
+      stroke: "stroke-accent-orange",
+      text: "text-accent-orange-foreground",
+      bg: "bg-accent-orange-muted",
+      glow: "shadow-accent-orange/20",
     },
     medium: {
-      stroke: "stroke-yellow-500",
-      text: "text-yellow-600",
-      bg: "bg-yellow-500/10",
-      glow: "shadow-yellow-500/20",
+      stroke: "stroke-warning",
+      text: "text-warning-foreground",
+      bg: "bg-warning-muted",
+      glow: "shadow-warning/20",
     },
     high: {
-      stroke: "stroke-emerald-500",
-      text: "text-emerald-600",
-      bg: "bg-emerald-500/10",
-      glow: "shadow-emerald-500/20",
+      stroke: "stroke-accent-emerald",
+      text: "text-accent-emerald-foreground",
+      bg: "bg-accent-emerald-muted",
+      glow: "shadow-accent-emerald/20",
     },
     excellent: {
       stroke: "stroke-primary",

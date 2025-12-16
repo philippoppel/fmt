@@ -289,16 +289,16 @@ export function IntensityAssessment() {
                       <div className={cn(
                         "rounded-lg p-3 text-sm",
                         topicIntensity.level === "low"
-                          ? "bg-green-50 border border-green-200 dark:bg-green-950/30 dark:border-green-800"
+                          ? "bg-success-muted border border-success-border"
                           : topicIntensity.level === "medium"
-                            ? "bg-yellow-50 border border-yellow-200 dark:bg-yellow-950/30 dark:border-yellow-800"
-                            : "bg-orange-50 border border-orange-200 dark:bg-orange-950/30 dark:border-orange-800"
+                            ? "bg-warning-muted border border-warning-border"
+                            : "bg-accent-orange-muted border border-accent-orange/30"
                       )}>
                         <div className="flex items-start gap-2">
                           <Bot className={cn(
                             "h-4 w-4 mt-0.5 shrink-0",
-                            topicIntensity.level === "low" ? "text-green-600" :
-                            topicIntensity.level === "medium" ? "text-yellow-600" : "text-orange-600"
+                            topicIntensity.level === "low" ? "text-success" :
+                            topicIntensity.level === "medium" ? "text-warning" : "text-accent-orange"
                           )} />
                           <div>
                             <p className="font-medium">{t("matching.intensity.aiAssessment")}</p>
@@ -465,9 +465,9 @@ function IntensityBadge({ level }: { level: "low" | "medium" | "high" }) {
     <span
       className={cn(
         "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-        level === "low" && "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
-        level === "medium" && "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
-        level === "high" && "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300"
+        level === "low" && "bg-success-muted text-success-foreground",
+        level === "medium" && "bg-warning-muted text-warning-foreground",
+        level === "high" && "bg-accent-orange-muted text-accent-orange-foreground"
       )}
     >
       {t(`matching.intensity.level.${level}`)}

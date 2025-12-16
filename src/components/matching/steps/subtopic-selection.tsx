@@ -224,8 +224,8 @@ function TopicAccordion({
                   ? "text-primary"
                   : isCompleted
                     ? isNoneSelected
-                      ? "text-amber-700 dark:text-amber-400"
-                      : "text-green-700 dark:text-green-400"
+                      ? "text-warning-foreground"
+                      : "text-success-foreground"
                     : "text-foreground"
               )}>
                 {t(topic.labelKey)}
@@ -236,14 +236,14 @@ function TopicAccordion({
                 </span>
               )}
               {isNoneSelected ? (
-                <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
+                <span className="shrink-0 rounded-full bg-warning-muted px-2 py-0.5 text-xs font-medium text-warning-foreground">
                   {t("matching.wizard.noneSelected")}
                 </span>
               ) : selectedCount > 0 && (
                 <span className={cn(
                   "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium",
                   isCompleted
-                    ? "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300"
+                    ? "bg-success-muted text-success-foreground"
                     : "bg-primary/10 text-primary"
                 )}>
                   {selectedCount} {t("matching.wizard.selected")}
@@ -298,7 +298,7 @@ function TopicAccordion({
                 className={cn(
                   "w-full flex items-center justify-center gap-2 rounded-lg border-2 px-4 py-3 text-sm font-medium transition-all",
                   isNoneSelected
-                    ? "border-amber-500 bg-amber-50 text-amber-700 dark:border-amber-600 dark:bg-amber-950/30 dark:text-amber-300"
+                    ? "border-warning bg-warning-muted text-warning-foreground"
                     : "border-dashed border-muted-foreground/30 text-muted-foreground hover:border-muted-foreground/50 hover:bg-muted/50"
                 )}
               >
@@ -783,8 +783,8 @@ export function SubTopicSelection() {
 
       {/* Priority hint - only show if multiple topics */}
       {groupedSubTopics.length > 1 && (
-        <div className="mb-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 p-3">
-          <p className="text-xs text-blue-700 dark:text-blue-300">
+        <div className="mb-3 rounded-lg bg-info-muted border border-info-border p-3">
+          <p className="text-xs text-info-foreground">
             <strong>{t("matching.wizard.priorityHint")}</strong> {t("matching.wizard.priorityExplanation")}
           </p>
         </div>

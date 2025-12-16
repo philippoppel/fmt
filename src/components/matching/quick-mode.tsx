@@ -66,7 +66,7 @@ export function QuickMode({ onSwitchToFull }: QuickModeProps) {
     <div className="mx-auto max-w-2xl space-y-6">
       {/* Header */}
       <div className="text-center">
-        <Badge className="mb-3 gap-1 bg-amber-500/10 text-amber-600 hover:bg-amber-500/20">
+        <Badge className="mb-3 gap-1 bg-accent-amber-muted text-accent-amber-foreground hover:bg-accent-amber-muted/80">
           <Zap className="h-3 w-3" />
           {t("matching.quickMode.badge")}
         </Badge>

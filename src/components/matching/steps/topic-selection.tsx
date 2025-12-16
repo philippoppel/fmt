@@ -256,7 +256,7 @@ export function TopicSelection() {
                   <div className={cn(
                     "rounded-md p-2 text-xs",
                     confidence === "high"
-                      ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
+                      ? "bg-success-muted text-success-foreground"
                       : "bg-primary/10 text-primary"
                   )}>
                     {confidence === "high" ? (
@@ -283,11 +283,11 @@ export function TopicSelection() {
               <div className="flex flex-col gap-2 p-1">
                 {/* Show the understanding even for off-topic */}
                 {understandingSummary && (
-                  <p className="text-sm text-amber-800 dark:text-amber-300">
+                  <p className="text-sm text-warning-foreground">
                     {understandingSummary}
                   </p>
                 )}
-                <p className="text-xs text-amber-700 dark:text-amber-400">
+                <p className="text-xs text-warning-foreground">
                   {t("matching.freetext.selectManually")}
                 </p>
               </div>

@@ -91,13 +91,13 @@ export function MiniScoreBars({
       onClick={onClick}
       className={cn(
         "group w-full rounded-lg border p-3 text-left transition-all",
-        "border-blue-500/20 bg-blue-500/5 hover:border-blue-500/40 hover:bg-blue-500/10"
+        "border-info-border bg-info-muted hover:border-info/40 hover:bg-info-muted/80"
       )}
     >
       <div className="flex gap-2">
-        <Info className="h-4 w-4 shrink-0 text-blue-500 mt-0.5" />
+        <Info className="h-4 w-4 shrink-0 text-info mt-0.5" />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-blue-700 dark:text-blue-400">
+          <p className="text-sm font-medium text-info-foreground">
             {t("transparency.whyThisRank", { name: therapistName, rank })}
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">
