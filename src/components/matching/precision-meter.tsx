@@ -125,51 +125,51 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
 
   const color = colors[level];
 
-  // SVG parameters
-  const size = compact ? 56 : 80;
-  const strokeWidth = compact ? 5 : 6;
+  // SVG parameters - larger sizes for better visibility
+  const size = compact ? 72 : 100;
+  const strokeWidth = compact ? 6 : 8;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (displayPrecision / 100) * circumference;
 
   if (compact) {
     return (
-      <div className={cn("flex items-center gap-2", className)}>
-        {/* Circular mini progress */}
-        <div className="relative h-10 w-10">
-          <svg width={40} height={40} className="transform -rotate-90">
+      <div className={cn("flex items-center gap-3", className)}>
+        {/* Circular progress - larger */}
+        <div className="relative" style={{ width: 72, height: 72 }}>
+          <svg width={72} height={72} className="transform -rotate-90">
             <circle
-              cx={20}
-              cy={20}
-              r={16}
+              cx={36}
+              cy={36}
+              r={30}
               fill="none"
-              strokeWidth={3}
+              strokeWidth={6}
               className="stroke-muted/30"
             />
             <circle
-              cx={20}
-              cy={20}
-              r={16}
+              cx={36}
+              cy={36}
+              r={30}
               fill="none"
-              strokeWidth={3}
+              strokeWidth={6}
               strokeLinecap="round"
-              strokeDasharray={100.53}
-              strokeDashoffset={100.53 - (displayPrecision / 100) * 100.53}
+              strokeDasharray={188.5}
+              strokeDashoffset={188.5 - (displayPrecision / 100) * 188.5}
               className={cn(color.stroke, "transition-all duration-500")}
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className={cn("text-[10px] font-bold", color.text)}>
+            <span className={cn("text-lg font-bold tabular-nums", color.text)}>
               {displayPrecision}%
             </span>
           </div>
         </div>
         {/* Label and level */}
-        <div className="hidden sm:flex flex-col">
-          <span className="text-[10px] text-muted-foreground leading-tight">
+        <div className="flex flex-col">
+          <span className="text-xs text-muted-foreground leading-tight">
             {t("label")}
           </span>
-          <span className={cn("text-xs font-medium leading-tight", color.text)}>
+          <span className={cn("text-sm font-semibold leading-tight", color.text)}>
             {t(`levels.${level}`)}
           </span>
         </div>
@@ -179,15 +179,15 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
 
   return (
     <div className={cn(
-      "rounded-xl border p-4 transition-all duration-300",
+      "rounded-2xl border-2 p-5 transition-all duration-300",
       color.bg,
       color.glow,
-      "shadow-lg",
+      "shadow-xl",
       className
     )}>
-      <div className="flex items-start gap-4">
-        {/* Circular Progress */}
-        <div className="relative shrink-0">
+      <div className="flex items-center gap-5">
+        {/* Circular Progress - much larger */}
+        <div className="relative shrink-0" style={{ width: size, height: size }}>
           <svg width={size} height={size} className="transform -rotate-90">
             {/* Background circle */}
             <circle
@@ -211,9 +211,9 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
               className={cn(color.stroke, "transition-all duration-500")}
             />
           </svg>
-          {/* Center icon/text */}
+          {/* Center percentage */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className={cn("text-xl font-bold", color.text)}>
+            <span className={cn("text-2xl font-bold tabular-nums", color.text)}>
               {displayPrecision}%
             </span>
           </div>
@@ -222,24 +222,24 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
         {/* Text content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <Target className={cn("h-4 w-4 shrink-0", color.text)} />
-            <span className="text-sm font-semibold">{t("label")}</span>
+            <Target className={cn("h-5 w-5 shrink-0", color.text)} />
+            <span className="text-base font-semibold">{t("label")}</span>
           </div>
 
-          <p className={cn("mt-1 text-sm font-medium", color.text)}>
+          <p className={cn("mt-1.5 text-lg font-bold", color.text)}>
             {t(`levels.${level}`)}
           </p>
 
           {/* Motivational message */}
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             {displayPrecision < 80 ? (
-              <span className="flex items-center gap-1">
-                <TrendingUp className="h-3 w-3" />
+              <span className="flex items-center gap-1.5">
+                <TrendingUp className="h-4 w-4" />
                 {t("motivation")}
               </span>
             ) : (
-              <span className="flex items-center gap-1">
-                <Sparkles className="h-3 w-3" />
+              <span className="flex items-center gap-1.5">
+                <Sparkles className="h-4 w-4" />
                 {t("excellent")}
               </span>
             )}
