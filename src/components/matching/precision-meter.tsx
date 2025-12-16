@@ -199,20 +199,21 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (displayPrecision / 100) * circumference;
 
-  // Determine quality indicator based on percentage of matching therapists
+  // Determine quality indicator based on filtering precision
+  // Fewer matches = better (more precise filtering)
   // - Suggestions mode (no exact matches) = orange/info
-  // - High percentage (>=50%) = green/good (broad match)
-  // - Medium percentage (25-50%) = yellow/moderate (moderate filtering)
-  // - Low percentage (<25%) = gray/narrow (highly filtered)
-  const getCountQuality = (): "good" | "moderate" | "narrow" | "suggestion" => {
+  // - Low percentage (<30%) = green/good (well filtered, precise selection)
+  // - Medium percentage (30-60%) = yellow/moderate (some filtering)
+  // - High percentage (>60%) = gray/broad (barely filtered)
+  const getCountQuality = (): "good" | "moderate" | "broad" | "suggestion" => {
     if (displayCount === null || totalAvailable === 0) return "moderate";
     if (hasNoExactMatches) return "suggestion";
 
     const percentage = (displayCount / totalAvailable) * 100;
 
-    if (percentage >= 50) return "good";      // Green - broad match
-    if (percentage >= 25) return "moderate";  // Yellow - moderate filtering
-    return "narrow";                          // Gray - highly filtered
+    if (percentage <= 30) return "good";      // Green - well filtered, precise
+    if (percentage <= 60) return "moderate";  // Yellow - moderate filtering
+    return "broad";                           // Gray - barely filtered
   };
 
   const countQuality = getCountQuality();
@@ -230,7 +231,7 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
       border: "border-warning/30",
       dot: "bg-warning",
     },
-    narrow: {
+    broad: {
       text: "text-muted-foreground",
       bg: "bg-muted/50",
       border: "border-muted",
