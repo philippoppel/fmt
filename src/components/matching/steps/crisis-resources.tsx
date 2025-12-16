@@ -1,9 +1,10 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
-import { Phone, MessageCircle, Globe, Heart, ArrowRight } from "lucide-react";
+import { Phone, MessageCircle, Globe, Heart, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useMatching } from "../matching-context";
 
 interface CrisisResource {
   name: string;
@@ -74,38 +75,44 @@ const CRISIS_RESOURCES_EN: CrisisResource[] = [
 export function CrisisResources() {
   const t = useTranslations();
   const locale = useLocale();
+  const { actions } = useMatching();
 
   const resources = locale === "de" ? CRISIS_RESOURCES_DE : CRISIS_RESOURCES_EN;
 
+  const handleContinueMatching = () => {
+    // Reset crisis state and go back to screening
+    actions.resetScreening();
+  };
+
   return (
-    <div className="mx-auto max-w-2xl space-y-8 px-4">
+    <div className="mx-auto max-w-2xl space-y-6 px-4">
       {/* Header */}
       <div className="text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
-          <Heart className="h-8 w-8 text-red-600 dark:text-red-400" />
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+          <Heart className="h-7 w-7 text-primary" />
         </div>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
           {t("matching.crisis.title")}
         </h1>
-        <p className="mx-auto mt-3 max-w-md text-muted-foreground">
+        <p className="mx-auto mt-2 max-w-md text-muted-foreground">
           {t("matching.crisis.subtitle")}
         </p>
       </div>
 
       {/* Immediate help message */}
-      <div className="rounded-xl border-2 border-red-200 bg-red-50 p-6 text-center dark:border-red-800 dark:bg-red-950/20">
-        <p className="text-lg font-medium text-red-800 dark:text-red-200">
+      <div className="rounded-xl border-2 border-primary/30 bg-primary/5 p-5 text-center">
+        <p className="text-base font-medium">
           {t("matching.crisis.immediateHelp")}
         </p>
-        <p className="mt-2 text-red-700 dark:text-red-300">
+        <p className="mt-1 text-sm text-muted-foreground">
           {t("matching.crisis.notAlone")}
         </p>
       </div>
 
       {/* Crisis resources */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold">{t("matching.crisis.resourcesTitle")}</h2>
-        <div className="grid gap-4">
+      <div className="space-y-3">
+        <h2 className="text-base font-semibold">{t("matching.crisis.resourcesTitle")}</h2>
+        <div className="grid gap-3">
           {resources.map((resource, index) => (
             <CrisisResourceCard key={index} resource={resource} />
           ))}
@@ -113,23 +120,28 @@ export function CrisisResources() {
       </div>
 
       {/* Additional info */}
-      <div className="rounded-lg border bg-muted/50 p-4">
-        <p className="text-sm text-muted-foreground">
+      <div className="rounded-lg border bg-muted/50 p-3">
+        <p className="text-xs text-muted-foreground">
           {t("matching.crisis.additionalInfo")}
         </p>
       </div>
 
-      {/* Alternative action */}
-      <div className="flex flex-col items-center gap-4 border-t pt-6">
+      {/* Actions */}
+      <div className="flex flex-col gap-3 border-t pt-4">
         <p className="text-center text-sm text-muted-foreground">
           {t("matching.crisis.alternativeText")}
         </p>
-        <Button variant="outline" asChild>
-          <Link href="/">
-            {t("matching.crisis.backToHome")}
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-2 justify-center">
+          <Button variant="outline" onClick={handleContinueMatching} className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            {t("matching.screening.continueMatching")}
+          </Button>
+          <Button variant="ghost" asChild>
+            <Link href="/">
+              {t("matching.crisis.backToHome")}
+            </Link>
+          </Button>
+        </div>
       </div>
     </div>
   );

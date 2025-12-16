@@ -546,8 +546,11 @@
       "excellent": "Best possible match quality",
       "compact": {
         "matches": "matching profiles",
-        "description": "The more details you provide, the more targeted your results – fewer, but better matches.",
-        "tip": "More info = better matches"
+        "suggestions": "suggestions",
+        "description": "Number of therapists matching your current criteria.",
+        "tip": "Tip: More details help find the best matches.",
+        "noExactMatches": "No exact matches for your criteria – showing our top therapists instead.",
+        "adjustFilters": "Adjust your filters to get more targeted results."
       }
     },
     "screening": {
@@ -559,7 +562,16 @@
       "yes": "Yes",
       "no": "No",
       "canProceed": "Thank you. You can now continue with the matching.",
-      "crisisDetected": "We want to connect you with immediate help."
+      "crisisDetected": "We want to connect you with immediate help.",
+      "supportTitle": "We're Here For You",
+      "supportSubtitle": "It takes courage to share this. Here's immediate support.",
+      "hotlineTitle": "Crisis Hotline",
+      "hotlineDesc": "Free and anonymous – someone is always there for you.",
+      "available247": "24/7",
+      "showAllResources": "Show all support resources",
+      "or": "or",
+      "continueMatching": "Continue with therapist search",
+      "noJudgment": "You can come back anytime. Your choice, no pressure."
     },
     "crisis": {
       "title": "You Are Not Alone",

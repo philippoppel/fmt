@@ -137,6 +137,61 @@ export async function searchWithMatching(
 
   console.log(`[searchWithMatching] Found ${matchedTherapists.length} matched therapists after filtering`);
 
+  // FALLBACK: If no matches found, show top-rated therapists as suggestions
+  if (matchedTherapists.length === 0) {
+    console.log("[searchWithMatching] No exact matches, fetching suggestions...");
+
+    // Fetch all published therapists without filters
+    const fallbackProfiles = await db.therapistProfile.findMany({
+      where: { isPublished: true },
+      include: {
+        user: {
+          select: { name: true },
+        },
+      },
+      orderBy: [{ rating: "desc" }, { reviewCount: "desc" }],
+      take: 8, // Limit suggestions
+    });
+
+    // Transform to Therapist type
+    const fallbackTherapists: Therapist[] = fallbackProfiles.map((profile) => ({
+      id: profile.id,
+      name: profile.user.name ?? "Unknown",
+      title: profile.title ?? "",
+      imageUrl: profile.imageUrl ?? "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400",
+      specializations: profile.specializations as Therapist["specializations"],
+      therapyTypes: profile.therapyTypes as Therapist["therapyTypes"],
+      languages: profile.languages as Therapist["languages"],
+      location: { city: profile.city ?? "", postalCode: profile.postalCode ?? "" },
+      pricePerSession: profile.pricePerSession ?? 0,
+      rating: profile.rating ?? 0,
+      reviewCount: profile.reviewCount ?? 0,
+      shortDescription: profile.shortDescription ?? "",
+      sessionType: profile.sessionType as Therapist["sessionType"],
+      insurance: profile.insurance as Therapist["insurance"],
+      availability: profile.availability as Therapist["availability"],
+      gender: profile.gender as Therapist["gender"],
+      accountType: profile.accountType as Therapist["accountType"],
+      isVerified: profile.isVerified ?? false,
+      experienceYears: profile.experienceYears ?? undefined,
+      specializationRanks: (profile.specializationRanks as Record<string, 1 | 2 | 3>) ?? undefined,
+      subSpecializations: profile.subSpecializations as Therapist["subSpecializations"],
+      subSpecializationRanks: (profile.subSpecializationRanks as Record<string, 1 | 2 | 3>) ?? undefined,
+      profileCompleteness: profile.profileCompleteness ?? undefined,
+      communicationStyle: profile.communicationStyle as Therapist["communicationStyle"],
+      usesHomework: profile.usesHomework ?? undefined,
+      therapyFocus: profile.therapyFocus as Therapist["therapyFocus"],
+      clientTalkRatio: profile.clientTalkRatio ?? undefined,
+      therapyDepth: profile.therapyDepth as Therapist["therapyDepth"],
+    }));
+
+    // Calculate scores but mark as suggestions
+    matchedTherapists = calculateMatchScoreForAllWithBreakdown(fallbackTherapists, criteria)
+      .map((t) => ({ ...t, isSuggestion: true }));
+
+    console.log(`[searchWithMatching] Returning ${matchedTherapists.length} suggestions`);
+  }
+
   // Fetch related blog posts
   const blogs = await getRelatedBlogPosts(criteria.selectedTopics);
 

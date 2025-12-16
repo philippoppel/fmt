@@ -546,8 +546,11 @@
       "excellent": "Bestmögliche Übereinstimmung",
       "compact": {
         "matches": "passende Profile",
-        "description": "Je mehr Angaben du machst, desto gezielter wird die Auswahl – weniger, aber besser passende Ergebnisse.",
-        "tip": "Mehr Infos = passendere Matches"
+        "suggestions": "Vorschläge",
+        "description": "Anzahl der Therapeut:innen, die zu deinen aktuellen Angaben passen.",
+        "tip": "Tipp: Weitere Angaben helfen, die passendsten Profile zu finden.",
+        "noExactMatches": "Keine exakten Treffer für deine Kriterien – wir zeigen dir stattdessen unsere Top-Therapeut:innen.",
+        "adjustFilters": "Passe deine Filter an, um passendere Ergebnisse zu erhalten."
       }
     },
     "screening": {
@@ -559,7 +562,16 @@
       "yes": "Ja",
       "no": "Nein",
       "canProceed": "Vielen Dank. Du kannst jetzt mit dem Matching fortfahren.",
-      "crisisDetected": "Wir möchten dir sofort Hilfe vermitteln."
+      "crisisDetected": "Wir möchten dir sofort Hilfe vermitteln.",
+      "supportTitle": "Wir sind für dich da",
+      "supportSubtitle": "Es ist mutig, dass du das teilst. Hier findest du sofort Unterstützung.",
+      "hotlineTitle": "Telefonseelsorge",
+      "hotlineDesc": "Kostenlos und anonym – jemand ist immer für dich da.",
+      "available247": "24/7",
+      "showAllResources": "Alle Hilfsangebote anzeigen",
+      "or": "oder",
+      "continueMatching": "Mit Therapeut:innen-Suche fortfahren",
+      "noJudgment": "Du kannst jederzeit zurückkommen. Deine Entscheidung, kein Druck."
     },
     "crisis": {
       "title": "Du bist nicht allein",

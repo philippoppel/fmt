@@ -308,6 +308,8 @@ export interface MatchingCriteria {
 export interface MatchedTherapist extends Therapist {
   matchScore: number;
   scoreBreakdown?: ScoreBreakdown;
+  /** True if this is a suggested alternative when no exact matches were found */
+  isSuggestion?: boolean;
 }
 
 export interface MatchingResult {

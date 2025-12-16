@@ -103,6 +103,7 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
 
   // Real match count from database
   const [matchCount, setMatchCount] = useState<number | null>(null);
+  const [totalAvailable, setTotalAvailable] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -119,7 +120,7 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
     const fetchCount = async () => {
       setIsLoading(true);
       try {
-        const count = await countMatchingTherapists({
+        const result = await countMatchingTherapists({
           selectedTopics: state.selectedTopics,
           selectedSubTopics: state.selectedSubTopics,
           location: state.criteria.location || undefined,
@@ -129,7 +130,8 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
         });
 
         if (!controller.signal.aborted) {
-          setMatchCount(count);
+          setMatchCount(result.count);
+          setTotalAvailable(result.totalAvailable);
         }
       } catch {
         // Ignore abort errors
@@ -155,6 +157,10 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
     state.criteria.sessionType,
     state.criteria.insurance,
   ]);
+
+  // If no exact matches, we'll show suggestions instead
+  const hasNoExactMatches = matchCount === 0 && totalAvailable > 0;
+  const displayCount = matchCount !== null ? (hasNoExactMatches ? totalAvailable : matchCount) : null;
 
   // Color based on precision level
   const colors = {
@@ -193,8 +199,42 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (displayPrecision / 100) * circumference;
 
-  // Display count - use real count if available, otherwise show loading or dash
-  const displayCount = matchCount !== null ? matchCount : null;
+  // Determine quality indicator based on count and precision
+  // - Suggestions mode (no exact matches) = orange/info
+  // - Few matches (1-10) with precision = green/good (focused selection)
+  // - Many matches (15+) with low precision = neutral (too broad)
+  const getCountQuality = (): "good" | "neutral" | "suggestion" => {
+    if (displayCount === null) return "neutral";
+    if (hasNoExactMatches) return "suggestion";
+    if (displayCount <= 10 && displayPrecision >= 35) return "good";
+    if (displayCount > 15 && displayPrecision < 35) return "neutral";
+    return "good";
+  };
+
+  const countQuality = getCountQuality();
+
+  const qualityColors = {
+    good: {
+      text: "text-accent-emerald-foreground",
+      bg: "bg-accent-emerald/10",
+      border: "border-accent-emerald/30",
+      dot: "bg-accent-emerald",
+    },
+    neutral: {
+      text: "text-muted-foreground",
+      bg: "bg-muted/50",
+      border: "border-muted",
+      dot: "bg-muted-foreground",
+    },
+    suggestion: {
+      text: "text-accent-orange-foreground",
+      bg: "bg-accent-orange/10",
+      border: "border-accent-orange/30",
+      dot: "bg-accent-orange",
+    },
+  };
+
+  const qColor = qualityColors[countQuality];
 
   if (compact) {
     return (
@@ -204,42 +244,61 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
             type="button"
             className={cn(
               "flex items-center gap-1.5 shrink-0 rounded-lg border px-2 py-1 transition-all hover:bg-muted/50",
-              level === "excellent" ? "border-primary/30 bg-primary/5" : "border-muted",
+              qColor.border,
+              qColor.bg,
               className
             )}
           >
-            <Users className="h-3.5 w-3.5 text-muted-foreground" />
+            {/* Color dot indicator */}
+            <span className={cn("h-2 w-2 rounded-full", qColor.dot)} />
             {isLoading ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
             ) : (
-              <span className="text-sm font-semibold tabular-nums">
+              <span className={cn("text-sm font-semibold tabular-nums", qColor.text)}>
                 {displayCount !== null ? displayCount : "–"}
               </span>
             )}
-            {displayCount !== null && displayPrecision > 0 && (
-              <ChevronDown className={cn(
-                "h-3 w-3 transition-colors",
-                level === "excellent" ? "text-primary" : "text-accent-emerald"
-              )} />
-            )}
+            <ChevronDown className="h-3 w-3 text-muted-foreground" />
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-56 p-3" align="end">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-muted-foreground" />
-              <span className="font-semibold text-sm">
-                {displayCount !== null ? displayCount : "–"} {t("compact.matches")}
-              </span>
+        <PopoverContent className="w-64 p-3" align="end">
+          <div className="space-y-3">
+            {/* Header with count and quality */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className={cn("h-2.5 w-2.5 rounded-full", qColor.dot)} />
+                <span className={cn("font-semibold", qColor.text)}>
+                  {displayCount !== null ? displayCount : "–"}{" "}
+                  {hasNoExactMatches ? t("compact.suggestions") : t("compact.matches")}
+                </span>
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {t("compact.description")}
+
+            {/* Explanation based on quality */}
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {hasNoExactMatches
+                ? t("compact.noExactMatches")
+                : t("compact.description")}
             </p>
-            {displayPrecision < 80 && (
-              <p className="text-xs text-primary flex items-center gap-1.5">
-                <ChevronDown className="h-3.5 w-3.5" />
-                {t("compact.tip")}
-              </p>
+
+            {/* Tip if precision is low and has exact matches */}
+            {displayPrecision < 50 && !hasNoExactMatches && displayCount !== null && displayCount > 0 && (
+              <div className="flex items-start gap-2 pt-1 border-t border-muted">
+                <TrendingUp className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                <p className="text-xs text-primary">
+                  {t("compact.tip")}
+                </p>
+              </div>
+            )}
+
+            {/* Suggestion to adjust filters */}
+            {hasNoExactMatches && (
+              <div className="flex items-start gap-2 pt-1 border-t border-muted">
+                <TrendingUp className="h-3.5 w-3.5 text-accent-orange mt-0.5 shrink-0" />
+                <p className="text-xs text-accent-orange-foreground">
+                  {t("compact.adjustFilters")}
+                </p>
+              </div>
             )}
           </div>
         </PopoverContent>
