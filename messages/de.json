@@ -556,7 +556,8 @@
         "description": "Anzahl der Therapeut:innen, die zu deinen aktuellen Angaben passen.",
         "tip": "Tipp: Weitere Angaben helfen, die passendsten Profile zu finden.",
         "noExactMatches": "Keine exakten Treffer für deine Kriterien – wir zeigen dir stattdessen unsere Top-Therapeut:innen.",
-        "adjustFilters": "Passe deine Filter an, um passendere Ergebnisse zu erhalten."
+        "adjustFilters": "Passe deine Filter an, um passendere Ergebnisse zu erhalten.",
+        "browseAll": "Alle {count} Therapeut:innen durchsuchen"
       }
     },
     "screening": {

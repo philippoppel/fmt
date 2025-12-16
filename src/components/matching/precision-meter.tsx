@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useState, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { Target, TrendingUp, Sparkles, Users, ChevronDown, Loader2 } from "lucide-react";
+import { Target, TrendingUp, Sparkles, Users, ChevronDown, Loader2, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMatching } from "./matching-context";
 import {
@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { countMatchingTherapists } from "@/lib/actions/count-matches";
+import Link from "next/link";
 
 // Calculate precision based on filled information
 // Aligned with score weights: Topics 35, Intensity 15, Criteria 40 (no Style Quiz)
@@ -318,6 +319,15 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
                 </p>
               </div>
             )}
+
+            {/* Browse all therapists link */}
+            <Link
+              href="/therapists"
+              className="flex items-center gap-2 pt-2 mt-1 border-t border-muted text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Search className="h-3.5 w-3.5" />
+              <span>{t("compact.browseAll", { count: totalAvailable })}</span>
+            </Link>
           </div>
         </PopoverContent>
       </Popover>

@@ -556,7 +556,8 @@
         "description": "Number of therapists matching your current criteria.",
         "tip": "Tip: More details help find the best matches.",
         "noExactMatches": "No exact matches for your criteria – showing our top therapists instead.",
-        "adjustFilters": "Adjust your filters to get more targeted results."
+        "adjustFilters": "Adjust your filters to get more targeted results.",
+        "browseAll": "Browse all {count} therapists"
       }
     },
     "screening": {
