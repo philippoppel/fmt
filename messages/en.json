@@ -544,10 +544,10 @@
       },
       "motivation": "More details improve your results",
       "excellent": "Best possible match quality",
-      "tooltip": {
-        "title": "How good is your match?",
-        "description": "The more information you provide, the better we can find suitable therapists for you.",
-        "tip": "Fill in more fields to improve your matching!"
+      "compact": {
+        "matches": "matching profiles",
+        "description": "The more details you provide, the more targeted your results – fewer, but better matches.",
+        "tip": "More info = better matches"
       }
     },
     "screening": {

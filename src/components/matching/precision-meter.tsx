@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Target, TrendingUp, Sparkles, Info } from "lucide-react";
+import { Target, TrendingUp, Sparkles, Users, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMatching } from "./matching-context";
 import {
@@ -52,6 +52,20 @@ function calculatePrecision(state: ReturnType<typeof useMatching>["state"]): num
   }
 
   return Math.min(precision, 100);
+}
+
+// Estimate potential matches based on precision (inverse relationship)
+// More precision = fewer but better matches
+function estimateMatches(precision: number): number {
+  // Start with ~200 potential matches, reduce as precision increases
+  const baseMatches = 200;
+  const minMatches = 3;
+
+  // Exponential decay: more precision = significantly fewer matches
+  const factor = Math.pow(1 - precision / 100, 1.5);
+  const matches = Math.round(minMatches + (baseMatches - minMatches) * factor);
+
+  return matches;
 }
 
 // Get precision level category
@@ -137,6 +151,8 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (displayPrecision / 100) * circumference;
 
+  const estimatedMatches = useMemo(() => estimateMatches(displayPrecision), [displayPrecision]);
+
   if (compact) {
     return (
       <Popover>
@@ -144,52 +160,36 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
           <button
             type="button"
             className={cn(
-              "flex items-center gap-1 shrink-0 rounded-full px-1.5 py-0.5 transition-colors hover:bg-muted/50",
+              "flex items-center gap-1.5 shrink-0 rounded-lg border px-2 py-1 transition-all hover:bg-muted/50",
+              level === "excellent" ? "border-primary/30 bg-primary/5" : "border-muted",
               className
             )}
           >
-            {/* Tiny circular progress */}
-            <div className="relative" style={{ width: 24, height: 24 }}>
-              <svg width={24} height={24} className="transform -rotate-90">
-                <circle
-                  cx={12}
-                  cy={12}
-                  r={9}
-                  fill="none"
-                  strokeWidth={2.5}
-                  className="stroke-muted/30"
-                />
-                <circle
-                  cx={12}
-                  cy={12}
-                  r={9}
-                  fill="none"
-                  strokeWidth={2.5}
-                  strokeLinecap="round"
-                  strokeDasharray={56.5}
-                  strokeDashoffset={56.5 - (displayPrecision / 100) * 56.5}
-                  className={cn(color.stroke, "transition-all duration-500")}
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className={cn("text-[9px] font-bold tabular-nums", color.text)}>
-                  {displayPrecision}
-                </span>
-              </div>
-            </div>
-            <Info className="h-3 w-3 text-muted-foreground" />
+            <Users className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-sm font-semibold tabular-nums">
+              ~{estimatedMatches}
+            </span>
+            {displayPrecision > 0 && (
+              <ChevronDown className={cn(
+                "h-3 w-3 transition-colors",
+                level === "excellent" ? "text-primary" : "text-accent-emerald"
+              )} />
+            )}
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-64 p-3" align="end">
+        <PopoverContent className="w-56 p-3" align="end">
           <div className="space-y-2">
-            <h4 className="font-semibold text-sm">{t("tooltip.title")}</h4>
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-muted-foreground" />
+              <span className="font-semibold text-sm">~{estimatedMatches} {t("compact.matches")}</span>
+            </div>
             <p className="text-xs text-muted-foreground">
-              {t("tooltip.description")}
+              {t("compact.description")}
             </p>
             {displayPrecision < 80 && (
-              <p className="text-xs font-medium text-primary flex items-center gap-1.5">
-                <TrendingUp className="h-3.5 w-3.5" />
-                {t("tooltip.tip")}
+              <p className="text-xs text-primary flex items-center gap-1.5">
+                <ChevronDown className="h-3.5 w-3.5" />
+                {t("compact.tip")}
               </p>
             )}
           </div>
