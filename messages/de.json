@@ -543,7 +543,12 @@
         "excellent": "Optimales Matching"
       },
       "motivation": "Weitere Angaben verbessern deine Ergebnisse",
-      "excellent": "Bestmögliche Übereinstimmung"
+      "excellent": "Bestmögliche Übereinstimmung",
+      "tooltip": {
+        "title": "Wie gut passt dein Matching?",
+        "description": "Je mehr Informationen du angibst, desto besser können wir passende Therapeut:innen für dich finden.",
+        "tip": "Fülle weitere Felder aus, um dein Matching zu verbessern!"
+      }
     },
     "screening": {
       "title": "Kurze Sicherheitsfragen",

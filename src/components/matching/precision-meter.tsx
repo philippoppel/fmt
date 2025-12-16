@@ -2,9 +2,14 @@
 
 import { useMemo, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Target, TrendingUp, Sparkles } from "lucide-react";
+import { Target, TrendingUp, Sparkles, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMatching } from "./matching-context";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 // Calculate precision based on filled information
 // Aligned with score weights: Topics 35, Intensity 15, Criteria 40 (no Style Quiz)
@@ -134,37 +139,62 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
 
   if (compact) {
     return (
-      <div className={cn("flex items-center gap-1.5 shrink-0", className)}>
-        {/* Tiny circular progress */}
-        <div className="relative" style={{ width: 28, height: 28 }}>
-          <svg width={28} height={28} className="transform -rotate-90">
-            <circle
-              cx={14}
-              cy={14}
-              r={11}
-              fill="none"
-              strokeWidth={3}
-              className="stroke-muted/30"
-            />
-            <circle
-              cx={14}
-              cy={14}
-              r={11}
-              fill="none"
-              strokeWidth={3}
-              strokeLinecap="round"
-              strokeDasharray={69.1}
-              strokeDashoffset={69.1 - (displayPrecision / 100) * 69.1}
-              className={cn(color.stroke, "transition-all duration-500")}
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className={cn("text-[10px] font-bold tabular-nums", color.text)}>
-              {displayPrecision}
-            </span>
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            className={cn(
+              "flex items-center gap-1 shrink-0 rounded-full px-1.5 py-0.5 transition-colors hover:bg-muted/50",
+              className
+            )}
+          >
+            {/* Tiny circular progress */}
+            <div className="relative" style={{ width: 24, height: 24 }}>
+              <svg width={24} height={24} className="transform -rotate-90">
+                <circle
+                  cx={12}
+                  cy={12}
+                  r={9}
+                  fill="none"
+                  strokeWidth={2.5}
+                  className="stroke-muted/30"
+                />
+                <circle
+                  cx={12}
+                  cy={12}
+                  r={9}
+                  fill="none"
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                  strokeDasharray={56.5}
+                  strokeDashoffset={56.5 - (displayPrecision / 100) * 56.5}
+                  className={cn(color.stroke, "transition-all duration-500")}
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className={cn("text-[9px] font-bold tabular-nums", color.text)}>
+                  {displayPrecision}
+                </span>
+              </div>
+            </div>
+            <Info className="h-3 w-3 text-muted-foreground" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-64 p-3" align="end">
+          <div className="space-y-2">
+            <h4 className="font-semibold text-sm">{t("tooltip.title")}</h4>
+            <p className="text-xs text-muted-foreground">
+              {t("tooltip.description")}
+            </p>
+            {displayPrecision < 80 && (
+              <p className="text-xs font-medium text-primary flex items-center gap-1.5">
+                <TrendingUp className="h-3.5 w-3.5" />
+                {t("tooltip.tip")}
+              </p>
+            )}
           </div>
-        </div>
-      </div>
+        </PopoverContent>
+      </Popover>
     );
   }
 
