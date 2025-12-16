@@ -14,6 +14,7 @@ import type {
   Insurance,
   Language,
   TherapyType,
+  Availability,
   TherapyStylePreferences,
   CommunicationStyle,
   TherapyFocus,
@@ -87,6 +88,8 @@ export interface MatchingState {
     insurance: Insurance[];
     languages: Language[];
     therapyTypes: TherapyType[];
+    availability: Availability | null;
+    maxPrice: number | null; // Max price per session in EUR
   };
   // Therapy Style Quiz (Step 3)
   therapyStyle: TherapyStylePreferences;
@@ -119,6 +122,8 @@ type MatchingAction =
   | { type: "TOGGLE_INSURANCE"; insurance: Insurance }
   | { type: "TOGGLE_LANGUAGE"; language: Language }
   | { type: "TOGGLE_THERAPY_TYPE"; therapyType: TherapyType }
+  | { type: "SET_AVAILABILITY"; availability: Availability | null }
+  | { type: "SET_MAX_PRICE"; maxPrice: number | null }
   | { type: "SET_COMMUNICATION_STYLE"; style: CommunicationStyle | null }
   | { type: "SET_PREFERS_HOMEWORK"; value: boolean | null }
   | { type: "SET_THERAPY_FOCUS"; focus: TherapyFocus | null }
@@ -193,6 +198,8 @@ const initialState: MatchingState = {
     insurance: [],
     languages: [],
     therapyTypes: [],
+    availability: null,
+    maxPrice: null,
   },
   therapyStyle: defaultTherapyStylePreferences,
 };
@@ -418,6 +425,18 @@ function matchingReducer(
       };
     }
 
+    case "SET_AVAILABILITY":
+      return {
+        ...state,
+        criteria: { ...state.criteria, availability: action.availability },
+      };
+
+    case "SET_MAX_PRICE":
+      return {
+        ...state,
+        criteria: { ...state.criteria, maxPrice: action.maxPrice },
+      };
+
     // Therapy Style Actions
     case "SET_COMMUNICATION_STYLE":
       return {
@@ -507,6 +526,8 @@ interface MatchingContextValue {
     toggleInsurance: (insurance: Insurance) => void;
     toggleLanguage: (language: Language) => void;
     toggleTherapyType: (therapyType: TherapyType) => void;
+    setAvailability: (availability: Availability | null) => void;
+    setMaxPrice: (maxPrice: number | null) => void;
     // Therapy Style actions
     setCommunicationStyle: (style: CommunicationStyle | null) => void;
     setPrefersHomework: (value: boolean | null) => void;
@@ -604,6 +625,14 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
 
   const toggleTherapyType = useCallback((therapyType: TherapyType) => {
     dispatch({ type: "TOGGLE_THERAPY_TYPE", therapyType });
+  }, []);
+
+  const setAvailability = useCallback((availability: Availability | null) => {
+    dispatch({ type: "SET_AVAILABILITY", availability });
+  }, []);
+
+  const setMaxPrice = useCallback((maxPrice: number | null) => {
+    dispatch({ type: "SET_MAX_PRICE", maxPrice });
   }, []);
 
   // Therapy Style actions
@@ -797,6 +826,8 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
       toggleInsurance,
       toggleLanguage,
       toggleTherapyType,
+      setAvailability,
+      setMaxPrice,
       // Therapy Style
       setCommunicationStyle,
       setPrefersHomework,

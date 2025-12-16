@@ -440,6 +440,11 @@
       "tr": "Turkish",
       "ar": "Arabic"
     },
+    "availability": {
+      "immediately": "Immediately",
+      "this_week": "This week",
+      "flexible": "Flexible"
+    },
     "results": {
       "count": "{count} results",
       "sortBy": "Sort by",
@@ -814,7 +819,12 @@
       "anySessionType": "Any",
       "insurance": "Insurance",
       "language": "Language",
-      "therapyType": "Therapy Approach"
+      "therapyType": "Therapy Approach",
+      "availability": "Availability",
+      "anyAvailability": "Any",
+      "maxPrice": "Max Price",
+      "anyPrice": "Any",
+      "upToPrice": "Up to {price}€"
     },
     "location": {
       "placeholder": "Enter city or detect automatically",

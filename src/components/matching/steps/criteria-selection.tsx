@@ -16,12 +16,16 @@ import {
   Globe,
   BookOpen,
   Check,
+  Clock,
+  Calendar,
+  CalendarCheck,
+  Euro,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import type { Gender, SessionType, Insurance, Language, TherapyType } from "@/types/therapist";
-import { LANGUAGES, THERAPY_TYPES } from "@/types/therapist";
+import type { Gender, SessionType, Insurance, Language, TherapyType, Availability } from "@/types/therapist";
+import { LANGUAGES, THERAPY_TYPES, AVAILABILITY_OPTIONS } from "@/types/therapist";
 import { useMatching } from "../matching-context";
 import { LocationInput } from "./location-input";
 
@@ -168,6 +172,56 @@ export function CriteriaSelection() {
                 isSelected={state.criteria.therapyTypes.includes(type)}
                 onClick={() => actions.toggleTherapyType(type)}
                 label={t(`therapists.therapyTypes.${type}`)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Availability */}
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-teal-muted">
+              <Clock className="h-4 w-4 text-accent-teal" />
+            </div>
+            {t("matching.criteria.availability")}
+          </Label>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {([null, ...AVAILABILITY_OPTIONS] as const).map((availability) => (
+              <AvailabilityCard
+                key={availability ?? "any"}
+                availability={availability}
+                isSelected={state.criteria.availability === availability}
+                onClick={() => actions.setAvailability(availability)}
+                label={
+                  availability
+                    ? t(`therapists.availability.${availability}`)
+                    : t("matching.criteria.anyAvailability")
+                }
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Max Price */}
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-amber-muted">
+              <Euro className="h-4 w-4 text-accent-amber" />
+            </div>
+            {t("matching.criteria.maxPrice")}
+          </Label>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {([null, 80, 120, 150] as const).map((price) => (
+              <PriceCard
+                key={price ?? "any"}
+                price={price}
+                isSelected={state.criteria.maxPrice === price}
+                onClick={() => actions.setMaxPrice(price)}
+                label={
+                  price
+                    ? t("matching.criteria.upToPrice", { price })
+                    : t("matching.criteria.anyPrice")
+                }
               />
             ))}
           </div>
@@ -423,6 +477,108 @@ function TherapyTypeChip({
     >
       {isSelected && <Check className="h-4 w-4" />}
       {label}
+    </button>
+  );
+}
+
+interface AvailabilityCardProps {
+  availability: Availability | null;
+  isSelected: boolean;
+  onClick: () => void;
+  label: string;
+}
+
+function AvailabilityCard({
+  availability,
+  isSelected,
+  onClick,
+  label,
+}: AvailabilityCardProps) {
+  const Icon = availability === "immediately"
+    ? Clock
+    : availability === "this_week"
+      ? Calendar
+      : availability === "flexible"
+        ? CalendarCheck
+        : Sparkles;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        isSelected
+          ? "border-accent-teal bg-accent-teal/10 shadow-md"
+          : "border-input bg-background hover:border-accent-teal/50 hover:bg-muted/50"
+      )}
+      aria-pressed={isSelected}
+    >
+      <div
+        className={cn(
+          "flex h-9 w-9 items-center justify-center rounded-full transition-colors",
+          isSelected
+            ? "bg-accent-teal text-white"
+            : "bg-muted text-muted-foreground"
+        )}
+      >
+        <Icon className="h-4 w-4" />
+      </div>
+      <span className={cn(
+        "text-xs font-medium text-center",
+        isSelected ? "text-accent-teal-foreground" : "text-foreground"
+      )}>
+        {label}
+      </span>
+    </button>
+  );
+}
+
+interface PriceCardProps {
+  price: number | null;
+  isSelected: boolean;
+  onClick: () => void;
+  label: string;
+}
+
+function PriceCard({
+  price,
+  isSelected,
+  onClick,
+  label,
+}: PriceCardProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        isSelected
+          ? "border-accent-amber bg-accent-amber/10 shadow-md"
+          : "border-input bg-background hover:border-accent-amber/50 hover:bg-muted/50"
+      )}
+      aria-pressed={isSelected}
+    >
+      <div
+        className={cn(
+          "flex h-9 w-9 items-center justify-center rounded-full transition-colors",
+          isSelected
+            ? "bg-accent-amber text-white"
+            : "bg-muted text-muted-foreground"
+        )}
+      >
+        {price ? (
+          <span className="text-xs font-bold">{price}€</span>
+        ) : (
+          <Sparkles className="h-4 w-4" />
+        )}
+      </div>
+      <span className={cn(
+        "text-xs font-medium text-center",
+        isSelected ? "text-accent-amber-foreground" : "text-foreground"
+      )}>
+        {label}
+      </span>
     </button>
   );
 }
