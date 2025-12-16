@@ -72,6 +72,10 @@
   --color-accent-amber-foreground: oklch(30% 0.08 70);
   --color-accent-amber-muted: oklch(95% 0.04 85);
 
+  --color-accent-teal: oklch(52% 0.14 185);
+  --color-accent-teal-foreground: oklch(25% 0.08 185);
+  --color-accent-teal-muted: oklch(94% 0.04 185);
+
   /* Border Radius - Slightly more rounded for modern look */
   --radius-lg: 0.75rem;
   --radius-md: calc(var(--radius-lg) - 2px);
@@ -148,6 +152,10 @@
   --color-accent-amber: oklch(72% 0.12 85);
   --color-accent-amber-foreground: oklch(90% 0.05 85);
   --color-accent-amber-muted: oklch(22% 0.04 85);
+
+  --color-accent-teal: oklch(65% 0.12 185);
+  --color-accent-teal-foreground: oklch(88% 0.05 185);
+  --color-accent-teal-muted: oklch(22% 0.04 185);
 }
 
 @layer base {

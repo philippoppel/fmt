@@ -507,13 +507,18 @@ function AvailabilityCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        "relative flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         isSelected
-          ? "border-accent-teal bg-accent-teal/10 shadow-md"
+          ? "border-accent-teal bg-accent-teal/15 shadow-md"
           : "border-input bg-background hover:border-accent-teal/50 hover:bg-muted/50"
       )}
       aria-pressed={isSelected}
     >
+      {isSelected && (
+        <div className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent-teal text-white shadow-sm">
+          <Check className="h-3 w-3" strokeWidth={3} />
+        </div>
+      )}
       <div
         className={cn(
           "flex h-9 w-9 items-center justify-center rounded-full transition-colors",
@@ -526,7 +531,7 @@ function AvailabilityCard({
       </div>
       <span className={cn(
         "text-xs font-medium text-center",
-        isSelected ? "text-accent-teal-foreground" : "text-foreground"
+        isSelected ? "text-accent-teal-foreground font-semibold" : "text-foreground"
       )}>
         {label}
       </span>
@@ -552,13 +557,18 @@ function PriceCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        "relative flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         isSelected
-          ? "border-accent-amber bg-accent-amber/10 shadow-md"
+          ? "border-accent-amber bg-accent-amber/15 shadow-md"
           : "border-input bg-background hover:border-accent-amber/50 hover:bg-muted/50"
       )}
       aria-pressed={isSelected}
     >
+      {isSelected && (
+        <div className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent-amber text-white shadow-sm">
+          <Check className="h-3 w-3" strokeWidth={3} />
+        </div>
+      )}
       <div
         className={cn(
           "flex h-9 w-9 items-center justify-center rounded-full transition-colors",
@@ -575,7 +585,7 @@ function PriceCard({
       </div>
       <span className={cn(
         "text-xs font-medium text-center",
-        isSelected ? "text-accent-amber-foreground" : "text-foreground"
+        isSelected ? "text-accent-amber-foreground font-semibold" : "text-foreground"
       )}>
         {label}
       </span>
