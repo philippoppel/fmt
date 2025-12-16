@@ -136,19 +136,6 @@ function WizardContent() {
         <div className="mx-auto flex min-h-[100dvh] max-w-4xl flex-col px-4 py-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
           <div className="flex flex-1 flex-col rounded-3xl border bg-card/80 p-4 sm:p-6 shadow-2xl backdrop-blur">
             <SuicideScreening />
-
-            {/* Continue button when screening is completed safely */}
-            {state.screeningCompleted && !state.crisisDetected && (
-              <div className="mt-auto flex justify-center pt-4">
-                <Button
-                  onClick={actions.goNext}
-                  className="w-full justify-center gap-2 bg-primary text-base hover:bg-primary/90 sm:w-auto"
-                >
-                  {t("matching.wizard.next")}
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
           </div>
         </div>
       </div>

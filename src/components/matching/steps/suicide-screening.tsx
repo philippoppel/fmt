@@ -32,9 +32,10 @@ export function SuicideScreening() {
       return;
     }
 
-    // If both answered "no", automatically proceed
+    // If both answered "no", automatically proceed to next step
     if (newResponses.question1 === false && newResponses.question2 === false) {
       actions.completeScreening(false);
+      actions.goNext();
     }
   };
 
@@ -60,6 +61,19 @@ export function SuicideScreening() {
   if (phase === "support") {
     return (
       <div className="flex flex-col h-full">
+        {/* Back button at top */}
+        <div className="mb-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleBack}
+            className="gap-1"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {t("matching.wizard.back")}
+          </Button>
+        </div>
+
         <div className="flex-1 space-y-4">
           {/* Compassionate Header */}
           <div className="text-center">
@@ -138,19 +152,6 @@ export function SuicideScreening() {
             </p>
           </div>
         </div>
-
-        {/* Back button */}
-        <div className="mt-auto pt-4 flex justify-start">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBack}
-            className="gap-1"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {t("matching.wizard.back")}
-          </Button>
-        </div>
       </div>
     );
   }
@@ -158,6 +159,19 @@ export function SuicideScreening() {
   // Questions phase - no continue button, auto-proceeds on both "no"
   return (
     <div className="flex flex-col h-full">
+      {/* Back button at top */}
+      <div className="mb-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleBack}
+          className="gap-1"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {t("matching.wizard.back")}
+        </Button>
+      </div>
+
       <div className="flex-1 space-y-4">
         {/* Compact Header */}
         <div className="text-center">
@@ -225,19 +239,6 @@ export function SuicideScreening() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Back button */}
-      <div className="mt-auto pt-4 flex justify-start">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleBack}
-          className="gap-1"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {t("matching.wizard.back")}
-        </Button>
       </div>
     </div>
   );
