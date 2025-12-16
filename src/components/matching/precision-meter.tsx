@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { Target, TrendingUp, Sparkles, Users, ChevronDown } from "lucide-react";
+import { Target, TrendingUp, Sparkles, Users, ChevronDown, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMatching } from "./matching-context";
 import {
@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { countMatchingTherapists } from "@/lib/actions/count-matches";
 
 // Calculate precision based on filled information
 // Aligned with score weights: Topics 35, Intensity 15, Criteria 40 (no Style Quiz)
@@ -52,20 +53,6 @@ function calculatePrecision(state: ReturnType<typeof useMatching>["state"]): num
   }
 
   return Math.min(precision, 100);
-}
-
-// Estimate potential matches based on precision (inverse relationship)
-// More precision = fewer but better matches
-function estimateMatches(precision: number): number {
-  // Start with ~200 potential matches, reduce as precision increases
-  const baseMatches = 200;
-  const minMatches = 3;
-
-  // Exponential decay: more precision = significantly fewer matches
-  const factor = Math.pow(1 - precision / 100, 1.5);
-  const matches = Math.round(minMatches + (baseMatches - minMatches) * factor);
-
-  return matches;
 }
 
 // Get precision level category
@@ -114,6 +101,61 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
 
   const level = getPrecisionLevel(displayPrecision);
 
+  // Real match count from database
+  const [matchCount, setMatchCount] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Fetch real match count when criteria change
+  useEffect(() => {
+    // Cancel previous request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    const fetchCount = async () => {
+      setIsLoading(true);
+      try {
+        const count = await countMatchingTherapists({
+          selectedTopics: state.selectedTopics,
+          selectedSubTopics: state.selectedSubTopics,
+          location: state.criteria.location || undefined,
+          gender: state.criteria.gender,
+          sessionType: state.criteria.sessionType,
+          insurance: state.criteria.insurance,
+        });
+
+        if (!controller.signal.aborted) {
+          setMatchCount(count);
+        }
+      } catch {
+        // Ignore abort errors
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    // Debounce the fetch
+    const timeoutId = setTimeout(fetchCount, 300);
+
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, [
+    state.selectedTopics,
+    state.selectedSubTopics,
+    state.criteria.location,
+    state.criteria.gender,
+    state.criteria.sessionType,
+    state.criteria.insurance,
+  ]);
+
   // Color based on precision level
   const colors = {
     low: {
@@ -151,7 +193,8 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (displayPrecision / 100) * circumference;
 
-  const estimatedMatches = useMemo(() => estimateMatches(displayPrecision), [displayPrecision]);
+  // Display count - use real count if available, otherwise show loading or dash
+  const displayCount = matchCount !== null ? matchCount : null;
 
   if (compact) {
     return (
@@ -166,10 +209,14 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
             )}
           >
             <Users className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="text-sm font-semibold tabular-nums">
-              ~{estimatedMatches}
-            </span>
-            {displayPrecision > 0 && (
+            {isLoading ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+            ) : (
+              <span className="text-sm font-semibold tabular-nums">
+                {displayCount !== null ? displayCount : "–"}
+              </span>
+            )}
+            {displayCount !== null && displayPrecision > 0 && (
               <ChevronDown className={cn(
                 "h-3 w-3 transition-colors",
                 level === "excellent" ? "text-primary" : "text-accent-emerald"
@@ -181,7 +228,9 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-muted-foreground" />
-              <span className="font-semibold text-sm">~{estimatedMatches} {t("compact.matches")}</span>
+              <span className="font-semibold text-sm">
+                {displayCount !== null ? displayCount : "–"} {t("compact.matches")}
+              </span>
             </div>
             <p className="text-xs text-muted-foreground">
               {t("compact.description")}
