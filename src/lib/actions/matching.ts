@@ -44,8 +44,12 @@ export async function searchWithMatching(
     }
 
     // Apply additional DB-level filters for efficiency
-    if (additionalFilters?.location) {
-      whereClause.city = { contains: additionalFilters.location, mode: "insensitive" };
+    // Location filter matches both city and postalCode (consistent with count-matches.ts)
+    if (additionalFilters?.location && additionalFilters.location.trim() !== "") {
+      whereClause.OR = [
+        { city: { contains: additionalFilters.location, mode: "insensitive" } },
+        { postalCode: { contains: additionalFilters.location } },
+      ];
     }
     if (additionalFilters?.gender) {
       whereClause.gender = additionalFilters.gender;

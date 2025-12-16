@@ -199,16 +199,20 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (displayPrecision / 100) * circumference;
 
-  // Determine quality indicator based on count and precision
+  // Determine quality indicator based on percentage of matching therapists
   // - Suggestions mode (no exact matches) = orange/info
-  // - Few matches (1-10) with precision = green/good (focused selection)
-  // - Many matches (15+) with low precision = neutral (too broad)
-  const getCountQuality = (): "good" | "neutral" | "suggestion" => {
-    if (displayCount === null) return "neutral";
+  // - High percentage (>=50%) = green/good (broad match)
+  // - Medium percentage (25-50%) = yellow/moderate (moderate filtering)
+  // - Low percentage (<25%) = gray/narrow (highly filtered)
+  const getCountQuality = (): "good" | "moderate" | "narrow" | "suggestion" => {
+    if (displayCount === null || totalAvailable === 0) return "moderate";
     if (hasNoExactMatches) return "suggestion";
-    if (displayCount <= 10 && displayPrecision >= 35) return "good";
-    if (displayCount > 15 && displayPrecision < 35) return "neutral";
-    return "good";
+
+    const percentage = (displayCount / totalAvailable) * 100;
+
+    if (percentage >= 50) return "good";      // Green - broad match
+    if (percentage >= 25) return "moderate";  // Yellow - moderate filtering
+    return "narrow";                          // Gray - highly filtered
   };
 
   const countQuality = getCountQuality();
@@ -220,7 +224,13 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
       border: "border-accent-emerald/30",
       dot: "bg-accent-emerald",
     },
-    neutral: {
+    moderate: {
+      text: "text-warning-foreground",
+      bg: "bg-warning/10",
+      border: "border-warning/30",
+      dot: "bg-warning",
+    },
+    narrow: {
       text: "text-muted-foreground",
       bg: "bg-muted/50",
       border: "border-muted",
@@ -255,7 +265,11 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
               <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
             ) : (
               <span className={cn("text-sm font-semibold tabular-nums", qColor.text)}>
-                {displayCount !== null ? displayCount : "–"}
+                {displayCount !== null
+                  ? hasNoExactMatches
+                    ? displayCount
+                    : `${displayCount} ${t("compact.of")} ${totalAvailable}`
+                  : "–"}
               </span>
             )}
             <ChevronDown className="h-3 w-3 text-muted-foreground" />
@@ -268,8 +282,11 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
               <div className="flex items-center gap-2">
                 <span className={cn("h-2.5 w-2.5 rounded-full", qColor.dot)} />
                 <span className={cn("font-semibold", qColor.text)}>
-                  {displayCount !== null ? displayCount : "–"}{" "}
-                  {hasNoExactMatches ? t("compact.suggestions") : t("compact.matches")}
+                  {displayCount !== null
+                    ? hasNoExactMatches
+                      ? `${displayCount} ${t("compact.suggestions")}`
+                      : `${displayCount} ${t("compact.of")} ${totalAvailable} ${t("compact.matches")}`
+                    : "–"}
                 </span>
               </div>
             </div>
