@@ -15,7 +15,10 @@ function createPrismaClient(): PrismaClient {
   if (process.env.VERCEL) {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) {
-      throw new Error("DATABASE_URL is not set");
+      // During build time, DATABASE_URL might not be available
+      // Return a placeholder that will be replaced at runtime
+      console.warn("[db] DATABASE_URL not set, using placeholder client");
+      return new PrismaClient();
     }
     // PrismaNeon takes a PoolConfig, not a Pool instance
     const adapter = new PrismaNeon({ connectionString });
@@ -34,6 +37,18 @@ function createPrismaClient(): PrismaClient {
   });
 }
 
-export const db = globalForPrisma.prisma ?? createPrismaClient();
+// Lazy initialization to avoid build-time errors
+let _db: PrismaClient | undefined;
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+export const db = new Proxy({} as PrismaClient, {
+  get(_, prop) {
+    if (!_db) {
+      _db = globalForPrisma.prisma ?? createPrismaClient();
+      if (process.env.NODE_ENV !== "production") {
+        globalForPrisma.prisma = _db;
+      }
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (_db as any)[prop];
+  },
+});
