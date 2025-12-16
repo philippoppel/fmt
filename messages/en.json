@@ -384,12 +384,13 @@
         "max": "Max"
       },
       "sessionType": {
-        "title": "Session Type",
-        "label": "Session Type",
+        "title": "How would you like to do your therapy?",
+        "label": "Therapy Format",
         "online": "Online",
         "in_person": "In Person",
         "inPerson": "In Person",
-        "both": "Both"
+        "both": "Both",
+        "flexible": "No preference"
       },
       "insurance": {
         "title": "Insurance",

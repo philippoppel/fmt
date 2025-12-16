@@ -384,12 +384,13 @@
         "max": "Max"
       },
       "sessionType": {
-        "title": "Sitzungsart",
-        "label": "Sitzungsart",
+        "title": "Wie möchtest du deine Therapie durchführen?",
+        "label": "Therapieformat",
         "online": "Online",
         "in_person": "Vor Ort",
         "inPerson": "Vor Ort",
-        "both": "Beides"
+        "both": "Beides",
+        "flexible": "Egal"
       },
       "insurance": {
         "title": "Versicherung",

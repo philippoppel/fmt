@@ -10,6 +10,5 @@ export { SessionTypeFilter } from "./session-type-filter";
 export { InsuranceFilter } from "./insurance-filter";
 export { AvailabilityFilter } from "./availability-filter";
 export { GenderFilter } from "./gender-filter";
-export { RatingFilter } from "./rating-filter";
 export { FilterSidebar } from "./filter-sidebar";
 export { FilterSheet } from "./filter-sheet";

@@ -20,7 +20,6 @@ import { SessionTypeFilter } from "./session-type-filter";
 import { InsuranceFilter } from "./insurance-filter";
 import { AvailabilityFilter } from "./availability-filter";
 import { GenderFilter } from "./gender-filter";
-import { RatingFilter } from "./rating-filter";
 import type { FilterState } from "@/types/therapist";
 
 interface FilterSheetProps {
@@ -104,11 +103,6 @@ export function FilterSheet({
             <GenderFilter
               value={filters.gender}
               onChange={(gender) => onFilterChange({ gender })}
-            />
-
-            <RatingFilter
-              value={filters.minRating}
-              onChange={(minRating) => onFilterChange({ minRating })}
             />
           </div>
         </ScrollArea>

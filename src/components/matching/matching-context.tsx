@@ -27,9 +27,9 @@ import {
   type SubTopic,
 } from "@/lib/matching/topics";
 
-// Steps: 1 = Topics, 1.25 = SubTopics, 1.5 = Intensity (optional), 2 = Criteria, 2.5 = Screening (before results)
+// Steps: 1 = Topics, 1.25 = SubTopics, 1.5 = Intensity (optional), 1.75 = Screening, 2 = Criteria
 // Optional: 0.75 = Freetext (alternative to topic selection)
-export type WizardStep = 0.75 | 1 | 1.25 | 1.5 | 2 | 2.5;
+export type WizardStep = 0.75 | 1 | 1.25 | 1.5 | 1.75 | 2;
 
 export type IntensityLevel = "low" | "medium" | "high";
 export type MatchingMode = "quick" | "full";
@@ -221,7 +221,7 @@ function matchingReducer(
         ...state,
         screeningCompleted: false,
         crisisDetected: false,
-        currentStep: 2.5,
+        currentStep: 1.75,
       };
 
     case "SWITCH_TO_FREETEXT":
@@ -674,8 +674,9 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
   // Navigation: 1 -> 1.25 (subtopics) -> 1.5 -> 2 -> 2.5 (screening) -> results
   // Alternative: 0.75 (freetext) -> 1 -> ...
   // SubTopics step (1.25) is skipped if no topics selected
+  // Screening (1.75) comes before Criteria (2)
   const goNext = useCallback(() => {
-    const stepOrder: WizardStep[] = [0.75, 1, 1.25, 1.5, 2, 2.5];
+    const stepOrder: WizardStep[] = [0.75, 1, 1.25, 1.5, 1.75, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
 
     // Skip SubTopics step if no available subtopics AND "other" not selected
@@ -695,7 +696,7 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
   }, [state.currentStep, state.selectedTopics]);
 
   const goBack = useCallback(() => {
-    const stepOrder: WizardStep[] = [0.75, 1, 1.25, 1.5, 2, 2.5];
+    const stepOrder: WizardStep[] = [0.75, 1, 1.25, 1.5, 1.75, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
     // Can go back from any step except the first (freetext or topics)
     if (currentIndex > 0) {
@@ -739,24 +740,24 @@ export function MatchingProvider({ children }: { children: ReactNode }) {
         return true; // SubTopics are optional (but recommended)
       case 1.5:
         return true; // Intensity is optional
+      case 1.75:
+        return state.screeningCompleted && !state.crisisDetected;
       case 2:
         return true; // All criteria are optional
-      case 2.5:
-        return state.screeningCompleted && !state.crisisDetected;
       default:
         return false;
     }
   }, [state.currentStep, state.screeningCompleted, state.crisisDetected, state.selectedTopics.length]);
 
-  // Progress: 1 = 20%, 1.25 = 35%, 1.5 = 50%, 2 = 70%, 2.5 = 90%, results = 100%
+  // Progress: 1 = 20%, 1.25 = 35%, 1.5 = 50%, 1.75 = 65%, 2 = 85%, results = 100%
   const progress = useMemo(() => {
     const stepProgress: Record<WizardStep, number> = {
       0.75: 10,
       1: 20,
       1.25: 35,
       1.5: 50,
-      2: 70,
-      2.5: 90,
+      1.75: 65,
+      2: 85,
     };
     return stepProgress[state.currentStep] ?? 0;
   }, [state.currentStep]);

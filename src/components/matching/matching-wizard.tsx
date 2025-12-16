@@ -26,12 +26,13 @@ function WizardContent() {
   };
 
   // Determine step position for display (freetext counts as topics step)
+  // New order: Topics -> SubTopics -> Intensity -> Screening -> Preferences
   const getStepPosition = () => {
     if (state.currentStep === 0.75 || state.currentStep === 1) return 1;
     if (state.currentStep === 1.25) return 2;
     if (state.currentStep === 1.5) return 3;
-    if (state.currentStep === 2) return 4;
-    if (state.currentStep === 2.5) return 5;
+    if (state.currentStep === 1.75) return 4; // Screening now before preferences
+    if (state.currentStep === 2) return 5;
     return 1;
   };
 
@@ -44,7 +45,7 @@ function WizardContent() {
           ? stepLabels.intensity
           : stepLabels.preferences;
   const stepPosition = getStepPosition();
-  const totalSteps = 5; // Topics, SubTopics, Intensity, Preferences, Safety Check
+  const totalSteps = 5; // Topics, SubTopics, Intensity, Screening, Preferences
 
   const handleShowResults = () => {
     // Encode matching data for URL
@@ -128,8 +129,8 @@ function WizardContent() {
     );
   }
 
-  // Screening step (at the end, before results)
-  if (state.currentStep === 2.5) {
+  // Screening step (before criteria/preferences)
+  if (state.currentStep === 1.75) {
     return (
       <div className="min-h-[100dvh] bg-gradient-to-b from-background via-background to-secondary/30">
         <div className="mx-auto flex min-h-[100dvh] max-w-4xl flex-col px-4 py-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
@@ -140,11 +141,11 @@ function WizardContent() {
             {state.screeningCompleted && !state.crisisDetected && (
               <div className="mt-auto flex justify-center pt-4">
                 <Button
-                  onClick={handleShowResults}
+                  onClick={actions.goNext}
                   className="w-full justify-center gap-2 bg-primary text-base hover:bg-primary/90 sm:w-auto"
                 >
-                  <Sparkles className="h-4 w-4" />
-                  {t("matching.wizard.showResults")}
+                  {t("matching.wizard.next")}
+                  <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
             )}
@@ -226,15 +227,26 @@ function WizardContent() {
               </Button>
             )}
 
-            <Button
-              size="sm"
-              onClick={actions.goNext}
-              disabled={!computed.canProceed}
-              className="h-8 gap-1 px-3"
-            >
-              <span className="text-sm">{t("matching.wizard.next")}</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
+            {state.currentStep === 2 ? (
+              <Button
+                size="sm"
+                onClick={handleShowResults}
+                className="h-8 gap-1.5 px-4 bg-primary"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                <span className="text-sm">{t("matching.wizard.showResults")}</span>
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                onClick={actions.goNext}
+                disabled={!computed.canProceed}
+                className="h-8 gap-1 px-3"
+              >
+                <span className="text-sm">{t("matching.wizard.next")}</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            )}
           </div>
         </div>
       </nav>
