@@ -905,7 +905,8 @@
       "autoSelected": "Selected",
       "suggested": "Suggested",
       "placeholderWithPrivacy": "What's troubling you? (no names/places)",
-      "privacyHint": "Don't include names or personal data"
+      "privacyHint": "Don't include names or personal data",
+      "aiHelpsYou": "AI identifies matching topics"
     },
     "fitLevel": {
       "excellent": "Excellent Fit",

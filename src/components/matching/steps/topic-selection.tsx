@@ -191,58 +191,82 @@ export function TopicSelection() {
           />
         ))}
 
-        {/* Freetext Card - at the end, full width and centered */}
+        {/* Freetext Card - styled like topic cards with gradient background */}
         <div
           onClick={handleCardClick}
           className={cn(
-            "col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-4 lg:col-start-2 row-span-1 flex cursor-text flex-col overflow-hidden rounded-lg border-2 transition-all",
+            "group relative col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-4 lg:col-start-2 aspect-[4/3] sm:aspect-[6/2] cursor-text overflow-hidden rounded-lg transition-all duration-200",
             analysisState === "success"
-              ? "border-green-600 bg-green-50 dark:border-green-500 dark:bg-green-950/30"
+              ? "ring-4 ring-success/40 shadow-lg shadow-success/25"
               : analysisState === "empty"
-                ? "border-amber-600 bg-amber-50 dark:border-amber-500 dark:bg-amber-950/30"
+                ? "ring-4 ring-warning/40 shadow-lg shadow-warning/25"
                 : isFocused || freetextValue.length > 0
-                  ? "border-primary shadow-md bg-card"
-                  : "border-border hover:border-primary/50 bg-card"
+                  ? "ring-4 ring-primary/40 shadow-lg shadow-primary/25"
+                  : "hover:ring-2 hover:ring-primary/30"
           )}
         >
-          {/* Card Header */}
+          {/* Gradient Background - matching the visual style of topic cards */}
           <div className={cn(
-            "flex items-center gap-2 px-3 py-2 border-b",
-            analysisState === "success" ? "border-green-600/30" : analysisState === "empty" ? "border-amber-600/30" : "border-border"
-          )}>
-            <div className={cn(
-              "flex h-6 w-6 items-center justify-center rounded-full",
-              analysisState === "success" ? "bg-green-600/20" : analysisState === "empty" ? "bg-amber-600/20" : "bg-primary/15"
-            )}>
-              {isPending ? (
-                <Loader2 className="h-3.5 w-3.5 text-primary animate-spin" />
-              ) : analysisState === "success" ? (
-                <CheckCircle2 className="h-3.5 w-3.5 text-green-700 dark:text-green-400" />
-              ) : analysisState === "empty" ? (
-                <AlertCircle className="h-3.5 w-3.5 text-amber-700 dark:text-amber-400" />
-              ) : (
-                <MessageSquareText className="h-3.5 w-3.5 text-primary" />
+            "absolute inset-0 transition-all duration-200",
+            analysisState === "success"
+              ? "bg-gradient-to-br from-success/20 via-success/10 to-success/5"
+              : analysisState === "empty"
+                ? "bg-gradient-to-br from-warning/20 via-warning/10 to-warning/5"
+                : "bg-gradient-to-br from-primary/15 via-primary/8 to-muted/50"
+          )} />
+
+          {/* Decorative pattern overlay */}
+          <div className="absolute inset-0 opacity-[0.03]" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }} />
+
+          <div className="relative flex h-full flex-col p-4">
+            {/* Card Header */}
+            <div className="flex items-center gap-3 mb-3">
+              <div className={cn(
+                "flex h-10 w-10 items-center justify-center rounded-xl shadow-sm",
+                analysisState === "success"
+                  ? "bg-success text-white"
+                  : analysisState === "empty"
+                    ? "bg-warning text-white"
+                    : "bg-primary/90 text-primary-foreground"
+              )}>
+                {isPending ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : analysisState === "success" ? (
+                  <CheckCircle2 className="h-5 w-5" />
+                ) : analysisState === "empty" ? (
+                  <AlertCircle className="h-5 w-5" />
+                ) : (
+                  <MessageSquareText className="h-5 w-5" />
+                )}
+              </div>
+              <div className="flex-1">
+                <span className={cn(
+                  "text-sm font-bold",
+                  analysisState === "success" ? "text-success-foreground" : analysisState === "empty" ? "text-warning-foreground" : "text-foreground"
+                )}>
+                  {isPending
+                    ? t("matching.freetext.analyzing")
+                    : analysisState === "success"
+                      ? t("matching.freetext.understood")
+                      : analysisState === "empty"
+                        ? t("matching.freetext.couldNotUnderstand")
+                        : t("matching.wizard.preferToDescribe")}
+                </span>
+                {analysisState === "idle" && !isPending && (
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {t("matching.freetext.aiHelpsYou")}
+                  </p>
+                )}
+              </div>
+              {freetextValue.length >= 10 && analysisState === "idle" && !isPending && (
+                <Sparkles className="h-5 w-5 text-primary animate-pulse" />
               )}
             </div>
-            <span className={cn(
-              "text-xs font-semibold",
-              analysisState === "success" ? "text-green-800 dark:text-green-300" : analysisState === "empty" ? "text-amber-800 dark:text-amber-300" : "text-foreground"
-            )}>
-              {isPending
-                ? t("matching.freetext.analyzing")
-                : analysisState === "success"
-                  ? t("matching.freetext.understood")
-                  : analysisState === "empty"
-                    ? t("matching.freetext.couldNotUnderstand")
-                    : t("matching.wizard.preferToDescribe")}
-            </span>
-            {freetextValue.length >= 10 && analysisState === "idle" && !isPending && (
-              <Sparkles className="ml-auto h-3.5 w-3.5 text-primary animate-pulse" />
-            )}
-          </div>
 
-          {/* Content Area */}
-          <div className="flex-1 p-2 overflow-y-auto">
+            {/* Content Area */}
+            <div className="flex-1 min-h-0 overflow-y-auto">
             {analysisState === "success" ? (
               <div className="flex flex-col gap-2 p-1">
                 {/* Understanding summary - short and direct */}
@@ -304,70 +328,61 @@ export function TopicSelection() {
                   onBlur={() => setIsFocused(false)}
                   placeholder={t("matching.freetext.placeholderWithPrivacy")}
                   disabled={isPending}
-                  className="flex-1 min-h-0 resize-none border-0 bg-transparent p-1 text-sm placeholder:text-muted-foreground/60 focus-visible:ring-0"
+                  className="flex-1 min-h-0 resize-none rounded-lg border-0 bg-white/60 dark:bg-black/20 p-3 text-sm placeholder:text-muted-foreground/60 focus-visible:ring-0 focus-visible:bg-white/80 dark:focus-visible:bg-black/30"
                 />
-                {/* Privacy hint */}
-                {isFocused && freetextValue.length === 0 && (
-                  <div className="flex items-center gap-1.5 px-1 py-1 text-xs text-muted-foreground/70">
-                    <Info className="h-3 w-3" />
-                    <span>{t("matching.freetext.privacyHint")}</span>
-                  </div>
+              </div>
+            )}
+            </div>
+
+            {/* Action Footer */}
+            {(freetextValue.length > 0 || analysisState !== "idle") && (
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-foreground/10">
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {freetextValue.length}/500
+                </span>
+                {analysisState !== "idle" && analysisState !== "pending" ? (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      actions.setInlineFreetext("");
+                      resetAnalysis();
+                      textareaRef.current?.focus();
+                    }}
+                    className="flex items-center gap-1.5 rounded-full bg-white/80 dark:bg-black/30 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-white dark:hover:bg-black/50"
+                  >
+                    {t("matching.freetext.resetInput")}
+                  </button>
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAnalyze();
+                    }}
+                    disabled={freetextValue.trim().length < 10 || isPending}
+                    className={cn(
+                      "flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all",
+                      freetextValue.trim().length >= 10 && !isPending
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
+                        : "bg-white/60 dark:bg-black/30 text-muted-foreground"
+                    )}
+                  >
+                    {isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>{t("matching.freetext.analyzing")}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-4 w-4" />
+                        {t("matching.freetext.analyze")}
+                        <ArrowRight className="h-4 w-4" />
+                      </>
+                    )}
+                  </button>
                 )}
               </div>
             )}
           </div>
-
-          {/* Action Footer */}
-          {(freetextValue.length > 0 || analysisState !== "idle") && (
-            <div className={cn(
-              "flex items-center justify-between border-t px-3 py-2",
-              analysisState === "success" ? "border-green-600/30" : analysisState === "empty" ? "border-amber-600/30" : "border-border"
-            )}>
-              <span className="text-xs text-muted-foreground">
-                {freetextValue.length}/500
-              </span>
-              {analysisState !== "idle" && analysisState !== "pending" ? (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    actions.setInlineFreetext("");
-                    resetAnalysis();
-                    textareaRef.current?.focus();
-                  }}
-                  className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/80"
-                >
-                  {t("matching.freetext.resetInput")}
-                </button>
-              ) : (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleAnalyze();
-                  }}
-                  disabled={freetextValue.trim().length < 10 || isPending}
-                  className={cn(
-                    "flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all",
-                    freetextValue.trim().length >= 10 && !isPending
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
-                      : "bg-muted text-muted-foreground"
-                  )}
-                >
-                  {isPending ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>{t("matching.freetext.analyzing")}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4" />
-                      {t("matching.freetext.analyze")}
-                      <ArrowRight className="h-4 w-4" />
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
-          )}
         </div>
       </div>
     </div>

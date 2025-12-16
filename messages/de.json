@@ -905,7 +905,8 @@
       "autoSelected": "Ausgewählt",
       "suggested": "Vorschlag",
       "placeholderWithPrivacy": "Was belastet dich? (keine Namen/Orte)",
-      "privacyHint": "Keine Namen oder persönliche Daten angeben"
+      "privacyHint": "Keine Namen oder persönliche Daten angeben",
+      "aiHelpsYou": "KI erkennt passende Themen"
     },
     "fitLevel": {
       "excellent": "Ausgezeichnetes Matching",
