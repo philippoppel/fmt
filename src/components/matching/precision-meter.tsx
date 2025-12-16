@@ -134,44 +134,35 @@ export function PrecisionMeter({ className, compact = false }: PrecisionMeterPro
 
   if (compact) {
     return (
-      <div className={cn("flex items-center gap-3", className)}>
-        {/* Circular progress - larger */}
-        <div className="relative" style={{ width: 72, height: 72 }}>
-          <svg width={72} height={72} className="transform -rotate-90">
+      <div className={cn("flex items-center gap-1.5 shrink-0", className)}>
+        {/* Tiny circular progress */}
+        <div className="relative" style={{ width: 28, height: 28 }}>
+          <svg width={28} height={28} className="transform -rotate-90">
             <circle
-              cx={36}
-              cy={36}
-              r={30}
+              cx={14}
+              cy={14}
+              r={11}
               fill="none"
-              strokeWidth={6}
+              strokeWidth={3}
               className="stroke-muted/30"
             />
             <circle
-              cx={36}
-              cy={36}
-              r={30}
+              cx={14}
+              cy={14}
+              r={11}
               fill="none"
-              strokeWidth={6}
+              strokeWidth={3}
               strokeLinecap="round"
-              strokeDasharray={188.5}
-              strokeDashoffset={188.5 - (displayPrecision / 100) * 188.5}
+              strokeDasharray={69.1}
+              strokeDashoffset={69.1 - (displayPrecision / 100) * 69.1}
               className={cn(color.stroke, "transition-all duration-500")}
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className={cn("text-lg font-bold tabular-nums", color.text)}>
-              {displayPrecision}%
+            <span className={cn("text-[10px] font-bold tabular-nums", color.text)}>
+              {displayPrecision}
             </span>
           </div>
-        </div>
-        {/* Label and level */}
-        <div className="flex flex-col">
-          <span className="text-xs text-muted-foreground leading-tight">
-            {t("label")}
-          </span>
-          <span className={cn("text-sm font-semibold leading-tight", color.text)}>
-            {t(`levels.${level}`)}
-          </span>
         </div>
       </div>
     );

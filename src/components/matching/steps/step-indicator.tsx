@@ -13,9 +13,10 @@ interface StepIndicatorProps {
     preferences: string;
   };
   optionalLabel?: string;
+  compact?: boolean;
 }
 
-export function StepIndicator({ labels }: StepIndicatorProps) {
+export function StepIndicator({ labels, compact = false }: StepIndicatorProps) {
   const { state } = useMatching();
   const t = useTranslations("matching.wizard");
 
@@ -95,6 +96,41 @@ export function StepIndicator({ labels }: StepIndicatorProps) {
   };
 
   const motivation = getMotivation();
+
+  // Compact mode - minimal single line with just dots
+  if (compact) {
+    return (
+      <nav aria-label="Progress" className="flex items-center gap-1">
+        {steps.map(({ step }, index) => {
+          const isActive = isStepActive(step);
+          const isCompleted = isStepCompleted(step);
+          const isLast = index === steps.length - 1;
+
+          return (
+            <div key={step} className="flex items-center">
+              <div
+                className={cn(
+                  "flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold transition-all",
+                  isCompleted && "bg-primary text-primary-foreground",
+                  isActive && !isCompleted && "bg-primary text-primary-foreground ring-1 ring-primary/30",
+                  !isCompleted && !isActive && "bg-muted text-muted-foreground"
+                )}
+              >
+                {isCompleted ? (
+                  <Check className="h-3 w-3" strokeWidth={3} />
+                ) : (
+                  <span>{index + 1}</span>
+                )}
+              </div>
+              {!isLast && (
+                <div className="mx-0.5 h-px w-3 bg-muted" />
+              )}
+            </div>
+          );
+        })}
+      </nav>
+    );
+  }
 
   return (
     <nav aria-label="Progress" className="w-full space-y-2">

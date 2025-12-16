@@ -157,36 +157,31 @@ function WizardContent() {
 
   return (
     <div className="flex h-[100dvh] flex-col overflow-hidden bg-background">
-      {/* Clean Header with Steps */}
-      <header className="shrink-0 border-b bg-card/95 backdrop-blur-sm">
-        {/* Top bar - minimal */}
-        <div className="flex items-center justify-between px-4 py-2 pt-[calc(0.5rem+env(safe-area-inset-top))]">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.push("/therapists")}
-              className="h-8 w-8 p-0"
-              aria-label={t("matching.wizard.close")}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="text-sm font-semibold">{t("matching.wizard.badge")}</span>
-            </div>
-          </div>
-          <PrecisionMeter compact />
-        </div>
+      {/* Compact single-line header */}
+      <header className="shrink-0 border-b bg-card/95 backdrop-blur-sm px-3 py-1.5 pt-[calc(0.375rem+env(safe-area-inset-top))]">
+        <div className="flex items-center gap-2">
+          {/* Close button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/therapists")}
+            className="h-7 w-7 p-0 shrink-0"
+            aria-label={t("matching.wizard.close")}
+          >
+            <X className="h-3.5 w-3.5" />
+          </Button>
 
-        {/* Step Indicator - full width, clean */}
-        <div className="px-4 pb-3">
-          <div className="mx-auto max-w-xl">
+          {/* Step Indicator - takes remaining space */}
+          <div className="flex-1 min-w-0">
             <StepIndicator
               labels={stepLabels}
               optionalLabel={t("matching.intensity.optional")}
+              compact
             />
           </div>
+
+          {/* Precision Meter */}
+          <PrecisionMeter compact />
         </div>
       </header>
 
