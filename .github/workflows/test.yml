@@ -48,11 +48,16 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_APP_URL: http://localhost:3000
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test?sslmode=disable"
+          DATABASE_URL_UNPOOLED: "postgresql://test:test@localhost:5432/test?sslmode=disable"
 
       - name: Run E2E tests
         run: npm run test:e2e -- --project=chromium
         env:
           NEXT_PUBLIC_APP_URL: http://localhost:3000
+          DATABASE_URL: "postgresql://test:test@localhost:5432/test?sslmode=disable"
+          DATABASE_URL_UNPOOLED: "postgresql://test:test@localhost:5432/test?sslmode=disable"
+          AUTH_SECRET: "test-secret-for-ci-at-least-32-characters-long"
 
       - name: Upload Playwright report
         if: failure()

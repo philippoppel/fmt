@@ -189,10 +189,45 @@ model TherapistProfile {
   id                String       @id @default(cuid())
   userId            String       @unique
 
+  // SEO-friendly URL slug (e.g., "dr-maria-schneider")
+  slug              String?      @unique
+
   // Basic Info
   title             String?
   imageUrl          String?
   shortDescription  String?      @db.Text
+
+  // Extended Profile Info for Personal Website
+  headline          String?      // "Ihre einfühlsame Begleitung auf dem Weg zu mehr Lebensfreude"
+  longDescription   String?      @db.Text  // Detailed "Über mich" section
+  education         String[]     // Ausbildung & Qualifikationen
+  certifications    String[]     // Zertifizierungen
+  memberships       String[]     // Berufsverbände & Mitgliedschaften
+
+  // Profile Images (Gallery)
+  galleryImages     String[]     // Array of image URLs for gallery
+
+  // Contact & Social
+  phone             String?
+  email             String?      // Public contact email (separate from login)
+  website           String?
+  linkedIn          String?
+  instagram         String?
+
+  // Profile Theme/Colors
+  themeColor        String?      @default("#8B7355") // Primary accent color
+  themeName         String?      @default("warm")    // "warm", "cool", "nature", "professional"
+
+  // Office/Practice Details
+  practiceName      String?      // Name der Praxis
+  street            String?
+  officeImages      String[]     // Praxis-Bilder
+
+  // Working Hours (JSON structure)
+  workingHours      Json?        // {"monday": {"from": "09:00", "to": "18:00"}, ...}
+
+  // First Session Info Extended
+  consultationInfo  String?      @db.Text  // Was erwartet Sie im Erstgespräch
 
   // Location
   city              String?
@@ -264,6 +299,7 @@ model TherapistProfile {
 
   @@index([city])
   @@index([isPublished])
+  @@index([slug])
   @@map("therapist_profiles")
 }
 
