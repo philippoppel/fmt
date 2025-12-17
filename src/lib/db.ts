@@ -39,11 +39,20 @@ function createPrismaClient(): PrismaClient {
 
 // Lazy initialization to avoid build-time errors
 let _db: PrismaClient | undefined;
+let _dbHasConnection = false;
 
 export const db = new Proxy({} as PrismaClient, {
   get(_, prop) {
+    // In production, always check if we have a proper connection
+    // This handles the case where DATABASE_URL wasn't available during build
+    if (process.env.VERCEL && !_dbHasConnection && process.env.DATABASE_URL) {
+      _db = undefined; // Force recreation with proper connection
+      globalForPrisma.prisma = undefined;
+    }
+
     if (!_db) {
       _db = globalForPrisma.prisma ?? createPrismaClient();
+      _dbHasConnection = !!process.env.DATABASE_URL;
       if (process.env.NODE_ENV !== "production") {
         globalForPrisma.prisma = _db;
       }
