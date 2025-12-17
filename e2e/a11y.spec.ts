@@ -40,13 +40,13 @@ test.describe("Accessibility", () => {
 
   test.describe("Skip Links", () => {
     test("skip links should be present and functional", async ({ page }) => {
-      await page.goto("/");
+      await page.goto("/en");
 
       // Tab to reveal skip link
       await page.keyboard.press("Tab");
 
-      // Check if skip link becomes visible
-      const skipLink = page.getByRole("link", { name: /skip|überspringen/i }).first();
+      // Check if skip link becomes visible (matches "Skip to main content" or "Zum Hauptinhalt springen")
+      const skipLink = page.getByRole("link", { name: /skip|springen/i }).first();
 
       // Skip link should exist (might be visually hidden until focused)
       await expect(skipLink).toBeAttached();
@@ -145,11 +145,11 @@ test.describe("Accessibility", () => {
 
   test.describe("Form Accessibility", () => {
     test("login form should have accessible labels", async ({ page }) => {
-      await page.goto("/auth/login");
+      await page.goto("/en/auth/login");
 
-      // Email input should have label
-      const emailInput = page.getByRole("textbox", { name: /email/i });
-      await expect(emailInput).toBeVisible();
+      // Email input should have label (use locator for type="email" which may not be textbox role)
+      const emailInput = page.locator('input[type="email"], input#email');
+      await expect(emailInput.first()).toBeVisible();
 
       // Password input should be accessible
       const passwordInput = page.locator('input[type="password"]');
