@@ -15,13 +15,16 @@ import {
   Video,
   Building2,
   Gift,
+  CheckCircle2,
 } from "lucide-react";
 import type { TherapistProfileData, WorkingHours } from "@/types/profile";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { GlassCard } from "@/components/ui/glass-card";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 
 interface ProfileContactProps {
   profile: TherapistProfileData;
@@ -37,6 +40,7 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
   });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const { ref: contactRef, isVisible: contactVisible } = useScrollAnimation();
 
   const t = {
     de: {
@@ -198,193 +202,250 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
 
   return (
     <div
-      className="py-16 sm:py-24"
+      id="contact"
+      className="py-16 sm:py-24 relative overflow-hidden"
       style={{
         background: `linear-gradient(180deg, var(--profile-bg) 0%, var(--profile-secondary) 100%)`,
       }}
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      {/* Decorative background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div
+          className="absolute top-0 right-0 w-80 h-80 rounded-full blur-3xl opacity-15 animate-float-slow"
+          style={{
+            background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 70%)`,
+          }}
+        />
+        <div
+          className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-10"
+          style={{
+            background: `radial-gradient(circle, var(--profile-accent) 0%, transparent 70%)`,
+          }}
+        />
+      </div>
+
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
         <h2
-          className="text-2xl sm:text-3xl font-bold mb-12 text-center"
-          style={{ color: "var(--profile-text)" }}
+          ref={contactRef}
+          className={cn(
+            "text-2xl sm:text-3xl font-bold mb-12 text-center",
+            "opacity-0",
+            contactVisible && "animate-fade-in-up"
+          )}
+          style={{ color: "var(--profile-text)", animationFillMode: "forwards" }}
         >
           {t.contact}
         </h2>
 
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Contact Form */}
-          <Card className="border-0 shadow-lg">
-            <CardContent className="pt-6">
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">{t.yourName}</Label>
-                  <Input
-                    id="name"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">{t.yourEmail}</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">{t.yourPhone}</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="message">{t.yourMessage}</Label>
-                  <textarea
-                    id="message"
-                    required
-                    rows={4}
-                    className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    placeholder={t.messagePlaceholder}
-                    value={formData.message}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full text-white"
-                  style={{ backgroundColor: "var(--profile-primary)" }}
-                  disabled={sending || sent}
-                >
-                  {sent ? (
-                    t.messageSent
-                  ) : sending ? (
-                    t.sendingMessage
-                  ) : (
-                    <>
-                      <Send className="mr-2 h-4 w-4" />
-                      {t.sendMessage}
-                    </>
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+          <div
+            className={cn("opacity-0", contactVisible && "animate-slide-in-left")}
+            style={{ animationFillMode: "forwards", animationDelay: "0.1s" }}
+          >
+            <GlassCard enableTilt={false} className="h-full">
+              <div className="p-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">{t.yourName}</Label>
+                    <Input
+                      id="name"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                      className="transition-all duration-200 focus:scale-[1.01]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">{t.yourEmail}</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                      className="transition-all duration-200 focus:scale-[1.01]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">{t.yourPhone}</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
+                      className="transition-all duration-200 focus:scale-[1.01]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="message">{t.yourMessage}</Label>
+                    <textarea
+                      id="message"
+                      required
+                      rows={4}
+                      className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all duration-200 focus:scale-[1.01]"
+                      placeholder={t.messagePlaceholder}
+                      value={formData.message}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className={cn(
+                      "w-full text-white",
+                      "transition-all duration-300",
+                      "hover:scale-105 hover:shadow-lg",
+                      "relative overflow-hidden group",
+                      sent && "bg-green-500 hover:bg-green-500"
+                    )}
+                    style={!sent ? { backgroundColor: "var(--profile-primary)" } : undefined}
+                    disabled={sending}
+                  >
+                    {/* Shimmer effect */}
+                    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+                    {sent ? (
+                      <>
+                        <CheckCircle2 className="mr-2 h-4 w-4 relative z-10" />
+                        <span className="relative z-10">{t.messageSent}</span>
+                      </>
+                    ) : sending ? (
+                      <span className="relative z-10">{t.sendingMessage}</span>
+                    ) : (
+                      <>
+                        <Send className="mr-2 h-4 w-4 relative z-10" />
+                        <span className="relative z-10">{t.sendMessage}</span>
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </div>
+            </GlassCard>
+          </div>
 
           {/* Contact Info */}
-          <div className="space-y-6">
+          <div
+            className={cn(
+              "space-y-6 opacity-0",
+              contactVisible && "animate-slide-in-right"
+            )}
+            style={{ animationFillMode: "forwards", animationDelay: "0.2s" }}
+          >
             {/* Contact Details Card */}
-            <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
+            <GlassCard enableTilt={true}>
+              <div className="p-6">
+                <div className="flex items-center gap-2 text-lg font-semibold mb-4">
                   <Mail className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
                   {t.contactInfo}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Location */}
-                {hasAddress && (
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" style={{ color: "var(--profile-primary)" }} />
-                    <div>
-                      <p className="font-medium">{t.location}</p>
-                      <p className="text-gray-600">
-                        {profile.practiceName && <span className="block">{profile.practiceName}</span>}
-                        {profile.street && <span className="block">{profile.street}</span>}
-                        {profile.postalCode} {profile.city}
-                      </p>
+                </div>
+                <div className="space-y-4">
+                  {/* Location */}
+                  {hasAddress && (
+                    <div className="flex items-start gap-3 group">
+                      <MapPin
+                        className="h-5 w-5 mt-0.5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                        style={{ color: "var(--profile-primary)" }}
+                      />
+                      <div>
+                        <p className="font-medium">{t.location}</p>
+                        <p className="text-gray-600">
+                          {profile.practiceName && <span className="block">{profile.practiceName}</span>}
+                          {profile.street && <span className="block">{profile.street}</span>}
+                          {profile.postalCode} {profile.city}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Phone */}
-                {profile.phone && (
-                  <div className="flex items-center gap-3">
-                    <Phone className="h-5 w-5 flex-shrink-0" style={{ color: "var(--profile-primary)" }} />
-                    <div>
-                      <p className="font-medium">{t.phone}</p>
-                      <a href={`tel:${profile.phone}`} className="text-gray-600 hover:underline">
-                        {profile.phone}
-                      </a>
+                  {/* Phone */}
+                  {profile.phone && (
+                    <div className="flex items-center gap-3 group">
+                      <Phone
+                        className="h-5 w-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                        style={{ color: "var(--profile-primary)" }}
+                      />
+                      <div>
+                        <p className="font-medium">{t.phone}</p>
+                        <a href={`tel:${profile.phone}`} className="text-gray-600 hover:underline">
+                          {profile.phone}
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Email */}
-                {profile.email && (
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-5 w-5 flex-shrink-0" style={{ color: "var(--profile-primary)" }} />
-                    <div>
-                      <p className="font-medium">{t.email}</p>
-                      <a href={`mailto:${profile.email}`} className="text-gray-600 hover:underline">
-                        {profile.email}
-                      </a>
+                  {/* Email */}
+                  {profile.email && (
+                    <div className="flex items-center gap-3 group">
+                      <Mail
+                        className="h-5 w-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                        style={{ color: "var(--profile-primary)" }}
+                      />
+                      <div>
+                        <p className="font-medium">{t.email}</p>
+                        <a href={`mailto:${profile.email}`} className="text-gray-600 hover:underline">
+                          {profile.email}
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Website */}
-                {profile.website && (
-                  <div className="flex items-center gap-3">
-                    <Globe className="h-5 w-5 flex-shrink-0" style={{ color: "var(--profile-primary)" }} />
-                    <div>
-                      <p className="font-medium">{t.website}</p>
-                      <a
-                        href={profile.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-600 hover:underline"
-                      >
-                        {profile.website.replace(/^https?:\/\//, "")}
-                      </a>
+                  {/* Website */}
+                  {profile.website && (
+                    <div className="flex items-center gap-3 group">
+                      <Globe
+                        className="h-5 w-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                        style={{ color: "var(--profile-primary)" }}
+                      />
+                      <div>
+                        <p className="font-medium">{t.website}</p>
+                        <a
+                          href={profile.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-600 hover:underline"
+                        >
+                          {profile.website.replace(/^https?:\/\//, "")}
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Social Links */}
-                {(profile.linkedIn || profile.instagram) && (
-                  <div className="flex gap-3 pt-2">
-                    {profile.linkedIn && (
-                      <a
-                        href={profile.linkedIn}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                      >
-                        <Linkedin className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
-                      </a>
-                    )}
-                    {profile.instagram && (
-                      <a
-                        href={profile.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                      >
-                        <Instagram className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
-                      </a>
-                    )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  {/* Social Links */}
+                  {(profile.linkedIn || profile.instagram) && (
+                    <div className="flex gap-3 pt-2">
+                      {profile.linkedIn && (
+                        <a
+                          href={profile.linkedIn}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
+                        >
+                          <Linkedin className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
+                        </a>
+                      )}
+                      {profile.instagram && (
+                        <a
+                          href={profile.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-110"
+                        >
+                          <Instagram className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </GlassCard>
 
             {/* Working Hours Card */}
             {profile.workingHours && (
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
+              <GlassCard enableTilt={true}>
+                <div className="p-6">
+                  <div className="flex items-center gap-2 text-lg font-semibold mb-4">
                     <Clock className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
                     {t.workingHours}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </div>
                   <div className="space-y-2">
                     {formatWorkingHours(profile.workingHours).map(({ day, hours }) => (
                       <div key={day} className="flex justify-between text-sm">
@@ -395,69 +456,73 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
                       </div>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </GlassCard>
             )}
 
             {/* Pricing Card */}
-            <Card className="border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
+            <GlassCard enableTilt={true}>
+              <div className="p-6">
+                <div className="flex items-center gap-2 text-lg font-semibold mb-4">
                   <Euro className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
                   {t.pricing}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Price */}
-                {profile.pricePerSession > 0 && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{t.pricePerSession}</span>
-                    <span className="text-xl font-bold" style={{ color: "var(--profile-primary)" }}>
-                      {profile.pricePerSession} €
-                    </span>
-                  </div>
-                )}
-
-                {/* Trial Session */}
-                {profile.offersTrialSession && (
-                  <div className="flex items-center gap-2">
-                    <Gift className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
-                    <span>
-                      {profile.trialSessionPrice === 0
-                        ? t.trialFree
-                        : `${t.trialPrice}: ${profile.trialSessionPrice} €`}
-                    </span>
-                  </div>
-                )}
-
-                {/* Session Type */}
-                <div className="flex items-center gap-2">
-                  {profile.sessionType === "online" ? (
-                    <Video className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
-                  ) : (
-                    <Building2 className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
-                  )}
-                  <span>{sessionTypeText}</span>
                 </div>
+                <div className="space-y-4">
+                  {/* Price */}
+                  {profile.pricePerSession > 0 && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">{t.pricePerSession}</span>
+                      <span className="text-xl font-bold" style={{ color: "var(--profile-primary)" }}>
+                        {profile.pricePerSession} €
+                      </span>
+                    </div>
+                  )}
 
-                {/* Insurance */}
-                {profile.insurance.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <CreditCard className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
-                      <span>{t.insurance}</span>
+                  {/* Trial Session */}
+                  {profile.offersTrialSession && (
+                    <div className="flex items-center gap-2">
+                      <Gift className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
+                      <span>
+                        {profile.trialSessionPrice === 0
+                          ? t.trialFree
+                          : `${t.trialPrice}: ${profile.trialSessionPrice} €`}
+                      </span>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {profile.insurance.map((ins) => (
-                        <Badge key={ins} variant="outline">
-                          {ins === "public" ? t.public : t.private}
-                        </Badge>
-                      ))}
-                    </div>
+                  )}
+
+                  {/* Session Type */}
+                  <div className="flex items-center gap-2">
+                    {profile.sessionType === "online" ? (
+                      <Video className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
+                    ) : (
+                      <Building2 className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
+                    )}
+                    <span>{sessionTypeText}</span>
                   </div>
-                )}
-              </CardContent>
-            </Card>
+
+                  {/* Insurance */}
+                  {profile.insurance.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <CreditCard className="h-5 w-5" style={{ color: "var(--profile-primary)" }} />
+                        <span>{t.insurance}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {profile.insurance.map((ins) => (
+                          <Badge
+                            key={ins}
+                            variant="outline"
+                            className="transition-all duration-200 hover:scale-105"
+                          >
+                            {ins === "public" ? t.public : t.private}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </GlassCard>
           </div>
         </div>
       </div>

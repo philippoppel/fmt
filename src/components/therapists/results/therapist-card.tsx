@@ -7,9 +7,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/ui/star-rating";
-import { MapPin, Euro, Video, Building2, UserCircle } from "lucide-react";
+import { MapPin, Euro, Video, Building2, UserCircle, ExternalLink } from "lucide-react";
 import type { Therapist } from "@/types/therapist";
 import { MatchScoreBadge } from "./match-score-badge";
+
+// Generate URL-friendly slug from therapist name
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss")
+    .replace(/[^a-z0-9-]/g, "");
+}
 
 interface TherapistCardProps {
   therapist: Therapist;
@@ -115,10 +127,15 @@ export function TherapistCard({ therapist, matchScore }: TherapistCardProps) {
 
             {/* Action */}
             <div className="mt-4 pt-4 border-t">
-              <Button asChild className="w-full sm:w-auto">
-                <Link href={`/therapists/${therapist.id}`}>
+              <Button asChild className="w-full sm:w-auto gap-2">
+                <a
+                  href={`/p/${generateSlug(therapist.name)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {t("viewProfile")}
-                </Link>
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
               </Button>
             </div>
           </div>

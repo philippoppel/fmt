@@ -16,7 +16,7 @@ export function ProfileFooter({ profile, locale }: ProfileFooterProps) {
     de: {
       allRightsReserved: "Alle Rechte vorbehalten",
       poweredBy: "Präsentiert von",
-      platformName: "Find My Therapist",
+      platformName: "FindMyTherapy",
       backToSearch: "Zur Therapeutensuche",
       privacyPolicy: "Datenschutz",
       imprint: "Impressum",
@@ -25,7 +25,7 @@ export function ProfileFooter({ profile, locale }: ProfileFooterProps) {
     en: {
       allRightsReserved: "All rights reserved",
       poweredBy: "Powered by",
-      platformName: "Find My Therapist",
+      platformName: "FindMyTherapy",
       backToSearch: "Back to Search",
       privacyPolicy: "Privacy Policy",
       imprint: "Imprint",
@@ -35,7 +35,7 @@ export function ProfileFooter({ profile, locale }: ProfileFooterProps) {
     de: {
       allRightsReserved: "Alle Rechte vorbehalten",
       poweredBy: "Präsentiert von",
-      platformName: "Find My Therapist",
+      platformName: "FindMyTherapy",
       backToSearch: "Zur Therapeutensuche",
       privacyPolicy: "Datenschutz",
       imprint: "Impressum",
