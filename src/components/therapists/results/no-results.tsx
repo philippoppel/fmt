@@ -114,7 +114,7 @@ export function NoResults({ onClearFilters, filters, alternativeTherapists }: No
             {alternativeTherapists.slice(0, 4).map((therapist) => (
               <Link
                 key={therapist.id}
-                href={`/therapists/${therapist.id}`}
+                href={`/p/${therapist.slug || therapist.id}`}
                 className="group flex items-center gap-3 rounded-lg border bg-card p-3 text-left transition-colors hover:border-primary/50 hover:bg-accent/50"
               >
                 <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-muted">

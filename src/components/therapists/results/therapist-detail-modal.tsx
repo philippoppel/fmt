@@ -167,7 +167,7 @@ export function TherapistDetailModal({
 
             {/* CTA Button */}
             <Button asChild className="w-full gap-2" size="lg">
-              <Link href={`/therapists/${therapist.id}`}>
+              <Link href={`/p/${therapist.slug || therapist.id}`}>
                 {t("viewProfile")}
                 <ArrowRight className="h-4 w-4" />
               </Link>

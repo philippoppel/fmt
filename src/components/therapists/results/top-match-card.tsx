@@ -244,7 +244,7 @@ export function TopMatchCard({
               </button>
             )}
             <Link
-              href={`/therapists/${therapist.id}`}
+              href={`/p/${therapist.slug || therapist.id}`}
               className="flex flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
             >
               <User className="h-4 w-4" />
