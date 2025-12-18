@@ -83,6 +83,7 @@ export async function getTherapists(filters: FilterState): Promise<Therapist[]> 
   // Transform to Therapist type
   return profiles.map((p) => ({
     id: p.id,
+    slug: p.slug || "",
     name: p.user.name || "Unknown",
     title: p.title || "",
     imageUrl: p.imageUrl || "/placeholder-avatar.png",

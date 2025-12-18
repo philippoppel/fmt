@@ -159,6 +159,7 @@ export interface ExclusionResult {
 // Therapist profile
 export interface Therapist {
   id: string;
+  slug: string;
   name: string;
   title: string;
   imageUrl: string;

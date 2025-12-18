@@ -3,6 +3,7 @@ import type { Therapist, BlogPost } from "@/types/therapist";
 export const demoTherapists: Therapist[] = [
   {
     id: "1",
+    slug: "dr-maria-schneider",
     name: "Dr. Maria Schneider",
     title: "Psychologische Psychotherapeutin",
     imageUrl:
@@ -23,6 +24,7 @@ export const demoTherapists: Therapist[] = [
   },
   {
     id: "2",
+    slug: "thomas-weber",
     name: "Thomas Weber",
     title: "Psychotherapeut (HPG)",
     imageUrl:
@@ -43,6 +45,7 @@ export const demoTherapists: Therapist[] = [
   },
   {
     id: "3",
+    slug: "dr-sarah-klein",
     name: "Dr. Sarah Klein",
     title: "Fachärztin für Psychiatrie und Psychotherapie",
     imageUrl:
@@ -63,6 +66,7 @@ export const demoTherapists: Therapist[] = [
   },
   {
     id: "4",
+    slug: "michael-hoffmann",
     name: "Michael Hoffmann",
     title: "Psychologischer Psychotherapeut",
     imageUrl:
@@ -83,6 +87,7 @@ export const demoTherapists: Therapist[] = [
   },
   {
     id: "5",
+    slug: "dr-elena-petrova",
     name: "Dr. Elena Petrova",
     title: "Psychoanalytikerin",
     imageUrl:
@@ -103,6 +108,7 @@ export const demoTherapists: Therapist[] = [
   },
   {
     id: "6",
+    slug: "jan-fischer",
     name: "Jan Fischer",
     title: "Kinder- und Jugendlichenpsychotherapeut",
     imageUrl:
@@ -123,6 +129,7 @@ export const demoTherapists: Therapist[] = [
   },
   {
     id: "7",
+    slug: "lisa-mueller",
     name: "Lisa Müller",
     title: "Systemische Therapeutin",
     imageUrl:
@@ -143,6 +150,7 @@ export const demoTherapists: Therapist[] = [
   },
   {
     id: "8",
+    slug: "dr-ahmed-hassan",
     name: "Dr. Ahmed Hassan",
     title: "Psychiater und Psychotherapeut",
     imageUrl:
@@ -163,6 +171,7 @@ export const demoTherapists: Therapist[] = [
   },
   {
     id: "9",
+    slug: "claudia-berger",
     name: "Claudia Berger",
     title: "Gestalttherapeutin",
     imageUrl:
@@ -183,6 +192,7 @@ export const demoTherapists: Therapist[] = [
   },
   {
     id: "10",
+    slug: "dr-robert-schuster",
     name: "Dr. Robert Schuster",
     title: "Verhaltenstherapeut",
     imageUrl:

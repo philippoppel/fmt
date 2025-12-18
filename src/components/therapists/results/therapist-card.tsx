@@ -11,7 +11,7 @@ import { MapPin, Euro, Video, Building2, UserCircle, ExternalLink } from "lucide
 import type { Therapist } from "@/types/therapist";
 import { MatchScoreBadge } from "./match-score-badge";
 
-// Generate URL-friendly slug from therapist name
+// Generate URL-friendly slug from therapist name (fallback if slug not available)
 function generateSlug(name: string): string {
   return name
     .toLowerCase()
@@ -21,6 +21,12 @@ function generateSlug(name: string): string {
     .replace(/ü/g, "ue")
     .replace(/ß/g, "ss")
     .replace(/[^a-z0-9-]/g, "");
+}
+
+// Get the profile URL using the slug (or generate from name as fallback)
+function getProfileUrl(therapist: Therapist): string {
+  const slug = therapist.slug || generateSlug(therapist.name);
+  return `/p/${slug}`;
 }
 
 interface TherapistCardProps {
@@ -129,7 +135,7 @@ export function TherapistCard({ therapist, matchScore }: TherapistCardProps) {
             <div className="mt-4 pt-4 border-t">
               <Button asChild className="w-full sm:w-auto gap-2">
                 <a
-                  href={`/p/${generateSlug(therapist.name)}`}
+                  href={getProfileUrl(therapist)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

@@ -85,6 +85,7 @@ export async function searchWithMatching(
   // Transform to Therapist type (including therapy style fields and matching fields)
   const therapists: Therapist[] = profiles.map((profile) => ({
     id: profile.id,
+    slug: profile.slug ?? "",
     name: profile.user.name ?? "Unknown",
     title: profile.title ?? "",
     imageUrl:
@@ -160,6 +161,7 @@ export async function searchWithMatching(
     // Transform to Therapist type
     const fallbackTherapists: Therapist[] = fallbackProfiles.map((profile) => ({
       id: profile.id,
+      slug: profile.slug ?? "",
       name: profile.user.name ?? "Unknown",
       title: profile.title ?? "",
       imageUrl: profile.imageUrl ?? "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400",

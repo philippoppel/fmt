@@ -15,6 +15,7 @@ import type { Therapist, MatchingCriteria, TherapyStylePreferences } from "../sr
 const testTherapists: Therapist[] = [
   {
     id: "t1",
+    slug: "premium-anxiety-expert",
     name: "Premium Anxiety Expert (15y)",
     title: "Dr.",
     imageUrl: "https://example.com/image.jpg",
@@ -43,6 +44,7 @@ const testTherapists: Therapist[] = [
   },
   {
     id: "t2",
+    slug: "junior-therapist",
     name: "Junior Therapist (2y)",
     title: "M.Sc.",
     imageUrl: "https://example.com/image.jpg",
@@ -71,6 +73,7 @@ const testTherapists: Therapist[] = [
   },
   {
     id: "t3",
+    slug: "gratis-account",
     name: "Gratis Account (no image, short desc)",
     title: "",
     imageUrl: "",
@@ -94,6 +97,7 @@ const testTherapists: Therapist[] = [
   },
   {
     id: "t4",
+    slug: "arabic-speaker",
     name: "Arabic Speaker (8y)",
     title: "Dr.",
     imageUrl: "https://example.com/image.jpg",
@@ -122,6 +126,7 @@ const testTherapists: Therapist[] = [
   },
   {
     id: "t5",
+    slug: "online-only-expert",
     name: "Online Only Expert (10y)",
     title: "Dr.",
     imageUrl: "https://example.com/image.jpg",
