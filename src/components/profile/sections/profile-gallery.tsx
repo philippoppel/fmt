@@ -67,12 +67,41 @@ export function ProfileGallery({ profile, locale }: ProfileGalleryProps) {
 
   return (
     <div className="py-16 sm:py-24 relative overflow-hidden" style={{ backgroundColor: "var(--profile-bg)" }}>
-      {/* Decorative background */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Gradient top border */}
+      <div
+        className="absolute top-0 left-0 right-0 h-1 animate-gradient"
+        style={{
+          background: `linear-gradient(90deg, transparent, var(--profile-primary), var(--profile-accent), var(--profile-primary), transparent)`,
+          backgroundSize: "200% 100%",
+        }}
+      />
+
+      {/* Decorative background - enhanced */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Central glow */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60rem] h-[60rem] rounded-full blur-3xl opacity-5"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70rem] h-[40rem] animate-glow-pulse"
+          style={{
+            background: `radial-gradient(ellipse, var(--profile-primary) 0%, transparent 60%)`,
+            opacity: 0.2,
+            filter: "blur(80px)",
+          }}
+        />
+        {/* Corner accents */}
+        <div
+          className="absolute -top-20 -left-20 w-[25rem] h-[25rem] animate-aurora-1"
+          style={{
+            background: `radial-gradient(circle, var(--profile-accent) 0%, transparent 70%)`,
+            opacity: 0.25,
+            filter: "blur(40px)",
+          }}
+        />
+        <div
+          className="absolute -bottom-20 -right-20 w-[25rem] h-[25rem] animate-aurora-2"
           style={{
             background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 70%)`,
+            opacity: 0.25,
+            filter: "blur(40px)",
           }}
         />
       </div>

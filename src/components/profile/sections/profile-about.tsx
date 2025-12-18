@@ -131,12 +131,45 @@ export function ProfileAbout({ profile, locale }: ProfileAboutProps) {
 
   return (
     <div className="py-16 sm:py-24 relative overflow-hidden" style={{ backgroundColor: "var(--profile-bg)" }}>
-      {/* Decorative background */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Gradient top border */}
+      <div
+        className="absolute top-0 left-0 right-0 h-1 animate-gradient"
+        style={{
+          background: `linear-gradient(90deg, transparent, var(--profile-accent), var(--profile-primary), var(--profile-accent), transparent)`,
+          backgroundSize: "200% 100%",
+        }}
+      />
+
+      {/* Decorative background - enhanced */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Animated blob - Top Left */}
         <div
-          className="absolute -top-40 -left-40 w-96 h-96 rounded-full blur-3xl opacity-10 animate-float-slow"
+          className="absolute -top-48 -left-48 w-[35rem] h-[35rem] animate-aurora-2"
           style={{
-            background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 70%)`,
+            background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 60%)`,
+            opacity: 0.25,
+            filter: "blur(60px)",
+          }}
+        />
+        {/* Blob - Bottom Right */}
+        <div
+          className="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] animate-aurora-1"
+          style={{
+            background: `radial-gradient(circle, var(--profile-accent) 0%, transparent 60%)`,
+            opacity: 0.2,
+            filter: "blur(50px)",
+          }}
+        />
+        {/* Mesh gradient overlay */}
+        <div
+          className="absolute inset-0 animate-mesh-gradient"
+          style={{
+            backgroundImage: `
+              radial-gradient(at 0% 0%, var(--profile-primary) 0px, transparent 50%),
+              radial-gradient(at 100% 100%, var(--profile-accent) 0px, transparent 50%)
+            `,
+            backgroundSize: "200% 200%",
+            opacity: 0.1,
           }}
         />
       </div>

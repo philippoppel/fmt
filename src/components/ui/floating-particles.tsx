@@ -10,18 +10,22 @@ interface Particle {
   duration: number;
   delay: number;
   opacity: number;
+  hasGlow: boolean;
+  glowSize: number;
 }
 
 interface FloatingParticlesProps {
   count?: number;
   color?: string;
   className?: string;
+  intensity?: "subtle" | "medium" | "high";
 }
 
 export function FloatingParticles({
-  count = 20,
+  count = 30,
   color = "var(--profile-primary, #8B7355)",
   className,
+  intensity = "high",
 }: FloatingParticlesProps) {
   const [mounted, setMounted] = useState(false);
 
@@ -36,18 +40,29 @@ export function FloatingParticles({
     }
   }, []);
 
+  const intensityConfig = {
+    subtle: { sizeMultiplier: 1, opacityMultiplier: 1, glowChance: 0.1 },
+    medium: { sizeMultiplier: 1.5, opacityMultiplier: 1.5, glowChance: 0.3 },
+    high: { sizeMultiplier: 2.5, opacityMultiplier: 2, glowChance: 0.5 },
+  }[intensity];
+
   const particles = useMemo<Particle[]>(
     () =>
-      Array.from({ length: count }, (_, i) => ({
-        id: i,
-        size: Math.random() * 4 + 2,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        duration: Math.random() * 10 + 10,
-        delay: Math.random() * 5,
-        opacity: Math.random() * 0.3 + 0.1,
-      })),
-    [count]
+      Array.from({ length: count }, (_, i) => {
+        const hasGlow = Math.random() < intensityConfig.glowChance;
+        return {
+          id: i,
+          size: (Math.random() * 8 + 4) * intensityConfig.sizeMultiplier,
+          x: Math.random() * 100,
+          y: Math.random() * 100,
+          duration: Math.random() * 15 + 8,
+          delay: Math.random() * 8,
+          opacity: Math.min((Math.random() * 0.4 + 0.2) * intensityConfig.opacityMultiplier, 0.9),
+          hasGlow,
+          glowSize: hasGlow ? Math.random() * 20 + 10 : 0,
+        };
+      }),
+    [count, intensityConfig]
   );
 
   if (!mounted) return null;
@@ -70,7 +85,10 @@ export function FloatingParticles({
             opacity: p.opacity,
             animationDuration: `${p.duration}s`,
             animationDelay: `${p.delay}s`,
-            filter: "blur(0.5px)",
+            boxShadow: p.hasGlow
+              ? `0 0 ${p.glowSize}px ${p.glowSize / 2}px ${color}`
+              : "none",
+            filter: p.hasGlow ? "blur(0px)" : "blur(1px)",
           }}
         />
       ))}

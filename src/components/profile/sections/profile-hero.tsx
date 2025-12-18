@@ -6,6 +6,7 @@ import type { TherapistProfileData } from "@/types/profile";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FloatingParticles } from "@/components/ui/floating-particles";
+import { AnimatedBackground } from "@/components/ui/animated-background";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useCountUp } from "@/hooks/use-count-up";
 import { cn } from "@/lib/utils";
@@ -99,45 +100,56 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
   }[profile.availability] || t.flexible;
 
   return (
-    <header ref={heroRef} className="relative overflow-hidden min-h-[70vh] flex items-center">
-      {/* Floating Particles Background */}
-      <FloatingParticles count={25} color="var(--profile-primary)" />
+    <header ref={heroRef} className="relative overflow-hidden min-h-[80vh] flex items-center">
+      {/* Aurora Background - Full page animated gradient */}
+      <AnimatedBackground
+        variant="aurora"
+        intensity="high"
+        primaryColor="var(--profile-primary)"
+        secondaryColor="var(--profile-secondary)"
+        accentColor="var(--profile-accent)"
+      />
 
-      {/* Animated Gradient Orbs */}
+      {/* Floating Particles Background - Enhanced */}
+      <FloatingParticles count={40} color="var(--profile-primary)" intensity="high" />
+
+      {/* Morphing Blob Shapes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Orb 1 - Top Right */}
+        {/* Large morphing blob - Top Right */}
         <div
-          className="absolute -top-20 -right-20 w-72 h-72 lg:w-96 lg:h-96 rounded-full blur-3xl opacity-30 animate-float-slow"
+          className="absolute -top-32 -right-32 w-[30rem] h-[30rem] lg:w-[40rem] lg:h-[40rem] animate-blob-morph animate-aurora-1"
           style={{
-            background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 70%)`,
+            background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 60%)`,
+            opacity: 0.5,
+            filter: "blur(40px)",
           }}
         />
-        {/* Orb 2 - Bottom Left */}
+        {/* Medium blob - Bottom Left */}
         <div
-          className="absolute -bottom-32 -left-32 w-80 h-80 lg:w-[28rem] lg:h-[28rem] rounded-full blur-3xl opacity-20 animate-float-slow"
+          className="absolute -bottom-48 -left-48 w-[35rem] h-[35rem] lg:w-[45rem] lg:h-[45rem] animate-blob-morph animate-aurora-2"
           style={{
-            background: `radial-gradient(circle, var(--profile-accent) 0%, transparent 70%)`,
-            animationDelay: "2s",
+            background: `radial-gradient(circle, var(--profile-accent) 0%, transparent 60%)`,
+            opacity: 0.45,
+            filter: "blur(50px)",
           }}
         />
-        {/* Orb 3 - Center subtle */}
+        {/* Pulsing center glow */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] rounded-full blur-3xl opacity-10 animate-scale-pulse"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-[50rem] animate-glow-pulse"
           style={{
-            background: `radial-gradient(circle, var(--profile-secondary) 0%, transparent 60%)`,
+            background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 50%)`,
+            opacity: 0.3,
+            filter: "blur(60px)",
           }}
         />
       </div>
 
-      {/* Animated Mesh Gradient Background */}
+      {/* Decorative gradient line at top */}
       <div
-        className="absolute inset-0 opacity-[0.03] animate-gradient"
+        className="absolute top-0 left-0 right-0 h-1 animate-gradient"
         style={{
-          backgroundImage: `
-            linear-gradient(45deg, var(--profile-primary) 0%, transparent 50%),
-            linear-gradient(-45deg, var(--profile-accent) 0%, transparent 50%)
-          `,
-          backgroundSize: "200% 200%",
+          background: `linear-gradient(90deg, var(--profile-primary), var(--profile-accent), var(--profile-primary))`,
+          backgroundSize: "200% 100%",
         }}
       />
 
@@ -359,33 +371,64 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
             style={{ animationFillMode: "forwards", animationDelay: "0.2s" }}
           >
             <div className="relative">
-              {/* Animated rotating ring */}
+              {/* Outer glow ring */}
               <div
-                className="absolute -inset-3 rounded-full animate-spin-slow opacity-60"
+                className="absolute -inset-8 rounded-full animate-glow-pulse"
                 style={{
-                  background: `conic-gradient(from 0deg, var(--profile-primary), var(--profile-accent), var(--profile-secondary), var(--profile-primary))`,
-                  filter: "blur(2px)",
+                  background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 70%)`,
+                  opacity: 0.6,
+                  filter: "blur(20px)",
                 }}
               />
 
-              {/* Pulsing glow */}
+              {/* Animated rotating ring - faster and more visible */}
               <div
-                className="absolute -inset-4 rounded-full animate-pulse-glow opacity-50"
+                className="absolute -inset-4 rounded-full animate-spin-slow"
+                style={{
+                  background: `conic-gradient(from 0deg, var(--profile-primary), var(--profile-accent), var(--profile-secondary), var(--profile-primary))`,
+                  opacity: 0.9,
+                  filter: "blur(3px)",
+                }}
+              />
+
+              {/* Secondary counter-rotating ring */}
+              <div
+                className="absolute -inset-6 rounded-full animate-spin-slow"
+                style={{
+                  background: `conic-gradient(from 180deg, transparent 0%, var(--profile-accent) 25%, transparent 50%, var(--profile-primary) 75%, transparent 100%)`,
+                  opacity: 0.5,
+                  filter: "blur(8px)",
+                  animationDirection: "reverse",
+                  animationDuration: "12s",
+                }}
+              />
+
+              {/* Pulsing glow - enhanced */}
+              <div
+                className="absolute -inset-5 rounded-full animate-pulse-glow"
                 style={{
                   "--glow-color": "var(--profile-primary)",
+                  boxShadow: `0 0 60px 20px var(--profile-primary)`,
+                  opacity: 0.4,
                 } as React.CSSProperties}
               />
 
-              {/* Image container */}
+              {/* Image container with neon border */}
               <div
                 className={cn(
-                  "relative w-52 h-52 sm:w-64 sm:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96",
+                  "relative w-56 h-56 sm:w-72 sm:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96",
                   "rounded-full overflow-hidden",
-                  "shadow-2xl ring-4",
-                  "transition-transform duration-500 hover:scale-105"
+                  "shadow-2xl",
+                  "transition-transform duration-500 hover:scale-105",
+                  "ring-4"
                 )}
                 style={{
-                  "--tw-ring-color": "var(--profile-secondary)",
+                  "--tw-ring-color": "var(--profile-primary)",
+                  boxShadow: `
+                    0 0 30px 5px var(--profile-primary),
+                    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                    inset 0 0 20px rgba(255, 255, 255, 0.1)
+                  `,
                 } as React.CSSProperties}
               >
                 <Image
@@ -394,19 +437,22 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
                   fill
                   className="object-cover"
                   priority
-                  sizes="(max-width: 640px) 208px, (max-width: 1024px) 256px, (max-width: 1280px) 320px, 384px"
+                  sizes="(max-width: 640px) 224px, (max-width: 1024px) 288px, (max-width: 1280px) 320px, 384px"
                 />
               </div>
 
-              {/* Floating verified badge */}
+              {/* Floating verified badge - enhanced with glow */}
               {profile.isVerified && (
                 <div
                   className="absolute -bottom-2 -right-2 lg:bottom-4 lg:right-0 animate-float"
                   style={{ animationDuration: "4s" }}
                 >
                   <div
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-full shadow-xl text-white text-sm font-medium"
-                    style={{ backgroundColor: "var(--profile-primary)" }}
+                    className="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-white text-sm font-semibold"
+                    style={{
+                      backgroundColor: "var(--profile-primary)",
+                      boxShadow: `0 0 20px 5px var(--profile-primary), 0 10px 30px -5px rgba(0, 0, 0, 0.3)`,
+                    }}
                   >
                     <Shield className="h-4 w-4" />
                     <span className="hidden sm:inline">{t.verifiedBadge}</span>

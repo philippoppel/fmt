@@ -110,21 +110,45 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
     <div
       className="py-16 sm:py-24 relative overflow-hidden"
       style={{
-        background: `linear-gradient(180deg, var(--profile-secondary) 0%, var(--profile-bg) 100%)`,
+        background: `linear-gradient(180deg, var(--profile-secondary) 0%, white 50%, var(--profile-bg) 100%)`,
       }}
     >
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Animated gradient divider at top */}
+      <div
+        className="absolute top-0 left-0 right-0 h-1 animate-gradient"
+        style={{
+          background: `linear-gradient(90deg, transparent, var(--profile-primary), var(--profile-accent), var(--profile-primary), transparent)`,
+          backgroundSize: "200% 100%",
+        }}
+      />
+
+      {/* Decorative background elements - enhanced */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Large animated blob - Top Right */}
         <div
-          className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-20 animate-float-slow"
+          className="absolute -top-32 -right-32 w-[40rem] h-[40rem] animate-aurora-1"
           style={{
-            background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 70%)`,
+            background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 60%)`,
+            opacity: 0.35,
+            filter: "blur(60px)",
           }}
         />
+        {/* Medium blob - Bottom Left */}
         <div
-          className="absolute bottom-0 left-0 w-80 h-80 rounded-full blur-3xl opacity-15"
+          className="absolute -bottom-40 -left-40 w-[35rem] h-[35rem] animate-aurora-2"
           style={{
-            background: `radial-gradient(circle, var(--profile-accent) 0%, transparent 70%)`,
+            background: `radial-gradient(circle, var(--profile-accent) 0%, transparent 60%)`,
+            opacity: 0.3,
+            filter: "blur(50px)",
+          }}
+        />
+        {/* Center accent glow */}
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60rem] h-[30rem] animate-glow-pulse"
+          style={{
+            background: `radial-gradient(ellipse, var(--profile-primary) 0%, transparent 70%)`,
+            opacity: 0.15,
+            filter: "blur(80px)",
           }}
         />
       </div>
