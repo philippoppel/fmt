@@ -249,17 +249,31 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
       </div>
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
-        <h2
-          ref={contactRef}
-          className={cn(
-            "text-2xl sm:text-3xl font-bold mb-12 text-center",
-            "opacity-0",
-            contactVisible && "animate-fade-in-up"
-          )}
-          style={{ color: "var(--profile-text)", animationFillMode: "forwards" }}
-        >
-          {t.contact}
-        </h2>
+        {/* Section Header */}
+        <div ref={contactRef} className="text-center mb-12">
+          <h2
+            className={cn(
+              "text-3xl sm:text-4xl font-bold mb-4",
+              "opacity-0",
+              contactVisible && "animate-fade-in-up"
+            )}
+            style={{ color: "var(--profile-text)", animationFillMode: "forwards" }}
+          >
+            {t.contact}
+          </h2>
+          <div
+            className={cn(
+              "h-1 w-20 mx-auto rounded-full animate-gradient",
+              "opacity-0",
+              contactVisible && "animate-fade-in-up stagger-1"
+            )}
+            style={{
+              background: `linear-gradient(90deg, var(--profile-primary), var(--profile-accent), var(--profile-primary))`,
+              backgroundSize: "200% 100%",
+              animationFillMode: "forwards",
+            }}
+          />
+        </div>
 
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Contact Form */}
@@ -316,13 +330,16 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
                   <Button
                     type="submit"
                     className={cn(
-                      "w-full text-white",
+                      "w-full py-6 text-lg font-semibold text-white",
                       "transition-all duration-300",
-                      "hover:scale-105 hover:shadow-lg",
-                      "relative overflow-hidden group",
-                      sent && "bg-green-500 hover:bg-green-500"
+                      "hover:scale-[1.02] hover:shadow-xl",
+                      "relative overflow-hidden group"
                     )}
-                    style={!sent ? { backgroundColor: "var(--profile-primary)" } : undefined}
+                    style={{
+                      background: sent
+                        ? "linear-gradient(135deg, #10B981, #059669)"
+                        : `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`,
+                    }}
                     disabled={sending}
                   >
                     {/* Shimmer effect */}

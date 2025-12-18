@@ -107,19 +107,33 @@ export function ProfileGallery({ profile, locale }: ProfileGalleryProps) {
       </div>
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
-        <h2
-          ref={galleryRef}
-          className={cn(
-            "text-2xl sm:text-3xl font-bold mb-8 text-center",
-            "opacity-0",
-            galleryVisible && "animate-fade-in-up"
-          )}
-          style={{ color: "var(--profile-text)", animationFillMode: "forwards" }}
-        >
-          {t.gallery}
-        </h2>
+        {/* Section Header */}
+        <div ref={galleryRef} className="text-center mb-12">
+          <h2
+            className={cn(
+              "text-3xl sm:text-4xl font-bold mb-4",
+              "opacity-0",
+              galleryVisible && "animate-fade-in-up"
+            )}
+            style={{ color: "var(--profile-text)", animationFillMode: "forwards" }}
+          >
+            {t.gallery}
+          </h2>
+          <div
+            className={cn(
+              "h-1 w-20 mx-auto rounded-full animate-gradient",
+              "opacity-0",
+              galleryVisible && "animate-fade-in-up stagger-1"
+            )}
+            style={{
+              background: `linear-gradient(90deg, var(--profile-primary), var(--profile-accent), var(--profile-primary))`,
+              backgroundSize: "200% 100%",
+              animationFillMode: "forwards",
+            }}
+          />
+        </div>
 
-        {/* Tab Buttons with animation */}
+        {/* Tab Buttons with gradient styling */}
         {personalImages.length > 0 && officeImages.length > 0 && (
           <div
             className={cn(
@@ -133,12 +147,16 @@ export function ProfileGallery({ profile, locale }: ProfileGalleryProps) {
               variant={activeTab === "personal" ? "default" : "outline"}
               onClick={() => setActiveTab("personal")}
               className={cn(
-                "gap-2 transition-all duration-300",
-                "hover:scale-105"
+                "gap-2 transition-all duration-300 rounded-full px-6",
+                "hover:scale-105 hover:shadow-lg"
               )}
               style={
                 activeTab === "personal"
-                  ? { backgroundColor: "var(--profile-primary)" }
+                  ? {
+                      background: `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`,
+                      color: "white",
+                      border: "none",
+                    }
                   : { borderColor: "var(--profile-primary)", color: "var(--profile-primary)" }
               }
             >
@@ -149,12 +167,16 @@ export function ProfileGallery({ profile, locale }: ProfileGalleryProps) {
               variant={activeTab === "office" ? "default" : "outline"}
               onClick={() => setActiveTab("office")}
               className={cn(
-                "gap-2 transition-all duration-300",
-                "hover:scale-105"
+                "gap-2 transition-all duration-300 rounded-full px-6",
+                "hover:scale-105 hover:shadow-lg"
               )}
               style={
                 activeTab === "office"
-                  ? { backgroundColor: "var(--profile-primary)" }
+                  ? {
+                      background: `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`,
+                      color: "white",
+                      border: "none",
+                    }
                   : { borderColor: "var(--profile-primary)", color: "var(--profile-primary)" }
               }
             >

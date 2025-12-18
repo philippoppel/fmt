@@ -51,7 +51,7 @@ export function ProfileNavigation({ profile, locale }: ProfileNavigationProps) {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
+      setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -69,17 +69,28 @@ export function ProfileNavigation({ profile, locale }: ProfileNavigationProps) {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-white/95 backdrop-blur-sm shadow-md" : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        isScrolled
+          ? "py-2 backdrop-blur-xl shadow-lg border-b"
+          : "py-4 bg-transparent"
       )}
+      style={{
+        backgroundColor: isScrolled ? "rgba(255,255,255,0.85)" : "transparent",
+        borderColor: isScrolled ? "rgba(255,255,255,0.3)" : "transparent",
+      }}
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between">
           {/* Logo / Name */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="font-semibold text-lg truncate max-w-[200px] sm:max-w-none"
-            style={{ color: isScrolled ? "var(--profile-primary)" : "var(--profile-text)" }}
+            className={cn(
+              "font-bold text-lg truncate max-w-[200px] sm:max-w-none transition-colors duration-300",
+              isScrolled ? "" : "text-white drop-shadow-md"
+            )}
+            style={{
+              color: isScrolled ? "var(--profile-primary)" : undefined,
+            }}
           >
             {profile.name}
           </button>
@@ -91,19 +102,38 @@ export function ProfileNavigation({ profile, locale }: ProfileNavigationProps) {
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
                 className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                  "relative px-4 py-2 text-sm font-medium transition-all duration-300",
+                  "after:absolute after:bottom-0 after:left-1/2 after:h-0.5",
+                  "after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2",
+                  "hover:after:w-full",
                   isScrolled
-                    ? "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-                    : "text-gray-700 hover:text-gray-900 hover:bg-white/20"
+                    ? "text-gray-600 hover:text-gray-900"
+                    : "text-white/90 hover:text-white drop-shadow-md"
                 )}
+                style={{
+                  ["--tw-after-bg" as string]: `linear-gradient(90deg, var(--profile-primary), var(--profile-accent))`,
+                }}
               >
                 {item.label}
+                {/* Animated underline */}
+                <span
+                  className="absolute bottom-0 left-1/2 h-0.5 w-0 -translate-x-1/2 transition-all duration-300 group-hover:w-full"
+                  style={{
+                    background: `linear-gradient(90deg, var(--profile-primary), var(--profile-accent))`,
+                  }}
+                />
               </button>
             ))}
             <Button
               size="sm"
-              className="ml-2 text-white"
-              style={{ backgroundColor: "var(--profile-primary)" }}
+              className={cn(
+                "ml-3 font-semibold text-white",
+                "hover:scale-105 transition-all duration-300",
+                "shadow-lg hover:shadow-xl"
+              )}
+              style={{
+                background: `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`,
+              }}
               onClick={() => scrollToSection("contact")}
             >
               {t.contact}
@@ -114,7 +144,10 @@ export function ProfileNavigation({ profile, locale }: ProfileNavigationProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className={cn(
+              "md:hidden",
+              isScrolled ? "" : "text-white"
+            )}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -124,17 +157,41 @@ export function ProfileNavigation({ profile, locale }: ProfileNavigationProps) {
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t shadow-lg">
+        <div
+          className="md:hidden backdrop-blur-xl border-t shadow-lg mt-2"
+          style={{
+            backgroundColor: "rgba(255,255,255,0.95)",
+            borderColor: "rgba(255,255,255,0.3)",
+          }}
+        >
           <div className="px-4 py-3 space-y-1">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className="block w-full text-left px-4 py-3 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                className="block w-full text-left px-4 py-3 rounded-xl text-gray-600 hover:text-gray-900 transition-colors"
+                style={{
+                  backgroundColor: "transparent",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--profile-secondary)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }}
               >
                 {item.label}
               </button>
             ))}
+            <Button
+              className="w-full mt-2 font-semibold text-white"
+              style={{
+                background: `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`,
+              }}
+              onClick={() => scrollToSection("contact")}
+            >
+              {t.contact}
+            </Button>
           </div>
         </div>
       )}

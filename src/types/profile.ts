@@ -96,52 +96,62 @@ export interface DayHours {
 
 export type ThemeName = "warm" | "cool" | "nature" | "professional" | "minimal";
 
-// Theme color presets
+// Theme color presets - Modern & Vibrant
 export const THEME_PRESETS: Record<ThemeName, ThemePreset> = {
   warm: {
     name: "warm",
     label: "Warm & Einladend",
-    primaryColor: "#8B7355",
-    secondaryColor: "#D4C4B0",
-    accentColor: "#C9A86C",
-    backgroundColor: "#FAF8F5",
-    textColor: "#3D3D3D",
+    primaryColor: "#F97316",     // Vibrant orange
+    secondaryColor: "#FFF7ED",   // Warm cream
+    accentColor: "#FB923C",      // Light orange
+    backgroundColor: "#FFFBF5",  // Warm white
+    textColor: "#1C1917",        // Rich warm black
+    gradientFrom: "#F97316",
+    gradientTo: "#EA580C",
   },
   cool: {
     name: "cool",
     label: "Ruhig & Professionell",
-    primaryColor: "#5B7B8C",
-    secondaryColor: "#B8CAD4",
-    accentColor: "#7BA3B8",
-    backgroundColor: "#F5F8FA",
-    textColor: "#2D3748",
+    primaryColor: "#3B82F6",     // Brilliant blue
+    secondaryColor: "#EFF6FF",   // Light blue tint
+    accentColor: "#60A5FA",      // Sky blue
+    backgroundColor: "#F8FAFC",  // Clean white
+    textColor: "#0F172A",        // Deep navy
+    gradientFrom: "#3B82F6",
+    gradientTo: "#1D4ED8",
   },
   nature: {
     name: "nature",
     label: "Natürlich & Beruhigend",
-    primaryColor: "#6B8E5A",
-    secondaryColor: "#C5D6BC",
-    accentColor: "#8FB573",
-    backgroundColor: "#F5F8F3",
-    textColor: "#2D3B2D",
+    primaryColor: "#10B981",     // Vibrant emerald
+    secondaryColor: "#ECFDF5",   // Mint white
+    accentColor: "#34D399",      // Bright teal
+    backgroundColor: "#F0FDF4",  // Fresh green-white
+    textColor: "#064E3B",        // Deep forest
+    gradientFrom: "#10B981",
+    gradientTo: "#059669",
   },
   professional: {
     name: "professional",
     label: "Modern & Klar",
-    primaryColor: "#4A5568",
-    secondaryColor: "#CBD5E0",
-    accentColor: "#667EEA",
-    backgroundColor: "#F7FAFC",
-    textColor: "#1A202C",
+    primaryColor: "#8B5CF6",     // Vibrant violet
+    secondaryColor: "#F5F3FF",   // Light violet
+    accentColor: "#A78BFA",      // Soft purple
+    backgroundColor: "#FAFAF9",  // Neutral white
+    textColor: "#18181B",        // Rich black
+    gradientFrom: "#8B5CF6",
+    gradientTo: "#7C3AED",
   },
   minimal: {
     name: "minimal",
     label: "Minimalistisch",
-    primaryColor: "#1A1A1A",
-    secondaryColor: "#E5E5E5",
-    accentColor: "#666666",
-    backgroundColor: "#FFFFFF",
-    textColor: "#1A1A1A",
+    primaryColor: "#18181B",     // Rich black
+    secondaryColor: "#F4F4F5",   // Zinc-50
+    accentColor: "#EC4899",      // Vibrant pink accent
+    backgroundColor: "#FFFFFF",  // Pure white
+    textColor: "#09090B",        // Near-pure black
+    gradientFrom: "#18181B",
+    gradientTo: "#EC4899",       // Black to pink gradient
   },
 };
 
@@ -153,6 +163,9 @@ export interface ThemePreset {
   accentColor: string;
   backgroundColor: string;
   textColor: string;
+  // Gradient colors for modern effects
+  gradientFrom: string;
+  gradientTo: string;
 }
 
 // Default profile data for new/empty profiles
@@ -170,7 +183,7 @@ export const DEFAULT_PROFILE_DATA: Partial<TherapistProfileData> = {
   website: "",
   linkedIn: "",
   instagram: "",
-  themeColor: "#8B7355",
+  themeColor: "#F97316",
   themeName: "warm",
   consultationInfo: "",
   workingHours: null,

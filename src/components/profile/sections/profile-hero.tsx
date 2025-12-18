@@ -4,9 +4,6 @@ import Image from "next/image";
 import { MapPin, Phone, Mail, Shield, Clock, Video, Building2 } from "lucide-react";
 import type { TherapistProfileData } from "@/types/profile";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { FloatingParticles } from "@/components/ui/floating-particles";
-import { AnimatedBackground } from "@/components/ui/animated-background";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useCountUp } from "@/hooks/use-count-up";
 import { cn } from "@/lib/utils";
@@ -16,38 +13,13 @@ interface ProfileHeroProps {
   locale: string;
 }
 
-// Animated stat component with count-up effect
-function AnimatedStat({
-  value,
-  suffix = "",
-  label,
-  icon,
-  isVisible,
-}: {
-  value: number;
-  suffix?: string;
-  label: string;
-  icon: React.ReactNode;
-  isVisible: boolean;
-}) {
-  const count = useCountUp({ end: value, duration: 2000, enabled: isVisible });
-
-  return (
-    <div className="flex items-center gap-1.5 text-gray-600">
-      <span style={{ color: "var(--profile-primary)" }}>{icon}</span>
-      <span className="font-bold text-lg tabular-nums">{count}{suffix}</span>
-      <span>{label}</span>
-    </div>
-  );
-}
-
 export function ProfileHero({ profile, locale }: ProfileHeroProps) {
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation({ threshold: 0.1 });
 
   const t = {
     de: {
       verifiedBadge: "Verifiziert",
-      experience: "Jahre Erfahrung",
+      experience: "Jahre",
       pricePerSession: "pro Sitzung",
       bookAppointment: "Termin anfragen",
       callNow: "Jetzt anrufen",
@@ -55,12 +27,12 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
       inPerson: "Vor Ort",
       both: "Online & Vor Ort",
       immediately: "Sofort verfügbar",
-      this_week: "Diese Woche verfügbar",
-      flexible: "Flexible Termine",
+      this_week: "Diese Woche",
+      flexible: "Flexibel",
     },
     en: {
       verifiedBadge: "Verified",
-      experience: "Years Experience",
+      experience: "Years",
       pricePerSession: "per session",
       bookAppointment: "Book Appointment",
       callNow: "Call Now",
@@ -68,13 +40,13 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
       inPerson: "In Person",
       both: "Online & In Person",
       immediately: "Available Now",
-      this_week: "Available This Week",
-      flexible: "Flexible Schedule",
+      this_week: "This Week",
+      flexible: "Flexible",
     },
   }[locale] || {
     de: {
       verifiedBadge: "Verifiziert",
-      experience: "Jahre Erfahrung",
+      experience: "Jahre",
       pricePerSession: "pro Sitzung",
       bookAppointment: "Termin anfragen",
       callNow: "Jetzt anrufen",
@@ -82,8 +54,8 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
       inPerson: "Vor Ort",
       both: "Online & Vor Ort",
       immediately: "Sofort verfügbar",
-      this_week: "Diese Woche verfügbar",
-      flexible: "Flexible Termine",
+      this_week: "Diese Woche",
+      flexible: "Flexibel",
     },
   };
 
@@ -93,372 +65,356 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
     both: t.both,
   }[profile.sessionType] || t.both;
 
-  const availabilityText = {
-    immediately: t.immediately,
-    this_week: t.this_week,
-    flexible: t.flexible,
-  }[profile.availability] || t.flexible;
+  // Get background image from office images or gallery
+  const backgroundImage = profile.officeImages?.[0] || profile.galleryImages?.[0];
+
+  // Count up for experience years
+  const experienceCount = useCountUp({
+    end: profile.experienceYears,
+    duration: 2000,
+    enabled: heroVisible
+  });
 
   return (
-    <header ref={heroRef} className="relative overflow-hidden min-h-[80vh] flex items-center">
-      {/* Aurora Background - Full page animated gradient */}
-      <AnimatedBackground
-        variant="aurora"
-        intensity="high"
-        primaryColor="var(--profile-primary)"
-        secondaryColor="var(--profile-secondary)"
-        accentColor="var(--profile-accent)"
-      />
+    <header ref={heroRef} className="relative min-h-screen overflow-hidden">
+      {/* Background Layer */}
+      {backgroundImage ? (
+        <>
+          {/* Full-width background image */}
+          <div className="absolute inset-0">
+            <Image
+              src={backgroundImage}
+              alt=""
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
+            {/* Dark gradient overlay for readability */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: `linear-gradient(
+                  180deg,
+                  rgba(0,0,0,0.4) 0%,
+                  rgba(0,0,0,0.5) 40%,
+                  rgba(0,0,0,0.7) 70%,
+                  var(--profile-bg) 100%
+                )`,
+              }}
+            />
+            {/* Color tint overlay */}
+            <div
+              className="absolute inset-0 mix-blend-soft-light"
+              style={{
+                background: `linear-gradient(
+                  135deg,
+                  var(--profile-primary) 0%,
+                  transparent 50%,
+                  var(--profile-accent) 100%
+                )`,
+                opacity: 0.4,
+              }}
+            />
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Fallback: Vibrant gradient background */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(
+                135deg,
+                var(--profile-bg) 0%,
+                var(--profile-secondary) 50%,
+                var(--profile-bg) 100%
+              )`,
+            }}
+          />
+          {/* Animated gradient orbs */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div
+              className="absolute -top-32 -right-32 w-[40rem] h-[40rem] rounded-full animate-aurora-1"
+              style={{
+                background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 60%)`,
+                opacity: 0.6,
+                filter: "blur(60px)",
+              }}
+            />
+            <div
+              className="absolute -bottom-48 -left-48 w-[50rem] h-[50rem] rounded-full animate-aurora-2"
+              style={{
+                background: `radial-gradient(circle, var(--profile-accent) 0%, transparent 60%)`,
+                opacity: 0.5,
+                filter: "blur(80px)",
+              }}
+            />
+            <div
+              className="absolute top-1/3 left-1/3 w-[30rem] h-[30rem] rounded-full animate-glow-pulse"
+              style={{
+                background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 70%)`,
+                opacity: 0.3,
+                filter: "blur(50px)",
+              }}
+            />
+          </div>
+        </>
+      )}
 
-      {/* Floating Particles Background - Enhanced */}
-      <FloatingParticles count={40} color="var(--profile-primary)" intensity="high" />
-
-      {/* Morphing Blob Shapes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Large morphing blob - Top Right */}
-        <div
-          className="absolute -top-32 -right-32 w-[30rem] h-[30rem] lg:w-[40rem] lg:h-[40rem] animate-blob-morph animate-aurora-1"
-          style={{
-            background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 60%)`,
-            opacity: 0.5,
-            filter: "blur(40px)",
-          }}
-        />
-        {/* Medium blob - Bottom Left */}
-        <div
-          className="absolute -bottom-48 -left-48 w-[35rem] h-[35rem] lg:w-[45rem] lg:h-[45rem] animate-blob-morph animate-aurora-2"
-          style={{
-            background: `radial-gradient(circle, var(--profile-accent) 0%, transparent 60%)`,
-            opacity: 0.45,
-            filter: "blur(50px)",
-          }}
-        />
-        {/* Pulsing center glow */}
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50rem] h-[50rem] animate-glow-pulse"
-          style={{
-            background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 50%)`,
-            opacity: 0.3,
-            filter: "blur(60px)",
-          }}
-        />
-      </div>
-
-      {/* Decorative gradient line at top */}
+      {/* Gradient line at top */}
       <div
-        className="absolute top-0 left-0 right-0 h-1 animate-gradient"
+        className="absolute top-0 left-0 right-0 h-1 z-20 animate-gradient"
         style={{
           background: `linear-gradient(90deg, var(--profile-primary), var(--profile-accent), var(--profile-primary))`,
           backgroundSize: "200% 100%",
         }}
       />
 
-      <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20 w-full">
-        <div className="grid gap-8 lg:grid-cols-[1fr,auto] lg:gap-12 items-center">
-          {/* Left Column - Info */}
+      {/* Content positioned at bottom */}
+      <div className="relative z-10 min-h-screen flex items-end pb-16 lg:pb-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full">
+          {/* Glassmorphism Card */}
           <div
             className={cn(
-              "order-2 lg:order-1 text-center lg:text-left",
+              "backdrop-blur-xl rounded-3xl",
+              "p-6 sm:p-8 lg:p-12",
+              "shadow-2xl",
+              "border border-white/30",
               "opacity-0",
               heroVisible && "animate-fade-in-up"
             )}
+            style={{
+              background: backgroundImage
+                ? "rgba(255,255,255,0.92)"
+                : "rgba(255,255,255,0.85)",
+              animationFillMode: "forwards",
+            }}
           >
-            {/* Badges */}
-            <div
-              className={cn(
-                "flex flex-wrap gap-2 justify-center lg:justify-start mb-4",
-                "opacity-0",
-                heroVisible && "animate-fade-in-up stagger-1"
-              )}
-              style={{ animationFillMode: "forwards" }}
-            >
-              {profile.isVerified && (
-                <Badge
-                  className="gap-1 shadow-lg animate-bounce-subtle"
-                  style={{
-                    backgroundColor: "var(--profile-primary)",
-                    color: "white",
-                    animationDuration: "3s",
-                  }}
-                >
-                  <Shield className="h-3 w-3" />
-                  {t.verifiedBadge}
-                </Badge>
-              )}
-              {profile.availability === "immediately" && (
-                <Badge
-                  variant="outline"
-                  className="gap-1 border-green-500 text-green-600 shadow-sm"
-                >
-                  <Clock className="h-3 w-3" />
-                  {availabilityText}
-                </Badge>
-              )}
-            </div>
-
-            {/* Name & Title */}
-            <h1
-              className={cn(
-                "text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl mb-2",
-                "opacity-0",
-                heroVisible && "animate-fade-in-up stagger-2"
-              )}
-              style={{
-                color: "var(--profile-text)",
-                animationFillMode: "forwards",
-              }}
-            >
-              {profile.name}
-            </h1>
-            <p
-              className={cn(
-                "text-lg sm:text-xl lg:text-2xl mb-4 font-medium",
-                "opacity-0",
-                heroVisible && "animate-fade-in-up stagger-3"
-              )}
-              style={{
-                color: "var(--profile-primary)",
-                animationFillMode: "forwards",
-              }}
-            >
-              {profile.title}
-            </p>
-
-            {/* Headline */}
-            {profile.headline && (
-              <p
+            <div className="flex flex-col lg:flex-row gap-8 items-center">
+              {/* Profile Image - Modern rounded rectangle */}
+              <div
                 className={cn(
-                  "text-lg sm:text-xl text-gray-600 mb-6 max-w-2xl mx-auto lg:mx-0",
+                  "relative shrink-0",
                   "opacity-0",
-                  heroVisible && "animate-fade-in-up stagger-4"
+                  heroVisible && "animate-fade-in-scale"
                 )}
-                style={{ animationFillMode: "forwards" }}
+                style={{ animationFillMode: "forwards", animationDelay: "0.2s" }}
               >
-                {profile.headline}
-              </p>
-            )}
-
-            {/* Stats Row with Count-Up */}
-            <div
-              className={cn(
-                "flex flex-wrap gap-6 justify-center lg:justify-start mb-8",
-                "opacity-0",
-                heroVisible && "animate-fade-in-up stagger-5"
-              )}
-              style={{ animationFillMode: "forwards" }}
-            >
-              {/* Location */}
-              {profile.city && (
-                <div className="flex items-center gap-1.5 text-gray-600">
-                  <MapPin
-                    className="h-5 w-5"
-                    style={{ color: "var(--profile-primary)" }}
-                  />
-                  <span className="font-medium">{profile.city}</span>
-                </div>
-              )}
-
-              {/* Experience with Count-Up */}
-              {profile.experienceYears > 0 && (
-                <AnimatedStat
-                  value={profile.experienceYears}
-                  suffix="+"
-                  label={t.experience ?? "Jahre Erfahrung"}
-                  icon={<Clock className="h-5 w-5" />}
-                  isVisible={heroVisible}
-                />
-              )}
-
-              {/* Session Type */}
-              <div className="flex items-center gap-1.5 text-gray-600">
-                {profile.sessionType === "online" ? (
-                  <Video
-                    className="h-5 w-5"
-                    style={{ color: "var(--profile-primary)" }}
-                  />
-                ) : (
-                  <Building2
-                    className="h-5 w-5"
-                    style={{ color: "var(--profile-primary)" }}
-                  />
-                )}
-                <span className="font-medium">{sessionTypeText}</span>
-              </div>
-            </div>
-
-            {/* Price with Glow */}
-            {profile.pricePerSession > 0 && (
-              <div
-                className={cn(
-                  "mb-8 inline-block",
-                  "opacity-0",
-                  heroVisible && "animate-fade-in-up stagger-6"
-                )}
-                style={{ animationFillMode: "forwards" }}
-              >
-                <span
-                  className="text-4xl lg:text-5xl font-bold"
-                  style={{ color: "var(--profile-primary)" }}
-                >
-                  {profile.pricePerSession} €
-                </span>
-                <span className="text-gray-500 ml-2 text-lg">
-                  {t.pricePerSession}
-                </span>
-              </div>
-            )}
-
-            {/* CTA Buttons with Enhanced Hover */}
-            <div
-              className={cn(
-                "flex flex-col sm:flex-row gap-4 justify-center lg:justify-start",
-                "opacity-0",
-                heroVisible && "animate-fade-in-up stagger-7"
-              )}
-              style={{ animationFillMode: "forwards" }}
-            >
-              <Button
-                size="lg"
-                className={cn(
-                  "text-white shadow-lg",
-                  "hover:shadow-xl hover:scale-105",
-                  "transition-all duration-300",
-                  "relative overflow-hidden group"
-                )}
-                style={{ backgroundColor: "var(--profile-primary)" }}
-                onClick={() =>
-                  document
-                    .getElementById("contact")
-                    ?.scrollIntoView({ behavior: "smooth" })
-                }
-              >
-                {/* Shimmer effect on hover */}
-                <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
-                <Mail className="mr-2 h-4 w-4 relative z-10" />
-                <span className="relative z-10">{t.bookAppointment}</span>
-              </Button>
-              {profile.phone && (
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className={cn(
-                    "border-2",
-                    "hover:scale-105 hover:shadow-lg",
-                    "transition-all duration-300"
-                  )}
-                  style={{
-                    borderColor: "var(--profile-primary)",
-                    color: "var(--profile-primary)",
-                  }}
-                  asChild
-                >
-                  <a href={`tel:${profile.phone}`}>
-                    <Phone className="mr-2 h-4 w-4" />
-                    {t.callNow}
-                  </a>
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {/* Right Column - Animated Profile Image */}
-          <div
-            className={cn(
-              "order-1 lg:order-2 flex justify-center",
-              "opacity-0",
-              heroVisible && "animate-fade-in-scale"
-            )}
-            style={{ animationFillMode: "forwards", animationDelay: "0.2s" }}
-          >
-            <div className="relative">
-              {/* Outer glow ring */}
-              <div
-                className="absolute -inset-8 rounded-full animate-glow-pulse"
-                style={{
-                  background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 70%)`,
-                  opacity: 0.6,
-                  filter: "blur(20px)",
-                }}
-              />
-
-              {/* Animated rotating ring - faster and more visible */}
-              <div
-                className="absolute -inset-4 rounded-full animate-spin-slow"
-                style={{
-                  background: `conic-gradient(from 0deg, var(--profile-primary), var(--profile-accent), var(--profile-secondary), var(--profile-primary))`,
-                  opacity: 0.9,
-                  filter: "blur(3px)",
-                }}
-              />
-
-              {/* Secondary counter-rotating ring */}
-              <div
-                className="absolute -inset-6 rounded-full animate-spin-slow"
-                style={{
-                  background: `conic-gradient(from 180deg, transparent 0%, var(--profile-accent) 25%, transparent 50%, var(--profile-primary) 75%, transparent 100%)`,
-                  opacity: 0.5,
-                  filter: "blur(8px)",
-                  animationDirection: "reverse",
-                  animationDuration: "12s",
-                }}
-              />
-
-              {/* Pulsing glow - enhanced */}
-              <div
-                className="absolute -inset-5 rounded-full animate-pulse-glow"
-                style={{
-                  "--glow-color": "var(--profile-primary)",
-                  boxShadow: `0 0 60px 20px var(--profile-primary)`,
-                  opacity: 0.4,
-                } as React.CSSProperties}
-              />
-
-              {/* Image container with neon border */}
-              <div
-                className={cn(
-                  "relative w-56 h-56 sm:w-72 sm:h-72 lg:w-80 lg:h-80 xl:w-96 xl:h-96",
-                  "rounded-full overflow-hidden",
-                  "shadow-2xl",
-                  "transition-transform duration-500 hover:scale-105",
-                  "ring-4"
-                )}
-                style={{
-                  "--tw-ring-color": "var(--profile-primary)",
-                  boxShadow: `
-                    0 0 30px 5px var(--profile-primary),
-                    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-                    inset 0 0 20px rgba(255, 255, 255, 0.1)
-                  `,
-                } as React.CSSProperties}
-              >
-                <Image
-                  src={profile.imageUrl || "/images/placeholder-avatar.jpg"}
-                  alt={profile.name}
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 640px) 224px, (max-width: 1024px) 288px, (max-width: 1280px) 320px, 384px"
-                />
-              </div>
-
-              {/* Floating verified badge - enhanced with glow */}
-              {profile.isVerified && (
+                {/* Gradient border ring */}
                 <div
-                  className="absolute -bottom-2 -right-2 lg:bottom-4 lg:right-0 animate-float"
-                  style={{ animationDuration: "4s" }}
-                >
+                  className="absolute -inset-1 rounded-2xl animate-gradient"
+                  style={{
+                    background: `linear-gradient(
+                      135deg,
+                      var(--profile-primary),
+                      var(--profile-accent),
+                      var(--profile-primary)
+                    )`,
+                    backgroundSize: "200% 200%",
+                  }}
+                />
+                {/* Image container */}
+                <div className="relative w-36 h-36 sm:w-44 sm:h-44 lg:w-52 lg:h-52 rounded-2xl overflow-hidden shadow-xl">
+                  <Image
+                    src={profile.imageUrl || "/images/placeholder-avatar.jpg"}
+                    alt={profile.name}
+                    fill
+                    className="object-cover"
+                    priority
+                    sizes="(max-width: 640px) 144px, (max-width: 1024px) 176px, 208px"
+                  />
+                </div>
+                {/* Verified badge - floating pill */}
+                {profile.isVerified && (
                   <div
-                    className="flex items-center gap-1.5 px-5 py-2.5 rounded-full text-white text-sm font-semibold"
+                    className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-white text-sm font-semibold shadow-lg whitespace-nowrap"
                     style={{
-                      backgroundColor: "var(--profile-primary)",
-                      boxShadow: `0 0 20px 5px var(--profile-primary), 0 10px 30px -5px rgba(0, 0, 0, 0.3)`,
+                      background: `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`,
                     }}
                   >
                     <Shield className="h-4 w-4" />
-                    <span className="hidden sm:inline">{t.verifiedBadge}</span>
+                    {t.verifiedBadge}
+                  </div>
+                )}
+              </div>
+
+              {/* Info Section */}
+              <div className="flex-1 text-center lg:text-left">
+                {/* Name */}
+                <h1
+                  className={cn(
+                    "text-3xl sm:text-4xl lg:text-5xl font-bold mb-2",
+                    "opacity-0",
+                    heroVisible && "animate-fade-in-up stagger-1"
+                  )}
+                  style={{
+                    color: "var(--profile-text)",
+                    animationFillMode: "forwards",
+                  }}
+                >
+                  {profile.name}
+                </h1>
+
+                {/* Title with gradient text */}
+                <p
+                  className={cn(
+                    "text-xl sm:text-2xl font-semibold mb-4",
+                    "opacity-0",
+                    heroVisible && "animate-fade-in-up stagger-2"
+                  )}
+                  style={{
+                    background: `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`,
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    animationFillMode: "forwards",
+                  }}
+                >
+                  {profile.title}
+                </p>
+
+                {/* Headline */}
+                {profile.headline && (
+                  <p
+                    className={cn(
+                      "text-gray-600 text-lg mb-6 max-w-2xl mx-auto lg:mx-0",
+                      "opacity-0",
+                      heroVisible && "animate-fade-in-up stagger-3"
+                    )}
+                    style={{ animationFillMode: "forwards" }}
+                  >
+                    {profile.headline}
+                  </p>
+                )}
+
+                {/* Stats as pill badges */}
+                <div
+                  className={cn(
+                    "flex flex-wrap gap-3 justify-center lg:justify-start mb-6",
+                    "opacity-0",
+                    heroVisible && "animate-fade-in-up stagger-4"
+                  )}
+                  style={{ animationFillMode: "forwards" }}
+                >
+                  {profile.city && (
+                    <div
+                      className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+                      style={{
+                        backgroundColor: "var(--profile-secondary)",
+                        color: "var(--profile-text)",
+                      }}
+                    >
+                      <MapPin className="h-4 w-4" style={{ color: "var(--profile-primary)" }} />
+                      {profile.city}
+                    </div>
+                  )}
+                  {profile.experienceYears > 0 && (
+                    <div
+                      className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+                      style={{
+                        backgroundColor: "var(--profile-secondary)",
+                        color: "var(--profile-text)",
+                      }}
+                    >
+                      <Clock className="h-4 w-4" style={{ color: "var(--profile-primary)" }} />
+                      <span className="tabular-nums">{experienceCount}+</span> {t.experience}
+                    </div>
+                  )}
+                  <div
+                    className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+                    style={{
+                      backgroundColor: "var(--profile-secondary)",
+                      color: "var(--profile-text)",
+                    }}
+                  >
+                    {profile.sessionType === "online" ? (
+                      <Video className="h-4 w-4" style={{ color: "var(--profile-primary)" }} />
+                    ) : (
+                      <Building2 className="h-4 w-4" style={{ color: "var(--profile-primary)" }} />
+                    )}
+                    {sessionTypeText}
                   </div>
                 </div>
-              )}
+
+                {/* Price */}
+                {profile.pricePerSession > 0 && (
+                  <div
+                    className={cn(
+                      "mb-8",
+                      "opacity-0",
+                      heroVisible && "animate-fade-in-up stagger-5"
+                    )}
+                    style={{ animationFillMode: "forwards" }}
+                  >
+                    <span
+                      className="text-4xl lg:text-5xl font-bold"
+                      style={{ color: "var(--profile-primary)" }}
+                    >
+                      {profile.pricePerSession}€
+                    </span>
+                    <span className="text-gray-500 ml-2 text-lg">
+                      {t.pricePerSession}
+                    </span>
+                  </div>
+                )}
+
+                {/* CTA Buttons with Gradient */}
+                <div
+                  className={cn(
+                    "flex flex-col sm:flex-row gap-4 justify-center lg:justify-start",
+                    "opacity-0",
+                    heroVisible && "animate-fade-in-up stagger-6"
+                  )}
+                  style={{ animationFillMode: "forwards" }}
+                >
+                  <Button
+                    size="lg"
+                    className={cn(
+                      "text-white font-semibold",
+                      "shadow-lg hover:shadow-xl",
+                      "hover:scale-105 transition-all duration-300",
+                      "relative overflow-hidden group"
+                    )}
+                    style={{
+                      background: `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`,
+                    }}
+                    onClick={() =>
+                      document
+                        .getElementById("contact")
+                        ?.scrollIntoView({ behavior: "smooth" })
+                    }
+                  >
+                    {/* Shimmer effect */}
+                    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full"
+                      style={{ transition: "transform 0.6s ease" }}
+                    />
+                    <Mail className="mr-2 h-5 w-5 relative z-10" />
+                    <span className="relative z-10">{t.bookAppointment}</span>
+                  </Button>
+                  {profile.phone && (
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className={cn(
+                        "font-semibold border-2",
+                        "hover:scale-105 transition-all duration-300",
+                        "hover:shadow-lg"
+                      )}
+                      style={{
+                        borderColor: "var(--profile-primary)",
+                        color: "var(--profile-primary)",
+                      }}
+                      asChild
+                    >
+                      <a href={`tel:${profile.phone}`}>
+                        <Phone className="mr-2 h-5 w-5" />
+                        {t.callNow}
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

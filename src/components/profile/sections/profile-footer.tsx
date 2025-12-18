@@ -45,9 +45,18 @@ export function ProfileFooter({ profile, locale }: ProfileFooterProps) {
 
   return (
     <footer
-      className="py-8"
+      className="py-12 relative"
       style={{ backgroundColor: "var(--profile-secondary)" }}
     >
+      {/* Gradient border at top */}
+      <div
+        className="absolute top-0 left-0 right-0 h-1 animate-gradient"
+        style={{
+          background: `linear-gradient(90deg, transparent, var(--profile-primary), var(--profile-accent), var(--profile-primary), transparent)`,
+          backgroundSize: "200% 100%",
+        }}
+      />
+
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Left - Copyright */}

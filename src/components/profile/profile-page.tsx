@@ -36,6 +36,8 @@ export function ProfilePage({ profile, locale }: ProfilePageProps) {
     "--profile-accent": customTheme.accentColor,
     "--profile-bg": customTheme.backgroundColor,
     "--profile-text": customTheme.textColor,
+    "--profile-gradient-from": customTheme.gradientFrom,
+    "--profile-gradient-to": customTheme.gradientTo,
   } as React.CSSProperties;
 
   return (

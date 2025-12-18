@@ -1,6 +1,6 @@
 "use client";
 
-import { Brain, Heart, Users, Flame, Pill, Utensils, Zap, Battery, Crown, Medal, Award } from "lucide-react";
+import { Brain, Heart, Users, Flame, Pill, Utensils, Zap, Battery } from "lucide-react";
 import type { TherapistProfileData } from "@/types/profile";
 import type { Specialty, TherapyType } from "@/types/therapist";
 import { Badge } from "@/components/ui/badge";
@@ -21,18 +21,17 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
     de: {
       specializations: "Meine Schwerpunkte",
       therapyTypes: "Therapieverfahren",
-      primaryFocus: "Hauptschwerpunkt",
-      secondaryFocus: "Weiterer Schwerpunkt",
-      // Specializations
+      primaryFocus: "#1",
+      secondaryFocus: "#2",
+      thirdFocus: "#3",
       depression: "Depression",
       anxiety: "Angststörungen",
       trauma: "Trauma & PTBS",
-      relationships: "Beziehungen & Partnerschaft",
-      addiction: "Sucht & Abhängigkeit",
+      relationships: "Beziehungen",
+      addiction: "Sucht",
       eating_disorders: "Essstörungen",
       adhd: "ADHS",
-      burnout: "Burnout & Stress",
-      // Therapy Types
+      burnout: "Burnout",
       cbt: "Kognitive Verhaltenstherapie",
       psychoanalysis: "Psychoanalyse",
       systemic: "Systemische Therapie",
@@ -42,18 +41,17 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
     en: {
       specializations: "My Specializations",
       therapyTypes: "Therapy Methods",
-      primaryFocus: "Primary Focus",
-      secondaryFocus: "Secondary Focus",
-      // Specializations
+      primaryFocus: "#1",
+      secondaryFocus: "#2",
+      thirdFocus: "#3",
       depression: "Depression",
-      anxiety: "Anxiety Disorders",
+      anxiety: "Anxiety",
       trauma: "Trauma & PTSD",
-      relationships: "Relationships & Partnerships",
+      relationships: "Relationships",
       addiction: "Addiction",
       eating_disorders: "Eating Disorders",
       adhd: "ADHD",
-      burnout: "Burnout & Stress",
-      // Therapy Types
+      burnout: "Burnout",
       cbt: "Cognitive Behavioral Therapy",
       psychoanalysis: "Psychoanalysis",
       systemic: "Systemic Therapy",
@@ -64,16 +62,17 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
     de: {
       specializations: "Meine Schwerpunkte",
       therapyTypes: "Therapieverfahren",
-      primaryFocus: "Hauptschwerpunkt",
-      secondaryFocus: "Weiterer Schwerpunkt",
+      primaryFocus: "#1",
+      secondaryFocus: "#2",
+      thirdFocus: "#3",
       depression: "Depression",
       anxiety: "Angststörungen",
       trauma: "Trauma & PTBS",
-      relationships: "Beziehungen & Partnerschaft",
-      addiction: "Sucht & Abhängigkeit",
+      relationships: "Beziehungen",
+      addiction: "Sucht",
       eating_disorders: "Essstörungen",
       adhd: "ADHS",
-      burnout: "Burnout & Stress",
+      burnout: "Burnout",
       cbt: "Kognitive Verhaltenstherapie",
       psychoanalysis: "Psychoanalyse",
       systemic: "Systemische Therapie",
@@ -83,20 +82,21 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
   };
 
   const specialtyIcons: Record<Specialty, React.ReactNode> = {
-    depression: <Brain className="h-6 w-6" />,
-    anxiety: <Zap className="h-6 w-6" />,
-    trauma: <Heart className="h-6 w-6" />,
-    relationships: <Users className="h-6 w-6" />,
-    addiction: <Pill className="h-6 w-6" />,
-    eating_disorders: <Utensils className="h-6 w-6" />,
-    adhd: <Flame className="h-6 w-6" />,
-    burnout: <Battery className="h-6 w-6" />,
+    depression: <Brain className="h-7 w-7" />,
+    anxiety: <Zap className="h-7 w-7" />,
+    trauma: <Heart className="h-7 w-7" />,
+    relationships: <Users className="h-7 w-7" />,
+    addiction: <Pill className="h-7 w-7" />,
+    eating_disorders: <Utensils className="h-7 w-7" />,
+    adhd: <Flame className="h-7 w-7" />,
+    burnout: <Battery className="h-7 w-7" />,
   };
 
-  const rankIcons: Record<number, React.ReactNode> = {
-    1: <Crown className="h-4 w-4 text-yellow-500" />,
-    2: <Medal className="h-4 w-4 text-gray-400" />,
-    3: <Award className="h-4 w-4 text-amber-600" />,
+  // Rank badge gradients
+  const rankStyles: Record<number, { gradient: string; text: string }> = {
+    1: { gradient: "linear-gradient(135deg, #F59E0B, #D97706)", text: "#1" },
+    2: { gradient: "linear-gradient(135deg, #9CA3AF, #6B7280)", text: "#2" },
+    3: { gradient: "linear-gradient(135deg, #CD7F32, #B8860B)", text: "#3" },
   };
 
   // Sort specializations by rank
@@ -110,67 +110,62 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
     <div
       className="py-16 sm:py-24 relative overflow-hidden"
       style={{
-        background: `linear-gradient(180deg, var(--profile-secondary) 0%, white 50%, var(--profile-bg) 100%)`,
+        background: `linear-gradient(180deg, var(--profile-bg) 0%, var(--profile-secondary) 50%, var(--profile-bg) 100%)`,
       }}
     >
-      {/* Animated gradient divider at top */}
-      <div
-        className="absolute top-0 left-0 right-0 h-1 animate-gradient"
-        style={{
-          background: `linear-gradient(90deg, transparent, var(--profile-primary), var(--profile-accent), var(--profile-primary), transparent)`,
-          backgroundSize: "200% 100%",
-        }}
-      />
-
-      {/* Decorative background elements - enhanced */}
+      {/* Decorative background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Large animated blob - Top Right */}
         <div
-          className="absolute -top-32 -right-32 w-[40rem] h-[40rem] animate-aurora-1"
+          className="absolute -top-32 -right-32 w-[40rem] h-[40rem] rounded-full animate-aurora-1"
           style={{
             background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 60%)`,
-            opacity: 0.35,
-            filter: "blur(60px)",
+            opacity: 0.2,
+            filter: "blur(80px)",
           }}
         />
-        {/* Medium blob - Bottom Left */}
         <div
-          className="absolute -bottom-40 -left-40 w-[35rem] h-[35rem] animate-aurora-2"
+          className="absolute -bottom-40 -left-40 w-[35rem] h-[35rem] rounded-full animate-aurora-2"
           style={{
             background: `radial-gradient(circle, var(--profile-accent) 0%, transparent 60%)`,
-            opacity: 0.3,
-            filter: "blur(50px)",
-          }}
-        />
-        {/* Center accent glow */}
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60rem] h-[30rem] animate-glow-pulse"
-          style={{
-            background: `radial-gradient(ellipse, var(--profile-primary) 0%, transparent 70%)`,
             opacity: 0.15,
-            filter: "blur(80px)",
+            filter: "blur(70px)",
           }}
         />
       </div>
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
-        {/* Specializations */}
-        <h2
-          ref={sectionRef}
-          className={cn(
-            "text-2xl sm:text-3xl font-bold mb-8 text-center",
-            "opacity-0",
-            sectionVisible && "animate-fade-in-up"
-          )}
-          style={{ color: "var(--profile-text)", animationFillMode: "forwards" }}
-        >
-          {t.specializations}
-        </h2>
+        {/* Section Header */}
+        <div ref={sectionRef} className="text-center mb-12">
+          <h2
+            className={cn(
+              "text-3xl sm:text-4xl font-bold mb-4",
+              "opacity-0",
+              sectionVisible && "animate-fade-in-up"
+            )}
+            style={{ color: "var(--profile-text)", animationFillMode: "forwards" }}
+          >
+            {t.specializations}
+          </h2>
+          <div
+            className={cn(
+              "h-1 w-20 mx-auto rounded-full animate-gradient",
+              "opacity-0",
+              sectionVisible && "animate-fade-in-up stagger-1"
+            )}
+            style={{
+              background: `linear-gradient(90deg, var(--profile-primary), var(--profile-accent), var(--profile-primary))`,
+              backgroundSize: "200% 100%",
+              animationFillMode: "forwards",
+            }}
+          />
+        </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-16">
+        {/* Specialization Cards with gradient icons */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-16">
           {sortedSpecializations.map((specialty, index) => {
             const rank = profile.specializationRanks[specialty];
             const isRanked = rank && rank <= 3;
+            const rankStyle = isRanked ? rankStyles[rank] : null;
 
             return (
               <div
@@ -180,13 +175,14 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
                   sectionVisible && "animate-fade-in-up"
                 )}
                 style={{
-                  animationDelay: `${0.1 + index * 0.1}s`,
+                  animationDelay: `${0.1 + index * 0.08}s`,
                   animationFillMode: "forwards",
                 }}
               >
                 <GlassCard
                   className={cn(
-                    "p-6 text-center group",
+                    "p-6 text-center group cursor-pointer",
+                    "hover:scale-105 transition-all duration-300",
                     isRanked && "ring-2"
                   )}
                   style={{
@@ -195,34 +191,33 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
                   enableTilt={true}
                   glowOnHover={true}
                 >
-                  {/* Rank Badge */}
-                  {isRanked && (
-                    <div className="absolute -top-2 -right-2 flex items-center gap-1 bg-white rounded-full px-2 py-1 shadow-lg z-20">
-                      {rankIcons[rank]}
-                      <span className="text-xs font-medium">
-                        {rank === 1 ? t.primaryFocus : t.secondaryFocus}
-                      </span>
+                  {/* Rank Badge with gradient */}
+                  {isRanked && rankStyle && (
+                    <div
+                      className="absolute -top-3 -right-3 px-3 py-1 rounded-full text-white text-xs font-bold shadow-lg z-20"
+                      style={{ background: rankStyle.gradient }}
+                    >
+                      {rankStyle.text}
                     </div>
                   )}
 
-                  {/* Icon with glow effect */}
+                  {/* Icon with full gradient background */}
                   <div
                     className={cn(
-                      "inline-flex items-center justify-center w-16 h-16 rounded-full mb-4",
+                      "inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4",
                       "transition-all duration-300",
-                      "group-hover:scale-110 group-hover:shadow-lg"
+                      "group-hover:scale-110 group-hover:shadow-xl"
                     )}
                     style={{
-                      backgroundColor: "var(--profile-secondary)",
+                      background: isRanked
+                        ? `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`
+                        : `linear-gradient(135deg, var(--profile-primary)90, var(--profile-accent)90)`,
                       boxShadow: isRanked
-                        ? `0 0 20px var(--profile-primary)`
+                        ? `0 8px 24px var(--profile-primary)40`
                         : undefined,
                     }}
                   >
-                    <span
-                      className="transition-transform duration-300 group-hover:scale-110"
-                      style={{ color: "var(--profile-primary)" }}
-                    >
+                    <span className="text-white">
                       {specialtyIcons[specialty]}
                     </span>
                   </div>
@@ -242,44 +237,65 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
 
         {/* Therapy Types */}
         {profile.therapyTypes.length > 0 && (
-          <>
-            <h2
-              ref={therapyRef}
-              className={cn(
-                "text-2xl sm:text-3xl font-bold mb-8 text-center",
-                "opacity-0",
-                therapyVisible && "animate-fade-in-up"
-              )}
-              style={{ color: "var(--profile-text)", animationFillMode: "forwards" }}
-            >
-              {t.therapyTypes}
-            </h2>
-
-            <div className="flex flex-wrap gap-3 justify-center">
-              {profile.therapyTypes.map((type: TherapyType, index) => (
-                <Badge
-                  key={type}
-                  variant="outline"
-                  className={cn(
-                    "text-base px-5 py-2.5 border-2",
-                    "transition-all duration-300",
-                    "hover:scale-105 hover:shadow-lg",
-                    "opacity-0",
-                    therapyVisible && "animate-fade-in-scale"
-                  )}
-                  style={{
-                    borderColor: "var(--profile-primary)",
-                    color: "var(--profile-primary)",
-                    backgroundColor: "white",
-                    animationDelay: `${0.1 + index * 0.1}s`,
-                    animationFillMode: "forwards",
-                  }}
-                >
-                  {(t as unknown as Record<string, string>)[type] || type}
-                </Badge>
-              ))}
+          <div ref={therapyRef}>
+            {/* Section Header */}
+            <div className="text-center mb-8">
+              <h2
+                className={cn(
+                  "text-3xl sm:text-4xl font-bold mb-4",
+                  "opacity-0",
+                  therapyVisible && "animate-fade-in-up"
+                )}
+                style={{ color: "var(--profile-text)", animationFillMode: "forwards" }}
+              >
+                {t.therapyTypes}
+              </h2>
+              <div
+                className={cn(
+                  "h-1 w-20 mx-auto rounded-full animate-gradient",
+                  "opacity-0",
+                  therapyVisible && "animate-fade-in-up stagger-1"
+                )}
+                style={{
+                  background: `linear-gradient(90deg, var(--profile-primary), var(--profile-accent), var(--profile-primary))`,
+                  backgroundSize: "200% 100%",
+                  animationFillMode: "forwards",
+                }}
+              />
             </div>
-          </>
+
+            {/* Colorful Badge Grid */}
+            <div className="flex flex-wrap gap-3 justify-center">
+              {profile.therapyTypes.map((type: TherapyType, index) => {
+                // Alternate between primary and accent colors
+                const isPrimary = index % 2 === 0;
+
+                return (
+                  <Badge
+                    key={type}
+                    className={cn(
+                      "text-base px-5 py-2.5",
+                      "transition-all duration-300",
+                      "hover:scale-105 hover:shadow-lg",
+                      "opacity-0",
+                      therapyVisible && "animate-fade-in-scale"
+                    )}
+                    style={{
+                      background: isPrimary
+                        ? `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`
+                        : `linear-gradient(135deg, var(--profile-accent), var(--profile-primary))`,
+                      color: "white",
+                      border: "none",
+                      animationDelay: `${0.15 + index * 0.08}s`,
+                      animationFillMode: "forwards",
+                    }}
+                  >
+                    {(t as unknown as Record<string, string>)[type] || type}
+                  </Badge>
+                );
+              })}
+            </div>
+          </div>
         )}
       </div>
     </div>
