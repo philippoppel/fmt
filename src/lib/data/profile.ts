@@ -5,11 +5,12 @@ import { getDemoProfileBySlug, getAllDemoProfileSlugs as getDemoSlugs } from "./
 
 /**
  * Get a therapist profile by slug for public display
- * Falls back to demo profiles if database is empty
+ * Falls back to ID lookup if slug not found, then demo profiles
  */
 export async function getProfileBySlug(slug: string): Promise<TherapistProfileData | null> {
   try {
-    const profile = await db.therapistProfile.findUnique({
+    // First try to find by slug
+    let profile = await db.therapistProfile.findUnique({
       where: { slug, isPublished: true },
       include: {
         user: {
@@ -20,6 +21,21 @@ export async function getProfileBySlug(slug: string): Promise<TherapistProfileDa
         },
       },
     });
+
+    // If not found by slug, try to find by ID (fallback for profiles without slugs)
+    if (!profile) {
+      profile = await db.therapistProfile.findFirst({
+        where: { id: slug, isPublished: true },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+    }
 
     if (profile) {
       return transformProfileToData(profile);
