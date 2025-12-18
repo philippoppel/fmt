@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { generateSeoMetadata } from "@/lib/seo";
 import { ProfileForm } from "./profile-form";
+import type { AccountType } from "@/types/therapist";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -65,6 +66,7 @@ export default async function SettingsPage({ params }: Props) {
           availability: profile.availability,
           gender: profile.gender,
         }}
+        accountType={(profile.accountType as AccountType) || "gratis"}
       />
     </div>
   );

@@ -193,7 +193,68 @@
           "description": "Wann und wie bist du verfügbar?"
         }
       }
-    }
+    },
+    "lockedField": {
+      "requiresTier": "Benötigt {tier}-Abo",
+      "featureLocked": "Diese Funktion ist gesperrt",
+      "featureLockedWithLabel": "{label} ist gesperrt",
+      "upgradeToUnlock": "Upgrade auf {tier}, um diese Funktion freizuschalten.",
+      "upgradeNow": "Jetzt upgraden"
+    },
+    "upgrade": {
+      "title": "Upgrade auf Premium",
+      "subtitle": "Schalte alle Funktionen frei",
+      "currentTier": "Aktuelles Abo",
+      "premiumIncludes": "Premium beinhaltet",
+      "benefits": {
+        "allFields": "Alle Profilfelder bearbeiten",
+        "threeSpecializations": "3 priorisierte Schwerpunkte",
+        "allThemes": "Alle 5 Farbthemen + Custom",
+        "unlimitedImages": "Bis zu 20 Bilder hochladen",
+        "videoIntro": "Video-Vorstellung einbinden",
+        "therapyStyle": "Therapie-Stil Einstellungen",
+        "matchingBoost": "Bessere Platzierung im Matching"
+      },
+      "upgradeButton": "Upgraden",
+      "viewPlans": "Alle Pläne ansehen",
+      "gratisMessage": "Mit dem Gratis-Abo kannst du dein Profil nicht bearbeiten.",
+      "mittelMessage": "Upgrade auf Premium für alle Funktionen.",
+      "gratisBlockerTitle": "Profil-Bearbeitung nicht verfügbar",
+      "gratisBlockerDescription": "Mit dem Gratis-Abo kannst du dein Profil nicht bearbeiten. Wähle ein Abo, um dein Profil anzupassen und mehr Klienten zu erreichen.",
+      "choosePlan": "Abo wählen"
+    },
+    "premiumFeature": "Premium"
+  },
+  "pricing": {
+    "title": "Wähle dein Abo",
+    "subtitle": "Finde den richtigen Plan für deine Praxis",
+    "tiers": {
+      "gratis": "Gratis",
+      "mittel": "Basis",
+      "premium": "Premium"
+    },
+    "perMonth": "pro Monat",
+    "mostPopular": "Beliebteste Wahl",
+    "currentPlan": "Aktueller Plan",
+    "choosePlan": "Plan wählen",
+    "contactUs": "Kontaktiere uns",
+    "comingSoon": "Demnächst verfügbar",
+    "features": {
+      "editProfile": "Profil bearbeiten",
+      "searchVisibility": "In Suche sichtbar",
+      "specializations": "Schwerpunkte",
+      "images": "Bilder",
+      "themes": "Farbthemen",
+      "videoIntro": "Video-Vorstellung",
+      "therapyStyle": "Therapie-Stil",
+      "extendedProfile": "Erweitertes Profil",
+      "socialLinks": "Social Media Links",
+      "trialSession": "Probesitzung anbieten",
+      "matchingBoost": "Matching-Boost"
+    },
+    "gratisDescription": "Für Therapeuten, die erst mal reinschnuppern wollen",
+    "mittelDescription": "Für Therapeuten, die online gefunden werden wollen",
+    "premiumDescription": "Für Therapeuten, die das Maximum herausholen wollen"
   },
   "footer": {
     "copyright": "© {year} Meine App. Alle Rechte vorbehalten.",

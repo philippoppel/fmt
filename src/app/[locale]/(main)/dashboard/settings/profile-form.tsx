@@ -22,15 +22,21 @@ import {
   type SessionType,
   type Availability,
   type Gender,
+  type AccountType,
 } from "@/types/therapist";
+import { useProfilePermissions } from "@/hooks/use-profile-permissions";
+import { TierBadge } from "@/components/dashboard/tier-badge";
+import { UpgradeBanner, GratisBlocker } from "@/components/dashboard/upgrade-banner";
 
 type Props = {
   initialData: ProfileData;
+  accountType: AccountType;
 };
 
-export function ProfileForm({ initialData }: Props) {
+export function ProfileForm({ initialData, accountType }: Props) {
   const t = useTranslations("dashboard.settings");
   const tFilters = useTranslations("therapists.filters");
+  const permissions = useProfilePermissions(accountType);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -106,12 +112,36 @@ export function ProfileForm({ initialData }: Props) {
     });
   }
 
+  // Show blocker for gratis accounts
+  if (permissions.isGratis) {
+    return (
+      <div className="space-y-6">
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-3xl font-bold">{t("title")}</h1>
+            <TierBadge tier={accountType} />
+          </div>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
+        </div>
+        <GratisBlocker />
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <p className="text-muted-foreground mt-2">{t("subtitle")}</p>
+        <div className="flex items-center gap-3 mb-2">
+          <h1 className="text-3xl font-bold">{t("title")}</h1>
+          <TierBadge tier={accountType} />
+        </div>
+        <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
+
+      {/* Upgrade banner for non-premium users */}
+      {!permissions.isPremium && (
+        <UpgradeBanner currentTier={accountType} variant="inline" />
+      )}
 
       {error && (
         <div className="rounded-md bg-destructive/10 p-4 text-sm text-destructive">
