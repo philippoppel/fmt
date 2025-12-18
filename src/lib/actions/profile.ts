@@ -4,6 +4,8 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { TIER_PERMISSIONS, validateAgainstTier } from "@/lib/permissions/profile-permissions";
+import type { AccountType } from "@/types/therapist";
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -35,6 +37,24 @@ export async function updateProfile(data: ProfileData): Promise<UpdateProfileRes
     return { success: false, error: "Not authenticated" };
   }
 
+  // Get current profile to check account type
+  const currentProfile = await db.therapistProfile.findUnique({
+    where: { userId: session.user.id },
+    select: { accountType: true },
+  });
+
+  if (!currentProfile) {
+    return { success: false, error: "Profile not found" };
+  }
+
+  const accountType = (currentProfile.accountType as AccountType) || "gratis";
+  const permissions = TIER_PERMISSIONS[accountType];
+
+  // Check if user can edit at all
+  if (!permissions.canEdit) {
+    return { success: false, error: "Upgrade your subscription to edit your profile" };
+  }
+
   const validatedData = profileSchema.safeParse(data);
 
   if (!validatedData.success) {
@@ -44,6 +64,15 @@ export async function updateProfile(data: ProfileData): Promise<UpdateProfileRes
   }
 
   const { name, ...profileData } = validatedData.data;
+
+  // Validate against tier limits
+  const tierValidation = validateAgainstTier(accountType, {
+    specializations: profileData.specializations,
+  });
+
+  if (!tierValidation.valid) {
+    return { success: false, error: tierValidation.errors[0] };
+  }
 
   // Update user name
   await db.user.update({
