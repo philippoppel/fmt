@@ -24,6 +24,7 @@ import { MatchingCTA } from "@/components/blog/display/matching-cta";
 import { Badge } from "@/components/ui/badge";
 import { BookmarkButton } from "@/components/blog/interaction/bookmark-button";
 import { ShareButton } from "@/components/blog/interaction/share-button";
+import { ReadingPreferences } from "@/components/blog/a11y/reading-preferences";
 
 import Link from "next/link";
 import Image from "next/image";

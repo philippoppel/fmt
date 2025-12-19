@@ -13,7 +13,18 @@ vi.mock("next/link", () => ({
   }) => <a href={href}>{children}</a>,
 }));
 
-const mockSources = [
+const mockSources: Array<{
+  id: string;
+  doi: string | null;
+  title: string;
+  authors: string[];
+  year: number;
+  journal: string | null;
+  url: string;
+  type: "study" | "guideline" | "book" | "website" | "other";
+  formattedAPA: string;
+  inlineKey: string;
+}> = [
   {
     id: "1",
     doi: "10.1234/example.001",
@@ -22,7 +33,7 @@ const mockSources = [
     year: 2023,
     journal: "Journal of Psychology",
     url: "https://example.com/paper1",
-    type: "article",
+    type: "study",
     formattedAPA:
       "Smith, J., & Doe, A. (2023). Example Research Paper. Journal of Psychology.",
     inlineKey: "smith2023",
