@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import { useTranslations } from "next-intl";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { generateSeoMetadata } from "@/lib/seo";
+import { AboutPageContent } from "@/components/about/about-page-content";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -12,15 +12,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "navigation" });
 
   const descriptions: Record<string, string> = {
-    de: "Erfahren Sie mehr über uns und unsere Mission, barrierefreie Webanwendungen zu entwickeln.",
-    en: "Learn more about us and our mission to develop accessible web applications.",
-    fr: "En savoir plus sur nous et notre mission de développer des applications web accessibles.",
-    es: "Conozca más sobre nosotros y nuestra misión de desarrollar aplicaciones web accesibles.",
-    it: "Scopri di più su di noi e la nostra missione di sviluppare applicazioni web accessibili.",
+    de: "Wir helfen dir, die richtige Therapie zu finden. Gegründet von zwei Psychotherapeutinnen mit einer Vision: Psychische Gesundheit für alle zugänglich machen.",
+    en: "We help you find the right therapy. Founded by two psychotherapists with a vision: Making mental health accessible for everyone.",
   };
 
   return generateSeoMetadata({
-    title: t("about"),
+    title: `${t("mission")} – FindMyTherapy`,
     description: descriptions[locale] || descriptions.de,
     locale,
     path: "/about",
@@ -32,17 +29,4 @@ export default async function AboutPage({ params }: Props) {
   setRequestLocale(locale);
 
   return <AboutPageContent />;
-}
-
-function AboutPageContent() {
-  const t = useTranslations("navigation");
-
-  return (
-    <div className="container mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold">{t("about")}</h1>
-      <p className="mt-6 text-lg text-muted-foreground">
-        Diese Seite ist noch in Entwicklung.
-      </p>
-    </div>
-  );
 }

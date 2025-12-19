@@ -48,8 +48,8 @@ export function generateSeoMetadata({
     description,
     keywords: keywords.join(", "),
     authors: authors?.map((name) => ({ name })),
-    creator: "FMT",
-    publisher: "FMT",
+    creator: "FindMyTherapy",
+    publisher: "FindMyTherapy",
     formatDetection: {
       email: false,
       address: false,
@@ -61,7 +61,7 @@ export function generateSeoMetadata({
         { url: "/favicon.svg", type: "image/svg+xml" },
       ],
       apple: [
-        { url: "/icons/icon.svg", type: "image/svg+xml" },
+        { url: "/favicon.svg", type: "image/svg+xml" },
       ],
     },
     alternates: {
@@ -76,7 +76,7 @@ export function generateSeoMetadata({
       title,
       description,
       url,
-      siteName: "FMT",
+      siteName: "FindMyTherapy",
       locale: ogLocale,
       type,
       images: [
@@ -96,7 +96,7 @@ export function generateSeoMetadata({
       title,
       description,
       images: [ogImage],
-      creator: "@fmt_app",
+      creator: "@findmytherapy",
     },
     robots: noIndex
       ? {
@@ -128,11 +128,11 @@ export function generateOrganizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "FMT",
+    name: "FindMyTherapy",
     url: baseUrl,
-    logo: `${baseUrl}/icons/icon.svg`,
+    logo: `${baseUrl}/favicon.svg`,
     sameAs: [
-      "https://github.com/philippoppel/fmt",
+      "https://github.com/philippoppel/findmytherapy",
     ],
   };
 }
@@ -142,7 +142,7 @@ export function generateWebSiteSchema(locale: string) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "FMT",
+    name: "FindMyTherapy",
     url: baseUrl,
     inLanguage: locale,
   };
@@ -196,10 +196,10 @@ export function generateArticleSchema({
     })),
     publisher: {
       "@type": "Organization",
-      name: "FMT",
+      name: "FindMyTherapy",
       logo: {
         "@type": "ImageObject",
-        url: `${baseUrl}/icons/icon.svg`,
+        url: `${baseUrl}/favicon.svg`,
       },
     },
   };
@@ -260,10 +260,10 @@ export function generateBlogPostingSchema({
     })),
     publisher: {
       "@type": "Organization",
-      name: "FMT",
+      name: "FindMyTherapy",
       logo: {
         "@type": "ImageObject",
-        url: `${baseUrl}/icons/icon.svg`,
+        url: `${baseUrl}/favicon.svg`,
       },
     },
     mainEntityOfPage: {

@@ -1,0 +1,25 @@
+<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- FindMyTherapy Logo Mark -->
+  <!-- Symbolik: Zwei schützende Hände umfassen eine Person -->
+
+  <!-- Left curved arm -->
+  <path
+    d="M6 28 C6 16, 12 8, 20 8"
+    stroke="currentColor"
+    stroke-width="4"
+    stroke-linecap="round"
+    fill="none"
+  />
+
+  <!-- Right curved arm -->
+  <path
+    d="M34 28 C34 16, 28 8, 20 8"
+    stroke="currentColor"
+    stroke-width="4"
+    stroke-linecap="round"
+    fill="none"
+  />
+
+  <!-- Center dot - the person being supported -->
+  <circle cx="20" cy="22" r="5" fill="currentColor"/>
+</svg>

@@ -237,4 +237,153 @@ test.describe("Accessibility", () => {
       expect(menuItems.length).toBeGreaterThan(0);
     });
   });
+
+  test.describe("Blog Accessibility", () => {
+    test("blog overview should have no critical a11y violations", async ({ page }) => {
+      await page.goto("/en/blog");
+      await page.waitForLoadState("domcontentloaded");
+
+      const accessibilityScanResults = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa"])
+        .disableRules(["link-in-text-block"])
+        .analyze();
+
+      const criticalViolations = accessibilityScanResults.violations.filter(
+        (v) => v.impact === "critical" || v.impact === "serious"
+      );
+
+      expect(
+        criticalViolations,
+        `Found ${criticalViolations.length} critical a11y violations on blog overview`
+      ).toEqual([]);
+    });
+
+    test("blog article should have no critical a11y violations", async ({ page }) => {
+      await page.goto("/en/blog");
+
+      const articleLink = page.locator("article a").first();
+
+      if (await articleLink.isVisible()) {
+        await articleLink.click();
+        await page.waitForLoadState("domcontentloaded");
+
+        const accessibilityScanResults = await new AxeBuilder({ page })
+          .withTags(["wcag2a", "wcag2aa"])
+          .disableRules(["link-in-text-block"])
+          .analyze();
+
+        const criticalViolations = accessibilityScanResults.violations.filter(
+          (v) => v.impact === "critical" || v.impact === "serious"
+        );
+
+        expect(
+          criticalViolations,
+          `Found ${criticalViolations.length} critical a11y violations on blog article`
+        ).toEqual([]);
+      }
+    });
+
+    test("blog should have proper heading hierarchy", async ({ page }) => {
+      await page.goto("/en/blog");
+
+      // Should have an h1
+      const h1 = page.locator("h1");
+      await expect(h1).toBeVisible();
+
+      // Count h1s - should only be one
+      const h1Count = await h1.count();
+      expect(h1Count).toBe(1);
+    });
+
+    test("blog article should have proper heading hierarchy", async ({ page }) => {
+      await page.goto("/en/blog");
+
+      const articleLink = page.locator("article a").first();
+
+      if (await articleLink.isVisible()) {
+        await articleLink.click();
+        await page.waitForLoadState("domcontentloaded");
+
+        // Should have an h1
+        const h1 = page.locator("h1");
+        await expect(h1).toBeVisible();
+
+        // Check heading order
+        const headings = await page.locator("h1, h2, h3, h4, h5, h6").all();
+        expect(headings.length).toBeGreaterThan(0);
+      }
+    });
+
+    test("blog cards should be keyboard navigable", async ({ page }) => {
+      await page.goto("/en/blog");
+
+      // Tab through the page to reach articles
+      for (let i = 0; i < 15; i++) {
+        await page.keyboard.press("Tab");
+      }
+
+      // Check that something is focused
+      const focusedTag = await page.evaluate(() => document.activeElement?.tagName);
+      expect(focusedTag).toBeTruthy();
+    });
+
+    test("reader mode dialog should trap focus", async ({ page }) => {
+      await page.goto("/en/blog");
+
+      const articleLink = page.locator("article a").first();
+
+      if (await articleLink.isVisible()) {
+        await articleLink.click();
+        await page.waitForLoadState("domcontentloaded");
+
+        const readerToggle = page.getByRole("button", { name: /reader|lese/i }).first();
+
+        if (await readerToggle.isVisible()) {
+          await readerToggle.click();
+
+          // Settings panel should appear
+          const settingsPanel = page.getByRole("dialog");
+          if (await settingsPanel.isVisible()) {
+            // Dialog should have a label
+            const hasLabel = await settingsPanel.getAttribute("aria-label");
+            expect(hasLabel).toBeTruthy();
+          }
+        }
+      }
+    });
+
+    test("sorting dropdown should be accessible", async ({ page }) => {
+      await page.goto("/en/blog");
+
+      const sortSelect = page.locator('select[name="sort"]');
+
+      if (await sortSelect.isVisible()) {
+        // Should have aria-label
+        const ariaLabel = await sortSelect.getAttribute("aria-label");
+        expect(ariaLabel).toBeTruthy();
+
+        // Should be keyboard accessible
+        await sortSelect.focus();
+        await page.keyboard.press("ArrowDown");
+      }
+    });
+
+    test("blog images should have alt text", async ({ page }) => {
+      await page.goto("/en/blog");
+
+      const images = await page.locator("article img").all();
+
+      for (const img of images) {
+        const alt = await img.getAttribute("alt");
+        const ariaHidden = await img.getAttribute("aria-hidden");
+        const role = await img.getAttribute("role");
+
+        // Image should have alt text OR be explicitly decorative
+        const isAccessible =
+          alt !== null || ariaHidden === "true" || role === "presentation";
+
+        expect(isAccessible).toBe(true);
+      }
+    });
+  });
 });

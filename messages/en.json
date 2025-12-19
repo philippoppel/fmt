@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "My App - Your Solution for...",
-    "description": "An accessible, multilingual web application with the highest quality and user experience.",
-    "keywords": "webapp, accessibility, multilingual, seo"
+    "title": "FindMyTherapy – Find the Right Psychotherapy in Austria",
+    "description": "The leading platform for psychotherapists in Austria. Find the right therapy with AI-powered matching – anonymous, free, and easy to understand.",
+    "keywords": "Psychotherapy, Find Therapists, Austria, Mental Health, Psychologists, Therapy Matching"
   },
   "common": {
     "loading": "Loading...",
@@ -24,6 +24,11 @@
   },
   "navigation": {
     "home": "Home",
+    "start": "Start",
+    "wissen": "Learn",
+    "mission": "Our Mission",
+    "therapie": "Therapy",
+    "losGehts": "Get Started",
     "about": "About",
     "contact": "Contact",
     "findTherapist": "Therapists",
@@ -41,10 +46,28 @@
   },
   "home": {
     "hero": {
-      "title": "Welcome to Your App",
-      "subtitle": "A modern, accessible web application",
+      "title": "We find the right therapy for you.",
+      "subtitle": "Guided matching with modern technology",
+      "features": "Anonymous · Free · Easy to understand",
       "cta": "Get Started",
-      "ctaSecondary": "Let's Go"
+      "ctaSecondary": "Explore Therapists",
+      "ctaHint": "Find the right therapy in just a few minutes",
+      "topicsTitle": "Find support for your topic",
+      "topics": {
+        "depression": "Depression",
+        "anxiety": "Anxiety",
+        "family": "Family",
+        "relationships": "Relationships",
+        "burnout": "Burnout",
+        "trauma": "Trauma",
+        "addiction": "Addiction",
+        "eating": "Eating Disorders",
+        "adhd": "ADHD",
+        "selfcare": "Self-Care",
+        "stress": "Stress",
+        "sleep": "Sleep"
+      },
+      "videoAlt": "People finding support and connection"
     },
     "features": {
       "title": "Our Features",
@@ -59,6 +82,61 @@
       "security": {
         "title": "Secure",
         "description": "Modern security standards with 2FA"
+      }
+    },
+    "partners": {
+      "title": "Supported by"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Still have questions? Email us at",
+      "q1": "Is FindMyTherapy free?",
+      "a1": "Yes, everything is free for you: matching, therapist search, and guides. Costs only arise directly with the therapist for therapy sessions – you can see these fees transparently in each profile.",
+      "q2": "How does the matching work?",
+      "a2": "You answer simple questions about your situation and preferences in about 5 minutes. Our system then finds the therapists that best match you – based on specialization, therapy style, and practical factors.",
+      "q3": "How do I find the right therapist?",
+      "a3": "We only show you verified therapists with real available capacity. You can filter by topic, location, format (online/in-person), and availability. Our matching helps you find not just any therapist, but the right one.",
+      "q4": "Is my data secure?",
+      "a4": "Yes. All data is encrypted and stored on EU servers in compliance with GDPR. You decide whether and with whom you share your results – no one sees your data without your permission.",
+      "q5": "I need help immediately – what should I do?",
+      "a5": "In an acute crisis, we immediately show you Austrian crisis hotlines (e.g., Telefonseelsorge 142) and emergency medical contacts. FindMyTherapy does not replace the emergency number 144 in emergencies."
+    },
+    "testimonials": {
+      "badge": "Testimonials",
+      "title": "What our users say",
+      "subtitle": "Real voices from people who found their way to the right therapy.",
+      "usersCount": "500+ satisfied users",
+      "rating": "4.9 out of 5 stars",
+      "verified": "Verified reviews",
+      "user1": {
+        "name": "Lisa M.",
+        "location": "Vienna",
+        "quote": "I finally understood which type of therapy suits me. The matching process was simple and respectful."
+      },
+      "user2": {
+        "name": "Markus W.",
+        "location": "Graz",
+        "quote": "After years of searching, I found the right therapist through FindMyTherapy. The process was pleasant and discreet."
+      },
+      "therapist1": {
+        "name": "Dr. Anna B.",
+        "location": "Psychotherapist",
+        "quote": "As a therapist, I appreciate the quality of the matching. The platform brings together people who truly fit each other."
+      },
+      "user3": {
+        "name": "Sophie K.",
+        "location": "Salzburg",
+        "quote": "I was skeptical, but the matching exceeded my expectations. I finally feel understood."
+      },
+      "therapist2": {
+        "name": "Mag. Thomas R.",
+        "location": "Psychotherapist",
+        "quote": "The platform takes a lot of organizational work off my hands and I can focus on what matters: my patients."
+      },
+      "user4": {
+        "name": "Julia H.",
+        "location": "Innsbruck",
+        "quote": "The first step was so hard. FindMyTherapy made it easier. Thank you for this valuable support."
       }
     }
   },
@@ -235,19 +313,24 @@
   },
   "blog": {
     "meta": {
-      "title": "Expert Blog - Psychotherapy & Mental Health",
-      "description": "Evidence-based articles on psychotherapy, mental health, and self-help."
+      "title": "Knowledge – Psychotherapy & Mental Health",
+      "description": "Evidence-based articles on psychotherapy, mental health, and self-help. Reviewed by professionals."
     },
-    "title": "Expert Blog",
-    "subtitle": "Evidence-based articles on psychotherapy and mental health",
+    "title": "Knowledge that truly helps.",
+    "subtitle": "Evidence-based, accessible, voluntary",
+    "reviewedBadge": "Expert reviewed",
+    "article": {
+      "targetAudience": "Who is this article for?",
+      "learningOutcome": "What you'll learn"
+    },
     "readMore": "Read more",
     "publishedOn": "Published on",
     "updatedOn": "Updated on",
     "readingTime": "{minutes} min read",
     "author": "By {name}",
     "tableOfContents": "Table of Contents",
-    "relatedPosts": "Related Articles",
-    "references": "References",
+    "relatedPosts": "You might also like",
+    "references": "Sources & Scientific References",
     "tldr": "Summary",
     "bookmark": {
       "add": "Add to reading list",
@@ -302,9 +385,65 @@
     },
     "filters": {
       "sortBy": "Sort by",
+      "relevance": "Relevance",
       "newest": "Newest",
       "oldest": "Oldest",
       "popular": "Most popular"
+    },
+    "keyTakeaways": {
+      "title": "Key Takeaways",
+      "subtitle": "The most important insights at a glance",
+      "note": "You don't have to read everything – these points summarize what matters most."
+    },
+    "readerMode": {
+      "label": "Reader Mode",
+      "enable": "Enable reader mode",
+      "disable": "Exit reader mode",
+      "settingsTitle": "Reading Settings",
+      "close": "Close",
+      "fontSize": "Font Size",
+      "increaseFont": "Increase font",
+      "decreaseFont": "Decrease font",
+      "lineHeight": "Line Height",
+      "lineHeight_normal": "Normal",
+      "lineHeight_relaxed": "Relaxed",
+      "lineHeight_loose": "Loose",
+      "fontFamily": "Font Style",
+      "dyslexic": "Dyslexia",
+      "dyslexicHint": "Optimized for better readability with dyslexia",
+      "theme": "Color Theme",
+      "theme_auto": "Auto",
+      "theme_light": "Light",
+      "theme_dark": "Dark",
+      "theme_sepia": "Sepia",
+      "reset": "Reset"
+    },
+    "sources": {
+      "title": "Sources & Scientific References",
+      "subtitle": "{count, plural, one {# source} other {# sources}}",
+      "expand": "Show all",
+      "collapse": "Show less",
+      "count": "{count, plural, one {# source} other {# sources}}",
+      "transparencyNote": "We value scientific transparency. All statements in this article are based on the sources listed here."
+    },
+    "matchingCta": {
+      "ariaLabel": "Find the right therapy",
+      "minimalLabel": "Find the right therapy",
+      "sidebarTitle": "Does this topic affect you?",
+      "sidebarDescription": "Our guided matching helps you find the right therapeutic support.",
+      "inlineTitle": "Find the Right Support",
+      "inlineDescription": "If this topic affects you personally, our guided matching can help you find the right therapy.",
+      "buttonLabel": "Start Matching",
+      "inlineHint": "Find the right therapy",
+      "trustNote": "Anonymous, free, and no commitment – in just a few minutes."
+    },
+    "articleMeta": {
+      "ariaLabel": "Article information",
+      "readingTime": "{minutes} min read",
+      "forWhom": "For whom",
+      "whatYouLearn": "What you'll learn",
+      "reviewed": "Professionally reviewed",
+      "reviewedBy": "Reviewed by"
     }
   },
   "therapists": {
@@ -1096,6 +1235,137 @@
       "3": "Somewhat relevant",
       "4": "Very relevant",
       "5": "Excellent match"
+    }
+  },
+  "mission": {
+    "hero": {
+      "overline": "Our Mission",
+      "title": "Therapy doesn't start with a list – it starts with understanding.",
+      "subtitle": "We help people find the right therapy. Not just any therapist – but the right form of therapy, at the right time, for the right person."
+    },
+    "conviction": {
+      "title": "Our Conviction",
+      "paragraph1": "The right therapy is more important than the 'best' therapist. People often don't know what they need – and that's completely okay.",
+      "paragraph2": "Therapy is a process, not a filter problem. That's why we founded FindMyTherapy: to provide orientation before the search begins.",
+      "paragraph3": "Orientation is the first therapeutic step.",
+      "tag1": "Evidence-based",
+      "tag2": "Human-centered",
+      "tag3": "Trustworthy"
+    },
+    "partners": {
+      "overline": "Partners & Supporters",
+      "title": "Together for better mental health"
+    },
+    "team": {
+      "title": "The People Behind FindMyTherapy",
+      "subtitle": "Experience meets fresh perspectives. Science meets heart.",
+      "note": "Supported by a dedicated team of developers, designers, and specialists",
+      "gregor": {
+        "role": "Co-Founder",
+        "experience": "15+ Years Experience",
+        "name": "MMag. Dr. Gregor Studlar BA",
+        "title": "Clinical Psychologist & Psychotherapist",
+        "bio": "Gregor brings over 15 years of clinical experience. His expertise in cognitive behavioral therapy, especially for anxiety disorders, depression, and burnout, forms the scientific foundation of FindMyTherapy.",
+        "spec1": "CBT",
+        "spec2": "Anxiety Disorders",
+        "spec3": "Depression"
+      },
+      "thomas": {
+        "role": "Co-Founder",
+        "experience": "Fresh Perspective",
+        "name": "Thomas Kaufmann, BA pth.",
+        "title": "Psychotherapist in Training under Supervision",
+        "bio": "As a former paramedic, Thomas knows how important quick, pragmatic help is. His solution-oriented approach shapes the user-friendliness of FindMyTherapy.",
+        "spec1": "Crisis Intervention",
+        "spec2": "Anxiety Disorders",
+        "spec3": "Young Adults"
+      }
+    },
+    "features": {
+      "title": "What Makes FindMyTherapy Special",
+      "subtitle": "We're not a directory. We're your companion on the way to the right therapy.",
+      "matching": {
+        "badge": "Our Heart",
+        "title": "Guided Matching",
+        "description": "You'll be guided step by step through the process. No overwhelming forms. No endless lists. We take you by the hand and find the right therapy together.",
+        "tag1": "AI-powered",
+        "tag2": "100% anonymous",
+        "tag3": "In 5 minutes"
+      },
+      "knowledge": {
+        "title": "Evidence-Based Knowledge",
+        "description": "Scientifically grounded articles, written and reviewed by real psychotherapists.",
+        "point1": "Created by experts",
+        "point2": "Peer-reviewed",
+        "point3": "Free to access"
+      },
+      "search": {
+        "title": "Modern Search",
+        "description": "Filter by specialization, location, availability and more – simple and intuitive.",
+        "point1": "Clear & organized",
+        "point2": "Fast results",
+        "point3": "Transparent information"
+      },
+      "rightTherapy": {
+        "title": "The Right Therapy",
+        "description": "Not just finding therapists – but understanding which form of therapy fits you.",
+        "point1": "Therapy form before therapist",
+        "point2": "Individual matching",
+        "point3": "No overwhelming"
+      }
+    },
+    "privacy": {
+      "title": "Your Privacy is Sacred to Us",
+      "subtitle": "We take this very seriously.",
+      "description": "Mental health is a sensitive topic. We understand that. That's why we built FindMyTherapy from the ground up with privacy at its core. No compromises.",
+      "point1": "100% GDPR compliant",
+      "point2": "No sharing of sensitive data",
+      "point3": "AI with maximum privacy focus",
+      "point4": "Servers in Austria"
+    },
+    "therapists": {
+      "badge": "For Therapists",
+      "title": "We Take the Website Off Your Hands",
+      "subtitle": "A professional online presence is important. But you have more important things to do. We create an SEO-optimized microsite with your own link.",
+      "plans": {
+        "gratis": {
+          "name": "Free",
+          "description": "For getting started",
+          "feature1": "Basic profile",
+          "feature2": "Visible in search",
+          "feature3": "Receive contact requests"
+        },
+        "standard": {
+          "name": "Standard",
+          "description": "For more visibility",
+          "badge": "Most Popular",
+          "feature1": "Upload profile photo",
+          "feature2": "Up to 3 specializations",
+          "feature3": "Own SEO microsite",
+          "feature4": "Own shareable link",
+          "feature5": "Prioritized display"
+        },
+        "premium": {
+          "name": "Premium",
+          "description": "Maximum customization",
+          "feature1": "Everything from Standard",
+          "feature2": "Unlimited specializations",
+          "feature3": "Practice images & gallery",
+          "feature4": "Video introduction",
+          "feature5": "Top placement in matching"
+        }
+      },
+      "cta": {
+        "free": "Start for Free",
+        "upgrade": "Upgrade Now",
+        "premium": "Go Premium"
+      }
+    },
+    "cta": {
+      "title": "You're not alone. And you don't have to do this by yourself.",
+      "subtitle": "The first step is the hardest. But we're here to make it easier.",
+      "primary": "Start Matching Now",
+      "secondary": "Browse Therapists"
     }
   }
 }

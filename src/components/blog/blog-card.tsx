@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Clock, MessageCircle, Bookmark } from "lucide-react";
+import { Clock, MessageCircle, Bookmark, ShieldCheck } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,7 @@ interface BlogCardProps {
     featuredImage: string | null;
     featuredImageAlt: string | null;
     readingTimeMinutes: number;
+    isReviewed?: boolean;
     publishedAt: Date | null;
     author: {
       name: string | null;
@@ -126,6 +127,15 @@ export function BlogCard({ post, locale, variant = "default", className }: BlogC
                 <Clock className="h-4 w-4" aria-hidden="true" />
                 {post.readingTimeMinutes} min
               </span>
+              {post.isReviewed && (
+                <Badge
+                  variant="outline"
+                  className="bg-calm/10 text-calm border-calm/20 text-xs gap-1"
+                >
+                  <ShieldCheck className="h-3 w-3" aria-hidden="true" />
+                  {locale === "de" ? "Fachlich geprüft" : "Expert reviewed"}
+                </Badge>
+              )}
             </div>
             <div className="flex items-center gap-3">
               {post._count.comments > 0 && (
@@ -199,10 +209,21 @@ export function BlogCard({ post, locale, variant = "default", className }: BlogC
             )}
             <span>{post.author.name}</span>
           </div>
-          <span className="flex items-center gap-1">
-            <Clock className="h-3 w-3" aria-hidden="true" />
-            {post.readingTimeMinutes} min
-          </span>
+          <div className="flex items-center gap-2">
+            {post.isReviewed && (
+              <Badge
+                variant="outline"
+                className="bg-calm/10 text-calm border-calm/20 text-[10px] gap-0.5 px-1.5 py-0"
+              >
+                <ShieldCheck className="h-2.5 w-2.5" aria-hidden="true" />
+                {locale === "de" ? "Geprüft" : "Reviewed"}
+              </Badge>
+            )}
+            <span className="flex items-center gap-1">
+              <Clock className="h-3 w-3" aria-hidden="true" />
+              {post.readingTimeMinutes} min
+            </span>
+          </div>
         </CardFooter>
       </Card>
     </article>

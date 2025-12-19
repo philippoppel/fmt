@@ -1,4 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
-  <rect width="1200" height="630" fill="#0f172a"/>
-  <text x="600" y="350" text-anchor="middle" font-family="system-ui, sans-serif" font-size="180" font-weight="bold" fill="white">FMT</text>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#f8faf9"/>
+
+  <!-- Subtle gradient overlay -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a7c59;stop-opacity:0.05"/>
+      <stop offset="100%" style="stop-color:#4a7c59;stop-opacity:0.15"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg-gradient)"/>
+
+  <!-- Logo Mark -->
+  <g transform="translate(100, 165)">
+    <!-- Left curved arm -->
+    <path
+      d="M40 240 C40 145, 90 65, 150 65"
+      stroke="#4a7c59"
+      stroke-width="32"
+      stroke-linecap="round"
+      fill="none"
+    />
+    <!-- Right curved arm -->
+    <path
+      d="M260 240 C260 145, 210 65, 150 65"
+      stroke="#4a7c59"
+      stroke-width="32"
+      stroke-linecap="round"
+      fill="none"
+    />
+    <!-- Center dot -->
+    <circle cx="150" cy="175" r="44" fill="#4a7c59"/>
+  </g>
+
+  <!-- Text -->
+  <text x="430" y="290" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="#1a1a1a">Find</text>
+  <text x="595" y="290" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="400" fill="#6b7280">My</text>
+  <text x="700" y="290" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="#1a1a1a">Therapy</text>
+
+  <!-- Tagline -->
+  <text x="430" y="360" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#6b7280">Finde die richtige Therapie</text>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="610" width="1200" height="20" fill="#4a7c59"/>
 </svg>

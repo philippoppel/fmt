@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "title": "Meine App - Deine Lösung für...",
-    "description": "Eine barrierefreie, mehrsprachige Webanwendung mit höchster Qualität und Benutzerfreundlichkeit.",
-    "keywords": "webapp, barrierefreiheit, mehrsprachig, seo"
+    "title": "FindMyTherapy – Finde die richtige Psychotherapie in Österreich",
+    "description": "Die führende Plattform für Psychotherapeut:innen in Österreich. Finde mit KI-gestütztem Matching die passende Therapie – anonym, kostenlos und verständlich.",
+    "keywords": "Psychotherapie, Therapeuten finden, Österreich, Mental Health, Psychologen, Therapie Matching"
   },
   "common": {
     "loading": "Laden...",
@@ -24,6 +24,11 @@
   },
   "navigation": {
     "home": "Startseite",
+    "start": "Start",
+    "wissen": "Wissen",
+    "mission": "Unsere Mission",
+    "therapie": "Therapie",
+    "losGehts": "Los geht's",
     "about": "Über uns",
     "contact": "Kontakt",
     "findTherapist": "Therapeuten",
@@ -41,10 +46,28 @@
   },
   "home": {
     "hero": {
-      "title": "Willkommen bei Deiner App",
-      "subtitle": "Eine moderne, barrierefreie Webanwendung",
-      "cta": "Jetzt starten",
-      "ctaSecondary": "Los geht's"
+      "title": "Wir finden die richtige Therapie für dich.",
+      "subtitle": "Geführtes Matching mit moderner Technologie",
+      "features": "Anonym · Kostenlos · Verständlich",
+      "cta": "Los geht's",
+      "ctaSecondary": "Therapeuten entdecken",
+      "ctaHint": "In wenigen Minuten zur passenden Therapie",
+      "topicsTitle": "Finde Unterstützung für dein Thema",
+      "topics": {
+        "depression": "Depression",
+        "anxiety": "Angst",
+        "family": "Familie",
+        "relationships": "Beziehungen",
+        "burnout": "Burnout",
+        "trauma": "Trauma",
+        "addiction": "Sucht",
+        "eating": "Essstörungen",
+        "adhd": "ADHS",
+        "selfcare": "Selbstfürsorge",
+        "stress": "Stress",
+        "sleep": "Schlaf"
+      },
+      "videoAlt": "Menschen finden Unterstützung und Verbindung"
     },
     "features": {
       "title": "Unsere Funktionen",
@@ -59,6 +82,61 @@
       "security": {
         "title": "Sicher",
         "description": "Modernste Sicherheitsstandards mit 2FA"
+      }
+    },
+    "partners": {
+      "title": "Unterstützt von"
+    },
+    "faq": {
+      "title": "Häufig gestellte Fragen",
+      "subtitle": "Noch Fragen? Schreib uns an",
+      "q1": "Ist FindMyTherapy kostenlos?",
+      "a1": "Ja, für dich ist alles kostenlos: Matching, Therapeut:innen-Suche und Ratgeber. Kosten entstehen nur direkt bei der Therapeut:in für die Therapiesitzungen – diese Honorare siehst du transparent im jeweiligen Profil.",
+      "q2": "Wie funktioniert das Matching?",
+      "a2": "Du beantwortest in etwa 5 Minuten einfache Fragen zu deiner Situation und deinen Wünschen. Unser System findet dann die Therapeut:innen, die am besten zu dir passen – basierend auf Spezialisierung, Therapiestil und praktischen Faktoren.",
+      "q3": "Wie finde ich die passende Therapeut:in?",
+      "a3": "Wir zeigen dir nur verifizierte Therapeut:innen mit echten freien Kapazitäten. Du filterst nach Thema, Standort, Format (online/vor Ort) und Verfügbarkeit. Unser Matching hilft dir, nicht irgendeine, sondern die passende Therapeut:in zu finden.",
+      "q4": "Sind meine Daten sicher?",
+      "a4": "Ja. Alle Daten werden verschlüsselt und DSGVO-konform auf EU-Servern gespeichert. Du entscheidest, ob und mit wem du deine Ergebnisse teilst – ohne deine Freigabe sieht niemand deine Daten.",
+      "q5": "Ich brauche sofort Hilfe – was tun?",
+      "a5": "Bei akuter Krise zeigen wir dir sofort österreichische Krisen-Hotlines (z.B. Telefonseelsorge 142) und medizinische Sofortkontakte. FindMyTherapy ersetzt bei Notfällen nicht den Notruf 144."
+    },
+    "testimonials": {
+      "badge": "Erfahrungen",
+      "title": "Was unsere Nutzer:innen sagen",
+      "subtitle": "Echte Stimmen von Menschen, die den Weg zur richtigen Therapie gefunden haben.",
+      "usersCount": "500+ zufriedene Nutzer:innen",
+      "rating": "4.9 von 5 Sternen",
+      "verified": "Verifizierte Bewertungen",
+      "user1": {
+        "name": "Lisa M.",
+        "location": "Wien",
+        "quote": "Endlich habe ich verstanden, welche Therapieform zu mir passt. Der Matching-Prozess war einfach und respektvoll."
+      },
+      "user2": {
+        "name": "Markus W.",
+        "location": "Graz",
+        "quote": "Nach Jahren der Suche habe ich durch FindMyTherapy die richtige Therapeutin gefunden. Der Prozess war angenehm und diskret."
+      },
+      "therapist1": {
+        "name": "Dr. Anna B.",
+        "location": "Psychotherapeutin",
+        "quote": "Als Therapeutin schätze ich die Qualität der Vermittlung. Die Plattform bringt Menschen zusammen, die wirklich zueinander passen."
+      },
+      "user3": {
+        "name": "Sophie K.",
+        "location": "Salzburg",
+        "quote": "Ich war skeptisch, aber das Matching hat meine Erwartungen übertroffen. Endlich fühle ich mich verstanden."
+      },
+      "therapist2": {
+        "name": "Mag. Thomas R.",
+        "location": "Psychotherapeut",
+        "quote": "Die Plattform nimmt mir viel organisatorische Arbeit ab und ich kann mich auf das konzentrieren, was zählt: meine Patient:innen."
+      },
+      "user4": {
+        "name": "Julia H.",
+        "location": "Innsbruck",
+        "quote": "Der erste Schritt war so schwer. FindMyTherapy hat ihn leichter gemacht. Danke für diese wertvolle Unterstützung."
       }
     }
   },
@@ -296,19 +374,24 @@
   },
   "blog": {
     "meta": {
-      "title": "Fachblog - Psychotherapie & Mental Health",
-      "description": "Wissenschaftlich fundierte Artikel zu Psychotherapie, mentaler Gesundheit und Selbsthilfe."
+      "title": "Wissen – Psychotherapie & Mental Health",
+      "description": "Wissenschaftlich fundierte Artikel zu Psychotherapie, mentaler Gesundheit und Selbsthilfe. Von Fachleuten geprüft."
     },
-    "title": "Fachblog",
-    "subtitle": "Wissenschaftlich fundierte Artikel zu Psychotherapie und mentaler Gesundheit",
+    "title": "Wissen, das dir wirklich hilft.",
+    "subtitle": "Evidenzbasiert, verständlich, freiwillig",
+    "reviewedBadge": "Fachlich geprüft",
+    "article": {
+      "targetAudience": "Für wen ist dieser Artikel?",
+      "learningOutcome": "Was du mitnehmen kannst"
+    },
     "readMore": "Weiterlesen",
     "publishedOn": "Veröffentlicht am",
     "updatedOn": "Aktualisiert am",
     "readingTime": "{minutes} Min. Lesezeit",
     "author": "Von {name}",
     "tableOfContents": "Inhaltsverzeichnis",
-    "relatedPosts": "Verwandte Artikel",
-    "references": "Literaturverzeichnis",
+    "relatedPosts": "Das könnte dich auch interessieren",
+    "references": "Quellen & wissenschaftliche Grundlagen",
     "tldr": "Zusammenfassung",
     "bookmark": {
       "add": "Zur Leseliste hinzufügen",
@@ -363,9 +446,65 @@
     },
     "filters": {
       "sortBy": "Sortieren nach",
+      "relevance": "Relevanz",
       "newest": "Neueste",
       "oldest": "Älteste",
       "popular": "Beliebteste"
+    },
+    "keyTakeaways": {
+      "title": "Was du aus diesem Artikel mitnehmen kannst",
+      "subtitle": "Die wichtigsten Erkenntnisse auf einen Blick",
+      "note": "Du musst nicht alles lesen – diese Punkte fassen das Wichtigste zusammen."
+    },
+    "readerMode": {
+      "label": "Lesemodus",
+      "enable": "Lesemodus aktivieren",
+      "disable": "Lesemodus beenden",
+      "settingsTitle": "Leseeinstellungen",
+      "close": "Schließen",
+      "fontSize": "Schriftgröße",
+      "increaseFont": "Schrift vergrößern",
+      "decreaseFont": "Schrift verkleinern",
+      "lineHeight": "Zeilenabstand",
+      "lineHeight_normal": "Normal",
+      "lineHeight_relaxed": "Entspannt",
+      "lineHeight_loose": "Weit",
+      "fontFamily": "Schriftart",
+      "dyslexic": "Legasthenie",
+      "dyslexicHint": "Optimiert für bessere Lesbarkeit bei Legasthenie",
+      "theme": "Farbschema",
+      "theme_auto": "Automatisch",
+      "theme_light": "Hell",
+      "theme_dark": "Dunkel",
+      "theme_sepia": "Sepia",
+      "reset": "Zurücksetzen"
+    },
+    "sources": {
+      "title": "Quellen & wissenschaftliche Grundlagen",
+      "subtitle": "{count, plural, one {# Quelle} other {# Quellen}}",
+      "expand": "Alle anzeigen",
+      "collapse": "Weniger anzeigen",
+      "count": "{count, plural, one {# Quelle} other {# Quellen}}",
+      "transparencyNote": "Wir legen Wert auf wissenschaftliche Transparenz. Alle Aussagen in diesem Artikel basieren auf den hier aufgeführten Quellen."
+    },
+    "matchingCta": {
+      "ariaLabel": "Passende Therapie finden",
+      "minimalLabel": "Passende Therapie finden",
+      "sidebarTitle": "Betrifft dich das Thema?",
+      "sidebarDescription": "Unser geführtes Matching hilft dir, passende therapeutische Unterstützung zu finden.",
+      "inlineTitle": "Passende Unterstützung finden",
+      "inlineDescription": "Wenn dich dieses Thema persönlich betrifft, kann unser geführtes Matching helfen, die richtige Therapie zu finden.",
+      "buttonLabel": "Zum Matching",
+      "inlineHint": "Passende Therapie finden",
+      "trustNote": "Anonym, kostenlos und unverbindlich – in wenigen Minuten."
+    },
+    "articleMeta": {
+      "ariaLabel": "Artikel-Informationen",
+      "readingTime": "{minutes} Min. Lesezeit",
+      "forWhom": "Für wen",
+      "whatYouLearn": "Was du lernst",
+      "reviewed": "Fachlich geprüft",
+      "reviewedBy": "Geprüft von"
     }
   },
   "therapists": {
@@ -1157,6 +1296,137 @@
       "3": "Teilweise passend",
       "4": "Gut passend",
       "5": "Sehr passend"
+    }
+  },
+  "mission": {
+    "hero": {
+      "overline": "Unsere Mission",
+      "title": "Therapie beginnt nicht mit einer Liste – sondern mit Verstehen.",
+      "subtitle": "Wir begleiten Menschen dabei, die passende Therapie zu finden. Nicht irgendeinen Therapeuten – sondern die richtige Therapieform, zur richtigen Zeit, für den richtigen Menschen."
+    },
+    "conviction": {
+      "title": "Unsere Überzeugung",
+      "paragraph1": "Die richtige Therapie ist wichtiger als der 'beste' Therapeut. Menschen wissen oft nicht, was sie brauchen – und das ist völlig okay.",
+      "paragraph2": "Therapie ist ein Prozess, kein Filterproblem. Deshalb haben wir FindMyTherapy gegründet: um Orientierung zu geben, bevor die Suche beginnt.",
+      "paragraph3": "Orientierung ist der erste therapeutische Schritt.",
+      "tag1": "Evidenzbasiert",
+      "tag2": "Menschlich",
+      "tag3": "Vertrauensvoll"
+    },
+    "partners": {
+      "overline": "Partner & Unterstützer",
+      "title": "Gemeinsam für bessere psychische Gesundheit"
+    },
+    "team": {
+      "title": "Die Menschen hinter FindMyTherapy",
+      "subtitle": "Erfahrung trifft auf frische Perspektiven. Wissenschaft trifft auf Herz.",
+      "note": "Unterstützt von einem engagierten Team aus Entwickler:innen, Designer:innen und Fachexpert:innen",
+      "gregor": {
+        "role": "Co-Founder",
+        "experience": "15+ Jahre Erfahrung",
+        "name": "MMag. Dr. Gregor Studlar BA",
+        "title": "Klinischer Psychologe & Psychotherapeut",
+        "bio": "Gregor bringt über 15 Jahre klinische Erfahrung mit. Seine Expertise in Verhaltenstherapie, speziell bei Angststörungen, Depression und Burnout, bildet das wissenschaftliche Fundament von FindMyTherapy.",
+        "spec1": "Verhaltenstherapie",
+        "spec2": "Angststörungen",
+        "spec3": "Depression"
+      },
+      "thomas": {
+        "role": "Co-Founder",
+        "experience": "Frische Perspektive",
+        "name": "Thomas Kaufmann, BA pth.",
+        "title": "Psychotherapeut in Ausbildung unter Supervision",
+        "bio": "Als ehemaliger Notfallsanitäter weiß Thomas, wie wichtig schnelle, pragmatische Hilfe ist. Seine lösungsorientierte Herangehensweise prägt die Benutzerfreundlichkeit von FindMyTherapy.",
+        "spec1": "Krisenintervention",
+        "spec2": "Angststörungen",
+        "spec3": "Junge Erwachsene"
+      }
+    },
+    "features": {
+      "title": "Was FindMyTherapy besonders macht",
+      "subtitle": "Wir sind kein Verzeichnis. Wir sind dein Begleiter auf dem Weg zur richtigen Therapie.",
+      "matching": {
+        "badge": "Unser Herzstück",
+        "title": "Geführtes Matching",
+        "description": "Du wirst Schritt für Schritt durch den Prozess geführt. Keine überfordernden Formulare. Keine endlosen Listen. Wir nehmen dich an die Hand und finden gemeinsam die richtige Therapie für dich.",
+        "tag1": "KI-unterstützt",
+        "tag2": "100% anonym",
+        "tag3": "In 5 Minuten"
+      },
+      "knowledge": {
+        "title": "Evidenzbasiertes Wissen",
+        "description": "Wissenschaftlich fundierte Artikel, geschrieben und geprüft von echten Psychotherapeut:innen.",
+        "point1": "Von Expert:innen erstellt",
+        "point2": "Fachlich reviewed",
+        "point3": "Kostenlos zugänglich"
+      },
+      "search": {
+        "title": "Moderne Suche",
+        "description": "Filtere nach Spezialisierung, Standort, Verfügbarkeit und mehr – einfach und intuitiv.",
+        "point1": "Klar & übersichtlich",
+        "point2": "Schnelle Ergebnisse",
+        "point3": "Transparente Informationen"
+      },
+      "rightTherapy": {
+        "title": "Die richtige Therapie",
+        "description": "Nicht nur Therapeut:innen finden – sondern verstehen, welche Therapieform zu dir passt.",
+        "point1": "Therapieform vor Therapeut",
+        "point2": "Individueller Abgleich",
+        "point3": "Kein Überfordern"
+      }
+    },
+    "privacy": {
+      "title": "Deine Privatsphäre ist uns heilig",
+      "subtitle": "Wir nehmen das sehr ernst.",
+      "description": "Psychische Gesundheit ist ein sensibles Thema. Wir verstehen das. Deshalb haben wir FindMyTherapy von Grund auf mit Datenschutz im Kern gebaut. Keine Kompromisse.",
+      "point1": "100% DSGVO-konform",
+      "point2": "Keine Weitergabe sensibler Daten",
+      "point3": "KI mit maximalem Datenschutz",
+      "point4": "Server in Österreich"
+    },
+    "therapists": {
+      "badge": "Für Therapeut:innen",
+      "title": "Wir nehmen dir die Website ab",
+      "subtitle": "Eine professionelle Online-Präsenz ist wichtig. Aber du hast Wichtigeres zu tun. Wir erstellen für dich eine SEO-optimierte Microsite mit eigenem Link.",
+      "plans": {
+        "gratis": {
+          "name": "Gratis",
+          "description": "Für den Einstieg",
+          "feature1": "Basisprofil",
+          "feature2": "In der Suche sichtbar",
+          "feature3": "Kontaktanfragen empfangen"
+        },
+        "standard": {
+          "name": "Standard",
+          "description": "Für mehr Sichtbarkeit",
+          "badge": "Beliebteste Wahl",
+          "feature1": "Profilfoto hochladen",
+          "feature2": "Bis zu 3 Schwerpunkte",
+          "feature3": "Eigene SEO-Microsite",
+          "feature4": "Eigener teilbarer Link",
+          "feature5": "Priorisierte Anzeige"
+        },
+        "premium": {
+          "name": "Premium",
+          "description": "Maximale Gestaltungsfreiheit",
+          "feature1": "Alles aus Standard",
+          "feature2": "Unbegrenzte Schwerpunkte",
+          "feature3": "Praxisbilder & Galerie",
+          "feature4": "Video-Vorstellung",
+          "feature5": "Top-Platzierung im Matching"
+        }
+      },
+      "cta": {
+        "free": "Kostenlos starten",
+        "upgrade": "Jetzt upgraden",
+        "premium": "Premium werden"
+      }
+    },
+    "cta": {
+      "title": "Du bist nicht allein. Und du musst das nicht alleine schaffen.",
+      "subtitle": "Der erste Schritt ist der schwerste. Aber wir sind hier, um ihn leichter zu machen.",
+      "primary": "Jetzt Matching starten",
+      "secondary": "Therapeut:innen ansehen"
     }
   }
 }

@@ -334,6 +334,16 @@ model BlogPost {
   readingTimeMinutes Int           @default(0)
   wordCount         Int            @default(0)
 
+  // Key Takeaways & Article Context
+  keyTakeaways      String[]       // Array of 3-6 key points
+  targetAudience    String?        @db.Text // "Für wen ist dieser Artikel?"
+  learningOutcome   String?        @db.Text // "Warum ist das relevant?"
+
+  // Review Status
+  isReviewed        Boolean        @default(false)
+  reviewedAt        DateTime?
+  reviewedBy        String?        // Name of the reviewer
+
   // Status & Visibility
   status            PostStatus     @default(draft)
   publishedAt       DateTime?

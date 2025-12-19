@@ -76,6 +76,22 @@
   --color-accent-teal-foreground: oklch(25% 0.08 185);
   --color-accent-teal-muted: oklch(94% 0.04 185);
 
+  /* Health-Tech Brand Colors - Inspired by trust, calm, and hope */
+  /* Trust - Calming blue-teal for reliability and professionalism */
+  --color-trust: oklch(55% 0.12 220);
+  --color-trust-foreground: oklch(95% 0.02 220);
+  --color-trust-muted: oklch(94% 0.03 220);
+
+  /* Calm - Soft sage green for tranquility and healing */
+  --color-calm: oklch(60% 0.08 180);
+  --color-calm-foreground: oklch(95% 0.02 180);
+  --color-calm-muted: oklch(94% 0.03 180);
+
+  /* Hope - Warm amber/gold for optimism and warmth */
+  --color-hope: oklch(65% 0.1 90);
+  --color-hope-foreground: oklch(20% 0.05 90);
+  --color-hope-muted: oklch(95% 0.03 90);
+
   /* Border Radius - Slightly more rounded for modern look */
   --radius-lg: 0.75rem;
   --radius-md: calc(var(--radius-lg) - 2px);
@@ -84,6 +100,7 @@
   /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-playfair);
 }
 
 .dark {
@@ -156,6 +173,63 @@
   --color-accent-teal: oklch(65% 0.12 185);
   --color-accent-teal-foreground: oklch(88% 0.05 185);
   --color-accent-teal-muted: oklch(22% 0.04 185);
+
+  /* Health-Tech Brand Colors - Dark Mode */
+  --color-trust: oklch(65% 0.1 220);
+  --color-trust-foreground: oklch(15% 0.02 220);
+  --color-trust-muted: oklch(22% 0.04 220);
+
+  --color-calm: oklch(65% 0.08 180);
+  --color-calm-foreground: oklch(15% 0.02 180);
+  --color-calm-muted: oklch(22% 0.03 180);
+
+  --color-hope: oklch(70% 0.12 90);
+  --color-hope-foreground: oklch(15% 0.05 90);
+  --color-hope-muted: oklch(22% 0.04 90);
+}
+
+/* ============================================
+   READER MODE THEMES
+   ============================================ */
+
+/* Sepia theme for comfortable reading */
+[data-reader-theme="sepia"] {
+  --color-background: oklch(94% 0.025 75) !important;
+  --color-foreground: oklch(25% 0.02 50) !important;
+  --color-muted: oklch(88% 0.02 70) !important;
+  --color-muted-foreground: oklch(40% 0.02 50) !important;
+  --color-card: oklch(92% 0.02 72) !important;
+  --color-card-foreground: oklch(25% 0.02 50) !important;
+  --color-border: oklch(80% 0.03 70) !important;
+}
+
+/* Dark theme for low-light reading */
+[data-reader-theme="dark"] {
+  --color-background: oklch(12% 0.01 50) !important;
+  --color-foreground: oklch(92% 0.01 50) !important;
+  --color-muted: oklch(18% 0.01 50) !important;
+  --color-muted-foreground: oklch(65% 0.01 50) !important;
+  --color-card: oklch(15% 0.01 50) !important;
+  --color-card-foreground: oklch(92% 0.01 50) !important;
+  --color-border: oklch(25% 0.01 50) !important;
+}
+
+/* Light theme (explicit override for reader mode) */
+[data-reader-theme="light"] {
+  --color-background: oklch(99% 0.005 70) !important;
+  --color-foreground: oklch(15% 0.02 50) !important;
+  --color-muted: oklch(96% 0.01 70) !important;
+  --color-muted-foreground: oklch(45% 0.01 50) !important;
+  --color-card: oklch(99% 0.005 70) !important;
+  --color-card-foreground: oklch(15% 0.02 50) !important;
+  --color-border: oklch(90% 0.01 70) !important;
+}
+
+/* OpenDyslexic font support for dyslexia-friendly reading */
+.font-dyslexic {
+  font-family: "OpenDyslexic", "Comic Sans MS", "Arial", sans-serif !important;
+  letter-spacing: 0.05em;
+  word-spacing: 0.1em;
 }
 
 @layer base {
@@ -720,4 +794,176 @@
   );
   border-radius: 2px;
   opacity: 0.6;
+}
+
+/* ================================
+   HERO SECTION ANIMATIONS
+   ================================ */
+
+/* Hero floating animation with subtle rotation */
+@keyframes hero-float {
+  0%, 100% {
+    transform: translateY(0) rotate(var(--hero-rotation, 0deg));
+  }
+  50% {
+    transform: translateY(-12px) rotate(calc(var(--hero-rotation, 0deg) + 1deg));
+  }
+}
+
+/* Hero image reveal with scale and fade */
+@keyframes hero-image-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px) rotate(var(--hero-rotation, 0deg)) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--hero-rotation, 0deg)) scale(1);
+  }
+}
+
+/* Hero text reveal animation */
+@keyframes hero-text-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Hero CTA pulse animation */
+@keyframes hero-cta-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--color-primary);
+  }
+  50% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
+/* Hero video glow animation */
+@keyframes hero-video-glow {
+  0%, 100% {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Hero Animation Classes */
+.animate-hero-float {
+  animation: hero-float 6s ease-in-out infinite;
+}
+
+.animate-hero-image-reveal {
+  animation: hero-image-reveal 0.6s ease-out forwards;
+}
+
+.animate-hero-text-reveal {
+  animation: hero-text-reveal 0.8s ease-out forwards;
+}
+
+.animate-hero-cta-pulse {
+  animation: hero-cta-pulse 2s ease-in-out infinite;
+}
+
+.animate-hero-video-glow {
+  animation: hero-video-glow 4s ease-in-out infinite;
+}
+
+/* Hero stagger delays for floating images (12 images) */
+.hero-stagger-1 { animation-delay: 0.1s; }
+.hero-stagger-2 { animation-delay: 0.15s; }
+.hero-stagger-3 { animation-delay: 0.2s; }
+.hero-stagger-4 { animation-delay: 0.25s; }
+.hero-stagger-5 { animation-delay: 0.3s; }
+.hero-stagger-6 { animation-delay: 0.35s; }
+.hero-stagger-7 { animation-delay: 0.4s; }
+.hero-stagger-8 { animation-delay: 0.45s; }
+.hero-stagger-9 { animation-delay: 0.5s; }
+.hero-stagger-10 { animation-delay: 0.55s; }
+.hero-stagger-11 { animation-delay: 0.6s; }
+.hero-stagger-12 { animation-delay: 0.65s; }
+
+/* Hero floating image base styles */
+.hero-floating-image {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform, box-shadow;
+}
+
+.hero-floating-image:hover {
+  transform: scale(1.08) translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  z-index: 50;
+}
+
+.hero-floating-image img {
+  transition: transform 0.3s ease;
+}
+
+.hero-floating-image:hover img {
+  transform: scale(1.1);
+}
+
+/* Hero video container */
+.hero-video-container {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.hero-video-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+/* ================================
+   PARTNER MARQUEE ANIMATION
+   ================================ */
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-testimonials {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-testimonials {
+  animation: marquee-testimonials 60s linear infinite;
+}
+
+.animate-marquee-testimonials:hover {
+  animation-play-state: paused;
 }

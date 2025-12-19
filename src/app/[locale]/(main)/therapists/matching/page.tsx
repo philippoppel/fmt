@@ -15,6 +15,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function MatchingPage() {
-  return <MatchingWizard />;
+type Props = {
+  searchParams: Promise<{ topic?: string }>;
+};
+
+export default async function MatchingPage({ searchParams }: Props) {
+  const { topic } = await searchParams;
+  return <MatchingWizard initialTopic={topic} />;
 }

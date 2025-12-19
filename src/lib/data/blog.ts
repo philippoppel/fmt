@@ -2,6 +2,8 @@ import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
 import type { PostStatus } from "@prisma/client";
 
+export type SortOption = "relevance" | "newest" | "oldest" | "popular";
+
 export interface BlogPostFilters {
   locale?: string;
   status?: PostStatus;
@@ -11,6 +13,7 @@ export interface BlogPostFilters {
   search?: string;
   page?: number;
   limit?: number;
+  sortBy?: SortOption;
 }
 
 export interface BlogPostWithDetails {
@@ -22,6 +25,7 @@ export interface BlogPostWithDetails {
   featuredImage: string | null;
   featuredImageAlt: string | null;
   readingTimeMinutes: number;
+  isReviewed: boolean;
   publishedAt: Date | null;
   createdAt: Date;
   author: {
@@ -65,7 +69,24 @@ async function fetchBlogPosts(
     search,
     page = 1,
     limit = 10,
+    sortBy = "newest",
   } = filters;
+
+  // Determine orderBy based on sortBy option
+  let orderBy: Record<string, unknown>;
+  switch (sortBy) {
+    case "oldest":
+      orderBy = { publishedAt: "asc" };
+      break;
+    case "popular":
+      orderBy = { bookmarks: { _count: "desc" } };
+      break;
+    case "relevance":
+    case "newest":
+    default:
+      orderBy = { publishedAt: "desc" };
+      break;
+  }
 
   const where: Record<string, unknown> = {
     status,
@@ -110,6 +131,7 @@ async function fetchBlogPosts(
         featuredImage: true,
         featuredImageAlt: true,
         readingTimeMinutes: true,
+        isReviewed: true,
         publishedAt: true,
         createdAt: true,
         author: {
@@ -150,7 +172,7 @@ async function fetchBlogPosts(
           },
         },
       },
-      orderBy: { publishedAt: "desc" },
+      orderBy,
       skip: (page - 1) * limit,
       take: limit,
     }),
@@ -179,6 +201,7 @@ export async function getBlogPosts(
     filters.categorySlug || "all",
     filters.tagSlug || "all",
     filters.authorId || "all",
+    filters.sortBy || "newest",
     String(filters.page || 1),
     String(filters.limit || 10),
   ];
@@ -262,16 +285,19 @@ export async function getBlogPostBySlug(slug: string) {
 }
 
 /**
- * Get related posts based on categories
+ * Get related posts based on categories with randomization
+ * Fetches more candidates than needed and shuffles to ensure variety
  */
 export async function getRelatedPosts(
   postId: string,
   categoryIds: string[],
-  limit: number = 3
+  limit: number = 3,
+  excludeIds: string[] = []
 ) {
-  return db.blogPost.findMany({
+  // Fetch more candidates for randomization
+  const candidates = await db.blogPost.findMany({
     where: {
-      id: { not: postId },
+      id: { notIn: [postId, ...excludeIds] },
       status: "published",
       categories: {
         some: {
@@ -289,8 +315,17 @@ export async function getRelatedPosts(
       publishedAt: true,
     },
     orderBy: { publishedAt: "desc" },
-    take: limit,
+    take: limit * 3, // Fetch 3x more for randomization
   });
+
+  // Fisher-Yates shuffle for true randomization
+  const shuffled = [...candidates];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled.slice(0, limit);
 }
 
 /**

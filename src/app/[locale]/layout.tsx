@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { AuthProvider } from "@/components/providers/auth-provider";
@@ -15,10 +15,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
+  themeColor: "#4a7c59",
 };
 
 const geistSans = Geist({
@@ -29,6 +26,12 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
   display: "swap",
 });
@@ -46,19 +49,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
   const titles: Record<string, string> = {
-    de: "Meine App - Ihre Lösung für...",
-    en: "My App - Your Solution for...",
-    fr: "Mon App - Votre Solution pour...",
-    es: "Mi App - Tu Solución para...",
-    it: "La Mia App - La Tua Soluzione per...",
+    de: "FindMyTherapy – Die richtige Therapie für dich",
+    en: "FindMyTherapy – The Right Therapy for You",
   };
 
   const descriptions: Record<string, string> = {
-    de: "Eine barrierefreie, mehrsprachige Webanwendung mit höchster Qualität und Benutzerfreundlichkeit.",
-    en: "An accessible, multilingual web application with the highest quality and user experience.",
-    fr: "Une application web accessible et multilingue avec la plus haute qualité et expérience utilisateur.",
-    es: "Una aplicación web accesible y multilingüe con la más alta calidad y experiencia de usuario.",
-    it: "Un'applicazione web accessibile e multilingue con la massima qualità e esperienza utente.",
+    de: "Finde die richtige Therapie, nicht nur einen Therapeuten. Kostenloses Wissen, moderne Suche und geführtes KI-Matching.",
+    en: "Find the right therapy, not just a therapist. Free knowledge, modern search and guided AI matching.",
   };
 
   return generateSeoMetadata({
@@ -91,7 +88,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable}`}
     >
       <head>
         <script
@@ -111,8 +108,8 @@ export default async function LocaleLayout({ children, params }: Props) {
         <AuthProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
+            defaultTheme="light"
+            forcedTheme="light"
             disableTransitionOnChange
           >
             <NextIntlClientProvider messages={messages}>

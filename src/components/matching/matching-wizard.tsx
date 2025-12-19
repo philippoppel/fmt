@@ -236,9 +236,13 @@ function WizardContent() {
   );
 }
 
-export function MatchingWizard() {
+interface MatchingWizardProps {
+  initialTopic?: string;
+}
+
+export function MatchingWizard({ initialTopic }: MatchingWizardProps) {
   return (
-    <MatchingProvider>
+    <MatchingProvider initialTopic={initialTopic}>
       <WizardContent />
     </MatchingProvider>
   );

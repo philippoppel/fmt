@@ -2,17 +2,17 @@ import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "FMT",
+    name: "FindMyTherapy",
     short_name: "FMT",
-    description: "Eine barrierefreie, mehrsprachige Webanwendung",
+    description: "Finde die richtige Therapie - nicht nur einen Therapeuten",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",
-    theme_color: "#0f172a",
+    theme_color: "#4a7c59",
     orientation: "portrait-primary",
     icons: [
       {
-        src: "/icons/icon.svg",
+        src: "/favicon.svg",
         sizes: "any",
         type: "image/svg+xml",
         purpose: "any",

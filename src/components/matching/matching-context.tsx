@@ -548,8 +548,24 @@ interface MatchingContextValue {
 
 const MatchingContext = createContext<MatchingContextValue | null>(null);
 
-export function MatchingProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(matchingReducer, initialState);
+interface MatchingProviderProps {
+  children: ReactNode;
+  initialTopic?: string;
+}
+
+export function MatchingProvider({ children, initialTopic }: MatchingProviderProps) {
+  // Create initial state with pre-selected topic if provided
+  const initialStateWithTopic = useMemo(() => {
+    if (initialTopic && MATCHING_TOPICS.some(t => t.id === initialTopic)) {
+      return {
+        ...initialState,
+        selectedTopics: [initialTopic],
+      };
+    }
+    return initialState;
+  }, [initialTopic]);
+
+  const [state, dispatch] = useReducer(matchingReducer, initialStateWithTopic);
 
   // Actions
   const setStep = useCallback((step: WizardStep) => {
