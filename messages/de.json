@@ -404,7 +404,11 @@
           "postalCodePlaceholder": "z.B. 10115"
         },
         "specializations": {
-          "description": "Wähle deine Fachgebiete"
+          "description": "Wähle deine Fachgebiete",
+          "ranking": {
+            "title": "Schwerpunkte priorisieren",
+            "description": "Vergib Prioritäten (1-3), um deine wichtigsten Schwerpunkte hervorzuheben. Diese werden auf deinem Profil besonders hervorgehoben."
+          }
         },
         "therapyTypes": {
           "description": "Welche Therapieformen bietest du an?"

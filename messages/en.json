@@ -434,7 +434,11 @@
           "postalCodePlaceholder": "e.g., 10115"
         },
         "specializations": {
-          "description": "Select your areas of expertise"
+          "description": "Select your areas of expertise",
+          "ranking": {
+            "title": "Prioritize Specializations",
+            "description": "Assign priorities (1-3) to highlight your most important specializations. These will be prominently displayed on your profile."
+          }
         },
         "therapyTypes": {
           "description": "What therapy approaches do you offer?"

@@ -58,6 +58,7 @@ export default async function SettingsPage({ params }: Props) {
           city: profile.city || "",
           postalCode: profile.postalCode || "",
           specializations: profile.specializations,
+          specializationRanks: (profile.specializationRanks as Record<string, number>) || {},
           therapyTypes: profile.therapyTypes,
           languages: profile.languages,
           insurance: profile.insurance,

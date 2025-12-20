@@ -9,8 +9,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
-import { Loader2, Check, ChevronDown, ChevronUp } from "lucide-react";
+import { Loader2, Check, ChevronDown, ChevronUp, Crown, Star } from "lucide-react";
 import { updateProfile, type ProfileData } from "@/lib/actions/profile";
+import { updateSpecializationRanks } from "@/lib/actions/profile-update";
 import {
   SPECIALTIES,
   THERAPY_TYPES,
@@ -27,9 +28,14 @@ import {
 import { useProfilePermissions } from "@/hooks/use-profile-permissions";
 import { TierBadge } from "@/components/dashboard/tier-badge";
 import { UpgradeBanner, GratisBlocker } from "@/components/dashboard/upgrade-banner";
+import { cn } from "@/lib/utils";
+
+type ProfileFormData = ProfileData & {
+  specializationRanks?: Record<string, number>;
+};
 
 type Props = {
-  initialData: ProfileData;
+  initialData: ProfileFormData;
   accountType: AccountType;
 };
 
@@ -49,6 +55,9 @@ export function ProfileForm({ initialData, accountType }: Props) {
   const [city, setCity] = useState(initialData.city);
   const [postalCode, setPostalCode] = useState(initialData.postalCode);
   const [specializations, setSpecializations] = useState<string[]>(initialData.specializations);
+  const [specializationRanks, setSpecializationRanks] = useState<Record<string, number>>(
+    initialData.specializationRanks || {}
+  );
   const [therapyTypes, setTherapyTypes] = useState<string[]>(initialData.therapyTypes);
   const [languages, setLanguages] = useState<string[]>(initialData.languages);
   const [insurance, setInsurance] = useState<string[]>(initialData.insurance);
@@ -75,9 +84,34 @@ export function ProfileForm({ initialData, accountType }: Props) {
   function toggleArrayValue(array: string[], value: string, setter: (arr: string[]) => void) {
     if (array.includes(value)) {
       setter(array.filter((v) => v !== value));
+      // Also remove rank when specialty is deselected
+      if (array === specializations && specializationRanks[value]) {
+        const newRanks = { ...specializationRanks };
+        delete newRanks[value];
+        setSpecializationRanks(newRanks);
+      }
     } else {
       setter([...array, value]);
     }
+  }
+
+  function handleRankChange(specialty: string, rank: number | null) {
+    const newRanks = { ...specializationRanks };
+
+    if (rank === null) {
+      // Remove rank
+      delete newRanks[specialty];
+    } else {
+      // Check if another specialty has this rank and remove it
+      for (const key of Object.keys(newRanks)) {
+        if (newRanks[key] === rank) {
+          delete newRanks[key];
+        }
+      }
+      newRanks[specialty] = rank;
+    }
+
+    setSpecializationRanks(newRanks);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -104,6 +138,11 @@ export function ProfileForm({ initialData, accountType }: Props) {
       });
 
       if (result.success) {
+        // Also save specialization ranks for premium users
+        if (permissions.isPremium && Object.keys(specializationRanks).length > 0) {
+          await updateSpecializationRanks({ specializationRanks });
+        }
+
         setSuccess(true);
         setTimeout(() => setSuccess(false), 3000);
       } else {
@@ -272,7 +311,8 @@ export function ProfileForm({ initialData, accountType }: Props) {
           </div>
         </CardHeader>
         {openSections.specializations && (
-          <CardContent>
+          <CardContent className="space-y-6">
+            {/* Specialty Selection */}
             <div className="grid grid-cols-2 gap-3">
               {SPECIALTIES.map((specialty) => (
                 <div key={specialty} className="flex items-center space-x-2">
@@ -287,6 +327,63 @@ export function ProfileForm({ initialData, accountType }: Props) {
                 </div>
               ))}
             </div>
+
+            {/* Ranking Section - Premium Only */}
+            {specializations.length > 0 && (
+              <div className="space-y-3 border-t pt-4">
+                <div className="flex items-center gap-2">
+                  <Star className="h-4 w-4 text-amber-500" />
+                  <Label className="font-medium">{t("sections.specializations.ranking.title")}</Label>
+                  {!permissions.isPremium && (
+                    <span className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
+                      <Crown className="h-3 w-3 text-amber-500" />
+                      Premium
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {t("sections.specializations.ranking.description")}
+                </p>
+
+                <div className="space-y-2">
+                  {specializations.map((specialty) => {
+                    const currentRank = specializationRanks[specialty];
+                    return (
+                      <div
+                        key={specialty}
+                        className={cn(
+                          "flex items-center justify-between rounded-lg border p-3",
+                          !permissions.isPremium && "opacity-60"
+                        )}
+                      >
+                        <span className="text-sm">{tFilters(`specialty.${specialty}`)}</span>
+                        <div className="flex gap-1">
+                          {[1, 2, 3].map((rank) => (
+                            <button
+                              key={rank}
+                              type="button"
+                              disabled={!permissions.isPremium}
+                              onClick={() =>
+                                handleRankChange(specialty, currentRank === rank ? null : rank)
+                              }
+                              className={cn(
+                                "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
+                                currentRank === rank
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-muted hover:bg-muted/80",
+                                !permissions.isPremium && "cursor-not-allowed"
+                              )}
+                            >
+                              {rank}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </CardContent>
         )}
       </Card>
