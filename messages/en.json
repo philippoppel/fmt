@@ -368,6 +368,36 @@
         "upgrade": "Upgrade to Premium"
       }
     },
+    "lockedField": {
+      "requiresTier": "Requires {tier} plan",
+      "featureLocked": "This feature is locked",
+      "featureLockedWithLabel": "{label} is locked",
+      "upgradeToUnlock": "Upgrade to {tier} to unlock this feature.",
+      "upgradeNow": "Upgrade now"
+    },
+    "upgrade": {
+      "title": "Upgrade to Premium",
+      "subtitle": "Unlock all features",
+      "currentTier": "Current Plan",
+      "premiumIncludes": "Premium includes",
+      "benefits": {
+        "allFields": "Edit all profile fields",
+        "threeSpecializations": "3 prioritized specializations",
+        "allThemes": "All 5 color themes + Custom",
+        "unlimitedImages": "Upload up to 20 images",
+        "videoIntro": "Video introduction",
+        "therapyStyle": "Therapy style settings",
+        "matchingBoost": "Better placement in matching"
+      },
+      "upgradeButton": "Upgrade",
+      "viewPlans": "View all plans",
+      "gratisMessage": "With the free plan, you cannot edit your profile.",
+      "mittelMessage": "Upgrade to Premium for all features.",
+      "gratisBlockerTitle": "Profile editing not available",
+      "gratisBlockerDescription": "With the free plan, you cannot edit your profile. Choose a plan to customize your profile and reach more clients.",
+      "choosePlan": "Choose plan"
+    },
+    "premiumFeature": "Premium",
     "settings": {
       "title": "Profile Settings",
       "subtitle": "Manage your therapist profile information",
@@ -490,6 +520,37 @@
         "tryAgain": "Try again"
       }
     }
+  },
+  "pricing": {
+    "title": "Choose Your Plan",
+    "subtitle": "Find the right plan for your practice",
+    "tiers": {
+      "gratis": "Free",
+      "mittel": "Basic",
+      "premium": "Premium"
+    },
+    "perMonth": "per month",
+    "mostPopular": "Most Popular",
+    "currentPlan": "Current Plan",
+    "choosePlan": "Choose Plan",
+    "contactUs": "Contact Us",
+    "comingSoon": "Coming Soon",
+    "features": {
+      "editProfile": "Edit profile",
+      "searchVisibility": "Visible in search",
+      "specializations": "Specializations",
+      "images": "Images",
+      "themes": "Color themes",
+      "videoIntro": "Video introduction",
+      "therapyStyle": "Therapy style",
+      "extendedProfile": "Extended profile",
+      "socialLinks": "Social media links",
+      "trialSession": "Offer trial session",
+      "matchingBoost": "Matching boost"
+    },
+    "gratisDescription": "For therapists who want to try it out",
+    "mittelDescription": "For therapists who want to be found online",
+    "premiumDescription": "For therapists who want to get the maximum"
   },
   "footer": {
     "copyright": "© {year} My App. All rights reserved.",

@@ -83,7 +83,7 @@ describe("SEO Metadata Generation", () => {
       expect(metadata.openGraph?.locale).toBe("en_US");
       expect(metadata.openGraph?.title).toBe("Test");
       expect(metadata.openGraph?.description).toBe("Test description");
-      expect(metadata.openGraph?.siteName).toBe("FMT");
+      expect(metadata.openGraph?.siteName).toBe("FindMyTherapy");
     });
 
     it("should include Twitter card metadata", () => {
@@ -96,7 +96,7 @@ describe("SEO Metadata Generation", () => {
       const twitter = metadata.twitter as Record<string, unknown>;
       expect(twitter?.card).toBe("summary_large_image");
       expect(twitter?.title).toBe("Test");
-      expect(twitter?.creator).toBe("@fmt_app");
+      expect(twitter?.creator).toBe("@findmytherapy");
     });
 
     it("should use correct locale mapping for all locales", () => {
@@ -137,9 +137,9 @@ describe("JSON-LD Schema Generation", () => {
 
       expect(schema["@context"]).toBe("https://schema.org");
       expect(schema["@type"]).toBe("Organization");
-      expect(schema.name).toBe("FMT");
+      expect(schema.name).toBe("FindMyTherapy");
       expect(schema.url).toBe("https://example.com");
-      expect(schema.logo).toBe("https://example.com/icons/icon.svg");
+      expect(schema.logo).toBe("https://example.com/favicon.svg");
     });
 
     it("should match snapshot", () => {

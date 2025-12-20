@@ -29,10 +29,10 @@ exports[`JSON-LD Schema Generation > generateOrganizationSchema > should match s
 {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "logo": "https://example.com/icons/icon.svg",
-  "name": "FMT",
+  "logo": "https://example.com/favicon.svg",
+  "name": "FindMyTherapy",
   "sameAs": [
-    "https://github.com/philippoppel/fmt",
+    "https://github.com/philippoppel/findmytherapy",
   ],
   "url": "https://example.com",
 }
@@ -43,7 +43,7 @@ exports[`JSON-LD Schema Generation > generateWebSiteSchema > should match snapsh
   "@context": "https://schema.org",
   "@type": "WebSite",
   "inLanguage": "de",
-  "name": "FMT",
+  "name": "FindMyTherapy",
   "url": "https://example.com",
 }
 `;
