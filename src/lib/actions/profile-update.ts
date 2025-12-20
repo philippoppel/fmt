@@ -226,6 +226,63 @@ interface UpdateThemeData {
  * Update theme settings for a therapist profile
  * Requires at least "mittel" tier
  */
+interface UpdateSpecializationRanksData {
+  specializationRanks: Record<string, number>;
+}
+
+/**
+ * Update specialization ranks for a therapist profile
+ * Requires "premium" tier - allows up to 3 ranked specializations
+ */
+export async function updateSpecializationRanks(
+  data: UpdateSpecializationRanksData
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return { success: false, error: "Nicht authentifiziert" };
+    }
+
+    const profile = await db.therapistProfile.findUnique({
+      where: { userId: session.user.id },
+      select: { id: true, accountType: true, slug: true },
+    });
+
+    if (!profile) {
+      return { success: false, error: "Profil nicht gefunden" };
+    }
+
+    // Check tier access - only premium can rank specializations
+    if (profile.accountType !== "premium") {
+      return { success: false, error: "Upgrade auf Premium erforderlich für Schwerpunkt-Priorisierung" };
+    }
+
+    // Validate max 3 ranked specializations
+    const rankedCount = Object.keys(data.specializationRanks).length;
+    if (rankedCount > 3) {
+      return { success: false, error: "Maximal 3 Schwerpunkte können priorisiert werden" };
+    }
+
+    await db.therapistProfile.update({
+      where: { id: profile.id },
+      data: {
+        specializationRanks: data.specializationRanks,
+      },
+    });
+
+    revalidatePath("/dashboard/customize");
+    if (profile.slug) {
+      revalidatePath(`/p/${profile.slug}`);
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update specialization ranks:", error);
+    return { success: false, error: "Fehler beim Speichern" };
+  }
+}
+
 export async function updateTheme(
   data: UpdateThemeData
 ): Promise<{ success: boolean; error?: string }> {

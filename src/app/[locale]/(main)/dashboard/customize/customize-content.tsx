@@ -16,10 +16,12 @@ import {
   Check,
   Loader2,
   Lock,
+  Star,
+  GripVertical,
 } from "lucide-react";
 import { THEME_PRESETS, type ThemeName } from "@/types/profile";
 import type { AccountType } from "@/types/therapist";
-import { updateTheme } from "@/lib/actions/profile-update";
+import { updateTheme, updateSpecializationRanks } from "@/lib/actions/profile-update";
 
 interface CustomizeContentProps {
   hasAccess: boolean;
@@ -29,6 +31,7 @@ interface CustomizeContentProps {
     themeColor: string;
     headline: string;
     galleryImages: string[];
+    specializations: string[];
     specializationRanks: Record<string, number>;
   };
   slug?: string | null;
@@ -48,8 +51,70 @@ export function CustomizeContent({
   const [selectedTheme, setSelectedTheme] = useState<ThemeName>(initialData.themeName);
   const [customColor, setCustomColor] = useState(initialData.themeColor);
   const [headline, setHeadline] = useState(initialData.headline);
+  const [specializationRanks, setSpecializationRanks] = useState<Record<string, number>>(
+    initialData.specializationRanks
+  );
+  const [rankSuccess, setRankSuccess] = useState(false);
+  const [rankError, setRankError] = useState<string | null>(null);
+  const [isRankPending, startRankTransition] = useTransition();
 
   const isPremium = accountType === "premium";
+
+  // Specialty labels for display
+  const specialtyLabels: Record<string, string> = {
+    depression: "Depression",
+    anxiety: "Angststörungen",
+    trauma: "Trauma & PTBS",
+    relationships: "Beziehungen",
+    addiction: "Sucht",
+    eating_disorders: "Essstörungen",
+    adhd: "ADHS",
+    burnout: "Burnout",
+  };
+
+  // Get user's specializations with labels
+  const userSpecializations = initialData.specializations.map((key) => ({
+    key,
+    label: specialtyLabels[key] || key,
+  }));
+
+  // Handle adding/removing a rank
+  function handleRankChange(specKey: string, rank: number | null) {
+    setSpecializationRanks((prev) => {
+      const newRanks = { ...prev };
+      if (rank === null) {
+        delete newRanks[specKey];
+      } else {
+        // Remove any existing specialization with this rank
+        Object.keys(newRanks).forEach((key) => {
+          if (newRanks[key] === rank) {
+            delete newRanks[key];
+          }
+        });
+        newRanks[specKey] = rank;
+      }
+      return newRanks;
+    });
+  }
+
+  // Save specialization ranks
+  async function handleSaveRanks() {
+    if (!isPremium) return;
+
+    setRankError(null);
+    setRankSuccess(false);
+
+    startRankTransition(async () => {
+      const result = await updateSpecializationRanks({ specializationRanks });
+
+      if (result.success) {
+        setRankSuccess(true);
+        setTimeout(() => setRankSuccess(false), 3000);
+      } else {
+        setRankError(result.error || t("saveError"));
+      }
+    });
+  }
 
   async function handleSave() {
     if (!hasAccess) return;
@@ -122,7 +187,7 @@ export function CustomizeContent({
           <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
         {slug && (
-          <Link href={`/therapeuten/${slug}`} target="_blank">
+          <Link href={`/p/${slug}`} target="_blank">
             <Button variant="outline" className="gap-2">
               <ExternalLink className="h-4 w-4" />
               {t("viewMicrosite")}
@@ -239,6 +304,130 @@ export function CustomizeContent({
               {headline.length}/120 {t("headline.characters")}
             </p>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Specialization Ranking - Premium Only */}
+      <Card className={cn(!isPremium && "opacity-60")}>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <Star className="h-5 w-5" />
+              {t("ranking.title")}
+            </CardTitle>
+            <TierBadge tier="premium" size="sm" />
+          </div>
+          <CardDescription>{t("ranking.description")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isPremium ? (
+            <div className="space-y-4">
+              {/* Success/Error Messages */}
+              {rankSuccess && (
+                <div className="rounded-md bg-green-500/10 p-3 text-sm text-green-600 flex items-center gap-2">
+                  <Check className="h-4 w-4" />
+                  {t("saved")}
+                </div>
+              )}
+              {rankError && (
+                <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                  {rankError}
+                </div>
+              )}
+
+              {userSpecializations.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t("ranking.noSpecializations")}</p>
+              ) : (
+                <>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {t("ranking.hint")}
+                  </p>
+                  <div className="space-y-2">
+                    {userSpecializations.map((spec) => {
+                      const currentRank = specializationRanks[spec.key];
+                      return (
+                        <div
+                          key={spec.key}
+                          className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30"
+                        >
+                          <GripVertical className="h-4 w-4 text-muted-foreground" />
+                          <span className="flex-1 text-sm font-medium">{spec.label}</span>
+                          <div className="flex gap-1">
+                            {[1, 2, 3].map((rank) => (
+                              <button
+                                key={rank}
+                                onClick={() =>
+                                  handleRankChange(spec.key, currentRank === rank ? null : rank)
+                                }
+                                className={cn(
+                                  "w-8 h-8 rounded-full text-xs font-bold transition-all",
+                                  currentRank === rank
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-muted hover:bg-muted-foreground/20 text-muted-foreground"
+                                )}
+                              >
+                                {rank}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Show current ranking */}
+                  {Object.keys(specializationRanks).length > 0 && (
+                    <div className="pt-4 border-t">
+                      <p className="text-sm font-medium mb-2">{t("ranking.current")}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {[1, 2, 3].map((rank) => {
+                          const specKey = Object.keys(specializationRanks).find(
+                            (k) => specializationRanks[k] === rank
+                          );
+                          const spec = userSpecializations.find((s) => s.key === specKey);
+                          if (!spec) return null;
+                          return (
+                            <div
+                              key={rank}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm"
+                            >
+                              <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
+                                {rank}
+                              </span>
+                              {spec.label}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex justify-end pt-2">
+                    <Button
+                      onClick={handleSaveRanks}
+                      variant="outline"
+                      size="sm"
+                      disabled={isRankPending}
+                    >
+                      {isRankPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          {t("saving")}
+                        </>
+                      ) : (
+                        t("ranking.save")
+                      )}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Crown className="h-4 w-4 text-amber-500" />
+              {t("ranking.premiumOnly")}
+            </div>
+          )}
         </CardContent>
       </Card>
 

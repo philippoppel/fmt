@@ -26,7 +26,7 @@ export function ProfileContent({ initialData, accountType, slug }: ProfileConten
           <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
         {slug && (
-          <Link href={`/therapeuten/${slug}`} target="_blank">
+          <Link href={`/p/${slug}`} target="_blank">
             <Button variant="outline" className="gap-2">
               <ExternalLink className="h-4 w-4" />
               {t("viewMicrosite")}

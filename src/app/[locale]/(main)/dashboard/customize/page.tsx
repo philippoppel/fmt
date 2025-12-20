@@ -44,6 +44,7 @@ export default async function CustomizePage({ params }: Props) {
       slug: true,
       galleryImages: true,
       headline: true,
+      specializations: true,
       specializationRanks: true,
     },
   });
@@ -64,6 +65,7 @@ export default async function CustomizePage({ params }: Props) {
         themeColor: profile.themeColor || "#F97316",
         headline: profile.headline || "",
         galleryImages: profile.galleryImages || [],
+        specializations: profile.specializations || [],
         specializationRanks: (profile.specializationRanks as Record<string, number>) || {},
       }}
       slug={profile.slug}

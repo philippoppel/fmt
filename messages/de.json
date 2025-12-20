@@ -325,6 +325,15 @@
         "title": "Anpassung nicht verfügbar",
         "description": "Upgrade auf Basis oder Premium, um deine Microsite individuell anzupassen.",
         "upgrade": "Jetzt upgraden"
+      },
+      "ranking": {
+        "title": "Schwerpunkt-Priorisierung",
+        "description": "Bestimme welche Schwerpunkte besonders hervorgehoben werden sollen",
+        "hint": "Wähle bis zu 3 Schwerpunkte und weise ihnen eine Priorität zu. Diese werden auf deiner Microsite und in Suchergebnissen prominent angezeigt.",
+        "noSpecializations": "Du hast noch keine Schwerpunkte in deinem Profil hinterlegt.",
+        "current": "Aktuelle Priorisierung:",
+        "save": "Priorisierung speichern",
+        "premiumOnly": "Upgrade auf Premium für die Schwerpunkt-Priorisierung"
       }
     },
     "stats": {

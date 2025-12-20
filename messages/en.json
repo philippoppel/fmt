@@ -325,6 +325,15 @@
         "title": "Customization Not Available",
         "description": "Upgrade to Basic or Premium to customize your microsite.",
         "upgrade": "Upgrade Now"
+      },
+      "ranking": {
+        "title": "Specialization Ranking",
+        "description": "Define which specializations should be highlighted prominently",
+        "hint": "Select up to 3 specializations and assign priorities. These will be prominently displayed on your microsite and in search results.",
+        "noSpecializations": "You haven't added any specializations to your profile yet.",
+        "current": "Current ranking:",
+        "save": "Save ranking",
+        "premiumOnly": "Upgrade to Premium for specialization ranking"
       }
     },
     "stats": {
