@@ -5,7 +5,7 @@ test.describe("Critical Paths", () => {
     test("should load homepage with correct title", async ({ page }) => {
       await page.goto("/");
       await expect(page).toHaveTitle(/.+/); // Should have some title
-      await expect(page.locator("h1")).toBeVisible();
+      await expect(page.locator("h1").first()).toBeVisible();
     });
 
     test("should have HTML lang attribute set", async ({ page }) => {
@@ -40,7 +40,7 @@ test.describe("Critical Paths", () => {
       test(`should load ${locale.code} homepage correctly`, async ({ page }) => {
         await page.goto(locale.path);
         await expect(page.locator("html")).toHaveAttribute("lang", locale.expectedLang);
-        await expect(page.locator("h1")).toBeVisible();
+        await expect(page.locator("h1").first()).toBeVisible();
       });
     }
   });
@@ -127,7 +127,8 @@ test.describe("Critical Paths", () => {
     test("login page should load and have noindex", async ({ page }) => {
       await page.goto("/auth/login");
 
-      await expect(page.locator("h1, h2")).toBeVisible();
+      // CardTitle renders as h3
+      await expect(page.locator("h1, h2, h3").first()).toBeVisible();
 
       const robotsMeta = await page.locator('meta[name="robots"]').getAttribute("content");
       expect(robotsMeta).toContain("noindex");
@@ -136,7 +137,8 @@ test.describe("Critical Paths", () => {
     test("register page should load and have noindex", async ({ page }) => {
       await page.goto("/auth/register");
 
-      await expect(page.locator("h1, h2")).toBeVisible();
+      // CardTitle renders as h3
+      await expect(page.locator("h1, h2, h3").first()).toBeVisible();
 
       const robotsMeta = await page.locator('meta[name="robots"]').getAttribute("content");
       expect(robotsMeta).toContain("noindex");

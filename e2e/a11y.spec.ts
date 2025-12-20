@@ -102,7 +102,7 @@ test.describe("Accessibility", () => {
       await page.goto("/");
 
       // Should have an h1
-      const h1 = page.locator("h1");
+      const h1 = page.locator("h1").first();
       await expect(h1).toBeVisible();
 
       // Count headings

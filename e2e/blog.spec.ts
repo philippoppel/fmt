@@ -6,7 +6,7 @@ test.describe("Blog", () => {
       await page.goto("/en/blog");
 
       await expect(page).toHaveTitle(/blog|wissen/i);
-      await expect(page.locator("h1")).toBeVisible();
+      await expect(page.locator("h1").first()).toBeVisible();
     });
 
     test("should display blog cards", async ({ page }) => {
@@ -26,8 +26,10 @@ test.describe("Blog", () => {
 
     test("should have sorting dropdown", async ({ page }) => {
       await page.goto("/en/blog");
+      await page.waitForLoadState("networkidle");
 
       const sortSelect = page.locator('select[name="sort"]');
+      await sortSelect.scrollIntoViewIfNeeded();
       await expect(sortSelect).toBeVisible();
 
       // Check for sorting options
@@ -37,13 +39,18 @@ test.describe("Blog", () => {
 
     test("should filter by sorting option", async ({ page }) => {
       await page.goto("/en/blog");
+      await page.waitForLoadState("networkidle");
 
       const sortSelect = page.locator('select[name="sort"]');
+      await sortSelect.scrollIntoViewIfNeeded();
 
       // Select "newest" option
       await sortSelect.selectOption("newest");
 
-      // Wait for form submission
+      // Click submit button
+      const submitButton = page.locator('button[type="submit"]');
+      await submitButton.click();
+
       await page.waitForLoadState("domcontentloaded");
 
       // URL should include sort parameter
@@ -354,7 +361,7 @@ test.describe("Blog", () => {
       await page.goto("/blog");
 
       await expect(page.locator("html")).toHaveAttribute("lang", "de");
-      await expect(page.locator("h1")).toBeVisible();
+      await expect(page.locator("h1").first()).toBeVisible();
     });
 
     test("should have German sorting labels", async ({ page }) => {
