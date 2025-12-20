@@ -115,6 +115,7 @@ export function NoResults({ onClearFilters, filters, alternativeTherapists }: No
               <Link
                 key={therapist.id}
                 href={`/p/${therapist.slug || therapist.id}`}
+                target="_blank"
                 className="group flex items-center gap-3 rounded-lg border bg-card p-3 text-left transition-colors hover:border-primary/50 hover:bg-accent/50"
               >
                 <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-muted">

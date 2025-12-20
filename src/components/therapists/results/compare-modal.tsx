@@ -429,7 +429,7 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
             {therapists.map((th) => (
               <div key={th.id} className="flex flex-col gap-1.5">
                 <Button asChild size="sm" className="w-full text-xs">
-                  <Link href={`/p/${th.slug || th.id}`}>
+                  <Link href={`/p/${th.slug || th.id}`} target="_blank">
                     {t("therapists.viewProfile")}
                   </Link>
                 </Button>

@@ -259,7 +259,7 @@ export function OverviewContent({ profile, userName }: OverviewContentProps) {
                 </Link>
               )}
               {profile?.slug && (
-                <Link href={`/p/${profile.slug}`}>
+                <Link href={`/p/${profile.slug}`} target="_blank">
                   <Button variant="ghost" size="sm" className="gap-2">
                     <ExternalLink className="h-4 w-4" />
                     {t("viewMicrosite")}
@@ -390,7 +390,7 @@ export function OverviewContent({ profile, userName }: OverviewContentProps) {
             )}
 
             {profile?.slug && (
-              <Link href={`/p/${profile.slug}`} className="group">
+              <Link href={`/p/${profile.slug}`} target="_blank" className="group">
                 <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
                   <div className="p-2 rounded-md bg-primary/10">
                     <ExternalLink className="h-4 w-4 text-primary" />
