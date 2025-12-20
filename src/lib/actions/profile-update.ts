@@ -215,3 +215,55 @@ function calculateProfileCompleteness(profile: any): number {
 
   return Math.min(100, score);
 }
+
+interface UpdateThemeData {
+  themeName: ThemeName;
+  themeColor: string;
+  headline?: string;
+}
+
+/**
+ * Update theme settings for a therapist profile
+ * Requires at least "mittel" tier
+ */
+export async function updateTheme(
+  data: UpdateThemeData
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return { success: false, error: "Nicht authentifiziert" };
+    }
+
+    const profile = await db.therapistProfile.findUnique({
+      where: { userId: session.user.id },
+      select: { id: true, accountType: true },
+    });
+
+    if (!profile) {
+      return { success: false, error: "Profil nicht gefunden" };
+    }
+
+    // Check tier access
+    if (profile.accountType === "gratis") {
+      return { success: false, error: "Upgrade erforderlich für Theme-Anpassungen" };
+    }
+
+    await db.therapistProfile.update({
+      where: { id: profile.id },
+      data: {
+        themeName: data.themeName,
+        themeColor: data.themeColor,
+        headline: data.headline,
+      },
+    });
+
+    revalidatePath("/dashboard/customize");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update theme:", error);
+    return { success: false, error: "Fehler beim Speichern" };
+  }
+}

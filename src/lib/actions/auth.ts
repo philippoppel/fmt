@@ -5,9 +5,10 @@ import { registerSchema } from "@/lib/validations/auth";
 import bcrypt from "bcryptjs";
 import { signIn } from "@/lib/auth";
 import { AuthError } from "next-auth";
+import crypto from "crypto";
 
 export type RegisterResult =
-  | { success: true; userId: string }
+  | { success: true; userId: string; verificationToken?: string }
   | { success: false; error: string };
 
 export async function register(formData: FormData): Promise<RegisterResult> {
@@ -41,12 +42,18 @@ export async function register(formData: FormData): Promise<RegisterResult> {
   // Hash password
   const hashedPassword = await bcrypt.hash(password, 12);
 
+  // Generate email verification token
+  const verificationToken = crypto.randomBytes(32).toString("hex");
+  const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
   // Create user with therapist profile in transaction
   const user = await db.user.create({
     data: {
       name,
       email,
       password: hashedPassword,
+      emailVerificationToken: verificationToken,
+      emailVerificationExpires: verificationExpires,
       therapistProfile: {
         create: {
           // Create empty profile - therapist fills in settings later
@@ -58,6 +65,11 @@ export async function register(formData: FormData): Promise<RegisterResult> {
     },
   });
 
+  // In development, log the verification link
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[DEV] Verification link: /auth/verify?token=${verificationToken}`);
+  }
+
   // Auto sign-in after registration
   try {
     await signIn("credentials", {
@@ -68,12 +80,22 @@ export async function register(formData: FormData): Promise<RegisterResult> {
   } catch (error) {
     if (error instanceof AuthError) {
       // Sign-in failed but user was created
-      return { success: true, userId: user.id };
+      return {
+        success: true,
+        userId: user.id,
+        // Only return token in development mode
+        verificationToken: process.env.NODE_ENV === "development" ? verificationToken : undefined,
+      };
     }
     throw error;
   }
 
-  return { success: true, userId: user.id };
+  return {
+    success: true,
+    userId: user.id,
+    // Only return token in development mode
+    verificationToken: process.env.NODE_ENV === "development" ? verificationToken : undefined,
+  };
 }
 
 export type LoginResult =
@@ -102,4 +124,85 @@ export async function login(formData: FormData): Promise<LoginResult> {
     }
     throw error;
   }
+}
+
+// ============================================
+// EMAIL VERIFICATION
+// ============================================
+
+export type VerifyEmailResult =
+  | { success: true; email: string }
+  | { success: false; error: string };
+
+export async function verifyEmail(token: string): Promise<VerifyEmailResult> {
+  if (!token || typeof token !== "string") {
+    return { success: false, error: "Invalid verification token" };
+  }
+
+  // Find user with this token
+  const user = await db.user.findUnique({
+    where: { emailVerificationToken: token },
+  });
+
+  if (!user) {
+    return { success: false, error: "Invalid or expired verification token" };
+  }
+
+  // Check if token has expired
+  if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
+    return { success: false, error: "Verification token has expired. Please request a new one." };
+  }
+
+  // Verify the email
+  await db.user.update({
+    where: { id: user.id },
+    data: {
+      emailVerified: new Date(),
+      emailVerificationToken: null,
+      emailVerificationExpires: null,
+    },
+  });
+
+  return { success: true, email: user.email };
+}
+
+export type ResendVerificationResult =
+  | { success: true; verificationToken?: string }
+  | { success: false; error: string };
+
+export async function resendVerificationEmail(email: string): Promise<ResendVerificationResult> {
+  const user = await db.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+    // Don't reveal if email exists or not
+    return { success: true };
+  }
+
+  if (user.emailVerified) {
+    return { success: false, error: "Email is already verified" };
+  }
+
+  // Generate new token
+  const verificationToken = crypto.randomBytes(32).toString("hex");
+  const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+  await db.user.update({
+    where: { id: user.id },
+    data: {
+      emailVerificationToken: verificationToken,
+      emailVerificationExpires: verificationExpires,
+    },
+  });
+
+  // In development, log the verification link
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[DEV] New verification link: /auth/verify?token=${verificationToken}`);
+  }
+
+  return {
+    success: true,
+    verificationToken: process.env.NODE_ENV === "development" ? verificationToken : undefined,
+  };
 }

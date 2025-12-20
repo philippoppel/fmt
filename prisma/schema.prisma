@@ -54,6 +54,14 @@ enum AccountType {
   premium   // Premium: 1-3 Schwerpunkte mit Ranking, volles Profil
 }
 
+// Subscription Status für Tier-Wechsel
+enum SubscriptionStatus {
+  none       // Kein aktives Abo (gratis)
+  active     // Aktives Abo
+  canceled   // Gekündigt, läuft noch bis Periodenende
+  past_due   // Zahlung fehlgeschlagen
+}
+
 // Blog Enums
 enum PostStatus {
   draft
@@ -68,6 +76,10 @@ model User {
   emailVerified         DateTime?
   image                 String?
   password              String?
+
+  // Email Verification
+  emailVerificationToken   String?   @unique
+  emailVerificationExpires DateTime?
 
   // 2FA Support
   twoFactorEnabled      Boolean   @default(false)
@@ -261,6 +273,14 @@ model TherapistProfile {
   isVerified          Boolean              @default(false)
   experienceYears     Int?                 // Jahre Berufserfahrung
 
+  // Subscription Management
+  subscriptionId        String?              // Mock Stripe subscription ID
+  subscriptionStatus    SubscriptionStatus   @default(none)
+  subscriptionStartedAt DateTime?
+  subscriptionEndsAt    DateTime?            // Für Kündigung: Zugriff bis hier
+  lastPaymentAt         DateTime?
+  nextBillingDate       DateTime?
+
   // Schwerpunkt-Ranking (JSON: {"anxiety": 1, "depression": 2, "trauma": 3})
   specializationRanks Json?                @default("{}")
 
@@ -296,6 +316,8 @@ model TherapistProfile {
   // Relations
   user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   matchInteractions MatchInteraction[]
+  paymentHistory    PaymentHistory[]
+  profileStats      ProfileStats[]
 
   @@index([city])
   @@index([isPublished])
@@ -585,4 +607,60 @@ model MatchFeedback {
   @@index([sessionId])
   @@index([timestamp])
   @@map("match_feedback")
+}
+
+// ============================================
+// SUBSCRIPTION & BILLING
+// ============================================
+
+// Zahlungshistorie für Tier-Wechsel
+model PaymentHistory {
+  id        String           @id @default(cuid())
+  profileId String
+  profile   TherapistProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  // Payment Details
+  amount    Int              // In Cents (2900 = 29€)
+  currency  String           @default("eur")
+  status    String           // succeeded, failed, refunded
+  tier      AccountType      // Ziel-Tier
+  action    String           // upgrade, downgrade, renew, cancel
+
+  // Mock Stripe Reference
+  stripePaymentId String?
+
+  createdAt DateTime         @default(now())
+
+  @@index([profileId])
+  @@index([createdAt])
+  @@map("payment_history")
+}
+
+// ============================================
+// PROFILE STATISTICS (Premium Feature)
+// ============================================
+
+// Tägliche Statistiken für Therapeuten-Profile
+model ProfileStats {
+  id            String           @id @default(cuid())
+  profileId     String
+  profile       TherapistProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  // Datum für tägliche Aggregation
+  date          DateTime         @db.Date
+
+  // Zähler
+  views         Int              @default(0)  // Direkte Profilaufrufe
+  impressions   Int              @default(0)  // Anzeigen in Suchergebnissen
+  contactClicks Int              @default(0)  // Klicks auf Kontakt-Buttons
+  profileClicks Int              @default(0)  // Klicks vom Suchergebnis zum Profil
+
+  // Timestamps
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@unique([profileId, date])
+  @@index([profileId])
+  @@index([date])
+  @@map("profile_stats")
 }

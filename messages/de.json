@@ -199,7 +199,22 @@
         "passwordWeak": "Das Passwort erfüllt nicht alle Anforderungen",
         "passwordMismatch": "Die Passwörter stimmen nicht überein",
         "termsRequired": "Bitte akzeptiere die Nutzungsbedingungen"
-      }
+      },
+      "successTitle": "Registrierung erfolgreich!",
+      "successDescription": "Dein Konto wurde erstellt. Bitte bestätige deine E-Mail-Adresse.",
+      "checkEmailInstructions": "Wir haben dir eine E-Mail mit einem Bestätigungslink geschickt. Klicke auf den Link, um deine E-Mail-Adresse zu verifizieren.",
+      "continueToDashboard": "Zum Dashboard",
+      "verifyLater": "Du kannst deine E-Mail später verifizieren"
+    },
+    "verify": {
+      "title": "E-Mail bestätigen",
+      "verifying": "E-Mail wird verifiziert...",
+      "successTitle": "E-Mail bestätigt!",
+      "successDescription": "Deine E-Mail-Adresse wurde erfolgreich verifiziert.",
+      "errorTitle": "Verifizierung fehlgeschlagen",
+      "continueToDashboard": "Zum Dashboard",
+      "resendLink": "Neuen Link anfordern",
+      "backToLogin": "Zurück zur Anmeldung"
     },
     "twoFactor": {
       "title": "Zwei-Faktor-Authentifizierung",
@@ -226,6 +241,133 @@
     }
   },
   "dashboard": {
+    "sidebar": {
+      "therapist": "Therapeut:in",
+      "overview": "Übersicht",
+      "profile": "Profil",
+      "customize": "Anpassen",
+      "stats": "Statistiken",
+      "billing": "Abrechnung",
+      "settings": "Einstellungen",
+      "upgradeToPremium": "Auf Premium upgraden",
+      "openMenu": "Menü öffnen",
+      "closeMenu": "Menü schließen"
+    },
+    "overview": {
+      "title": "Übersicht",
+      "welcome": "Willkommen zurück, {name}!",
+      "therapist": "Therapeut:in",
+      "subtitle": "Hier ist eine Übersicht deines Therapeuten-Profils.",
+      "profileStatus": "Profilstatus",
+      "profileComplete": "Dein Profil ist vollständig",
+      "profileIncomplete": "Vervollständige dein Profil",
+      "profileViews": "Profilaufrufe",
+      "contactClicks": "Kontakt-Klicks",
+      "trend": "Trend",
+      "last30Days": "Letzte 30 Tage",
+      "vsLastWeek": "vs. letzte Woche",
+      "premiumOnly": "Nur für Premium",
+      "yourProfile": "Dein Profil",
+      "profilePreviewDesc": "So sehen Klienten dein Profil",
+      "noName": "Kein Name hinterlegt",
+      "noTitle": "Kein Titel hinterlegt",
+      "noLocation": "Kein Standort hinterlegt",
+      "noProfile": "Du hast noch kein Profil erstellt.",
+      "editProfile": "Profil bearbeiten",
+      "viewMicrosite": "Microsite ansehen",
+      "published": "Veröffentlicht",
+      "accountStatus": "Account-Status",
+      "accountStatusDesc": "Dein aktueller Abo-Status und Vorteile",
+      "currentBenefits": "Deine aktuellen Vorteile:",
+      "benefit": {
+        "searchVisible": "Profil in Suche sichtbar",
+        "editProfile": "Profil bearbeiten",
+        "stats": "Detaillierte Statistiken",
+        "customization": "Microsite-Anpassung"
+      },
+      "upgradeToPremium": "Auf Premium upgraden",
+      "manageSubscription": "Abo verwalten",
+      "quickActions": "Schnellaktionen",
+      "quickActionsDesc": "Häufig genutzte Funktionen",
+      "action": {
+        "editProfile": "Profil bearbeiten",
+        "managePlan": "Abo verwalten",
+        "viewStats": "Statistiken ansehen",
+        "viewMicrosite": "Microsite ansehen"
+      }
+    },
+    "profile": {
+      "title": "Profil bearbeiten",
+      "subtitle": "Aktualisiere deine Therapeuten-Profilinformationen",
+      "viewMicrosite": "Microsite ansehen"
+    },
+    "customize": {
+      "title": "Microsite anpassen",
+      "subtitle": "Gestalte dein Profil mit individuellen Farben und Inhalten",
+      "viewMicrosite": "Microsite ansehen",
+      "saveChanges": "Änderungen speichern",
+      "saving": "Speichern...",
+      "saved": "Änderungen erfolgreich gespeichert",
+      "saveError": "Fehler beim Speichern",
+      "theme": {
+        "title": "Farbthema",
+        "description": "Wähle ein Farbschema für deine Microsite",
+        "customColor": "Eigene Farbe (Premium)"
+      },
+      "headline": {
+        "title": "Überschrift",
+        "description": "Eine einprägsame Überschrift für dein Profil",
+        "label": "Profilüberschrift",
+        "placeholder": "z.B. Ihre einfühlsame Begleitung auf dem Weg zu mehr Lebensfreude",
+        "characters": "Zeichen"
+      },
+      "locked": {
+        "title": "Anpassung nicht verfügbar",
+        "description": "Upgrade auf Basis oder Premium, um deine Microsite individuell anzupassen.",
+        "upgrade": "Jetzt upgraden"
+      }
+    },
+    "stats": {
+      "title": "Statistiken",
+      "subtitle": "Analysiere die Performance deines Profils",
+      "metrics": {
+        "views": "Profilaufrufe",
+        "impressions": "Suchanzeigen",
+        "clicks": "Kontakt-Klicks",
+        "totalContacts": "Gesamtkontakte"
+      },
+      "period": {
+        "last30Days": "Letzte 30 Tage",
+        "sinceJoining": "Seit {date}"
+      },
+      "charts": {
+        "views": {
+          "title": "Profilaufrufe",
+          "description": "Entwicklung der täglichen Aufrufe"
+        },
+        "clicks": {
+          "title": "Klicks",
+          "description": "Kontakt- und Profil-Klicks"
+        },
+        "noData": "Noch keine Daten vorhanden",
+        "last14Days": "Letzte 14 Tage"
+      },
+      "insights": {
+        "title": "Performance-Einblicke",
+        "description": "Wichtige Metriken zur Profiloptimierung",
+        "ctr": "Kontaktrate",
+        "ctrDesc": "Anteil der Besucher, die Kontakt aufnehmen",
+        "searchToView": "Klickrate aus Suche",
+        "searchToViewDesc": "Anteil der Sucheinblendungen, die zu Aufrufen führen",
+        "avgDaily": "Ø täglich",
+        "avgDailyDesc": "Durchschnittliche Aufrufe pro Tag"
+      },
+      "locked": {
+        "title": "Statistiken nicht verfügbar",
+        "description": "Upgrade auf Premium, um detaillierte Statistiken zu deinem Profil zu sehen.",
+        "upgrade": "Auf Premium upgraden"
+      }
+    },
     "settings": {
       "title": "Profileinstellungen",
       "subtitle": "Verwalte deine Therapeuten-Profilinformationen",
@@ -301,7 +443,83 @@
       "gratisBlockerDescription": "Mit dem Gratis-Abo kannst du dein Profil nicht bearbeiten. Wähle ein Abo, um dein Profil anzupassen und mehr Klienten zu erreichen.",
       "choosePlan": "Abo wählen"
     },
-    "premiumFeature": "Premium"
+    "premiumFeature": "Premium",
+    "billing": {
+      "title": "Abrechnung",
+      "description": "Verwalte dein Abonnement und sieh deine Zahlungshistorie",
+      "currentPlan": "Aktueller Plan",
+      "canceledBadge": "Gekündigt",
+      "free": "Kostenlos",
+      "perMonth": "Monat",
+      "nextBilling": "Nächste Abrechnung am {date}",
+      "upgrade": "Jetzt upgraden",
+      "upgradeToPremium": "Auf Premium upgraden",
+      "reactivate": "Abo reaktivieren",
+      "cancelSubscription": "Abo kündigen",
+      "paymentHistory": "Zahlungshistorie",
+      "paymentHistoryDescription": "Übersicht deiner bisherigen Zahlungen",
+      "cancellationWarning": "Dein Abo wurde gekündigt",
+      "accessUntil": "Du hast noch Zugriff bis {date}. Danach wechselst du zum Gratis-Plan.",
+      "upgrade": {
+        "title": "Plan upgraden",
+        "description": "Wähle einen höheren Plan für mehr Funktionen",
+        "paymentTitle": "Zahlung",
+        "paymentDescription": "Gib deine Zahlungsdaten ein",
+        "processingTitle": "Verarbeitung...",
+        "successTitle": "Upgrade erfolgreich!",
+        "errorTitle": "Zahlung fehlgeschlagen",
+        "alreadyPremium": "Du hast bereits den höchsten Plan",
+        "popular": "Beliebt",
+        "moreFeatures": "weitere Funktionen",
+        "continue": "Weiter",
+        "cardNumber": "Kartennummer",
+        "expiry": "Gültig bis",
+        "securePayment": "Sichere Zahlung über SSL-Verschlüsselung",
+        "testMode": "Testmodus: Verwende die vorausgefüllte Test-Karte",
+        "back": "Zurück",
+        "pay": "{amount}€ bezahlen",
+        "processing": "Zahlung wird verarbeitet...",
+        "successMessage": "Zahlung erfolgreich!",
+        "successDescription": "Dein Abo wurde aktiviert. Du hast jetzt Zugriff auf alle Funktionen.",
+        "errorMessage": "Zahlung fehlgeschlagen",
+        "tryAgain": "Erneut versuchen"
+      },
+      "history": {
+        "noPayments": "Noch keine Zahlungen vorhanden",
+        "actions": {
+          "upgrade": "Upgrade",
+          "downgrade": "Downgrade",
+          "cancel": "Kündigung",
+          "renew": "Verlängerung"
+        },
+        "tiers": {
+          "gratis": "Gratis",
+          "mittel": "Basis",
+          "premium": "Premium"
+        },
+        "status": {
+          "succeeded": "Erfolgreich",
+          "failed": "Fehlgeschlagen",
+          "refunded": "Erstattet"
+        }
+      },
+      "cancel": {
+        "title": "Abo kündigen?",
+        "description": "Bist du sicher, dass du dein Abo kündigen möchtest?",
+        "currentPlan": "Aktueller Plan",
+        "accessUntil": "Zugriff bis",
+        "afterCancellation": "Nach Kündigung",
+        "gratisTier": "Gratis (eingeschränkt)",
+        "warning": "Du verlierst den Zugang zu Premium-Funktionen wie erweiterter Profil-Bearbeitung, Statistiken und mehr Bildern.",
+        "keepSubscription": "Abo behalten",
+        "confirmCancel": "Ja, kündigen",
+        "canceling": "Wird gekündigt...",
+        "successTitle": "Kündigung bestätigt",
+        "successDescription": "Du hast noch Zugriff bis {date}. Danach wechselst du automatisch zum Gratis-Plan.",
+        "errorTitle": "Kündigung fehlgeschlagen",
+        "tryAgain": "Erneut versuchen"
+      }
+    }
   },
   "pricing": {
     "title": "Wähle dein Abo",
@@ -1401,7 +1619,7 @@
           "description": "Für mehr Sichtbarkeit",
           "badge": "Beliebteste Wahl",
           "feature1": "Profilfoto hochladen",
-          "feature2": "Bis zu 3 Schwerpunkte",
+          "feature2": "1 Schwerpunkt festlegen",
           "feature3": "Eigene SEO-Microsite",
           "feature4": "Eigener teilbarer Link",
           "feature5": "Priorisierte Anzeige"
@@ -1410,7 +1628,7 @@
           "name": "Premium",
           "description": "Maximale Gestaltungsfreiheit",
           "feature1": "Alles aus Standard",
-          "feature2": "Unbegrenzte Schwerpunkte",
+          "feature2": "Bis zu 3 Schwerpunkte",
           "feature3": "Praxisbilder & Galerie",
           "feature4": "Video-Vorstellung",
           "feature5": "Top-Platzierung im Matching"
@@ -1427,6 +1645,142 @@
       "subtitle": "Der erste Schritt ist der schwerste. Aber wir sind hier, um ihn leichter zu machen.",
       "primary": "Jetzt Matching starten",
       "secondary": "Therapeut:innen ansehen"
+    }
+  },
+  "therapistsLanding": {
+    "meta": {
+      "title": "Für Therapeut:innen – Mehr Sichtbarkeit ohne Technikaufwand",
+      "description": "Erreiche mehr Klient:innen mit deiner eigenen SEO-optimierten Microsite. FindMyTherapy kümmert sich um Auffindbarkeit, Struktur und Matching."
+    },
+    "hero": {
+      "badge": "Für Psychotherapeut:innen",
+      "title": "Mehr Sichtbarkeit. Weniger Verwaltung. Fokus auf Therapie.",
+      "subtitle": "Wir kümmern uns um deine Online-Präsenz, damit du dich auf das konzentrieren kannst, was wirklich zählt: deine Klient:innen.",
+      "ctaPrimary": "Kostenlos registrieren",
+      "ctaSecondary": "Account-Modelle ansehen",
+      "benefit1": "Keine Technik-Kenntnisse nötig",
+      "benefit2": "SEO-optimiert ab Tag 1",
+      "statLabel": "mehr Anfragen"
+    },
+    "benefits": {
+      "title": "Warum Therapeut:innen uns wählen",
+      "subtitle": "Wir nehmen dir die Last der Online-Präsenz ab – für mehr Zeit mit deinen Klient:innen.",
+      "visibility": {
+        "title": "Maximale Sichtbarkeit",
+        "description": "Dein Profil wird automatisch für Suchmaschinen optimiert. Werde gefunden, ohne SEO-Expert:in sein zu müssen."
+      },
+      "matching": {
+        "title": "Gezieltes Matching",
+        "description": "Unser System verbindet dich mit Klient:innen, die genau zu deinen Schwerpunkten und Methoden passen."
+      },
+      "focus": {
+        "title": "Fokus auf Therapie",
+        "description": "Kein Website-Stress, kein Marketing-Aufwand. Du machst Therapie – wir machen den Rest."
+      }
+    },
+    "howItWorks": {
+      "title": "So einfach geht's",
+      "subtitle": "In drei Schritten zu deiner professionellen Online-Präsenz",
+      "step1": {
+        "title": "Profil erstellen",
+        "description": "Fülle dein Profil aus – Schwerpunkte, Methoden, Verfügbarkeit. So einfach wie ein Formular."
+      },
+      "step2": {
+        "title": "Microsite anpassen",
+        "description": "Wähle Farben und Inhalte für deine persönliche Seite. Keine Technik-Kenntnisse nötig."
+      },
+      "step3": {
+        "title": "Klient:innen erreichen",
+        "description": "Werde gefunden, erhalte Anfragen und sieh deine Statistiken in Echtzeit."
+      }
+    },
+    "features": {
+      "title": "Alles, was du brauchst",
+      "seo": "SEO-Optimierung",
+      "microsite": "Persönliche Microsite",
+      "stats": "Detaillierte Statistiken",
+      "matching": "Smartes Matching",
+      "privacy": "DSGVO-konform",
+      "support": "Support"
+    },
+    "pricing": {
+      "title": "Transparente Preise",
+      "subtitle": "Starte kostenlos und upgrade, wenn du bereit bist",
+      "popular": "Beliebt",
+      "gratis": {
+        "name": "Gratis",
+        "description": "Perfekt zum Kennenlernen",
+        "feature1": "Basisprofil",
+        "feature2": "In Suche sichtbar",
+        "feature3": "Standard-Microsite",
+        "cta": "Kostenlos starten"
+      },
+      "mittel": {
+        "name": "Basis",
+        "description": "Für aktive Therapeut:innen",
+        "feature1": "Profil bearbeiten",
+        "feature2": "Eigene Farben",
+        "feature3": "1 Schwerpunkt priorisiert",
+        "feature4": "Praxis-Bilder",
+        "cta": "Jetzt starten"
+      },
+      "premium": {
+        "name": "Premium",
+        "description": "Maximale Reichweite",
+        "feature1": "Alles aus Basis",
+        "feature2": "Detaillierte Statistiken",
+        "feature3": "3 Schwerpunkte priorisiert",
+        "feature4": "Video-Vorstellung",
+        "feature5": "Top-Platzierung",
+        "cta": "Premium werden"
+      }
+    },
+    "testimonials": {
+      "title": "Das sagen andere Therapeut:innen",
+      "1": {
+        "quote": "Endlich eine Plattform, die versteht, was Therapeut:innen brauchen. Kein Technik-Stress, einfach funktioniert.",
+        "author": "Dr. Maria S.",
+        "role": "Psychologische Psychotherapeutin, Wien"
+      },
+      "2": {
+        "quote": "Seit ich bei FindMyTherapy bin, bekomme ich deutlich mehr passende Anfragen. Das Matching funktioniert wirklich.",
+        "author": "Thomas K.",
+        "role": "Verhaltenstherapeut, Graz"
+      },
+      "3": {
+        "quote": "Die Statistiken zeigen mir genau, wie mein Profil performt. Das hilft mir, meine Praxis gezielt weiterzuentwickeln.",
+        "author": "Lisa M.",
+        "role": "Systemische Therapeutin, Salzburg"
+      }
+    },
+    "faq": {
+      "title": "Häufige Fragen",
+      "1": {
+        "question": "Ist FindMyTherapy wirklich kostenlos?",
+        "answer": "Ja, das Basisprofil ist dauerhaft kostenlos. Du kannst jederzeit auf Basis oder Premium upgraden, um mehr Funktionen freizuschalten."
+      },
+      "2": {
+        "question": "Wie funktioniert das Matching?",
+        "answer": "Klient:innen beantworten Fragen zu ihren Bedürfnissen. Unser System gleicht diese mit deinen Schwerpunkten, Methoden und Verfügbarkeit ab und zeigt dich passenden Klient:innen an."
+      },
+      "3": {
+        "question": "Brauche ich technische Kenntnisse?",
+        "answer": "Nein! Alles ist so einfach wie das Ausfüllen eines Formulars. Wir kümmern uns um SEO, Hosting und alle technischen Details."
+      },
+      "4": {
+        "question": "Kann ich mein Profil jederzeit ändern?",
+        "answer": "Mit Basis oder Premium kannst du dein Profil jederzeit aktualisieren. Änderungen sind sofort auf deiner Microsite sichtbar."
+      },
+      "5": {
+        "question": "Wie kündige ich mein Abo?",
+        "answer": "Du kannst jederzeit in deinem Dashboard kündigen. Der Zugang bleibt bis zum Ende der Abrechnungsperiode bestehen, danach wechselst du automatisch zum Gratis-Profil."
+      }
+    },
+    "cta": {
+      "title": "Bereit, mehr Klient:innen zu erreichen?",
+      "subtitle": "Starte jetzt kostenlos und überzeuge dich selbst.",
+      "primary": "Kostenlos registrieren",
+      "secondary": "Mehr erfahren"
     }
   }
 }

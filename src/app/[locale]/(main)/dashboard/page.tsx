@@ -1,13 +1,36 @@
-import { redirect } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
+import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { OverviewContent } from "./overview-content";
 
-type Props = {
-  params: Promise<{ locale: string }>;
-};
+export async function generateMetadata() {
+  const t = await getTranslations("dashboard.overview");
+  return {
+    title: t("title"),
+  };
+}
 
-export default async function DashboardPage({ params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
+export default async function DashboardPage() {
+  const session = await auth();
 
-  redirect(`/${locale}/dashboard/settings`);
+  if (!session?.user?.id) {
+    return null;
+  }
+
+  const profile = await db.therapistProfile.findUnique({
+    where: { userId: session.user.id },
+    include: {
+      profileStats: {
+        orderBy: { date: "desc" },
+        take: 30,
+      },
+    },
+  });
+
+  return (
+    <OverviewContent
+      profile={profile}
+      userName={session.user.name}
+    />
+  );
 }

@@ -78,9 +78,9 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full p-4">
       <div className="container max-w-6xl mx-auto flex h-14 items-center justify-between px-6 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/20 shadow-lg shadow-black/5">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-semibold">
-          <Logo className="h-8 w-8 text-primary" />
-          <span className="hidden sm:inline text-lg">
+        <Link href="/" className="flex items-center gap-1.5 sm:gap-2 font-semibold">
+          <Logo className="h-7 w-7 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+          <span className="text-sm sm:text-lg whitespace-nowrap">
             <span className="font-bold">Find</span>
             <span className="font-normal text-muted-foreground">My</span>
             <span className="font-bold">Therapy</span>
@@ -141,7 +141,7 @@ export function Header() {
             </div>
           ) : (
             <Button variant="ghost" size="sm" asChild className="hidden md:flex">
-              <Link href="/auth/login">Für Therapeut:innen</Link>
+              <Link href="/fuer-therapeuten">Für Therapeut:innen</Link>
             </Button>
           )}
 
@@ -175,7 +175,7 @@ export function Header() {
             {!isAuthenticated && (
               <div className="pt-4 border-t border-black/10 dark:border-white/10">
                 <Button variant="outline" asChild className="w-full">
-                  <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/fuer-therapeuten" onClick={() => setMobileMenuOpen(false)}>
                     Für Therapeut:innen
                   </Link>
                 </Button>

@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Check, X, Loader2 } from "lucide-react";
+import { Check, X, Loader2, Mail, ExternalLink } from "lucide-react";
 import { register } from "@/lib/actions/auth";
 
 export function RegisterForm() {
@@ -18,6 +18,8 @@ export function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [verificationToken, setVerificationToken] = useState<string | null>(null);
 
   const passwordRequirements = [
     { key: "minLength", met: password.length >= 8 },
@@ -34,11 +36,69 @@ export function RegisterForm() {
     startTransition(async () => {
       const result = await register(formData);
       if (result.success) {
-        router.push("/dashboard/settings");
+        setRegistrationSuccess(true);
+        // Store token for dev mode display
+        if (result.verificationToken) {
+          setVerificationToken(result.verificationToken);
+        }
       } else {
         setError(result.error);
       }
     });
+  }
+
+  // Show success message after registration
+  if (registrationSuccess) {
+    return (
+      <div className="container mx-auto flex min-h-[calc(100vh-16rem)] items-center justify-center px-4 py-8">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+              <Mail className="h-8 w-8 text-green-600" />
+            </div>
+            <CardTitle className="text-2xl font-bold">{t("successTitle")}</CardTitle>
+            <CardDescription>{t("successDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="rounded-lg bg-muted p-4 text-sm text-muted-foreground">
+              <p>{t("checkEmailInstructions")}</p>
+            </div>
+
+            {/* Development mode: Show verification link */}
+            {verificationToken && (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+                <p className="mb-2 text-sm font-medium text-amber-800">
+                  🔧 Development Mode
+                </p>
+                <p className="mb-3 text-xs text-amber-700">
+                  In production, this link would be sent via email.
+                </p>
+                <Link
+                  href={`/auth/verify?token=${verificationToken}`}
+                  className="inline-flex items-center gap-2 rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 transition-colors"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Verify Email Now
+                </Link>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-2">
+              <Button
+                variant="outline"
+                onClick={() => router.push("/dashboard/settings")}
+                className="w-full"
+              >
+                {t("continueToDashboard")}
+              </Button>
+              <p className="text-center text-xs text-muted-foreground">
+                {t("verifyLater")}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
