@@ -9,6 +9,12 @@ type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
+// Allow dynamic params (profiles not in generateStaticParams)
+export const dynamicParams = true;
+
+// Revalidate pages on-demand (when revalidatePath is called) or every 60 seconds
+export const revalidate = 60;
+
 // Generate static params for all published profiles
 export async function generateStaticParams() {
   const slugs = await getAllProfileSlugs();

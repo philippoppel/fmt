@@ -320,7 +320,11 @@ export async function updateTheme(
     revalidatePath("/dashboard/customize");
 
     // Revalidate the microsite so theme changes are visible immediately
+    // Need to revalidate all locale variants
     if (profile.slug) {
+      revalidatePath(`/de/p/${profile.slug}`);
+      revalidatePath(`/en/p/${profile.slug}`);
+      // Also try without locale prefix (catches default locale)
       revalidatePath(`/p/${profile.slug}`);
     }
 
