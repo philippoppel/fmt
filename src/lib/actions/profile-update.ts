@@ -295,7 +295,7 @@ export async function updateTheme(
 
     const profile = await db.therapistProfile.findUnique({
       where: { userId: session.user.id },
-      select: { id: true, accountType: true },
+      select: { id: true, accountType: true, slug: true },
     });
 
     if (!profile) {
@@ -316,7 +316,13 @@ export async function updateTheme(
       },
     });
 
+    // Revalidate dashboard customize page
     revalidatePath("/dashboard/customize");
+
+    // Revalidate the microsite so theme changes are visible immediately
+    if (profile.slug) {
+      revalidatePath(`/p/${profile.slug}`);
+    }
 
     return { success: true };
   } catch (error) {
