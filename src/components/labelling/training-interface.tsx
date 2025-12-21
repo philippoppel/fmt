@@ -243,7 +243,7 @@ export function TrainingInterface({
 
       {/* Kurze Erklärung für Therapeutinnen */}
       <p className="text-sm text-muted-foreground">
-        Lies den Text und wähle 1-3 Schwerpunkte. Die Reihenfolge bestimmt die Priorität.
+        Lies den Text und wähle 1-3 passende Schwerpunkte.
       </p>
 
       {/* The case text */}
@@ -256,12 +256,9 @@ export function TrainingInterface({
       </Card>
 
       {/* Topic selection instruction */}
-      <div className="text-center space-y-1">
-        <p className="font-medium">Welche Schwerpunkte würdest du empfehlen?</p>
-        <p className="text-sm text-muted-foreground">
-          Wähle 1-3 passende Schwerpunkte (Reihenfolge = Priorität)
-        </p>
-      </div>
+      <p className="text-center font-medium">
+        Welche Schwerpunkte passen zu diesem Text?
+      </p>
 
       {/* Flat subtopic selection - all visible */}
       <div className="space-y-4">
@@ -287,7 +284,6 @@ export function TrainingInterface({
               <div className="flex flex-wrap gap-1.5">
                 {topic.subTopics.map((subtopic) => {
                   const isSelected = selectedSubtopics.includes(subtopic.id);
-                  const rank = selectedSubtopics.indexOf(subtopic.id) + 1;
 
                   return (
                     <button
@@ -296,18 +292,13 @@ export function TrainingInterface({
                       onClick={() => toggleSubtopic(subtopic.id)}
                       disabled={isPending}
                       className={cn(
-                        "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-all",
+                        "rounded-full px-3 py-1.5 text-sm font-medium transition-all",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                         isSelected
                           ? "bg-primary text-primary-foreground shadow-md"
                           : "bg-muted hover:bg-muted/80 text-foreground"
                       )}
                     >
-                      {isSelected && (
-                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary-foreground/20 text-xs font-bold">
-                          {rank}
-                        </span>
-                      )}
                       {SUBTOPIC_LABELS[subtopic.id] || subtopic.id}
                     </button>
                   );
@@ -321,11 +312,12 @@ export function TrainingInterface({
       {/* Selected subtopics summary */}
       {selectedSubtopics.length > 0 && (
         <div className="rounded-lg bg-primary/5 border border-primary/20 p-3">
-          <p className="text-xs text-muted-foreground mb-2">Deine Auswahl:</p>
+          <p className="text-xs text-muted-foreground mb-2">
+            Deine Auswahl ({selectedSubtopics.length}/3):
+          </p>
           <div className="flex items-center gap-2 flex-wrap">
-            {selectedSubtopics.map((subtopicId, index) => (
-              <Badge key={subtopicId} className="gap-1 bg-primary text-primary-foreground">
-                <span className="font-bold">{index + 1}.</span>
+            {selectedSubtopics.map((subtopicId) => (
+              <Badge key={subtopicId} className="bg-primary text-primary-foreground">
                 {SUBTOPIC_LABELS[subtopicId] || subtopicId}
               </Badge>
             ))}
