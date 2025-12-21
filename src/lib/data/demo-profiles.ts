@@ -32,6 +32,7 @@ In einer vertrauensvollen Atmosphäre biete ich Ihnen einen sicheren Raum, in de
     specializations: ["depression", "anxiety", "burnout"],
     specializationRanks: { depression: 1, anxiety: 2, burnout: 3 },
     therapyTypes: ["cbt", "humanistic"],
+    therapySettings: ["individual", "group"],
     languages: ["de", "en"],
     insurance: ["public", "private"],
 
@@ -137,6 +138,7 @@ In unserer gemeinsamen Arbeit ist mir eine respektvolle, wertschätzende Atmosph
     specializations: ["trauma", "relationships", "addiction"],
     specializationRanks: { trauma: 1, relationships: 2, addiction: 3 },
     therapyTypes: ["psychoanalysis", "systemic"],
+    therapySettings: ["individual", "couples"],
     languages: ["de", "tr"],
     insurance: ["private"],
 
@@ -238,6 +240,7 @@ Mir ist wichtig, dass Sie als Patient*in informierte Entscheidungen treffen kön
     specializations: ["adhd", "eating_disorders", "anxiety"],
     specializationRanks: { adhd: 1, eating_disorders: 2, anxiety: 3 },
     therapyTypes: ["cbt", "gestalt"],
+    therapySettings: ["individual", "group"],
     languages: ["de", "en", "ar"],
     insurance: ["public", "private"],
 
@@ -341,6 +344,7 @@ In Einzeltherapie arbeite ich ebenfalls systemisch – denn auch wenn Sie allein
     specializations: ["relationships", "addiction", "burnout"],
     specializationRanks: { relationships: 1, burnout: 2, addiction: 3 },
     therapyTypes: ["systemic"],
+    therapySettings: ["individual", "couples", "group"],
     languages: ["de", "tr"],
     insurance: ["private"],
 
@@ -443,6 +447,7 @@ Mein Therapiestil ist einfühlsam und beziehungsorientiert. Ich glaube, dass Hei
     specializations: ["trauma", "anxiety", "depression"],
     specializationRanks: { trauma: 1, depression: 2, anxiety: 3 },
     therapyTypes: ["psychoanalysis"],
+    therapySettings: ["individual"],
     languages: ["de", "en"],
     insurance: ["public", "private"],
 

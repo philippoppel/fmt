@@ -1,4 +1,4 @@
-import type { Specialty, TherapyType, Language, SessionType, Insurance, Availability, Gender, CommunicationStyle, TherapyFocus, TherapyDepth, AccountType } from "./therapist";
+import type { Specialty, TherapyType, TherapySetting, Language, SessionType, Insurance, Availability, Gender, CommunicationStyle, TherapyFocus, TherapyDepth, AccountType } from "./therapist";
 
 // Extended therapist profile for personal website pages
 export interface TherapistProfileData {
@@ -24,6 +24,7 @@ export interface TherapistProfileData {
   specializations: Specialty[];
   specializationRanks: Record<string, number>;
   therapyTypes: TherapyType[];
+  therapySettings: TherapySetting[];
   languages: Language[];
   insurance: Insurance[];
 

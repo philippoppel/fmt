@@ -120,8 +120,8 @@ export function CriteriaSelection() {
         {/* Therapy Setting (Individual, Group, Couples, Corporate) */}
         <div className="space-y-3">
           <Label className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-cyan-muted">
-              <Users2 className="h-4 w-4 text-accent-cyan" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-pink-muted">
+              <Users2 className="h-4 w-4 text-accent-pink" />
             </div>
             {t("matching.criteria.therapySetting")}
           </Label>
@@ -645,13 +645,13 @@ function TherapySettingCard({
       className={cn(
         "relative flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         isSelected
-          ? "border-accent-cyan bg-accent-cyan/15 shadow-md"
-          : "border-input bg-background hover:border-accent-cyan/50 hover:bg-muted/50"
+          ? "border-accent-pink bg-accent-pink/15 shadow-md"
+          : "border-input bg-background hover:border-accent-pink/50 hover:bg-muted/50"
       )}
       aria-pressed={isSelected}
     >
       {isSelected && (
-        <div className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent-cyan text-white shadow-sm">
+        <div className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent-pink text-white shadow-sm">
           <Check className="h-3 w-3" strokeWidth={3} />
         </div>
       )}
@@ -659,7 +659,7 @@ function TherapySettingCard({
         className={cn(
           "flex h-9 w-9 items-center justify-center rounded-full transition-colors",
           isSelected
-            ? "bg-accent-cyan text-white"
+            ? "bg-accent-pink text-white"
             : "bg-muted text-muted-foreground"
         )}
       >
@@ -667,7 +667,7 @@ function TherapySettingCard({
       </div>
       <span className={cn(
         "text-xs font-medium text-center",
-        isSelected ? "text-accent-cyan-foreground font-semibold" : "text-foreground"
+        isSelected ? "text-accent-pink-foreground font-semibold" : "text-foreground"
       )}>
         {label}
       </span>

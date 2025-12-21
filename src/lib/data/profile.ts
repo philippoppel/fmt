@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import type { TherapistProfileData, WorkingHours, ThemeName } from "@/types/profile";
-import type { Specialty, TherapyType, Language, SessionType, Insurance, Availability, Gender, CommunicationStyle, TherapyFocus, TherapyDepth, AccountType } from "@/types/therapist";
+import type { Specialty, TherapyType, TherapySetting, Language, SessionType, Insurance, Availability, Gender, CommunicationStyle, TherapyFocus, TherapyDepth, AccountType } from "@/types/therapist";
 import { getDemoProfileBySlug, getAllDemoProfileSlugs as getDemoSlugs } from "./demo-profiles";
 
 /**
@@ -192,6 +192,7 @@ function transformProfileToData(profile: any): TherapistProfileData {
     specializations: (profile.specializations || []) as Specialty[],
     specializationRanks: (profile.specializationRanks as Record<string, number>) || {},
     therapyTypes: (profile.therapyTypes || []) as TherapyType[],
+    therapySettings: (profile.therapySettings || []) as TherapySetting[],
     languages: (profile.languages || []) as Language[],
     insurance: (profile.insurance || []) as Insurance[],
 
@@ -272,6 +273,7 @@ function transformDemoProfileToData(profile: Partial<TherapistProfileData>): The
     specializations: (profile.specializations || []) as Specialty[],
     specializationRanks: profile.specializationRanks || {},
     therapyTypes: (profile.therapyTypes || []) as TherapyType[],
+    therapySettings: (profile.therapySettings || []) as TherapySetting[],
     languages: (profile.languages || []) as Language[],
     insurance: (profile.insurance || []) as Insurance[],
 

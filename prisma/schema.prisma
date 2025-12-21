@@ -248,6 +248,7 @@ model TherapistProfile {
   // Professional Details (stored as string arrays)
   specializations   String[]
   therapyTypes      String[]
+  therapySettings   String[]   // ["individual", "group", "couples", "corporate"]
   languages         String[]
   insurance         String[]
 
