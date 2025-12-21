@@ -3,11 +3,12 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Check, Loader2, Sparkles, BarChart3, ChevronRight, ChevronDown } from "lucide-react";
+import { Check, Loader2, Sparkles, BarChart3, ChevronRight, ChevronDown, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { MATCHING_TOPICS, getTopicImageUrl } from "@/lib/matching/topics";
 import { saveTrainingLabel, generateNewCase, getNextTrainingCase } from "@/lib/actions/labelling/training";
 import Link from "next/link";
@@ -121,6 +122,7 @@ export function TrainingInterface({
   const [selectedSubtopics, setSelectedSubtopics] = useState<string[]>([]);
   const [expandedTopic, setExpandedTopic] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [isUncertain, setIsUncertain] = useState(false);
 
   const toggleSubtopic = (subtopicId: string) => {
     setSelectedSubtopics((prev) => {
@@ -155,6 +157,7 @@ export function TrainingInterface({
       const result = await saveTrainingLabel({
         caseId: currentCase.id,
         topics: selectedSubtopics,
+        uncertain: isUncertain,
       });
 
       if (result.success) {
@@ -166,6 +169,7 @@ export function TrainingInterface({
           setCurrentCase(nextResult.data);
           setSelectedSubtopics([]);
           setExpandedTopic(null);
+          setIsUncertain(false);
           setSaved(false);
         } else {
           // No more cases - generate new one
@@ -185,6 +189,7 @@ export function TrainingInterface({
         setCurrentCase(result.data);
         setSelectedSubtopics([]);
         setExpandedTopic(null);
+        setIsUncertain(false);
       }
       setIsGenerating(false);
     });
@@ -242,6 +247,15 @@ export function TrainingInterface({
             Statistik
           </Button>
         </Link>
+      </div>
+
+      {/* Kurze Erklärung für Therapeutinnen */}
+      <div className="rounded-lg bg-muted/50 p-4 text-sm">
+        <p className="font-medium mb-1">So funktioniert&apos;s:</p>
+        <p className="text-muted-foreground">
+          Lies den Text und wähle 1-3 Schwerpunkte, die du als Therapeut:in
+          empfehlen würdest. Die Reihenfolge bestimmt die Priorität.
+        </p>
       </div>
 
       {/* The case text */}
@@ -407,6 +421,16 @@ export function TrainingInterface({
           ))}
         </div>
       )}
+
+      {/* Unsicher Checkbox */}
+      <label className="flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer select-none">
+        <Checkbox
+          checked={isUncertain}
+          onCheckedChange={(checked) => setIsUncertain(checked === true)}
+        />
+        <span>Ich bin mir bei diesem Fall unsicher</span>
+        <HelpCircle className="h-4 w-4" />
+      </label>
 
       {/* Action buttons */}
       <div className="flex gap-3 justify-center">

@@ -89,6 +89,7 @@ export async function getNextTrainingCase(): Promise<ActionResult<TrainingCase |
 export async function saveTrainingLabel(input: {
   caseId: string;
   topics: string[];
+  uncertain?: boolean;
 }): Promise<ActionResult> {
   const { error, user } = await requireLabellingAccess();
   if (error || !user) {
@@ -135,7 +136,7 @@ export async function saveTrainingLabel(input: {
         subcategories: {},
         intensity: {},
         relatedTopics: Prisma.JsonNull,
-        uncertain: false,
+        uncertain: input.uncertain ?? false,
         evidenceSnippets: Prisma.JsonNull,
       },
     });
