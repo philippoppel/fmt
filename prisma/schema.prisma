@@ -69,6 +69,33 @@ enum PostStatus {
   archived
 }
 
+// ============================================
+// LABELLING PORTAL ENUMS
+// ============================================
+
+enum UserRole {
+  USER      // Default for normal users
+  LABELLER  // Can create and label cases
+  ADMIN     // Full access + user management
+}
+
+enum CaseSource {
+  MANUAL
+  IMPORT
+  AI_SEEDED
+}
+
+enum CaseStatus {
+  NEW
+  LABELED
+  REVIEW
+}
+
+enum RelatedTopicStrength {
+  OFTEN
+  SOMETIMES
+}
+
 model User {
   id                    String    @id @default(cuid())
   name                  String?
@@ -93,6 +120,9 @@ model User {
   failedLoginAttempts   Int       @default(0)
   lockedUntil           DateTime?
 
+  // Role for labelling portal
+  role                  UserRole  @default(USER)
+
   // Timestamps
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
@@ -107,6 +137,11 @@ model User {
   comments              Comment[]
   bookmarks             Bookmark[]
   blogDrafts            BlogDraft[]
+
+  // Labelling Portal Relations
+  createdCases          LabellingCase[]  @relation("CreatedCases")
+  ratedLabels           Label[]          @relation("RatedLabels")
+  triggeredModelRuns    ModelRun[]       @relation("TriggeredModelRuns")
 
   @@map("users")
 }
@@ -664,4 +699,145 @@ model ProfileStats {
   @@index([profileId])
   @@index([date])
   @@map("profile_stats")
+}
+
+// ============================================
+// LABELLING PORTAL MODELS
+// ============================================
+
+// Versionierte Taxonomie für Kategorien/Subkategorien/Intensitätsfragen
+model TaxonomyVersion {
+  id          String    @id @default(cuid())
+  version     String    @unique  // z.B. "v0.1", "v0.2"
+  description String?
+  schema      Json      // Snapshot der kompletten Taxonomie (topics, subtopics, intensity)
+  isActive    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  labels      Label[]
+  modelRuns   ModelRun[]
+
+  @@map("taxonomy_versions")
+}
+
+// Fälle (Texte) die gelabelt werden sollen
+model LabellingCase {
+  id          String      @id @default(cuid())
+  text        String      @db.Text
+  source      CaseSource  @default(MANUAL)
+  language    String      @default("de")  // ISO 639-1
+  status      CaseStatus  @default(NEW)
+  metadata    Json?       // Optional: Quelle, Kontext, etc.
+
+  // Ersteller
+  createdById String
+  createdBy   User        @relation("CreatedCases", fields: [createdById], references: [id])
+
+  // Timestamps
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  labels          Label[]
+  calibrationPool CalibrationPool?
+
+  @@index([status])
+  @@index([createdById])
+  @@index([source])
+  @@map("labelling_cases")
+}
+
+// Labels für Fälle (append-only mit Supersession für Audit-Trail)
+model Label {
+  id                 String           @id @default(cuid())
+
+  // Fall-Referenz
+  caseId             String
+  case               LabellingCase    @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  // Rater (wer hat gelabelt)
+  raterId            String
+  rater              User             @relation("RatedLabels", fields: [raterId], references: [id])
+
+  // Taxonomie-Version zum Zeitpunkt des Labelns
+  taxonomyVersionId  String
+  taxonomyVersion    TaxonomyVersion  @relation(fields: [taxonomyVersionId], references: [id])
+
+  // Haupt-Kategorien mit Priorisierung (max 3)
+  // Format: [{key: "depression", rank: 1}, {key: "anxiety", rank: 2}]
+  primaryCategories  Json
+
+  // Sub-Kategorien pro Haupt-Kategorie
+  // Format: {"depression": ["chronic_sadness", "grief"], "anxiety": ["panic_attacks"]}
+  subcategories      Json
+
+  // Intensitätsfragen pro Haupt-Kategorie (optional, nur wenn im Text erkennbar)
+  // Format: {"depression": ["dep_daily", "dep_sleep"], "anxiety": ["anx_panic"]}
+  intensity          Json
+
+  // Related Topics (häufig zusammenhängend, separat von Labels)
+  // Format: [{key: "sleep", strength: "OFTEN"}, {key: "stress", strength: "SOMETIMES"}]
+  relatedTopics      Json?
+
+  // Unsicher-Flag
+  uncertain          Boolean          @default(false)
+
+  // Evidenz-Snippets (Textausschnitte die Entscheidung begründen)
+  // Format: [{start: 10, end: 50}, {start: 100, end: 150}]
+  evidenceSnippets   Json?
+
+  // Audit-Trail: Supersession-Kette (append-only)
+  // Wenn ein Label aktualisiert wird, wird ein neues Label erstellt
+  // das auf das alte verweist
+  supersededById     String?          @unique
+  supersededBy       Label?           @relation("LabelSupersession", fields: [supersededById], references: [id])
+  supersedes         Label?           @relation("LabelSupersession")
+
+  createdAt          DateTime         @default(now())
+
+  @@index([caseId])
+  @@index([raterId])
+  @@index([taxonomyVersionId])
+  @@map("labels")
+}
+
+// Kalibrierungs-Pool: Fälle die von mehreren Ratern gelabelt werden
+model CalibrationPool {
+  id       String        @id @default(cuid())
+  caseId   String        @unique
+  case     LabellingCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  isActive Boolean       @default(true)
+  addedAt  DateTime      @default(now())
+
+  @@map("calibration_pool")
+}
+
+// Modell-Läufe für Baseline-Training
+model ModelRun {
+  id                String            @id @default(cuid())
+  method            String            // "knn" | "logreg"
+  parameters        Json?             // z.B. {"k": 5, "threshold": 0.5}
+  metrics           Json?             // {top3_accuracy, macro_f1, per_label_recall}
+  artifactPath      String?           // Pfad zu gespeicherten Artefakten
+
+  // Taxonomie-Version für diesen Lauf
+  taxonomyVersionId String?
+  taxonomyVersion   TaxonomyVersion?  @relation(fields: [taxonomyVersionId], references: [id])
+
+  // Status
+  status            String            @default("pending")  // pending, running, completed, failed
+  error             String?           @db.Text
+
+  // Wer hat den Lauf gestartet
+  triggeredById     String
+  triggeredBy       User              @relation("TriggeredModelRuns", fields: [triggeredById], references: [id])
+
+  // Timestamps
+  startedAt         DateTime          @default(now())
+  completedAt       DateTime?
+
+  @@index([status])
+  @@index([method])
+  @@map("model_runs")
 }

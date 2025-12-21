@@ -50,6 +50,18 @@ export default {
       const isLoggedIn = !!auth?.user;
       const isOnProtectedRoute = nextUrl.pathname.startsWith("/dashboard");
       const isOnAuthRoute = nextUrl.pathname.startsWith("/auth");
+      const isOnLabellingRoute = nextUrl.pathname.includes("/labelling");
+
+      // Labelling Portal: require LABELLER or ADMIN role
+      if (isOnLabellingRoute) {
+        if (!isLoggedIn) return false;
+        const role = auth?.user?.role;
+        if (role !== "LABELLER" && role !== "ADMIN") {
+          // Redirect non-labellers to dashboard
+          return Response.redirect(new URL("/dashboard", nextUrl));
+        }
+        return true;
+      }
 
       if (isOnProtectedRoute) {
         if (isLoggedIn) return true;
@@ -69,6 +81,7 @@ export default {
       if (user) {
         token.id = user.id;
         token.twoFactorEnabled = user.twoFactorEnabled;
+        token.role = user.role;
       }
       return token;
     },
@@ -76,6 +89,7 @@ export default {
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.twoFactorEnabled = token.twoFactorEnabled as boolean;
+        session.user.role = (token.role as "USER" | "LABELLER" | "ADMIN") ?? "USER";
       }
       return session;
     },

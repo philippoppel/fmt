@@ -43,6 +43,7 @@ export const {
             isActive: true,
             failedLoginAttempts: true,
             lockedUntil: true,
+            role: true,
           },
         });
 
@@ -92,6 +93,7 @@ export const {
           email: user.email,
           image: user.image,
           twoFactorEnabled: user.twoFactorEnabled,
+          role: user.role,
         };
       },
     }),
