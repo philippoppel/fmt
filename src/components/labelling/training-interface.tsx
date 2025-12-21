@@ -2,14 +2,13 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Check, Loader2, Sparkles, BarChart3, ChevronRight, ChevronDown, HelpCircle } from "lucide-react";
+import { Loader2, Sparkles, BarChart3, ChevronRight, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MATCHING_TOPICS, getTopicImageUrl } from "@/lib/matching/topics";
+import { MATCHING_TOPICS } from "@/lib/matching/topics";
 import { saveTrainingLabel, generateNewCase, getNextTrainingCase } from "@/lib/actions/labelling/training";
 import Link from "next/link";
 
@@ -120,7 +119,6 @@ export function TrainingInterface({
 
   const [currentCase, setCurrentCase] = useState<TrainingCase | null>(initialCase);
   const [selectedSubtopics, setSelectedSubtopics] = useState<string[]>([]);
-  const [expandedTopic, setExpandedTopic] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [isUncertain, setIsUncertain] = useState(false);
 
@@ -135,10 +133,6 @@ export function TrainingInterface({
       }
       return [...prev, subtopicId];
     });
-  };
-
-  const toggleTopicExpansion = (topicId: string) => {
-    setExpandedTopic((prev) => (prev === topicId ? null : topicId));
   };
 
   // Check if topic has any selected subtopics
@@ -168,7 +162,6 @@ export function TrainingInterface({
         if (nextResult.success && nextResult.data) {
           setCurrentCase(nextResult.data);
           setSelectedSubtopics([]);
-          setExpandedTopic(null);
           setIsUncertain(false);
           setSaved(false);
         } else {
@@ -188,7 +181,6 @@ export function TrainingInterface({
       if (result.success && result.data) {
         setCurrentCase(result.data);
         setSelectedSubtopics([]);
-        setExpandedTopic(null);
         setIsUncertain(false);
       }
       setIsGenerating(false);
@@ -271,140 +263,60 @@ export function TrainingInterface({
       <div className="text-center space-y-1">
         <p className="font-medium">Welche Schwerpunkte würdest du empfehlen?</p>
         <p className="text-sm text-muted-foreground">
-          Klicke auf eine Kategorie und wähle 1-3 passende Schwerpunkte
+          Wähle 1-3 passende Schwerpunkte (Reihenfolge = Priorität)
         </p>
       </div>
 
-      {/* Expandable topic sections */}
-      <div className="space-y-2">
+      {/* Flat subtopic selection - all visible */}
+      <div className="space-y-4">
         {TRAINING_TOPICS.map((topic) => {
-          const isExpanded = expandedTopic === topic.id;
           const selectedCount = getTopicSelectedCount(topic.id);
 
           return (
-            <div
-              key={topic.id}
-              className={cn(
-                "rounded-lg border-2 transition-all overflow-hidden",
-                isExpanded
-                  ? "border-primary bg-primary/5"
-                  : selectedCount > 0
-                    ? "border-green-500/50 bg-green-50/50 dark:bg-green-950/20"
-                    : "border-muted hover:border-muted-foreground/30"
-              )}
-            >
-              {/* Topic Header - clickable to expand */}
-              <button
-                type="button"
-                onClick={() => toggleTopicExpansion(topic.id)}
-                disabled={isPending}
-                className="w-full flex items-center gap-3 p-3 text-left"
-              >
-                {/* Topic thumbnail */}
-                <div className="relative h-12 w-16 shrink-0 rounded overflow-hidden">
-                  <Image
-                    src={getTopicImageUrl(topic.unsplashId, 100, 75)}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="64px"
-                  />
-                </div>
-
-                {/* Topic name & selection count */}
-                <div className="flex-1 min-w-0">
-                  <p className={cn(
-                    "font-semibold truncate",
-                    isExpanded && "text-primary"
-                  )}>
-                    {TOPIC_LABELS[topic.id] || topic.id}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {topic.subTopics.length} Schwerpunkte
-                  </p>
-                </div>
-
-                {/* Selection badge */}
+            <div key={topic.id}>
+              {/* Category header */}
+              <div className="flex items-center gap-2 mb-2">
+                <span className={cn(
+                  "text-sm font-medium",
+                  selectedCount > 0 ? "text-primary" : "text-muted-foreground"
+                )}>
+                  {TOPIC_LABELS[topic.id] || topic.id}
+                </span>
                 {selectedCount > 0 && (
-                  <Badge variant="secondary" className="shrink-0 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                    {selectedCount} gewählt
-                  </Badge>
+                  <span className="text-xs text-primary">({selectedCount})</span>
                 )}
+              </div>
 
-                {/* Expand indicator */}
-                <ChevronDown
-                  className={cn(
-                    "h-5 w-5 text-muted-foreground transition-transform shrink-0",
-                    isExpanded && "rotate-180"
-                  )}
-                />
-              </button>
+              {/* Subtopic chips */}
+              <div className="flex flex-wrap gap-1.5">
+                {topic.subTopics.map((subtopic) => {
+                  const isSelected = selectedSubtopics.includes(subtopic.id);
+                  const rank = selectedSubtopics.indexOf(subtopic.id) + 1;
 
-              {/* Expanded Subtopics Grid */}
-              {isExpanded && (
-                <div className="px-3 pb-3 pt-1 border-t border-border/50">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-2">
-                    {topic.subTopics.map((subtopic) => {
-                      const isSelected = selectedSubtopics.includes(subtopic.id);
-                      const rank = selectedSubtopics.indexOf(subtopic.id) + 1;
-
-                      return (
-                        <button
-                          key={subtopic.id}
-                          type="button"
-                          onClick={() => toggleSubtopic(subtopic.id)}
-                          disabled={isPending}
-                          className={cn(
-                            "group relative aspect-[4/3] w-full overflow-hidden rounded-lg border-2 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-                            isSelected
-                              ? "border-primary ring-4 ring-primary/40 shadow-lg scale-[1.02]"
-                              : "border-transparent hover:border-primary/40"
-                          )}
-                        >
-                          {/* Background Image */}
-                          {subtopic.unsplashId && (
-                            <Image
-                              src={getTopicImageUrl(subtopic.unsplashId, 200, 150)}
-                              alt=""
-                              fill
-                              className={cn(
-                                "object-cover transition-all duration-200",
-                                isSelected && "brightness-110"
-                              )}
-                              sizes="(max-width: 640px) 50vw, 25vw"
-                            />
-                          )}
-
-                          {/* Gradient Overlay */}
-                          <div
-                            className={cn(
-                              "absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent transition-all duration-200",
-                              isSelected && "from-primary/90 via-primary/30 to-primary/10"
-                            )}
-                          />
-
-                          {/* Rank badge */}
-                          {isSelected && (
-                            <div className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg text-xs font-bold">
-                              {rank}
-                            </div>
-                          )}
-
-                          {/* Label */}
-                          <div className={cn(
-                            "absolute inset-x-0 bottom-0 p-1.5",
-                            isSelected && "bg-primary/20 backdrop-blur-[2px]"
-                          )}>
-                            <span className="text-xs font-semibold text-white drop-shadow-md">
-                              {SUBTOPIC_LABELS[subtopic.id] || subtopic.id}
-                            </span>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+                  return (
+                    <button
+                      key={subtopic.id}
+                      type="button"
+                      onClick={() => toggleSubtopic(subtopic.id)}
+                      disabled={isPending}
+                      className={cn(
+                        "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-all",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                        isSelected
+                          ? "bg-primary text-primary-foreground shadow-md"
+                          : "bg-muted hover:bg-muted/80 text-foreground"
+                      )}
+                    >
+                      {isSelected && (
+                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary-foreground/20 text-xs font-bold">
+                          {rank}
+                        </span>
+                      )}
+                      {SUBTOPIC_LABELS[subtopic.id] || subtopic.id}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           );
         })}
@@ -412,13 +324,16 @@ export function TrainingInterface({
 
       {/* Selected subtopics summary */}
       {selectedSubtopics.length > 0 && (
-        <div className="flex items-center justify-center gap-2 flex-wrap">
-          {selectedSubtopics.map((subtopicId, index) => (
-            <Badge key={subtopicId} variant="secondary" className="gap-1">
-              <span className="font-bold">{index + 1}.</span>
-              {SUBTOPIC_LABELS[subtopicId] || subtopicId}
-            </Badge>
-          ))}
+        <div className="rounded-lg bg-primary/5 border border-primary/20 p-3">
+          <p className="text-xs text-muted-foreground mb-2">Deine Auswahl:</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            {selectedSubtopics.map((subtopicId, index) => (
+              <Badge key={subtopicId} className="gap-1 bg-primary text-primary-foreground">
+                <span className="font-bold">{index + 1}.</span>
+                {SUBTOPIC_LABELS[subtopicId] || subtopicId}
+              </Badge>
+            ))}
+          </div>
         </div>
       )}
 
