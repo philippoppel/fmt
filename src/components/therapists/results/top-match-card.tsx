@@ -217,14 +217,22 @@ export function TopMatchCard({
             {/* Score with Details Button - Push to bottom */}
             <button
               onClick={() => setShowBreakdown(true)}
-              className="mt-auto flex w-full items-center justify-between rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 transition-all hover:border-primary/40 hover:bg-primary/10"
+              className="mt-auto relative w-full overflow-hidden rounded-lg border border-primary/20 bg-primary/5 px-3 py-2.5 transition-all hover:border-primary/40 hover:bg-primary/10"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold text-primary">{therapist.matchScore}%</span>
-                <span className="text-xs text-muted-foreground">{t("matching.results.matchScore")}</span>
-              </div>
-              <div className="flex items-center gap-1 text-primary/70 hover:text-primary">
-                <HelpCircle className="h-5 w-5" />
+              {/* Progress bar background */}
+              <div
+                className="absolute inset-y-0 left-0 bg-primary/15 transition-all duration-500"
+                style={{ width: `${therapist.matchScore}%` }}
+              />
+              {/* Content */}
+              <div className="relative flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-primary">{therapist.matchScore}%</span>
+                  <span className="text-xs text-muted-foreground">{t("matching.results.matchScore")}</span>
+                </div>
+                <div className="flex items-center gap-1 text-primary/70 hover:text-primary">
+                  <HelpCircle className="h-5 w-5" />
+                </div>
               </div>
             </button>
           </div>
