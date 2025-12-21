@@ -1250,6 +1250,13 @@
       "anyGender": "Egal",
       "sessionType": "Sitzungsart",
       "anySessionType": "Egal",
+      "therapySetting": "Therapie-Setting",
+      "therapySettings": {
+        "individual": "Einzeltherapie",
+        "group": "Gruppentherapie",
+        "couples": "Paartherapie",
+        "corporate": "Unternehmenscoaching"
+      },
       "insurance": "Versicherung",
       "language": "Sprache",
       "therapyType": "Therapieform",

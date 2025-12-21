@@ -86,6 +86,9 @@ export type SessionType = "online" | "in_person" | "both";
 // Insurance types
 export type Insurance = "public" | "private";
 
+// Therapy setting/format
+export type TherapySetting = "individual" | "group" | "couples" | "corporate";
+
 // Availability options
 export type Availability = "immediately" | "this_week" | "flexible";
 
@@ -276,6 +279,13 @@ export const LANGUAGES: Language[] = ["de", "en", "tr", "ar"];
 export const SESSION_TYPES: SessionType[] = ["online", "in_person", "both"];
 
 export const INSURANCE_TYPES: Insurance[] = ["public", "private"];
+
+export const THERAPY_SETTINGS: TherapySetting[] = [
+  "individual",
+  "group",
+  "couples",
+  "corporate",
+];
 
 export const AVAILABILITY_OPTIONS: Availability[] = [
   "immediately",

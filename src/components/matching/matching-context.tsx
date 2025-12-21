@@ -14,6 +14,7 @@ import type {
   Insurance,
   Language,
   TherapyType,
+  TherapySetting,
   Availability,
   TherapyStylePreferences,
   CommunicationStyle,
@@ -88,6 +89,7 @@ export interface MatchingState {
     insurance: Insurance[];
     languages: Language[];
     therapyTypes: TherapyType[];
+    therapySettings: TherapySetting[];
     availability: Availability | null;
     maxPrice: number | null; // Max price per session in EUR
   };
@@ -122,6 +124,7 @@ type MatchingAction =
   | { type: "TOGGLE_INSURANCE"; insurance: Insurance }
   | { type: "TOGGLE_LANGUAGE"; language: Language }
   | { type: "TOGGLE_THERAPY_TYPE"; therapyType: TherapyType }
+  | { type: "TOGGLE_THERAPY_SETTING"; therapySetting: TherapySetting }
   | { type: "SET_AVAILABILITY"; availability: Availability | null }
   | { type: "SET_MAX_PRICE"; maxPrice: number | null }
   | { type: "SET_COMMUNICATION_STYLE"; style: CommunicationStyle | null }
@@ -198,6 +201,7 @@ const initialState: MatchingState = {
     insurance: [],
     languages: [],
     therapyTypes: [],
+    therapySettings: [],
     availability: null,
     maxPrice: null,
   },
@@ -425,6 +429,19 @@ function matchingReducer(
       };
     }
 
+    case "TOGGLE_THERAPY_SETTING": {
+      const isSelected = state.criteria.therapySettings.includes(action.therapySetting);
+      return {
+        ...state,
+        criteria: {
+          ...state.criteria,
+          therapySettings: isSelected
+            ? state.criteria.therapySettings.filter((s) => s !== action.therapySetting)
+            : [...state.criteria.therapySettings, action.therapySetting],
+        },
+      };
+    }
+
     case "SET_AVAILABILITY":
       return {
         ...state,
@@ -526,6 +543,7 @@ interface MatchingContextValue {
     toggleInsurance: (insurance: Insurance) => void;
     toggleLanguage: (language: Language) => void;
     toggleTherapyType: (therapyType: TherapyType) => void;
+    toggleTherapySetting: (therapySetting: TherapySetting) => void;
     setAvailability: (availability: Availability | null) => void;
     setMaxPrice: (maxPrice: number | null) => void;
     // Therapy Style actions
@@ -641,6 +659,10 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
 
   const toggleTherapyType = useCallback((therapyType: TherapyType) => {
     dispatch({ type: "TOGGLE_THERAPY_TYPE", therapyType });
+  }, []);
+
+  const toggleTherapySetting = useCallback((therapySetting: TherapySetting) => {
+    dispatch({ type: "TOGGLE_THERAPY_SETTING", therapySetting });
   }, []);
 
   const setAvailability = useCallback((availability: Availability | null) => {
@@ -842,6 +864,7 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
       toggleInsurance,
       toggleLanguage,
       toggleTherapyType,
+      toggleTherapySetting,
       setAvailability,
       setMaxPrice,
       // Therapy Style

@@ -10,6 +10,7 @@ import {
   MapPinned,
   Heart,
   Users,
+  Users2,
   Sparkles,
   CreditCard,
   Wallet,
@@ -20,12 +21,14 @@ import {
   Calendar,
   CalendarCheck,
   Euro,
+  Briefcase,
+  UserCircle,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import type { Gender, SessionType, Insurance, Language, TherapyType, Availability } from "@/types/therapist";
-import { LANGUAGES, THERAPY_TYPES, AVAILABILITY_OPTIONS } from "@/types/therapist";
+import type { Gender, SessionType, Insurance, Language, TherapyType, TherapySetting, Availability } from "@/types/therapist";
+import { LANGUAGES, THERAPY_TYPES, THERAPY_SETTINGS, AVAILABILITY_OPTIONS } from "@/types/therapist";
 import { useMatching } from "../matching-context";
 import { LocationInput } from "./location-input";
 
@@ -109,6 +112,27 @@ export function CriteriaSelection() {
                     ? t(`therapists.filters.gender.${gender}`)
                     : t("matching.criteria.anyGender")
                 }
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Therapy Setting (Individual, Group, Couples, Corporate) */}
+        <div className="space-y-3">
+          <Label className="flex items-center gap-2 text-sm font-semibold">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-cyan-muted">
+              <Users2 className="h-4 w-4 text-accent-cyan" />
+            </div>
+            {t("matching.criteria.therapySetting")}
+          </Label>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {THERAPY_SETTINGS.map((setting) => (
+              <TherapySettingCard
+                key={setting}
+                setting={setting}
+                isSelected={state.criteria.therapySettings.includes(setting)}
+                onClick={() => actions.toggleTherapySetting(setting)}
+                label={t(`matching.criteria.therapySettings.${setting}`)}
               />
             ))}
           </div>
@@ -586,6 +610,64 @@ function PriceCard({
       <span className={cn(
         "text-xs font-medium text-center",
         isSelected ? "text-accent-amber-foreground font-semibold" : "text-foreground"
+      )}>
+        {label}
+      </span>
+    </button>
+  );
+}
+
+interface TherapySettingCardProps {
+  setting: TherapySetting;
+  isSelected: boolean;
+  onClick: () => void;
+  label: string;
+}
+
+function TherapySettingCard({
+  setting,
+  isSelected,
+  onClick,
+  label,
+}: TherapySettingCardProps) {
+  const Icon = setting === "individual"
+    ? UserCircle
+    : setting === "group"
+      ? Users2
+      : setting === "couples"
+        ? Heart
+        : Briefcase;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "relative flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        isSelected
+          ? "border-accent-cyan bg-accent-cyan/15 shadow-md"
+          : "border-input bg-background hover:border-accent-cyan/50 hover:bg-muted/50"
+      )}
+      aria-pressed={isSelected}
+    >
+      {isSelected && (
+        <div className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent-cyan text-white shadow-sm">
+          <Check className="h-3 w-3" strokeWidth={3} />
+        </div>
+      )}
+      <div
+        className={cn(
+          "flex h-9 w-9 items-center justify-center rounded-full transition-colors",
+          isSelected
+            ? "bg-accent-cyan text-white"
+            : "bg-muted text-muted-foreground"
+        )}
+      >
+        <Icon className="h-4 w-4" />
+      </div>
+      <span className={cn(
+        "text-xs font-medium text-center",
+        isSelected ? "text-accent-cyan-foreground font-semibold" : "text-foreground"
       )}>
         {label}
       </span>

@@ -1250,6 +1250,13 @@
       "anyGender": "Any",
       "sessionType": "Session Type",
       "anySessionType": "Any",
+      "therapySetting": "Therapy Setting",
+      "therapySettings": {
+        "individual": "Individual Therapy",
+        "group": "Group Therapy",
+        "couples": "Couples Therapy",
+        "corporate": "Corporate Coaching"
+      },
       "insurance": "Insurance",
       "language": "Language",
       "therapyType": "Therapy Approach",
