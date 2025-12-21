@@ -4,15 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  FileText,
   Tag,
   BarChart3,
-  Download,
-  Users,
-  Scale,
-  Home,
+  Play,
   LogOut,
-  Brain,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
@@ -21,17 +16,11 @@ interface NavItem {
   href: string;
   label: string;
   icon: React.ElementType;
-  adminOnly?: boolean;
 }
 
 const navItems: NavItem[] = [
-  { href: "/de/labelling", label: "Übersicht", icon: Home },
-  { href: "/de/labelling/cases", label: "Fälle", icon: FileText },
-  { href: "/de/labelling/calibration", label: "Kalibrierung", icon: Scale },
-  { href: "/de/labelling/stats", label: "Statistik", icon: BarChart3 },
-  { href: "/de/labelling/export", label: "Export", icon: Download, adminOnly: true },
-  { href: "/de/labelling/model-runs", label: "Modell-Läufe", icon: Brain, adminOnly: true },
-  { href: "/de/labelling/admin/users", label: "Benutzer", icon: Users, adminOnly: true },
+  { href: "/de/labelling", label: "Dashboard", icon: BarChart3 },
+  { href: "/de/labelling/train", label: "Training", icon: Play },
 ];
 
 interface LabellingSidebarProps {
@@ -45,11 +34,6 @@ interface LabellingSidebarProps {
 
 export function LabellingSidebar({ user }: LabellingSidebarProps) {
   const pathname = usePathname();
-  const isAdmin = user.role === "ADMIN";
-
-  const visibleItems = navItems.filter(
-    (item) => !item.adminOnly || isAdmin
-  );
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-muted/30">
@@ -57,13 +41,13 @@ export function LabellingSidebar({ user }: LabellingSidebarProps) {
       <div className="border-b p-4">
         <Link href="/de/labelling" className="flex items-center gap-2">
           <Tag className="h-6 w-6 text-primary" />
-          <span className="font-semibold">Labelling Portal</span>
+          <span className="font-semibold">Training Portal</span>
         </Link>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 p-4">
-        {visibleItems.map((item) => {
+        {navItems.map((item) => {
           const isActive = pathname === item.href ||
             (item.href !== "/de/labelling" && pathname.startsWith(item.href));
 
@@ -92,7 +76,7 @@ export function LabellingSidebar({ user }: LabellingSidebarProps) {
             {user.name || user.email}
           </p>
           <p className="text-xs text-muted-foreground">
-            {user.role === "ADMIN" ? "Administrator" : "Labeller"}
+            {user.role === "ADMIN" ? "Administrator" : "Therapeut"}
           </p>
         </div>
         <Button

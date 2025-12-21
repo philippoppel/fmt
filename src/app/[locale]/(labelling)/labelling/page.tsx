@@ -1,202 +1,275 @@
 import { auth } from "@/lib/auth";
-import { getLabellingStats, getMyLabelStats } from "@/lib/actions/labelling";
+import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
-import {
-  FileText,
-  Tag,
-  Users,
-  Scale,
-  ArrowRight,
-  AlertCircle,
-} from "lucide-react";
+import { Play, TrendingUp, Users, Target, Award } from "lucide-react";
 
-export default async function LabellingDashboard() {
+// German labels for topics
+const TOPIC_LABELS: Record<string, string> = {
+  family: "Familie",
+  anxiety: "Angst",
+  depression: "Depression",
+  relationships: "Beziehungen",
+  burnout: "Burnout",
+  trauma: "Trauma",
+  addiction: "Sucht",
+  eating_disorders: "Essstörungen",
+  adhd: "ADHS",
+  self_care: "Selbstfürsorge",
+  stress: "Stress",
+  sleep: "Schlaf",
+};
+
+export default async function LabellingDashboardPage() {
   const session = await auth();
-  const isAdmin = session?.user?.role === "ADMIN";
 
-  const [statsResult, myStatsResult] = await Promise.all([
-    getLabellingStats(),
-    getMyLabelStats(),
+  if (!session?.user?.id) {
+    redirect("/de/auth/login");
+  }
+
+  if (session.user.role !== "LABELLER" && session.user.role !== "ADMIN") {
+    redirect("/de/dashboard");
+  }
+
+  // Get statistics
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const [
+    totalCases,
+    labeledCases,
+    myLabelsToday,
+    myLabelsTotal,
+    allLabels,
+    labellers,
+  ] = await Promise.all([
+    db.labellingCase.count(),
+    db.labellingCase.count({ where: { status: "LABELED" } }),
+    db.label.count({
+      where: {
+        raterId: session.user.id,
+        createdAt: { gte: today },
+      },
+    }),
+    db.label.count({ where: { raterId: session.user.id } }),
+    db.label.findMany({
+      select: { primaryCategories: true },
+    }),
+    db.user.findMany({
+      where: { role: { in: ["LABELLER", "ADMIN"] } },
+      select: {
+        id: true,
+        name: true,
+        _count: { select: { ratedLabels: true } },
+      },
+      orderBy: { ratedLabels: { _count: "desc" } },
+      take: 5,
+    }),
   ]);
 
-  const stats = statsResult.success ? statsResult.data : null;
-  const myStats = myStatsResult.success ? myStatsResult.data : null;
+  // Count categories across all labels
+  const categoryCounts: Record<string, number> = {};
+  for (const label of allLabels) {
+    const categories = label.primaryCategories as Array<{ key: string }>;
+    if (Array.isArray(categories)) {
+      for (const cat of categories) {
+        categoryCounts[cat.key] = (categoryCounts[cat.key] || 0) + 1;
+      }
+    }
+  }
+
+  const sortedCategories = Object.entries(categoryCounts)
+    .map(([key, count]) => ({ key, count }))
+    .sort((a, b) => b.count - a.count);
+
+  const maxCategoryCount = sortedCategories[0]?.count || 1;
+  const progress = totalCases > 0 ? Math.round((labeledCases / totalCases) * 100) : 0;
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Labelling Portal</h1>
-        <p className="text-muted-foreground mt-1">
-          Willkommen, {session?.user?.name || session?.user?.email}
-        </p>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="flex gap-4">
-        <Link href="/de/labelling/cases">
-          <Button>
-            <Tag className="mr-2 h-4 w-4" />
-            Fälle labeln
+    <div className="space-y-6">
+      {/* Header with CTA */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Training Dashboard</h1>
+          <p className="text-muted-foreground">
+            Trainingsdaten für das Matching-Modell
+          </p>
+        </div>
+        <Link href="/de/labelling/train">
+          <Button size="lg" className="gap-2">
+            <Play className="h-5 w-5" />
+            Training starten
           </Button>
         </Link>
-        {isAdmin && (
-          <Link href="/de/labelling/export">
-            <Button variant="outline">
-              Export starten
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        )}
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* Quick Stats */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              Gesamt Fälle
-            </CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalCases || 0}</div>
-            <div className="flex gap-2 mt-2">
-              <Badge variant="secondary">
-                {stats?.casesByStatus?.NEW || 0} neu
-              </Badge>
-              <Badge variant="default">
-                {stats?.casesByStatus?.LABELED || 0} gelabelt
-              </Badge>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <div className="rounded-full bg-primary/10 p-3">
+                <Target className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{labeledCases}</p>
+                <p className="text-sm text-muted-foreground">Gelabelte Fälle</p>
+              </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              Gesamt Labels
-            </CardTitle>
-            <Tag className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalLabels || 0}</div>
-            <p className="text-xs text-muted-foreground mt-2">
-              {stats?.labelsByRater?.length || 0} aktive Labeller
-            </p>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <div className="rounded-full bg-green-500/10 p-3">
+                <TrendingUp className="h-6 w-6 text-green-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{myLabelsToday}</p>
+                <p className="text-sm text-muted-foreground">Heute von dir</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              Kalibrierungs-Pool
-            </CardTitle>
-            <Scale className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats?.calibrationPoolSize || 0}
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <div className="rounded-full bg-blue-500/10 p-3">
+                <Award className="h-6 w-6 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{myLabelsTotal}</p>
+                <p className="text-sm text-muted-foreground">Dein Beitrag</p>
+              </div>
             </div>
-            {stats?.averageAgreement !== null && (
-              <p className="text-xs text-muted-foreground mt-2">
-                ∅ Agreement: {((stats?.averageAgreement || 0) * 100).toFixed(1)}%
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-4">
+              <div className="rounded-full bg-purple-500/10 p-3">
+                <Users className="h-6 w-6 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{labellers.length}</p>
+                <p className="text-sm text-muted-foreground">Therapeuten</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Progress */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Fortschritt</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between text-sm">
+            <span>{labeledCases} von {totalCases} Fällen gelabelt</span>
+            <span className="font-medium">{progress}%</span>
+          </div>
+          <Progress value={progress} className="h-3" />
+          <p className="text-xs text-muted-foreground">
+            {totalCases - labeledCases} Fälle noch offen · Neue Fälle werden automatisch generiert
+          </p>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Category Distribution */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Kategorie-Verteilung</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {sortedCategories.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">
+                Noch keine Labels vorhanden
               </p>
+            ) : (
+              sortedCategories.slice(0, 8).map(({ key, count }) => (
+                <div key={key} className="space-y-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <span>{TOPIC_LABELS[key] || key}</span>
+                    <Badge variant="secondary">{count}</Badge>
+                  </div>
+                  <Progress
+                    value={(count / maxCategoryCount) * 100}
+                    className="h-2"
+                  />
+                </div>
+              ))
             )}
           </CardContent>
         </Card>
 
+        {/* Leaderboard */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              Meine Labels
-            </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+            <CardTitle className="text-lg">Top Beitragende</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {myStats?.totalLabels || 0}
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              {myStats?.casesLabeled || 0} Fälle gelabelt
-            </p>
+            {labellers.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">
+                Noch keine Therapeuten aktiv
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {labellers.map((labeller, index) => (
+                  <div
+                    key={labeller.id}
+                    className="flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
+                        index === 0 ? "bg-yellow-100 text-yellow-700" :
+                        index === 1 ? "bg-gray-100 text-gray-700" :
+                        index === 2 ? "bg-orange-100 text-orange-700" :
+                        "bg-muted text-muted-foreground"
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <span className="font-medium">
+                        {labeller.name || "Anonym"}
+                        {labeller.id === session.user.id && (
+                          <span className="ml-1 text-muted-foreground">(du)</span>
+                        )}
+                      </span>
+                    </div>
+                    <Badge variant="outline">{labeller._count.ratedLabels} Labels</Badge>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
 
-      {/* Category Distribution */}
-      {stats?.labelsByCategory && Object.keys(stats.labelsByCategory).length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Kategorie-Verteilung</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(stats.labelsByCategory)
-                .sort(([, a], [, b]) => b - a)
-                .map(([category, count]) => (
-                  <Badge key={category} variant="outline" className="text-sm">
-                    {category}: {count}
-                  </Badge>
-                ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Labeller Leaderboard (Admin Only) */}
-      {isAdmin && stats?.labelsByRater && stats.labelsByRater.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Labeller Übersicht</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {stats.labelsByRater.slice(0, 10).map((rater, index) => (
-                <div
-                  key={rater.raterId}
-                  className="flex items-center justify-between py-2 border-b last:border-0"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-muted-foreground w-6">
-                      #{index + 1}
-                    </span>
-                    <span className="font-medium">{rater.raterName}</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm">
-                    <span>{rater.totalLabels} Labels</span>
-                    <span className="text-muted-foreground">
-                      {rater.casesLabeled} Fälle
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Empty State */}
-      {stats?.totalCases === 0 && (
-        <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center justify-center py-10">
-            <AlertCircle className="h-10 w-10 text-muted-foreground mb-4" />
-            <h3 className="font-semibold text-lg">Noch keine Fälle vorhanden</h3>
-            <p className="text-muted-foreground text-sm mt-1 mb-4">
-              Erstellen Sie einen neuen Fall oder importieren Sie Fälle.
+      {/* Start Training CTA */}
+      <Card className="border-primary/50 bg-primary/5">
+        <CardContent className="flex items-center justify-between py-6">
+          <div>
+            <h3 className="font-semibold">Bereit für mehr?</h3>
+            <p className="text-sm text-muted-foreground">
+              Jedes Label verbessert die Empfehlungsqualität für Hilfesuchende
             </p>
-            <Link href="/de/labelling/cases">
-              <Button>
-                <FileText className="mr-2 h-4 w-4" />
-                Fälle erstellen
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+          <Link href="/de/labelling/train">
+            <Button className="gap-2">
+              <Play className="h-4 w-4" />
+              Weiter trainieren
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
     </div>
   );
 }
