@@ -242,13 +242,9 @@ export function TrainingInterface({
       </div>
 
       {/* Kurze Erklärung für Therapeutinnen */}
-      <div className="rounded-lg bg-muted/50 p-4 text-sm">
-        <p className="font-medium mb-1">So funktioniert&apos;s:</p>
-        <p className="text-muted-foreground">
-          Lies den Text und wähle 1-3 Schwerpunkte, die du als Therapeut:in
-          empfehlen würdest. Die Reihenfolge bestimmt die Priorität.
-        </p>
-      </div>
+      <p className="text-sm text-muted-foreground">
+        Lies den Text und wähle 1-3 Schwerpunkte. Die Reihenfolge bestimmt die Priorität.
+      </p>
 
       {/* The case text */}
       <Card className="border-2">

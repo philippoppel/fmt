@@ -36,17 +36,17 @@ export function LabellingSidebar({ user }: LabellingSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r bg-muted/30">
+    <aside className="flex h-screen w-52 flex-col border-r bg-card">
       {/* Header */}
-      <div className="border-b p-4">
+      <div className="border-b px-4 py-3">
         <Link href="/de/labelling" className="flex items-center gap-2">
-          <Tag className="h-6 w-6 text-primary" />
-          <span className="font-semibold">Training Portal</span>
+          <Tag className="h-5 w-5 text-primary" />
+          <span className="font-semibold text-sm">Training Portal</span>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 p-4">
+      <nav className="flex-1 p-3 space-y-1">
         {navItems.map((item) => {
           const isActive = pathname === item.href ||
             (item.href !== "/de/labelling" && pathname.startsWith(item.href));
@@ -56,7 +56,7 @@ export function LabellingSidebar({ user }: LabellingSidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -70,8 +70,8 @@ export function LabellingSidebar({ user }: LabellingSidebarProps) {
       </nav>
 
       {/* User Info & Logout */}
-      <div className="border-t p-4">
-        <div className="mb-3 space-y-1">
+      <div className="border-t p-3">
+        <div className="mb-2">
           <p className="text-sm font-medium truncate">
             {user.name || user.email}
           </p>
@@ -80,12 +80,12 @@ export function LabellingSidebar({ user }: LabellingSidebarProps) {
           </p>
         </div>
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
-          className="w-full justify-start gap-2"
+          className="w-full justify-start gap-2 h-8 text-muted-foreground hover:text-foreground"
           onClick={() => signOut({ callbackUrl: "/de/auth/login" })}
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-3.5 w-3.5" />
           Abmelden
         </Button>
       </div>
