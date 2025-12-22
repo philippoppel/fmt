@@ -1,12 +1,21 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { TierBadge } from "@/components/dashboard/tier-badge";
 import { cn } from "@/lib/utils";
 import {
@@ -16,61 +25,125 @@ import {
   Check,
   Loader2,
   Lock,
+  Eye,
+  Save,
+  FileText,
+  Target,
+  Plus,
+  Trash2,
+  GripVertical,
+  ChevronUp,
+  ChevronDown,
+  Sparkles,
 } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { THEME_PRESETS, type ThemeName } from "@/types/profile";
+import type { TherapistProfileData } from "@/types/profile";
 import type { AccountType } from "@/types/therapist";
-import { updateTheme } from "@/lib/actions/profile-update";
+import type { MicrositeConfig, Competency, MicrositeThemePreset } from "@/types/microsite";
+import { DEFAULT_MICROSITE_CONFIG } from "@/types/microsite";
+import { MICROSITE_THEME_PRESETS } from "@/lib/microsite/theme-presets";
+import { getTierLimits, getAllowedPresets } from "@/lib/microsite/tier-limits";
+import { CURATED_ICONS, ICON_CATEGORIES, searchIcons } from "@/lib/microsite/curated-icons";
+import { saveMicrositeDraft, publishMicrosite } from "@/lib/actions/microsite";
+import { ProfilePage } from "@/components/profile/profile-page";
 
 interface CustomizeContentProps {
   hasAccess: boolean;
   accountType: AccountType;
-  initialData: {
-    themeName: ThemeName;
-    themeColor: string;
-    headline: string;
-    galleryImages: string[];
-  };
+  profile: TherapistProfileData;
+  micrositeConfig: MicrositeConfig | null;
   slug?: string | null;
 }
 
 export function CustomizeContent({
   hasAccess,
   accountType,
-  initialData,
+  profile,
+  micrositeConfig,
   slug,
 }: CustomizeContentProps) {
   const t = useTranslations("dashboard.customize");
-  const [isPending, startTransition] = useTransition();
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const limits = getTierLimits(accountType);
+  const allowedPresets = getAllowedPresets(accountType);
 
-  const [selectedTheme, setSelectedTheme] = useState<ThemeName>(initialData.themeName);
-  const [customColor, setCustomColor] = useState(initialData.themeColor);
-  const [headline, setHeadline] = useState(initialData.headline);
+  // Initialize config
+  const [config, setConfig] = useState<MicrositeConfig>(() => {
+    if (micrositeConfig) return micrositeConfig;
+    return {
+      ...DEFAULT_MICROSITE_CONFIG,
+      hero: {
+        ...DEFAULT_MICROSITE_CONFIG.hero,
+        brandText: profile.name,
+        tagline: profile.headline || "",
+      },
+    };
+  });
 
-  const isPremium = accountType === "premium";
+  const [activeTab, setActiveTab] = useState("content");
+  const [isSaving, setIsSaving] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
-  async function handleSave() {
-    if (!hasAccess) return;
+  // Update config helper
+  const updateConfig = useCallback((updates: Partial<MicrositeConfig>) => {
+    setConfig((prev) => ({ ...prev, ...updates }));
+    setIsDirty(true);
+    setSaveMessage(null);
+  }, []);
 
-    setError(null);
-    setSuccess(false);
+  // Auto-save for mittel+ tiers
+  useEffect(() => {
+    if (!isDirty || !limits.hasAutoSave) return;
 
-    startTransition(async () => {
-      const result = await updateTheme({
-        themeName: selectedTheme,
-        themeColor: customColor,
-        headline,
-      });
+    const timeout = setTimeout(async () => {
+      await handleSave();
+    }, 2000);
 
+    return () => clearTimeout(timeout);
+  }, [config, isDirty, limits.hasAutoSave]);
+
+  const handleSave = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
+    setSaveMessage(null);
+
+    try {
+      const result = await saveMicrositeDraft(config);
       if (result.success) {
-        setSuccess(true);
-        setTimeout(() => setSuccess(false), 3000);
+        setIsDirty(false);
+        setSaveMessage({ type: "success", text: "Gespeichert!" });
+        setTimeout(() => setSaveMessage(null), 3000);
       } else {
-        setError(result.error || t("saveError"));
+        setSaveMessage({ type: "error", text: result.error || "Fehler beim Speichern" });
       }
-    });
-  }
+    } catch {
+      setSaveMessage({ type: "error", text: "Fehler beim Speichern" });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handlePublish = async () => {
+    if (isPublishing) return;
+    if (isDirty) await handleSave();
+
+    setIsPublishing(true);
+    try {
+      const result = await publishMicrosite();
+      if (result.success) {
+        setSaveMessage({ type: "success", text: "Veröffentlicht!" });
+      } else {
+        setSaveMessage({ type: "error", text: result.error || "Fehler" });
+      }
+    } catch {
+      setSaveMessage({ type: "error", text: "Fehler beim Veröffentlichen" });
+    } finally {
+      setIsPublishing(false);
+    }
+  };
 
   // Show upgrade prompt for users without access
   if (!hasAccess) {
@@ -110,148 +183,468 @@ export function CustomizeContent({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-            <TierBadge tier={accountType} />
+      <div className="flex flex-col gap-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight">{t("title")}</h1>
+              <TierBadge tier={accountType} />
+            </div>
+            <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
           </div>
-          <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
-        {slug && (
-          <Link href={`/p/${slug}`} target="_blank">
-            <Button variant="outline" className="gap-2">
-              <ExternalLink className="h-4 w-4" />
-              {t("viewMicrosite")}
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Preview Button - Opens Sheet on Mobile */}
+          <Sheet open={previewOpen} onOpenChange={setPreviewOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Eye className="h-4 w-4" />
+                Vorschau
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="h-[85vh] p-0">
+              <SheetHeader className="px-4 py-3 border-b">
+                <SheetTitle>Vorschau deiner Microsite</SheetTitle>
+              </SheetHeader>
+              <div className="overflow-y-auto h-[calc(85vh-60px)]">
+                <ProfilePage
+                  profile={profile}
+                  locale="de"
+                  micrositeConfig={config}
+                  isPreviewMode={true}
+                />
+              </div>
+            </SheetContent>
+          </Sheet>
+
+          {/* External Link */}
+          {slug && (
+            <Button variant="outline" size="sm" asChild className="gap-2">
+              <a href={`/p/${slug}`} target="_blank" rel="noopener">
+                <ExternalLink className="h-4 w-4" />
+                <span className="hidden sm:inline">Live ansehen</span>
+              </a>
             </Button>
-          </Link>
-        )}
+          )}
+
+          {/* Save Button (for gratis tier) */}
+          {!limits.hasAutoSave && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSave}
+              disabled={isSaving || !isDirty}
+              className="gap-2"
+            >
+              {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              Speichern
+            </Button>
+          )}
+
+          {/* Publish Button */}
+          <Button
+            size="sm"
+            onClick={handlePublish}
+            disabled={isPublishing}
+            className="gap-2"
+          >
+            {isPublishing ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            Veröffentlichen
+          </Button>
+
+          {/* Status Indicator */}
+          {saveMessage && (
+            <span className={cn(
+              "text-sm",
+              saveMessage.type === "success" ? "text-green-600" : "text-destructive"
+            )}>
+              {saveMessage.text}
+            </span>
+          )}
+          {isDirty && !saveMessage && limits.hasAutoSave && (
+            <span className="text-sm text-muted-foreground">Ungespeichert...</span>
+          )}
+        </div>
       </div>
 
-      {/* Success/Error Messages */}
-      {success && (
-        <div className="rounded-md bg-green-500/10 p-4 text-sm text-green-600 flex items-center gap-2">
-          <Check className="h-4 w-4" />
-          {t("saved")}
-        </div>
-      )}
-      {error && (
-        <div className="rounded-md bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
-      )}
+      {/* Main Content - Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="w-full justify-start overflow-x-auto">
+          <TabsTrigger value="content" className="gap-2">
+            <FileText className="h-4 w-4" />
+            <span>Inhalte</span>
+          </TabsTrigger>
+          <TabsTrigger value="competencies" className="gap-2">
+            <Target className="h-4 w-4" />
+            <span>Kompetenzen</span>
+          </TabsTrigger>
+          <TabsTrigger value="design" className="gap-2">
+            <Palette className="h-4 w-4" />
+            <span>Design</span>
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Theme Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Palette className="h-5 w-5" />
-            {t("theme.title")}
-          </CardTitle>
-          <CardDescription>{t("theme.description")}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Theme Presets */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {Object.entries(THEME_PRESETS).map(([key, preset]) => (
+        {/* Content Tab */}
+        <TabsContent value="content" className="space-y-4 mt-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Hero-Bereich</CardTitle>
+              <CardDescription>Der erste Eindruck deiner Besucher</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="brandText">Name / Praxisname</Label>
+                <Input
+                  id="brandText"
+                  value={config.hero.brandText || ""}
+                  onChange={(e) => updateConfig({
+                    hero: { ...config.hero, brandText: e.target.value }
+                  })}
+                  placeholder="Dr. Max Mustermann"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="tagline">Tagline / Slogan</Label>
+                <Textarea
+                  id="tagline"
+                  value={config.hero.tagline || ""}
+                  onChange={(e) => updateConfig({
+                    hero: { ...config.hero, tagline: e.target.value }
+                  })}
+                  placeholder="Ihre einfühlsame Begleitung auf dem Weg zu mehr Lebensfreude"
+                  rows={2}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="ctaPrimary">Haupt-Button Text</Label>
+                </div>
+                <Input
+                  id="ctaPrimary"
+                  value={config.hero.ctaPrimary?.text || ""}
+                  onChange={(e) => updateConfig({
+                    hero: {
+                      ...config.hero,
+                      ctaPrimary: {
+                        text: e.target.value,
+                        link: config.hero.ctaPrimary?.link || "#contact",
+                        style: config.hero.ctaPrimary?.style || "primary"
+                      }
+                    }
+                  })}
+                  placeholder="Termin anfragen"
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Competencies Tab */}
+        <TabsContent value="competencies" className="space-y-4 mt-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg">Kompetenzen</CardTitle>
+                  <CardDescription>
+                    {config.competencies.length}
+                    {limits.maxCompetencies !== Infinity && ` / ${limits.maxCompetencies}`} Einträge
+                  </CardDescription>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    if (limits.maxCompetencies !== Infinity && config.competencies.length >= limits.maxCompetencies) {
+                      setSaveMessage({ type: "error", text: `Maximum ${limits.maxCompetencies} Kompetenzen für dein Abo` });
+                      return;
+                    }
+                    const newComp: Competency = {
+                      id: `comp_${Date.now()}`,
+                      title: "",
+                      description: "",
+                      icon: "Sparkles",
+                      order: config.competencies.length,
+                      visible: true,
+                    };
+                    updateConfig({ competencies: [...config.competencies, newComp] });
+                  }}
+                  disabled={limits.maxCompetencies !== Infinity && config.competencies.length >= limits.maxCompetencies}
+                  className="gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Hinzufügen
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {config.competencies.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-8">
+                  Noch keine Kompetenzen. Füge deine Schwerpunkte hinzu.
+                </p>
+              ) : (
+                config.competencies
+                  .sort((a, b) => a.order - b.order)
+                  .map((comp, index) => (
+                    <CompetencyItem
+                      key={comp.id}
+                      competency={comp}
+                      index={index}
+                      total={config.competencies.length}
+                      onUpdate={(updates) => {
+                        updateConfig({
+                          competencies: config.competencies.map((c) =>
+                            c.id === comp.id ? { ...c, ...updates } : c
+                          ),
+                        });
+                      }}
+                      onDelete={() => {
+                        updateConfig({
+                          competencies: config.competencies
+                            .filter((c) => c.id !== comp.id)
+                            .map((c, i) => ({ ...c, order: i })),
+                        });
+                      }}
+                      onMove={(direction) => {
+                        const newIndex = direction === "up" ? index - 1 : index + 1;
+                        const newComps = [...config.competencies];
+                        const [removed] = newComps.splice(index, 1);
+                        newComps.splice(newIndex, 0, removed);
+                        updateConfig({
+                          competencies: newComps.map((c, i) => ({ ...c, order: i })),
+                        });
+                      }}
+                    />
+                  ))
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Design Tab */}
+        <TabsContent value="design" className="space-y-4 mt-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Farbschema</CardTitle>
+              <CardDescription>Wähle ein Farbschema für deine Microsite</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {Object.entries(MICROSITE_THEME_PRESETS).map(([key, preset]) => {
+                  const isAllowed = allowedPresets.includes(key);
+                  const isSelected = config.theme.preset === key;
+
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => {
+                        if (!isAllowed) {
+                          setSaveMessage({ type: "error", text: "Upgrade für dieses Theme" });
+                          return;
+                        }
+                        updateConfig({
+                          theme: {
+                            ...config.theme,
+                            preset: key as MicrositeThemePreset,
+                            colors: { ...preset.colors },
+                          },
+                        });
+                      }}
+                      className={cn(
+                        "relative p-3 rounded-lg border-2 transition-all text-left",
+                        isSelected
+                          ? "border-primary ring-2 ring-primary/20"
+                          : "border-muted hover:border-muted-foreground/30",
+                        !isAllowed && "opacity-50"
+                      )}
+                    >
+                      {isSelected && (
+                        <div className="absolute -top-2 -right-2 p-1 rounded-full bg-primary text-primary-foreground">
+                          <Check className="h-3 w-3" />
+                        </div>
+                      )}
+                      {!isAllowed && (
+                        <div className="absolute -top-2 -right-2 p-1 rounded-full bg-amber-100">
+                          <Crown className="h-3 w-3 text-amber-600" />
+                        </div>
+                      )}
+                      <div
+                        className="w-full h-10 rounded-md mb-2"
+                        style={{
+                          background: `linear-gradient(135deg, ${preset.colors.primary} 0%, ${preset.colors.accent} 100%)`,
+                        }}
+                      />
+                      <p className="text-xs font-medium truncate">{preset.labelDe}</p>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Custom Color (Premium) */}
+              {limits.canCustomizeColors && (
+                <div className="mt-6 pt-4 border-t space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Label>Eigene Primärfarbe</Label>
+                    <TierBadge tier="premium" size="sm" />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={config.theme.colors.primary}
+                      onChange={(e) => updateConfig({
+                        theme: {
+                          ...config.theme,
+                          colors: { ...config.theme.colors, primary: e.target.value },
+                        },
+                      })}
+                      className="h-10 w-14 rounded-md border cursor-pointer"
+                    />
+                    <Input
+                      value={config.theme.colors.primary}
+                      onChange={(e) => updateConfig({
+                        theme: {
+                          ...config.theme,
+                          colors: { ...config.theme.colors, primary: e.target.value },
+                        },
+                      })}
+                      className="max-w-32 font-mono text-sm"
+                    />
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+// Competency Item Component
+interface CompetencyItemProps {
+  competency: Competency;
+  index: number;
+  total: number;
+  onUpdate: (updates: Partial<Competency>) => void;
+  onDelete: () => void;
+  onMove: (direction: "up" | "down") => void;
+}
+
+function CompetencyItem({ competency, index, total, onUpdate, onDelete, onMove }: CompetencyItemProps) {
+  const [isExpanded, setIsExpanded] = useState(!competency.title);
+  const [iconSearch, setIconSearch] = useState("");
+
+  const IconComponent = competency.icon
+    ? (LucideIcons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[competency.icon]
+    : Sparkles;
+
+  const filteredIcons = iconSearch ? searchIcons(iconSearch) : CURATED_ICONS.slice(0, 24);
+
+  if (!isExpanded) {
+    return (
+      <div className="flex items-center gap-3 p-3 border rounded-lg bg-muted/30">
+        <div className="flex flex-col gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
+            onClick={() => onMove("up")}
+            disabled={index === 0}
+          >
+            <ChevronUp className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
+            onClick={() => onMove("down")}
+            disabled={index === total - 1}
+          >
+            <ChevronDown className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+          {IconComponent && <IconComponent className="h-5 w-5 text-primary" />}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <p className="font-medium truncate">{competency.title || "Neue Kompetenz"}</p>
+          {competency.description && (
+            <p className="text-sm text-muted-foreground truncate">{competency.description}</p>
+          )}
+        </div>
+
+        <Button variant="ghost" size="sm" onClick={() => setIsExpanded(true)}>
+          Bearbeiten
+        </Button>
+        <Button variant="ghost" size="sm" onClick={onDelete} className="text-destructive">
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4 border rounded-lg space-y-4 bg-muted/30">
+      <div className="space-y-2">
+        <Label>Titel</Label>
+        <Input
+          value={competency.title}
+          onChange={(e) => onUpdate({ title: e.target.value })}
+          placeholder="z.B. Depression & Burnout"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Beschreibung (optional)</Label>
+        <Textarea
+          value={competency.description || ""}
+          onChange={(e) => onUpdate({ description: e.target.value })}
+          placeholder="Kurze Beschreibung..."
+          rows={2}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Icon</Label>
+        <Input
+          value={iconSearch}
+          onChange={(e) => setIconSearch(e.target.value)}
+          placeholder="Icon suchen..."
+          className="mb-2"
+        />
+        <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-32 overflow-y-auto p-2 border rounded-md">
+          {filteredIcons.map((iconDef) => {
+            const IconComp = (LucideIcons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[iconDef.name];
+            if (!IconComp) return null;
+            return (
               <button
-                key={key}
-                onClick={() => {
-                  setSelectedTheme(key as ThemeName);
-                  setCustomColor(preset.primaryColor);
-                }}
+                key={iconDef.name}
+                onClick={() => onUpdate({ icon: iconDef.name })}
                 className={cn(
-                  "relative p-4 rounded-lg border-2 transition-all hover:scale-105",
-                  selectedTheme === key
-                    ? "border-primary ring-2 ring-primary/20"
-                    : "border-muted hover:border-muted-foreground/30"
+                  "w-9 h-9 rounded-md flex items-center justify-center transition-colors",
+                  competency.icon === iconDef.name
+                    ? "bg-primary text-white"
+                    : "hover:bg-muted"
                 )}
               >
-                {selectedTheme === key && (
-                  <div className="absolute -top-2 -right-2 p-1 rounded-full bg-primary text-primary-foreground">
-                    <Check className="h-3 w-3" />
-                  </div>
-                )}
-                <div
-                  className="w-full h-12 rounded-md mb-2"
-                  style={{
-                    background: `linear-gradient(135deg, ${preset.primaryColor} 0%, ${preset.accentColor} 100%)`,
-                  }}
-                />
-                <p className="text-xs font-medium text-center truncate">
-                  {preset.label}
-                </p>
+                <IconComp className="h-5 w-5" />
               </button>
-            ))}
-          </div>
+            );
+          })}
+        </div>
+      </div>
 
-          {/* Custom Color (Premium only) */}
-          {isPremium && (
-            <div className="space-y-3 pt-4 border-t">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="customColor">{t("theme.customColor")}</Label>
-                <TierBadge tier="premium" size="sm" />
-              </div>
-              <div className="flex items-center gap-3">
-                <input
-                  type="color"
-                  id="customColor"
-                  value={customColor}
-                  onChange={(e) => setCustomColor(e.target.value)}
-                  className="h-10 w-16 rounded-md border cursor-pointer"
-                />
-                <Input
-                  value={customColor}
-                  onChange={(e) => setCustomColor(e.target.value)}
-                  placeholder="#F97316"
-                  className="max-w-32 font-mono text-sm"
-                />
-                <div
-                  className="h-10 w-10 rounded-md border"
-                  style={{ backgroundColor: customColor }}
-                />
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Headline */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("headline.title")}</CardTitle>
-          <CardDescription>{t("headline.description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <Label htmlFor="headline">{t("headline.label")}</Label>
-            <Input
-              id="headline"
-              value={headline}
-              onChange={(e) => setHeadline(e.target.value)}
-              placeholder={t("headline.placeholder")}
-              maxLength={120}
-            />
-            <p className="text-xs text-muted-foreground">
-              {headline.length}/120 {t("headline.characters")}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Save Button */}
-      <div className="flex justify-end">
-        <Button onClick={handleSave} size="lg" disabled={isPending}>
-          {isPending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t("saving")}
-            </>
-          ) : (
-            t("saveChanges")
-          )}
+      <div className="flex justify-end gap-2 pt-2">
+        <Button variant="outline" size="sm" onClick={() => setIsExpanded(false)}>
+          Fertig
         </Button>
       </div>
     </div>
