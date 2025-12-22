@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, ChevronRight, Trash2, HelpCircle } from "lucide-react";
+import { Loader2, ChevronRight, SkipForward, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,6 +20,7 @@ interface StickyFooterActionsProps {
   isSaving: boolean;
   canSave: boolean;
   showDiscardButton?: boolean;
+  discardLabel?: string;
 }
 
 /**
@@ -35,6 +36,7 @@ export function StickyFooterActions({
   isSaving,
   canSave,
   showDiscardButton = false,
+  discardLabel = "Verwerfen",
 }: StickyFooterActionsProps) {
   return (
     <div
@@ -79,17 +81,17 @@ export function StickyFooterActions({
 
           {/* Right side: Action buttons */}
           <div className="flex items-center gap-2 justify-end">
-            {/* Discard button (optional) */}
+            {/* Discard/Skip button (optional) */}
             {showDiscardButton && onDiscard && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onDiscard}
                 disabled={isSaving}
-                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                className="text-muted-foreground hover:text-foreground"
               >
-                <Trash2 className="h-4 w-4 sm:mr-1" />
-                <span className="hidden sm:inline">Verwerfen</span>
+                <SkipForward className="h-4 w-4 sm:mr-1" />
+                <span className="hidden sm:inline">{discardLabel}</span>
               </Button>
             )}
 

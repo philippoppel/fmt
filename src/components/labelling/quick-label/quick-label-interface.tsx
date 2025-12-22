@@ -1,20 +1,21 @@
 "use client";
 
-import { useState, useCallback, useTransition, useRef, useEffect } from "react";
+import { useState, useCallback, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { BarChart3 } from "lucide-react";
+import { BarChart3, RefreshCw, Loader2, PenLine, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 
-import { TextInputSection } from "./text-input-section";
 import { AISuggestionsDisplay } from "./ai-suggestions-display";
 import { CategoryChipSelect } from "./category-chip-select";
 import { SubcategoryAccordion } from "./subcategory-accordion";
 import { IntensityAccordion } from "./intensity-accordion";
 import { RelatedTopicsChips } from "./related-topics-chips";
 import { StickyFooterActions } from "./sticky-footer-actions";
+import { SuggestionSkeleton } from "./suggestion-skeleton";
 
 import type {
   LabelSuggestion,
@@ -25,22 +26,6 @@ import type {
   PrimaryCategory,
 } from "@/types/labelling";
 
-// Debounce hook
-function useDebouncedCallback<T extends (...args: Parameters<T>) => void>(
-  callback: T,
-  delay: number
-) {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  return useCallback(
-    (...args: Parameters<T>) => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => callback(...args), delay);
-    },
-    [callback, delay]
-  );
-}
-
 interface QuickLabelInterfaceProps {
   userId: string;
   userName: string;
@@ -48,23 +33,25 @@ interface QuickLabelInterfaceProps {
     todayLabeled: number;
     totalLabeled: number;
   } | null;
-  initialCaseId?: string;
-  initialText?: string;
 }
+
+type Mode = "ai-generated" | "custom";
 
 export function QuickLabelInterface({
   userId,
   userName,
   stats,
-  initialCaseId,
-  initialText = "",
 }: QuickLabelInterfaceProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // Form state
-  const [text, setText] = useState(initialText);
-  const [caseId, setCaseId] = useState(initialCaseId);
+  // Mode state
+  const [mode, setMode] = useState<Mode>("ai-generated");
+
+  // Case state
+  const [caseText, setCaseText] = useState("");
+  const [customText, setCustomText] = useState("");
+  const [isGenerating, setIsGenerating] = useState(true);
 
   // AI suggestion state
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
@@ -83,8 +70,51 @@ export function QuickLabelInterface({
   // UI state
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [labelCount, setLabelCount] = useState(stats?.todayLabeled || 0);
 
-  // Fetch AI suggestions
+  // Generate a new case
+  const generateNewCase = useCallback(async () => {
+    setIsGenerating(true);
+    setSuggestion(null);
+    setSuggestionError(null);
+    setSelectedCategories([]);
+    setSubcategories({});
+    setIntensity({});
+    setRelatedTopics([]);
+    setIsUncertain(false);
+
+    try {
+      const { generateCaseWithSuggestions } = await import(
+        "@/lib/actions/labelling/suggestions"
+      );
+
+      const result = await generateCaseWithSuggestions();
+
+      setCaseText(result.text);
+      setSuggestion(result.suggestions);
+
+      // Auto-apply suggestions
+      if (result.suggestions.main.length > 0) {
+        setSelectedCategories(result.suggestions.main);
+        setSubcategories(result.suggestions.sub);
+        setIntensity(result.suggestions.intensity);
+        setRelatedTopics(
+          result.suggestions.related.map((r) => ({
+            key: r.key,
+            strength: r.strength,
+          }))
+        );
+        setIsUncertain(result.suggestions.uncertainSuggested);
+      }
+    } catch (error) {
+      console.error("Generation error:", error);
+      setSuggestionError("Fall konnte nicht generiert werden");
+    } finally {
+      setIsGenerating(false);
+    }
+  }, []);
+
+  // Fetch suggestions for custom text
   const fetchSuggestions = useCallback(async (inputText: string) => {
     if (inputText.trim().length < 20) {
       setSuggestion(null);
@@ -108,7 +138,7 @@ export function QuickLabelInterface({
       const data = (await response.json()) as LabelSuggestion;
       setSuggestion(data);
 
-      // Auto-apply suggestions if user hasn't made selections yet
+      // Auto-apply suggestions
       if (data.main.length > 0 && selectedCategories.length === 0) {
         setSelectedCategories(data.main);
         setSubcategories(data.sub);
@@ -128,22 +158,43 @@ export function QuickLabelInterface({
     }
   }, [selectedCategories.length]);
 
-  // Debounced fetch
-  const debouncedFetch = useDebouncedCallback(fetchSuggestions, 600);
+  // Load first case on mount
+  useEffect(() => {
+    generateNewCase();
+  }, [generateNewCase]);
 
-  // Handle text change
-  const handleTextChange = useCallback(
+  // Handle mode switch
+  const handleSwitchToCustom = useCallback(() => {
+    setMode("custom");
+    setCaseText("");
+    setCustomText("");
+    setSuggestion(null);
+    setSelectedCategories([]);
+    setSubcategories({});
+    setIntensity({});
+    setRelatedTopics([]);
+    setIsUncertain(false);
+  }, []);
+
+  const handleSwitchToAI = useCallback(() => {
+    setMode("ai-generated");
+    setCustomText("");
+    generateNewCase();
+  }, [generateNewCase]);
+
+  // Handle custom text change
+  const handleCustomTextChange = useCallback(
     (newText: string) => {
-      setText(newText);
-      setSaved(false);
-
+      setCustomText(newText);
       if (newText.trim().length >= 20) {
-        debouncedFetch(newText);
+        // Debounce: wait a bit before fetching
+        const timer = setTimeout(() => fetchSuggestions(newText), 600);
+        return () => clearTimeout(timer);
       } else {
         setSuggestion(null);
       }
     },
-    [debouncedFetch]
+    [fetchSuggestions]
   );
 
   // Accept all AI suggestions
@@ -262,6 +313,7 @@ export function QuickLabelInterface({
 
   // Save and get next case
   const handleSaveAndNext = useCallback(async () => {
+    const text = mode === "ai-generated" ? caseText : customText;
     if (selectedCategories.length === 0 || text.trim().length < 20) return;
 
     setIsSaving(true);
@@ -300,8 +352,7 @@ export function QuickLabelInterface({
       );
 
       const result = await saveLabelWithAudit({
-        caseId: caseId,
-        text: caseId ? undefined : text,
+        text: text,
         aiSuggestion: suggestion,
         finalLabel: {
           primaryCategories,
@@ -314,69 +365,79 @@ export function QuickLabelInterface({
 
       if (result.success) {
         setSaved(true);
+        setLabelCount((prev) => prev + 1);
 
-        // Reset form for next case
-        setText("");
-        setCaseId(undefined);
-        setSuggestion(null);
-        setSelectedCategories([]);
-        setSubcategories({});
-        setIntensity({});
-        setRelatedTopics([]);
-        setIsUncertain(false);
+        // Hide success message after 2 seconds
+        setTimeout(() => setSaved(false), 2000);
+
+        // Load next case
+        if (mode === "ai-generated") {
+          generateNewCase();
+        } else {
+          // Reset custom form
+          setCustomText("");
+          setSuggestion(null);
+          setSelectedCategories([]);
+          setSubcategories({});
+          setIntensity({});
+          setRelatedTopics([]);
+          setIsUncertain(false);
+        }
 
         startTransition(() => {
           router.refresh();
         });
       } else {
         console.error("Save failed:", result.error);
-        // TODO: Show error toast
       }
     } catch (error) {
       console.error("Save error:", error);
-      // TODO: Show error toast
     } finally {
       setIsSaving(false);
     }
   }, [
+    mode,
+    caseText,
+    customText,
     selectedCategories,
-    text,
-    caseId,
     subcategories,
     intensity,
     relatedTopics,
     isUncertain,
     suggestion,
+    generateNewCase,
     router,
   ]);
 
-  // Reset form
-  const handleDiscard = useCallback(() => {
-    setText("");
-    setCaseId(undefined);
-    setSuggestion(null);
-    setSuggestionError(null);
-    setSelectedCategories([]);
-    setSubcategories({});
-    setIntensity({});
-    setRelatedTopics([]);
-    setIsUncertain(false);
-    setSaved(false);
-  }, []);
+  // Skip current case and load next
+  const handleSkip = useCallback(() => {
+    if (mode === "ai-generated") {
+      generateNewCase();
+    } else {
+      setCustomText("");
+      setSuggestion(null);
+      setSelectedCategories([]);
+      setSubcategories({});
+      setIntensity({});
+      setRelatedTopics([]);
+      setIsUncertain(false);
+    }
+  }, [mode, generateNewCase]);
 
+  const text = mode === "ai-generated" ? caseText : customText;
   const canSave =
     selectedCategories.length > 0 && text.trim().length >= 20 && !isSaving;
   const selectedKeys = selectedCategories.map((c) => c.key);
+  const isLoading = isGenerating || isLoadingSuggestions;
 
   return (
     <div className="pb-32">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold">Neuen Fall labeln</h1>
+          <h1 className="text-xl font-bold">Fall labeln</h1>
           <p className="text-sm text-muted-foreground">
-            {stats?.todayLabeled || 0} heute · {stats?.totalLabeled || 0}{" "}
-            insgesamt
+            {labelCount} heute · {(stats?.totalLabeled || 0) + labelCount - (stats?.todayLabeled || 0)} insgesamt
           </p>
         </div>
         <Link href="/de/labelling/stats">
@@ -387,118 +448,196 @@ export function QuickLabelInterface({
         </Link>
       </div>
 
-      {/* Main content - responsive layout */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Left column: Text input */}
+      {/* Mode toggle */}
+      <div className="flex gap-2 mb-6">
+        <Button
+          variant={mode === "ai-generated" ? "default" : "outline"}
+          size="sm"
+          onClick={handleSwitchToAI}
+          className="gap-2"
+        >
+          <Sparkles className="h-4 w-4" />
+          KI-generiert
+        </Button>
+        <Button
+          variant={mode === "custom" ? "default" : "outline"}
+          size="sm"
+          onClick={handleSwitchToCustom}
+          className="gap-2"
+        >
+          <PenLine className="h-4 w-4" />
+          Eigener Fall
+        </Button>
+      </div>
+
+      {/* Loading state */}
+      {isGenerating && mode === "ai-generated" && (
         <div className="space-y-4">
           <Card>
-            <CardContent className="p-4">
-              <TextInputSection
-                value={text}
-                onChange={handleTextChange}
-                disabled={isSaving}
-              />
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Generiere neuen Fall...</span>
+              </div>
             </CardContent>
           </Card>
+          <SuggestionSkeleton />
+        </div>
+      )}
 
-          {/* AI Suggestions (mobile only - shown below text) */}
-          <div className="lg:hidden">
-            <AISuggestionsDisplay
-              isLoading={isLoadingSuggestions}
-              suggestion={suggestion}
-              error={suggestionError}
-              selectedCategories={selectedCategories}
-              onAcceptAll={handleAcceptAll}
-              onToggleCategory={handleToggleCategory}
-              disabled={isSaving}
-            />
+      {/* Main content */}
+      {!isGenerating && (
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Left column: Case text */}
+          <div className="space-y-4">
+            <Card>
+              <CardContent className="p-4">
+                {mode === "ai-generated" ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-muted-foreground">
+                        Fallbeschreibung
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={generateNewCase}
+                        disabled={isSaving}
+                        className="gap-1 h-7 text-xs"
+                      >
+                        <RefreshCw className="h-3 w-3" />
+                        Neuer Fall
+                      </Button>
+                    </div>
+                    <p className="text-base leading-relaxed whitespace-pre-wrap">
+                      {caseText}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <span className="text-sm font-medium text-muted-foreground">
+                      Eigene Fallbeschreibung eingeben
+                    </span>
+                    <Textarea
+                      value={customText}
+                      onChange={(e) => handleCustomTextChange(e.target.value)}
+                      placeholder="Beschreibe den Fall aus der Ich-Perspektive der hilfesuchenden Person..."
+                      className="min-h-[120px] resize-none"
+                      disabled={isSaving}
+                    />
+                    <p className="text-xs text-muted-foreground text-right">
+                      {customText.length} Zeichen
+                      {customText.length < 20 && customText.length > 0 && (
+                        <span className="text-amber-600">
+                          {" "}
+                          · mind. 20 Zeichen
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* AI Suggestions (mobile only - shown below text) */}
+            <div className="lg:hidden">
+              <AISuggestionsDisplay
+                isLoading={isLoadingSuggestions}
+                suggestion={suggestion}
+                error={suggestionError}
+                selectedCategories={selectedCategories}
+                onAcceptAll={handleAcceptAll}
+                onToggleCategory={handleToggleCategory}
+                disabled={isSaving}
+              />
+            </div>
+          </div>
+
+          {/* Right column: Categories and options */}
+          <div className="space-y-4">
+            {/* AI Suggestions (desktop - shown in right column) */}
+            <div className="hidden lg:block">
+              <AISuggestionsDisplay
+                isLoading={isLoadingSuggestions}
+                suggestion={suggestion}
+                error={suggestionError}
+                selectedCategories={selectedCategories}
+                onAcceptAll={handleAcceptAll}
+                onToggleCategory={handleToggleCategory}
+                disabled={isSaving}
+              />
+            </div>
+
+            {/* Manual category selection */}
+            <div className="flex justify-center lg:justify-start">
+              <CategoryChipSelect
+                selectedCategories={selectedKeys}
+                onToggle={handleToggleCategory}
+                maxSelections={3}
+                disabled={isSaving}
+              />
+            </div>
+
+            {/* Subcategories for selected categories */}
+            {selectedCategories.length > 0 && (
+              <div className="space-y-3">
+                <p className="text-sm font-medium text-muted-foreground">
+                  Subkategorien (optional)
+                </p>
+                {selectedCategories.map((cat) => (
+                  <SubcategoryAccordion
+                    key={cat.key}
+                    categoryKey={cat.key}
+                    selectedSubtopics={subcategories[cat.key] || []}
+                    suggestedSubtopics={suggestion?.sub[cat.key] || []}
+                    onToggle={(subtopicId) =>
+                      handleToggleSubcategory(cat.key, subtopicId)
+                    }
+                    disabled={isSaving}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Intensity questions for selected categories */}
+            {selectedCategories.length > 0 && (
+              <div className="space-y-3">
+                <p className="text-sm font-medium text-muted-foreground">
+                  Intensität (optional)
+                </p>
+                {selectedCategories.map((cat) => (
+                  <IntensityAccordion
+                    key={cat.key}
+                    categoryKey={cat.key}
+                    selectedIntensity={intensity[cat.key] || []}
+                    suggestedIntensity={suggestion?.intensity[cat.key] || []}
+                    onToggle={(intensityId) =>
+                      handleToggleIntensity(cat.key, intensityId)
+                    }
+                    disabled={isSaving}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Related topics */}
+            {selectedCategories.length > 0 && (
+              <RelatedTopicsChips
+                selectedPrimaryCategories={selectedKeys}
+                selectedRelated={relatedTopics}
+                suggestedRelated={suggestion?.related}
+                onToggle={handleToggleRelated}
+                disabled={isSaving}
+              />
+            )}
           </div>
         </div>
-
-        {/* Right column: Categories and options */}
-        <div className="space-y-4">
-          {/* AI Suggestions (desktop - shown in right column) */}
-          <div className="hidden lg:block">
-            <AISuggestionsDisplay
-              isLoading={isLoadingSuggestions}
-              suggestion={suggestion}
-              error={suggestionError}
-              selectedCategories={selectedCategories}
-              onAcceptAll={handleAcceptAll}
-              onToggleCategory={handleToggleCategory}
-              disabled={isSaving}
-            />
-          </div>
-
-          {/* Manual category selection */}
-          <div className="flex justify-center lg:justify-start">
-            <CategoryChipSelect
-              selectedCategories={selectedKeys}
-              onToggle={handleToggleCategory}
-              maxSelections={3}
-              disabled={isSaving}
-            />
-          </div>
-
-          {/* Subcategories for selected categories */}
-          {selectedCategories.length > 0 && (
-            <div className="space-y-3">
-              <p className="text-sm font-medium text-muted-foreground">
-                Subkategorien (optional)
-              </p>
-              {selectedCategories.map((cat) => (
-                <SubcategoryAccordion
-                  key={cat.key}
-                  categoryKey={cat.key}
-                  selectedSubtopics={subcategories[cat.key] || []}
-                  suggestedSubtopics={suggestion?.sub[cat.key] || []}
-                  onToggle={(subtopicId) =>
-                    handleToggleSubcategory(cat.key, subtopicId)
-                  }
-                  disabled={isSaving}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Intensity questions for selected categories */}
-          {selectedCategories.length > 0 && (
-            <div className="space-y-3">
-              <p className="text-sm font-medium text-muted-foreground">
-                Intensität (optional)
-              </p>
-              {selectedCategories.map((cat) => (
-                <IntensityAccordion
-                  key={cat.key}
-                  categoryKey={cat.key}
-                  selectedIntensity={intensity[cat.key] || []}
-                  suggestedIntensity={suggestion?.intensity[cat.key] || []}
-                  onToggle={(intensityId) =>
-                    handleToggleIntensity(cat.key, intensityId)
-                  }
-                  disabled={isSaving}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Related topics */}
-          {selectedCategories.length > 0 && (
-            <RelatedTopicsChips
-              selectedPrimaryCategories={selectedKeys}
-              selectedRelated={relatedTopics}
-              suggestedRelated={suggestion?.related}
-              onToggle={handleToggleRelated}
-              disabled={isSaving}
-            />
-          )}
-        </div>
-      </div>
+      )}
 
       {/* Success message */}
       {saved && (
         <div className="fixed top-4 right-4 z-50 bg-green-100 text-green-800 px-4 py-2 rounded-lg shadow-lg animate-in fade-in slide-in-from-top-2">
-          Gespeichert!
+          Gespeichert! Nächster Fall wird geladen...
         </div>
       )}
 
@@ -507,10 +646,11 @@ export function QuickLabelInterface({
         isUncertain={isUncertain}
         onUncertainChange={setIsUncertain}
         onSaveAndNext={handleSaveAndNext}
-        onDiscard={handleDiscard}
+        onDiscard={handleSkip}
         isSaving={isSaving}
         canSave={canSave}
-        showDiscardButton={text.length > 0}
+        showDiscardButton={true}
+        discardLabel="Überspringen"
       />
     </div>
   );

@@ -10,13 +10,16 @@ import type {
 } from "@/types/labelling";
 import {
   LABEL_SUGGESTION_SYSTEM_PROMPT,
+  CASE_GENERATION_SYSTEM_PROMPT,
   buildUserPrompt,
+  buildCaseGenerationPrompt,
   getValidCategoryKeys,
   getValidSubcategoryKeys,
   getValidIntensityKeys,
   getSubcategoryKeysForCategory,
   getIntensityKeysForCategory,
 } from "@/lib/labelling/ai-prompt";
+import { MATCHING_TOPICS } from "@/lib/matching/topics";
 
 // Lazy init Groq client
 let groq: Groq | null = null;
@@ -239,4 +242,78 @@ export async function checkGroqAvailability(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/**
+ * Generate a new case text using AI
+ * Optionally focus on underrepresented categories
+ */
+export async function generateCase(focusTopic?: string): Promise<{
+  text: string;
+  focusTopic?: string;
+}> {
+  try {
+    const client = getGroqClient();
+
+    // If no focus topic provided, pick a random one for variety
+    let selectedTopic = focusTopic;
+    if (!selectedTopic) {
+      const topics = MATCHING_TOPICS.filter((t) => t.id !== "other");
+      selectedTopic = topics[Math.floor(Math.random() * topics.length)]?.id;
+    }
+
+    const completion = await client.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        { role: "system", content: CASE_GENERATION_SYSTEM_PROMPT },
+        { role: "user", content: buildCaseGenerationPrompt(selectedTopic) },
+      ],
+      temperature: 0.9, // High for creative variation
+      max_tokens: 300,
+    });
+
+    const content = completion.choices[0]?.message?.content?.trim();
+
+    if (!content || content.length < 30) {
+      throw new Error("Generated case too short or empty");
+    }
+
+    // Clean up any potential formatting artifacts
+    const cleanedText = content
+      .replace(/^["']|["']$/g, "") // Remove quotes
+      .replace(/^\*\*.*?\*\*\s*/g, "") // Remove bold headers
+      .replace(/^#.*$/gm, "") // Remove markdown headers
+      .trim();
+
+    return {
+      text: cleanedText,
+      focusTopic: selectedTopic,
+    };
+  } catch (error) {
+    console.error("Case generation error:", error);
+    // Return a fallback case
+    return {
+      text: "Ich fühle mich in letzter Zeit sehr überfordert. Die Arbeit wächst mir über den Kopf und zu Hause finde ich auch keine Ruhe. Ich weiß nicht, wie ich das alles schaffen soll.",
+      focusTopic: "stress",
+    };
+  }
+}
+
+/**
+ * Generate a case and immediately get label suggestions
+ * Combined for efficiency
+ */
+export async function generateCaseWithSuggestions(): Promise<{
+  text: string;
+  suggestions: LabelSuggestion;
+  focusTopic?: string;
+}> {
+  const caseResult = await generateCase();
+  const suggestions = await suggestLabels(caseResult.text);
+
+  return {
+    text: caseResult.text,
+    suggestions,
+    focusTopic: caseResult.focusTopic,
+  };
 }

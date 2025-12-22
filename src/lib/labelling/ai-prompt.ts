@@ -8,6 +8,22 @@
 import { MATCHING_TOPICS } from "@/lib/matching/topics";
 import { INTENSITY_STATEMENTS } from "@/lib/matching/intensity";
 
+// German labels for topics (used in prompts)
+const TOPIC_LABELS_DE: Record<string, string> = {
+  family: "Familie",
+  anxiety: "Angst",
+  depression: "Depression",
+  relationships: "Beziehungen",
+  burnout: "Burnout",
+  trauma: "Trauma",
+  addiction: "Sucht",
+  eating_disorders: "Essstörungen",
+  adhd: "ADHS",
+  self_care: "Selbstfürsorge",
+  stress: "Stress",
+  sleep: "Schlaf",
+};
+
 // Build dynamic taxonomy reference from existing definitions
 function buildTaxonomyReference(): string {
   const mainCategories = MATCHING_TOPICS.filter((t) => t.id !== "other")
@@ -168,4 +184,49 @@ export function getIntensityKeysForCategory(categoryKey: string): Set<string> {
   const statements = INTENSITY_STATEMENTS[categoryKey];
   if (!statements) return new Set();
   return new Set(statements.map((s) => s.id));
+}
+
+/**
+ * System prompt for generating realistic therapy request cases
+ */
+export const CASE_GENERATION_SYSTEM_PROMPT = `Du bist ein Experte für psychische Gesundheit und generierst realistische Fallbeschreibungen für ein Trainings-Dataset.
+
+### Aufgabe
+Generiere eine authentische Fallbeschreibung aus der Ich-Perspektive einer hilfesuchenden Person. Die Person beschreibt ihre Situation so, wie sie es in einem Erstgespräch oder einer Therapie-Anfrage tun würde.
+
+### Verfügbare Themen
+${MATCHING_TOPICS.filter((t) => t.id !== "other").map((t) => `- ${t.id}: ${TOPIC_LABELS_DE[t.id] || t.id}`).join("\n")}
+
+### Regeln für die Generierung
+
+1. **Perspektive**: Immer Ich-Perspektive ("Ich fühle mich...", "Seit einiger Zeit...")
+2. **Länge**: 50-150 Wörter, 2-4 Sätze
+3. **Authentizität**: Alltagssprache, keine Fachbegriffe
+4. **Emotionen**: Beschreibe Gefühle konkret ("antriebslos", "ängstlich", "überfordert")
+5. **Kontext**: Erwähne Auslöser oder Lebensumstände wenn passend
+6. **Variation**: Jeder Fall soll einzigartig sein (verschiedene Altersgruppen, Situationen)
+
+### Beispiele
+
+Beispiel 1 (Depression):
+"Ich weiß nicht mehr weiter. Seit meiner Trennung vor drei Monaten fühle ich mich nur noch leer. Morgens aus dem Bett zu kommen ist ein Kampf, und selbst Dinge, die mir früher Spaß gemacht haben, interessieren mich nicht mehr."
+
+Beispiel 2 (Angst):
+"Jedes Mal wenn ich zur Arbeit fahre, bekomme ich Herzrasen und kann kaum atmen. Letzte Woche musste ich mitten im Meeting rausgehen. Ich habe Angst, dass meine Kollegen denken, ich bin nicht belastbar."
+
+Beispiel 3 (Beziehung):
+"Mein Partner und ich streiten uns ständig über Kleinigkeiten. Wir reden aneinander vorbei und am Ende fühle ich mich immer schuldig. Ich liebe ihn, aber so kann es nicht weitergehen."
+
+### Output Format
+Antworte NUR mit der Fallbeschreibung als reiner Text. Keine Überschriften, keine Labels, keine Erklärungen.`;
+
+/**
+ * User prompt for case generation with optional topic focus
+ */
+export function buildCaseGenerationPrompt(focusTopic?: string): string {
+  if (focusTopic) {
+    const topicLabel = TOPIC_LABELS_DE[focusTopic] || focusTopic;
+    return `Generiere eine Fallbeschreibung mit Fokus auf das Thema "${topicLabel}". Die Person soll Symptome oder Situationen beschreiben, die zu diesem Thema passen, aber das Thema nicht direkt benennen.`;
+  }
+  return `Generiere eine neue, einzigartige Fallbeschreibung. Wähle zufällig 1-2 Themen aus der Liste und kombiniere sie realistisch.`;
 }
