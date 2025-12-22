@@ -29,7 +29,7 @@ export default async function LabellingLayout({
           role: session.user.role,
         }}
       />
-      <main className="flex-1 overflow-auto min-w-0 pt-14 lg:pt-0">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 pt-14 lg:pt-0 w-full">
         {children}
       </main>
     </div>
