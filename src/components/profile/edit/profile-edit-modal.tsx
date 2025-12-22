@@ -234,8 +234,8 @@ export function ProfileEditModal({ open, onOpenChange, profile }: ProfileEditMod
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] p-0">
-        <DialogHeader className="px-6 py-4 border-b sticky top-0 bg-white z-10">
+      <DialogContent className="max-w-2xl max-h-[90vh] p-0 flex flex-col">
+        <DialogHeader className="px-6 py-4 border-b bg-white z-10 shrink-0">
           <div className="flex items-center justify-between">
             <DialogTitle>Profil bearbeiten</DialogTitle>
             <Button
@@ -248,7 +248,7 @@ export function ProfileEditModal({ open, onOpenChange, profile }: ProfileEditMod
           </div>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[calc(90vh-140px)]">
+        <ScrollArea className="flex-1 min-h-0">
           <div className="px-6 py-4 space-y-2">
             {/* Error/Success Messages */}
             {error && (
@@ -854,7 +854,7 @@ export function ProfileEditModal({ open, onOpenChange, profile }: ProfileEditMod
         </ScrollArea>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t sticky bottom-0 bg-white flex justify-end gap-3">
+        <div className="px-6 py-4 border-t bg-white flex justify-end gap-3 shrink-0">
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
             Abbrechen
           </Button>
