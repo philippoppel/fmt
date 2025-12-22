@@ -6,10 +6,16 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { HeaderSearch } from "@/components/layout/header-search";
-import { Menu, X, User, LogOut, Sparkles } from "lucide-react";
+import { Menu, X, User, LogOut, Sparkles, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const HIDDEN_HEADER_ROUTES = ["/therapists/matching"];
 
@@ -140,9 +146,26 @@ export function Header() {
               </Button>
             </div>
           ) : (
-            <Button variant="ghost" size="sm" asChild className="hidden md:flex">
-              <Link href="/fuer-therapeuten">Für Therapeut:innen</Link>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="hidden md:flex gap-1">
+                  Für Therapeut:innen
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link href="/auth/login" className="w-full cursor-pointer">
+                    {t("login")}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/auth/register" className="w-full cursor-pointer">
+                    {t("register")}
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
 
           {/* Mobile Menu */}
@@ -160,7 +183,7 @@ export function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden mt-2 mx-4 rounded-xl bg-white/80 dark:bg-black/60 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-lg">
+        <div className="md:hidden mt-2 mx-4 rounded-xl bg-white dark:bg-gray-900 border border-border shadow-lg">
           <nav className="p-4 space-y-2">
             {navItems.map((item) => (
               <Link
@@ -174,7 +197,7 @@ export function Header() {
             ))}
 
             {/* Auth Buttons - Mobile */}
-            <div className="pt-4 mt-2 border-t border-black/10 dark:border-white/10 space-y-2">
+            <div className="pt-4 mt-2 border-t space-y-2">
               {isAuthenticated ? (
                 <>
                   <Button variant="outline" asChild className="w-full justify-start gap-2">
@@ -197,6 +220,9 @@ export function Header() {
                 </>
               ) : (
                 <>
+                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider pt-1">
+                    Für Therapeut:innen
+                  </p>
                   <Button asChild className="w-full">
                     <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
                       {t("login")}
@@ -205,11 +231,6 @@ export function Header() {
                   <Button variant="outline" asChild className="w-full">
                     <Link href="/auth/register" onClick={() => setMobileMenuOpen(false)}>
                       {t("register")}
-                    </Link>
-                  </Button>
-                  <Button variant="ghost" asChild className="w-full text-muted-foreground">
-                    <Link href="/fuer-therapeuten" onClick={() => setMobileMenuOpen(false)}>
-                      Für Therapeut:innen
                     </Link>
                   </Button>
                 </>

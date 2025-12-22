@@ -30,7 +30,7 @@ export function LoginForm() {
     });
   }
 
-  async function handleOAuthLogin(provider: "google" | "github") {
+  async function handleOAuthLogin(provider: "google") {
     await signIn(provider, { callbackUrl: "/dashboard/settings" });
   }
 
@@ -118,24 +118,15 @@ export function LoginForm() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-              type="button"
-              onClick={() => handleOAuthLogin("google")}
-              disabled={isPending}
-            >
-              Google
-            </Button>
-            <Button
-              variant="outline"
-              type="button"
-              onClick={() => handleOAuthLogin("github")}
-              disabled={isPending}
-            >
-              GitHub
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            type="button"
+            className="w-full"
+            onClick={() => handleOAuthLogin("google")}
+            disabled={isPending}
+          >
+            Mit Google anmelden
+          </Button>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
