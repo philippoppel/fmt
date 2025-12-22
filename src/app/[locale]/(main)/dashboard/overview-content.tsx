@@ -19,6 +19,7 @@ import {
   CheckCircle2,
   AlertCircle,
   ArrowRight,
+  Tag,
 } from "lucide-react";
 import type { TherapistProfile, ProfileStats, AccountType } from "@prisma/client";
 
@@ -29,6 +30,7 @@ interface ProfileWithStats extends TherapistProfile {
 interface OverviewContentProps {
   profile: ProfileWithStats | null;
   userName?: string | null;
+  isLabeller?: boolean;
 }
 
 // Calculate profile completion percentage
@@ -87,7 +89,7 @@ function aggregateStats(stats: ProfileStats[]): {
 
 const TIER_ORDER: AccountType[] = ["gratis", "mittel", "premium"];
 
-export function OverviewContent({ profile, userName }: OverviewContentProps) {
+export function OverviewContent({ profile, userName, isLabeller }: OverviewContentProps) {
   const t = useTranslations("dashboard.overview");
   const tTiers = useTranslations("pricing.tiers");
 
@@ -383,6 +385,21 @@ export function OverviewContent({ profile, userName }: OverviewContentProps) {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium group-hover:text-primary transition-colors">
                       {t("action.viewStats")}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            )}
+
+            {isLabeller && (
+              <Link href="/labelling/cases/new" className="group">
+                <div className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
+                  <div className="p-2 rounded-md bg-primary/10">
+                    <Tag className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium group-hover:text-primary transition-colors">
+                      Labelling
                     </p>
                   </div>
                 </div>

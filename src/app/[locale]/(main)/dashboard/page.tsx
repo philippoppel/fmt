@@ -27,10 +27,13 @@ export default async function DashboardPage() {
     },
   });
 
+  const isLabeller = session.user.role === "LABELLER" || session.user.role === "ADMIN";
+
   return (
     <OverviewContent
       profile={profile}
       userName={session.user.name}
+      isLabeller={isLabeller}
     />
   );
 }
