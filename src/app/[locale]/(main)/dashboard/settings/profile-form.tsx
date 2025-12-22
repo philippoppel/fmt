@@ -54,7 +54,9 @@ export function ProfileForm({ initialData, accountType }: Props) {
   const [shortDescription, setShortDescription] = useState(initialData.shortDescription);
   const [city, setCity] = useState(initialData.city);
   const [postalCode, setPostalCode] = useState(initialData.postalCode);
-  const [specializations, setSpecializations] = useState<string[]>(initialData.specializations);
+  const [specializations, setSpecializations] = useState<string[]>(
+    initialData.specializations.filter((s) => SPECIALTIES.includes(s as typeof SPECIALTIES[number]))
+  );
   const [specializationRanks, setSpecializationRanks] = useState<Record<string, number>>(
     initialData.specializationRanks || {}
   );
@@ -346,7 +348,9 @@ export function ProfileForm({ initialData, accountType }: Props) {
                 </p>
 
                 <div className="space-y-2">
-                  {specializations.map((specialty) => {
+                  {specializations
+                    .filter((s) => SPECIALTIES.includes(s as typeof SPECIALTIES[number]))
+                    .map((specialty) => {
                     const currentRank = specializationRanks[specialty];
                     return (
                       <div
