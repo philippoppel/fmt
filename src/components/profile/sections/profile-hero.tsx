@@ -65,8 +65,10 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
     both: t.both,
   }[profile.sessionType] || t.both;
 
-  // Get background image from office images or gallery
-  const backgroundImage = profile.officeImages?.[0] || profile.galleryImages?.[0];
+  // Get background image from office images, gallery, or use default calm nature image
+  // Default: Serene mountain lake scene from Unsplash (by Dave Hoefler)
+  const DEFAULT_HERO_BG = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80&fit=crop";
+  const backgroundImage = profile.officeImages?.[0] || profile.galleryImages?.[0] || DEFAULT_HERO_BG;
 
   // Count up for experience years
   const experienceCount = useCountUp({
@@ -77,90 +79,55 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
 
   return (
     <header ref={heroRef} className="relative min-h-screen overflow-hidden">
-      {/* Background Layer */}
-      {backgroundImage ? (
-        <>
-          {/* Full-width background image */}
-          <div className="absolute inset-0">
-            <Image
-              src={backgroundImage}
-              alt=""
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-            />
-            {/* Dark gradient overlay for readability */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: `linear-gradient(
-                  180deg,
-                  rgba(0,0,0,0.4) 0%,
-                  rgba(0,0,0,0.5) 40%,
-                  rgba(0,0,0,0.7) 70%,
-                  var(--profile-bg) 100%
-                )`,
-              }}
-            />
-            {/* Color tint overlay */}
-            <div
-              className="absolute inset-0 mix-blend-soft-light"
-              style={{
-                background: `linear-gradient(
-                  135deg,
-                  var(--profile-primary) 0%,
-                  transparent 50%,
-                  var(--profile-accent) 100%
-                )`,
-                opacity: 0.4,
-              }}
-            />
-          </div>
-        </>
-      ) : (
-        <>
-          {/* Fallback: Vibrant gradient background */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background: `linear-gradient(
-                135deg,
-                var(--profile-bg) 0%,
-                var(--profile-secondary) 50%,
-                var(--profile-bg) 100%
-              )`,
-            }}
-          />
-          {/* Animated gradient orbs */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div
-              className="absolute -top-32 -right-32 w-[40rem] h-[40rem] rounded-full animate-aurora-1"
-              style={{
-                background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 60%)`,
-                opacity: 0.6,
-                filter: "blur(60px)",
-              }}
-            />
-            <div
-              className="absolute -bottom-48 -left-48 w-[50rem] h-[50rem] rounded-full animate-aurora-2"
-              style={{
-                background: `radial-gradient(circle, var(--profile-accent) 0%, transparent 60%)`,
-                opacity: 0.5,
-                filter: "blur(80px)",
-              }}
-            />
-            <div
-              className="absolute top-1/3 left-1/3 w-[30rem] h-[30rem] rounded-full animate-glow-pulse"
-              style={{
-                background: `radial-gradient(circle, var(--profile-primary) 0%, transparent 70%)`,
-                opacity: 0.3,
-                filter: "blur(50px)",
-              }}
-            />
-          </div>
-        </>
-      )}
+      {/* Background Layer - Always shows beautiful nature image */}
+      <div className="absolute inset-0">
+        <Image
+          src={backgroundImage}
+          alt=""
+          fill
+          className="object-cover"
+          priority
+          sizes="100vw"
+        />
+        {/* Refined gradient overlay for excellent readability */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(
+              180deg,
+              rgba(0,0,0,0.25) 0%,
+              rgba(0,0,0,0.35) 30%,
+              rgba(0,0,0,0.55) 60%,
+              rgba(0,0,0,0.75) 85%,
+              var(--profile-bg) 100%
+            )`,
+          }}
+        />
+        {/* Subtle color tint overlay for brand harmony */}
+        <div
+          className="absolute inset-0 mix-blend-overlay"
+          style={{
+            background: `linear-gradient(
+              135deg,
+              var(--profile-primary) 0%,
+              transparent 40%,
+              transparent 60%,
+              var(--profile-accent) 100%
+            )`,
+            opacity: 0.25,
+          }}
+        />
+        {/* Bottom blur zone for card readability */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[60%]"
+          style={{
+            backdropFilter: "blur(1px)",
+            WebkitBackdropFilter: "blur(1px)",
+            maskImage: "linear-gradient(to bottom, transparent, black 50%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent, black 50%)",
+          }}
+        />
+      </div>
 
       {/* Gradient line at top */}
       <div
@@ -174,20 +141,18 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
       {/* Content positioned at bottom */}
       <div className="relative z-10 min-h-screen flex items-end pb-16 lg:pb-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full">
-          {/* Glassmorphism Card */}
+          {/* Glassmorphism Card - Enhanced for excellent readability */}
           <div
             className={cn(
-              "backdrop-blur-xl rounded-3xl",
+              "backdrop-blur-2xl rounded-3xl",
               "p-6 sm:p-8 lg:p-12",
-              "shadow-2xl",
-              "border border-white/30",
+              "shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.08)]",
+              "border border-white/40",
               "opacity-0",
               heroVisible && "animate-fade-in-up"
             )}
             style={{
-              background: backgroundImage
-                ? "rgba(255,255,255,0.92)"
-                : "rgba(255,255,255,0.85)",
+              background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.88) 100%)",
               animationFillMode: "forwards",
             }}
           >
@@ -278,7 +243,7 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
                 {profile.headline && (
                   <p
                     className={cn(
-                      "text-gray-600 text-lg mb-6 max-w-2xl mx-auto lg:mx-0",
+                      "text-gray-700 text-lg leading-relaxed mb-6 max-w-2xl mx-auto lg:mx-0",
                       "opacity-0",
                       heroVisible && "animate-fade-in-up stagger-3"
                     )}
@@ -353,7 +318,7 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
                     >
                       {profile.pricePerSession}€
                     </span>
-                    <span className="text-gray-500 ml-2 text-lg">
+                    <span className="text-gray-600 ml-2 text-lg">
                       {t.pricePerSession}
                     </span>
                   </div>

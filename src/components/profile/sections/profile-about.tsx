@@ -182,7 +182,7 @@ export function ProfileAbout({ profile, locale }: ProfileAboutProps) {
             </div>
             <div
               className={cn(
-                "prose prose-lg max-w-none text-gray-600 leading-relaxed",
+                "prose prose-lg max-w-none text-gray-700 leading-relaxed",
                 "opacity-0",
                 aboutVisible && "animate-fade-in-up stagger-2"
               )}

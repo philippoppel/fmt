@@ -388,7 +388,7 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
                       />
                       <div>
                         <p className="font-medium">{t.location}</p>
-                        <p className="text-gray-600">
+                        <p className="text-gray-700">
                           {profile.practiceName && <span className="block">{profile.practiceName}</span>}
                           {profile.street && <span className="block">{profile.street}</span>}
                           {profile.postalCode} {profile.city}
@@ -406,7 +406,7 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
                       />
                       <div>
                         <p className="font-medium">{t.phone}</p>
-                        <a href={`tel:${profile.phone}`} className="text-gray-600 hover:underline">
+                        <a href={`tel:${profile.phone}`} className="text-gray-700 hover:underline">
                           {profile.phone}
                         </a>
                       </div>
@@ -422,7 +422,7 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
                       />
                       <div>
                         <p className="font-medium">{t.email}</p>
-                        <a href={`mailto:${profile.email}`} className="text-gray-600 hover:underline">
+                        <a href={`mailto:${profile.email}`} className="text-gray-700 hover:underline">
                           {profile.email}
                         </a>
                       </div>
@@ -442,7 +442,7 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
                           href={profile.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-gray-600 hover:underline"
+                          className="text-gray-700 hover:underline"
                         >
                           {profile.website.replace(/^https?:\/\//, "")}
                         </a>
