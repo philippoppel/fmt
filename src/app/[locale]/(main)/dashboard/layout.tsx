@@ -28,12 +28,12 @@ export default async function DashboardLayout({ children, params }: Props) {
   const accountType = profile?.accountType || "gratis";
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)]">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col lg:flex-row">
       <DashboardSidebar
         accountType={accountType}
         userName={session.user.name}
       />
-      <main className="flex-1 w-full min-w-0 px-4 py-6 pl-16 lg:pl-8 lg:pr-8 lg:py-8">
+      <main className="flex-1 min-w-0 px-4 py-6 lg:px-8 lg:py-8">
         <div className="max-w-3xl mx-auto">
           {children}
         </div>
