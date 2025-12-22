@@ -309,3 +309,54 @@ export interface ExportedCase {
   related_topics: { key: string; strength: string }[];
   uncertain: boolean;
 }
+
+// ============================================
+// AI Suggestion Types
+// ============================================
+
+/**
+ * Category suggestion from AI with confidence score
+ */
+export interface CategorySuggestion {
+  key: string;
+  rank: 1 | 2 | 3;
+  confidence: number; // 0-1
+}
+
+/**
+ * Related topic suggestion from AI
+ */
+export interface RelatedTopicSuggestion {
+  key: string;
+  strength: "OFTEN" | "SOMETIMES";
+}
+
+/**
+ * Complete label suggestion from AI
+ */
+export interface LabelSuggestion {
+  main: CategorySuggestion[];
+  sub: SubcategoriesMap;
+  intensity: IntensityMap;
+  related: RelatedTopicSuggestion[];
+  uncertainSuggested: boolean;
+  rationaleShort: string;
+}
+
+/**
+ * Input for saving a label with AI audit trail
+ */
+export interface SaveLabelWithAuditInput {
+  caseId?: string;
+  text?: string;
+  aiSuggestion: LabelSuggestion | null;
+  finalLabel: Omit<LabelInput, "caseId">;
+}
+
+/**
+ * Result of saving a label with audit
+ */
+export interface SaveLabelResult {
+  caseId: string;
+  labelId: string;
+}

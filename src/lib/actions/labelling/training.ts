@@ -308,3 +308,128 @@ export async function getTrainingStats(): Promise<ActionResult<TrainingStats>> {
     return { success: false, error: "Fehler beim Laden der Statistik" };
   }
 }
+
+/**
+ * Save a label with AI suggestion audit trail
+ * Creates a new case if text is provided, otherwise uses existing caseId
+ */
+export async function saveLabelWithAudit(input: {
+  caseId?: string;
+  text?: string;
+  aiSuggestion: {
+    main: Array<{ key: string; rank: 1 | 2 | 3; confidence: number }>;
+    sub: Record<string, string[]>;
+    intensity: Record<string, string[]>;
+    related: Array<{ key: string; strength: "OFTEN" | "SOMETIMES" }>;
+    uncertainSuggested: boolean;
+    rationaleShort: string;
+  } | null;
+  finalLabel: {
+    primaryCategories: Array<{ key: string; rank: 1 | 2 | 3 }>;
+    subcategories: Record<string, string[]>;
+    intensity: Record<string, string[]>;
+    relatedTopics?: Array<{ key: string; strength: "OFTEN" | "SOMETIMES" }>;
+    uncertain?: boolean;
+  };
+}): Promise<ActionResult<{ caseId: string; labelId: string }>> {
+  const { error, user } = await requireLabellingAccess();
+  if (error || !user) {
+    return { success: false, error: error || "Nicht authentifiziert" };
+  }
+
+  // Validate input
+  if (!input.caseId && !input.text) {
+    return { success: false, error: "Entweder caseId oder text erforderlich" };
+  }
+
+  if (
+    !input.finalLabel.primaryCategories ||
+    input.finalLabel.primaryCategories.length === 0
+  ) {
+    return { success: false, error: "Mindestens eine Kategorie erforderlich" };
+  }
+
+  if (input.finalLabel.primaryCategories.length > 3) {
+    return { success: false, error: "Maximal 3 Kategorien erlaubt" };
+  }
+
+  try {
+    // Get or create taxonomy version
+    let taxonomy = await db.taxonomyVersion.findFirst({
+      where: { isActive: true },
+    });
+
+    if (!taxonomy) {
+      taxonomy = await db.taxonomyVersion.create({
+        data: {
+          version: "v0.2",
+          description: "Labelling mit KI-Vorschlägen",
+          schema: { type: "labelling", version: "v0.2" },
+          isActive: true,
+        },
+      });
+    }
+
+    let targetCaseId = input.caseId;
+
+    // Create new case if text provided
+    if (!targetCaseId && input.text) {
+      const newCase = await db.labellingCase.create({
+        data: {
+          text: input.text,
+          language: "de",
+          source: "MANUAL",
+          status: "NEW",
+          metadata: input.aiSuggestion
+            ? ({ aiSuggestion: input.aiSuggestion } as Prisma.InputJsonValue)
+            : Prisma.JsonNull,
+          createdById: user.id,
+        },
+      });
+      targetCaseId = newCase.id;
+    }
+
+    if (!targetCaseId) {
+      return { success: false, error: "Case ID konnte nicht ermittelt werden" };
+    }
+
+    // Create the label
+    const label = await db.label.create({
+      data: {
+        caseId: targetCaseId,
+        raterId: user.id,
+        taxonomyVersionId: taxonomy.id,
+        primaryCategories:
+          input.finalLabel.primaryCategories as Prisma.InputJsonValue,
+        subcategories: input.finalLabel.subcategories as Prisma.InputJsonValue,
+        intensity: input.finalLabel.intensity as Prisma.InputJsonValue,
+        relatedTopics: input.finalLabel.relatedTopics
+          ? (input.finalLabel.relatedTopics as Prisma.InputJsonValue)
+          : Prisma.JsonNull,
+        uncertain: input.finalLabel.uncertain ?? false,
+        evidenceSnippets: Prisma.JsonNull,
+      },
+    });
+
+    // Update case status
+    await db.labellingCase.update({
+      where: { id: targetCaseId },
+      data: { status: "LABELED" },
+    });
+
+    revalidatePath("/labelling");
+    revalidatePath("/labelling/cases");
+    revalidatePath("/labelling/cases/new");
+
+    return {
+      success: true,
+      data: {
+        caseId: targetCaseId,
+        labelId: label.id,
+      },
+    };
+  } catch (err) {
+    console.error("Save label with audit error:", err);
+    return { success: false, error: "Fehler beim Speichern" };
+  }
+}

@@ -99,10 +99,10 @@ export default async function LabellingDashboardPage() {
             Trainingsdaten für das Matching-Modell
           </p>
         </div>
-        <Link href="/de/labelling/train">
+        <Link href="/de/labelling/cases/new">
           <Button size="lg" className="gap-2">
             <Play className="h-5 w-5" />
-            Training starten
+            Neuen Fall labeln
           </Button>
         </Link>
       </div>
@@ -262,10 +262,10 @@ export default async function LabellingDashboardPage() {
               Jedes Label verbessert die Empfehlungsqualität für Hilfesuchende
             </p>
           </div>
-          <Link href="/de/labelling/train">
+          <Link href="/de/labelling/cases/new">
             <Button className="gap-2">
               <Play className="h-4 w-4" />
-              Weiter trainieren
+              Neuen Fall labeln
             </Button>
           </Link>
         </CardContent>

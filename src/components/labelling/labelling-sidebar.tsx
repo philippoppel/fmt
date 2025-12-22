@@ -7,6 +7,7 @@ import {
   Tag,
   BarChart3,
   Play,
+  Inbox,
   LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,8 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { href: "/de/labelling", label: "Dashboard", icon: BarChart3 },
-  { href: "/de/labelling/train", label: "Training", icon: Play },
+  { href: "/de/labelling/cases/new", label: "Neuer Fall", icon: Play },
+  { href: "/de/labelling/cases", label: "Inbox", icon: Inbox },
 ];
 
 interface LabellingSidebarProps {
@@ -48,8 +50,9 @@ export function LabellingSidebar({ user }: LabellingSidebarProps) {
       {/* Navigation */}
       <nav className="flex-1 p-3 space-y-1">
         {navItems.map((item) => {
+          // Exact match for dashboard and cases/new, prefix match for inbox (but not cases/new)
           const isActive = pathname === item.href ||
-            (item.href !== "/de/labelling" && pathname.startsWith(item.href));
+            (item.href === "/de/labelling/cases" && pathname.startsWith("/de/labelling/cases") && !pathname.includes("/new"));
 
           return (
             <Link
