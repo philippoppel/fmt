@@ -48,7 +48,7 @@ export default async function SettingsPage({ params }: Props) {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-8">
+    <div>
       <ProfileForm
         initialData={{
           name: profile.user.name || "",

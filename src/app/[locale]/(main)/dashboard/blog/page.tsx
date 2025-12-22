@@ -36,7 +36,7 @@ export default async function DashboardBlogPage({ params }: Props) {
   const draftCount = posts.filter((p) => p.status === "draft").length;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
