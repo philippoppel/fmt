@@ -1,86 +1,73 @@
 /**
- * Shared constants for labelling
+ * Shared constants for labelling - 40 category system
  */
 
-// German labels for main topics
+// German labels for all topics (40 categories)
 export const TOPIC_LABELS_DE: Record<string, string> = {
-  family: "Familie",
-  anxiety: "Angst",
-  depression: "Depression",
-  relationships: "Beziehungen",
-  burnout: "Burnout",
-  trauma: "Trauma",
-  addiction: "Sucht",
-  eating_disorders: "Essstörungen",
-  adhd: "ADHS",
-  self_care: "Selbstfürsorge",
-  stress: "Stress",
-  sleep: "Schlaf",
+  // A) Acute Flags (6)
+  suicideSelfHarm: "Suizidgedanken / Selbstverletzung",
+  psychosisMania: "Psychose / (Hypo-)Manie",
+  violenceAbuse: "Gewalt / Missbrauch / Unsicherheit",
+  severeSubstanceWithdrawal: "Akuter Entzug / schwere Intoxikation",
+  medicallySevereEating: "Medizinisch kritische Essstörung",
+  childProtection: "Kindeswohlgefährdung / Familienkrise",
+
+  // B) Clinical Problem Fields (23)
+  depressionMood: "Depression / depressive Verstimmung",
+  bipolarMood: "Bipolar / Stimmungsschwankungen",
+  anxietyGAD: "Angst / Sorgen (generalisiert)",
+  panicAgoraphobia: "Panik / Agoraphobie",
+  socialAnxiety: "Soziale Angst",
+  specificPhobias: "Spezifische Phobien",
+  healthAnxiety: "Krankheitsangst / Somatisierung",
+  ocdRelated: "Zwang (OCD) & verwandte Störungen",
+  traumaPTSD: "Trauma / PTBS / Traumafolgen",
+  dissociation: "Dissoziation / Depersonalisation",
+  addictionSubstances: "Substanzkonsum (Alkohol, Drogen)",
+  addictionBehavioral: "Verhaltenssüchte (Gaming, Glücksspiel)",
+  eatingDisorders: "Essstörungen / Körperbild",
+  sleepDisorders: "Schlafprobleme / Insomnie",
+  stressBurnout: "Stress / Burnout / Erschöpfung",
+  angerImpulse: "Ärger / Impulskontrolle",
+  selfEsteemIdentity: "Selbstwert / Scham / Identität",
+  emotionRegulationPersonality: "Emotionsregulation / Instabilität",
+  adhdExecutive: "ADHS / Exekutivfunktionen",
+  autismNeurodiversity: "Autismus / Neurodiversität",
+  griefLoss: "Trauer / Verlust / Abschied",
+  chronicIllnessPain: "Chronische Krankheit / Schmerzen",
+  sexualityIntimacy: "Sexualität / Intimität",
+
+  // C) Life Areas & Situations (9)
+  relationshipsCouple: "Partnerschaft / Paarprobleme",
+  familyOfOrigin: "Herkunftsfamilie / Generationenkonflikte",
+  parentingPerinatal: "Elternschaft / Schwangerschaft / postpartal",
+  workCareer: "Arbeit / Karriere / Mobbing",
+  schoolUniversity: "Schule / Studium / Leistungsdruck",
+  lifeTransitions: "Lebensübergänge (Umzug, Trennung, etc.)",
+  socialLoneliness: "Einsamkeit / soziale Isolation",
+  decisionMakingValues: "Entscheidungen / Werte / Lebensrichtung",
+  financialHousingStress: "Existenzstress (Finanzen, Wohnen)",
+
+  // D) Meta Categories (2)
+  assessmentClarification: "Abklärung / Diagnostik-Wunsch",
+  unsureOther: "Unsicher / Sonstiges",
 };
 
-// German labels for subtopics
-export const SUBTOPIC_LABELS_DE: Record<string, string> = {
-  // Family
-  divorce: "Scheidung/Trennung",
-  parenting: "Erziehung",
-  family_conflicts: "Familienkonflikte",
-  generation_conflicts: "Generationenkonflikte",
-  // Anxiety
-  social_anxiety: "Soziale Angst",
-  panic_attacks: "Panikattacken",
-  phobias: "Phobien",
-  generalized_anxiety: "Generalisierte Angst",
-  // Depression
-  chronic_sadness: "Chronische Traurigkeit",
-  lack_motivation: "Antriebslosigkeit",
-  grief: "Trauer",
-  loneliness: "Einsamkeit",
-  // Relationships
-  couple_conflicts: "Paarkonflikte",
-  breakup: "Trennung",
-  dating_issues: "Dating-Probleme",
-  intimacy: "Intimität",
-  // Burnout
-  work_stress: "Arbeitsstress",
-  exhaustion: "Erschöpfung",
-  work_life_balance: "Work-Life-Balance",
-  // Trauma
-  ptsd: "PTBS",
-  childhood_trauma: "Kindheitstrauma",
-  accident_trauma: "Unfalltrauma",
-  loss: "Verlust",
-  // Addiction
-  alcohol: "Alkohol",
-  drugs: "Drogen",
-  behavioral_addiction: "Verhaltenssucht",
-  gaming: "Gaming",
-  // Eating disorders
-  anorexia: "Magersucht",
-  bulimia: "Bulimie",
-  binge_eating: "Essanfälle",
-  // ADHD
-  concentration: "Konzentration",
-  impulsivity: "Impulsivität",
-  adult_adhd: "ADHS Erwachsene",
-  // Self care
-  self_esteem: "Selbstwert",
-  boundaries: "Grenzen setzen",
-  life_changes: "Lebensveränderungen",
-  // Stress
-  chronic_stress: "Chronischer Stress",
-  exam_anxiety: "Prüfungsangst",
-  performance_pressure: "Leistungsdruck",
-  // Sleep
-  insomnia: "Schlaflosigkeit",
-  nightmares: "Albträume",
-  sleep_anxiety: "Schlafangst",
+// Section labels
+export const SECTION_LABELS_DE: Record<string, string> = {
+  flags: "Akute Flags",
+  clinical: "Klinische Themen",
+  life: "Lebensbereiche",
+  meta: "Sonstiges",
 };
 
-// Combined labels for search
+// Combined labels for search (backwards compatibility)
 export const ALL_LABELS_DE: Record<string, string> = {
   ...TOPIC_LABELS_DE,
-  ...SUBTOPIC_LABELS_DE,
 };
 
 // Alias for backwards compatibility
 export const TOPIC_LABELS = TOPIC_LABELS_DE;
+
+// No more subtopics - categories are now granular enough
+export const SUBTOPIC_LABELS_DE: Record<string, string> = {};

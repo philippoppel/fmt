@@ -1,167 +1,390 @@
 import type { Specialty } from "@/types/therapist";
 
+export type TopicSection = "flags" | "clinical" | "life" | "meta";
+
+// SubTopic interface (kept for backwards compatibility)
 export interface SubTopic {
   id: string;
   labelKey: string;
-  weight: number; // 0.5 - 1.0 for score calculation
-  unsplashId?: string; // Optional image for visual selection
+  weight: number;
+  unsplashId?: string;
 }
 
 export interface Topic {
   id: string;
   labelKey: string;
   unsplashId: string;
+  section: TopicSection;
+  isFlag?: boolean;
   mappedSpecialties: Specialty[];
   subTopics: SubTopic[];
 }
 
-export const MATCHING_TOPICS: Topic[] = [
+// Section A: Acute Flags (separate handling, not normal matching)
+const ACUTE_FLAGS: Topic[] = [
   {
-    id: "family",
-    labelKey: "matching.topics.family",
-    unsplashId: "photo-1511895426328-dc8714191300",
-    mappedSpecialties: ["relationships"],
-    subTopics: [
-      { id: "divorce", labelKey: "matching.subtopics.divorce", weight: 1.0, unsplashId: "photo-1516589091380-5d8e87df6999" },
-      { id: "parenting", labelKey: "matching.subtopics.parenting", weight: 0.8, unsplashId: "photo-1476703993599-0035a21b17a9" },
-      { id: "family_conflicts", labelKey: "matching.subtopics.familyConflicts", weight: 0.9, unsplashId: "photo-1511895426328-dc8714191300" },
-      { id: "generation_conflicts", labelKey: "matching.subtopics.generationConflicts", weight: 0.7, unsplashId: "photo-1529156069898-49953e39b3ac" },
-    ],
+    id: "suicideSelfHarm",
+    labelKey: "matching.topics.suicideSelfHarm",
+    unsplashId: "photo-1516585427167-9f4af9627e6c",
+    section: "flags",
+    isFlag: true,
+    mappedSpecialties: [],
+    subTopics: [],
   },
   {
-    id: "anxiety",
-    labelKey: "matching.topics.anxiety",
-    unsplashId: "photo-1493836512294-502baa1986e2",
-    mappedSpecialties: ["anxiety"],
-    subTopics: [
-      { id: "social_anxiety", labelKey: "matching.subtopics.socialAnxiety", weight: 1.0, unsplashId: "photo-1529156069898-49953e39b3ac" },
-      { id: "panic_attacks", labelKey: "matching.subtopics.panicAttacks", weight: 1.0, unsplashId: "photo-1474552226712-ac0f0961a954" },
-      { id: "phobias", labelKey: "matching.subtopics.phobias", weight: 0.8, unsplashId: "photo-1509822929063-6b6cfc9b42f2" },
-      { id: "generalized_anxiety", labelKey: "matching.subtopics.generalizedAnxiety", weight: 0.9, unsplashId: "photo-1507003211169-0a1dd7228f2d" },
-    ],
+    id: "psychosisMania",
+    labelKey: "matching.topics.psychosisMania",
+    unsplashId: "photo-1507003211169-0a1dd7228f2d",
+    section: "flags",
+    isFlag: true,
+    mappedSpecialties: [],
+    subTopics: [],
   },
   {
-    id: "depression",
-    labelKey: "matching.topics.depression",
-    unsplashId: "photo-1541199249251-f713e6145474",
-    mappedSpecialties: ["depression"],
-    subTopics: [
-      { id: "chronic_sadness", labelKey: "matching.subtopics.chronicSadness", weight: 1.0, unsplashId: "photo-1494790108377-be9c29b29330" },
-      { id: "lack_motivation", labelKey: "matching.subtopics.lackMotivation", weight: 0.8, unsplashId: "photo-1508963493744-76fce69379c0" },
-      { id: "grief", labelKey: "matching.subtopics.grief", weight: 0.9, unsplashId: "photo-1516585427167-9f4af9627e6c" },
-      { id: "loneliness", labelKey: "matching.subtopics.loneliness", weight: 0.8, unsplashId: "photo-1499209974431-9dddcece7f88" },
-    ],
-  },
-  {
-    id: "relationships",
-    labelKey: "matching.topics.relationships",
-    unsplashId: "photo-1516589178581-6cd7833ae3b2",
-    mappedSpecialties: ["relationships"],
-    subTopics: [
-      { id: "couple_conflicts", labelKey: "matching.subtopics.coupleConflicts", weight: 1.0, unsplashId: "photo-1573497019940-1c28c88b4f3e" },
-      { id: "breakup", labelKey: "matching.subtopics.breakup", weight: 0.9, unsplashId: "photo-1508214751196-bcfd4ca60f91" },
-      { id: "dating_issues", labelKey: "matching.subtopics.datingIssues", weight: 0.7, unsplashId: "photo-1517841905240-472988babdf9" },
-      { id: "intimacy", labelKey: "matching.subtopics.intimacy", weight: 0.8, unsplashId: "photo-1518199266791-5375a83190b7" },
-    ],
-  },
-  {
-    id: "burnout",
-    labelKey: "matching.topics.burnout",
-    unsplashId: "photo-1544027993-37dbfe43562a",
-    mappedSpecialties: ["burnout"],
-    subTopics: [
-      { id: "work_stress", labelKey: "matching.subtopics.workStress", weight: 1.0, unsplashId: "photo-1454165804606-c3d57bc86b40" },
-      { id: "exhaustion", labelKey: "matching.subtopics.exhaustion", weight: 0.9, unsplashId: "photo-1509909756405-be0199881695" },
-      { id: "work_life_balance", labelKey: "matching.subtopics.workLifeBalance", weight: 0.7, unsplashId: "photo-1522202176988-66273c2fd55f" },
-    ],
-  },
-  {
-    id: "trauma",
-    labelKey: "matching.topics.trauma",
-    unsplashId: "photo-1499209974431-9dddcece7f88",
+    id: "violenceAbuse",
+    labelKey: "matching.topics.violenceAbuse",
+    unsplashId: "photo-1518621736915-f3b1c41bfd00",
+    section: "flags",
+    isFlag: true,
     mappedSpecialties: ["trauma"],
-    subTopics: [
-      { id: "ptsd", labelKey: "matching.subtopics.ptsd", weight: 1.0, unsplashId: "photo-1518621736915-f3b1c41bfd00" },
-      { id: "childhood_trauma", labelKey: "matching.subtopics.childhoodTrauma", weight: 1.0, unsplashId: "photo-1503454537195-1dcabb73ffb9" },
-      { id: "accident_trauma", labelKey: "matching.subtopics.accidentTrauma", weight: 0.9, unsplashId: "photo-1590650153855-d9e808231d41" },
-      { id: "loss", labelKey: "matching.subtopics.loss", weight: 0.8, unsplashId: "photo-1516585427167-9f4af9627e6c" },
-    ],
+    subTopics: [],
   },
   {
-    id: "addiction",
-    labelKey: "matching.topics.addiction",
+    id: "severeSubstanceWithdrawal",
+    labelKey: "matching.topics.severeSubstanceWithdrawal",
     unsplashId: "photo-1527137342181-19aab11a8ee8",
+    section: "flags",
+    isFlag: true,
     mappedSpecialties: ["addiction"],
-    subTopics: [
-      { id: "alcohol", labelKey: "matching.subtopics.alcohol", weight: 1.0, unsplashId: "photo-1514362545857-3bc16c4c7d1b" },
-      { id: "drugs", labelKey: "matching.subtopics.drugs", weight: 1.0, unsplashId: "photo-1584308666744-24d5c474f2ae" },
-      { id: "behavioral_addiction", labelKey: "matching.subtopics.behavioralAddiction", weight: 0.8, unsplashId: "photo-1511512578047-dfb367046420" },
-      { id: "gaming", labelKey: "matching.subtopics.gaming", weight: 0.7, unsplashId: "photo-1538481199705-c710c4e965fc" },
-    ],
+    subTopics: [],
   },
   {
-    id: "eating_disorders",
-    labelKey: "matching.topics.eatingDisorders",
+    id: "medicallySevereEating",
+    labelKey: "matching.topics.medicallySevereEating",
     unsplashId: "photo-1490645935967-10de6ba17061",
+    section: "flags",
+    isFlag: true,
     mappedSpecialties: ["eating_disorders"],
-    subTopics: [
-      { id: "anorexia", labelKey: "matching.subtopics.anorexia", weight: 1.0, unsplashId: "photo-1490818387583-1baba5e638af" },
-      { id: "bulimia", labelKey: "matching.subtopics.bulimia", weight: 1.0, unsplashId: "photo-1484723091739-30a097e8f929" },
-      { id: "binge_eating", labelKey: "matching.subtopics.bingeEating", weight: 0.9, unsplashId: "photo-1504674900247-0877df9cc836" },
-    ],
+    subTopics: [],
   },
   {
-    id: "adhd",
-    labelKey: "matching.topics.adhd",
-    unsplashId: "photo-1434030216411-0b793f4b4173",
-    mappedSpecialties: ["adhd"],
-    subTopics: [
-      { id: "concentration", labelKey: "matching.subtopics.concentration", weight: 1.0, unsplashId: "photo-1456406644174-8ddd4cd52a06" },
-      { id: "impulsivity", labelKey: "matching.subtopics.impulsivity", weight: 0.9, unsplashId: "photo-1533227268428-f9ed0900fb3b" },
-      { id: "adult_adhd", labelKey: "matching.subtopics.adultAdhd", weight: 0.8, unsplashId: "photo-1522071820081-009f0129c71c" },
-    ],
-  },
-  {
-    id: "self_care",
-    labelKey: "matching.topics.selfCare",
-    unsplashId: "photo-1506126613408-eca07ce68773",
-    mappedSpecialties: ["burnout", "depression"],
-    subTopics: [
-      { id: "self_esteem", labelKey: "matching.subtopics.selfEsteem", weight: 0.8, unsplashId: "photo-1517836357463-d25dfeac3438" },
-      { id: "boundaries", labelKey: "matching.subtopics.boundaries", weight: 0.7, unsplashId: "photo-1507003211169-0a1dd7228f2d" },
-      { id: "life_changes", labelKey: "matching.subtopics.lifeChanges", weight: 0.7, unsplashId: "photo-1499750310107-5fef28a66643" },
-    ],
-  },
-  {
-    id: "stress",
-    labelKey: "matching.topics.stress",
-    unsplashId: "photo-1621252179027-94459d278660",
-    mappedSpecialties: ["burnout"],
-    subTopics: [
-      { id: "chronic_stress", labelKey: "matching.subtopics.chronicStress", weight: 1.0, unsplashId: "photo-1544027993-37dbfe43562a" },
-      { id: "exam_anxiety", labelKey: "matching.subtopics.examAnxiety", weight: 0.8, unsplashId: "photo-1434030216411-0b793f4b4173" },
-      { id: "performance_pressure", labelKey: "matching.subtopics.performancePressure", weight: 0.9, unsplashId: "photo-1450101499163-c8848c66ca85" },
-    ],
-  },
-  {
-    id: "sleep",
-    labelKey: "matching.topics.sleep",
-    unsplashId: "photo-1541781774459-bb2af2f05b55",
-    mappedSpecialties: ["depression", "anxiety"],
-    subTopics: [
-      { id: "insomnia", labelKey: "matching.subtopics.insomnia", weight: 1.0, unsplashId: "photo-1515894203077-9cd36032142f" },
-      { id: "nightmares", labelKey: "matching.subtopics.nightmares", weight: 0.9, unsplashId: "photo-1518837695005-2083093ee35b" },
-      { id: "sleep_anxiety", labelKey: "matching.subtopics.sleepAnxiety", weight: 0.8, unsplashId: "photo-1541781774459-bb2af2f05b55" },
-    ],
-  },
-  {
-    id: "other",
-    labelKey: "matching.topics.other",
-    unsplashId: "photo-1499750310107-5fef28a66643",
-    mappedSpecialties: [], // Will be determined by AI matching against freetext
-    subTopics: [], // No predefined subtopics - user describes in freetext
+    id: "childProtection",
+    labelKey: "matching.topics.childProtection",
+    unsplashId: "photo-1503454537195-1dcabb73ffb9",
+    section: "flags",
+    isFlag: true,
+    mappedSpecialties: [],
+    subTopics: [],
   },
 ];
+
+// Section B: Clinical Problem Fields (therapy reasons, good for matching)
+const CLINICAL_TOPICS: Topic[] = [
+  {
+    id: "depressionMood",
+    labelKey: "matching.topics.depressionMood",
+    unsplashId: "photo-1541199249251-f713e6145474",
+    section: "clinical",
+    mappedSpecialties: ["depression"],
+    subTopics: [],
+  },
+  {
+    id: "bipolarMood",
+    labelKey: "matching.topics.bipolarMood",
+    unsplashId: "photo-1507003211169-0a1dd7228f2d",
+    section: "clinical",
+    mappedSpecialties: ["depression"],
+    subTopics: [],
+  },
+  {
+    id: "anxietyGAD",
+    labelKey: "matching.topics.anxietyGAD",
+    unsplashId: "photo-1493836512294-502baa1986e2",
+    section: "clinical",
+    mappedSpecialties: ["anxiety"],
+    subTopics: [],
+  },
+  {
+    id: "panicAgoraphobia",
+    labelKey: "matching.topics.panicAgoraphobia",
+    unsplashId: "photo-1474552226712-ac0f0961a954",
+    section: "clinical",
+    mappedSpecialties: ["anxiety"],
+    subTopics: [],
+  },
+  {
+    id: "socialAnxiety",
+    labelKey: "matching.topics.socialAnxiety",
+    unsplashId: "photo-1529156069898-49953e39b3ac",
+    section: "clinical",
+    mappedSpecialties: ["anxiety"],
+    subTopics: [],
+  },
+  {
+    id: "specificPhobias",
+    labelKey: "matching.topics.specificPhobias",
+    unsplashId: "photo-1509822929063-6b6cfc9b42f2",
+    section: "clinical",
+    mappedSpecialties: ["anxiety"],
+    subTopics: [],
+  },
+  {
+    id: "healthAnxiety",
+    labelKey: "matching.topics.healthAnxiety",
+    unsplashId: "photo-1576091160550-2173dba999ef",
+    section: "clinical",
+    mappedSpecialties: ["anxiety"],
+    subTopics: [],
+  },
+  {
+    id: "ocdRelated",
+    labelKey: "matching.topics.ocdRelated",
+    unsplashId: "photo-1434030216411-0b793f4b4173",
+    section: "clinical",
+    mappedSpecialties: ["anxiety"],
+    subTopics: [],
+  },
+  {
+    id: "traumaPTSD",
+    labelKey: "matching.topics.traumaPTSD",
+    unsplashId: "photo-1499209974431-9dddcece7f88",
+    section: "clinical",
+    mappedSpecialties: ["trauma"],
+    subTopics: [],
+  },
+  {
+    id: "dissociation",
+    labelKey: "matching.topics.dissociation",
+    unsplashId: "photo-1518621736915-f3b1c41bfd00",
+    section: "clinical",
+    mappedSpecialties: ["trauma"],
+    subTopics: [],
+  },
+  {
+    id: "addictionSubstances",
+    labelKey: "matching.topics.addictionSubstances",
+    unsplashId: "photo-1527137342181-19aab11a8ee8",
+    section: "clinical",
+    mappedSpecialties: ["addiction"],
+    subTopics: [],
+  },
+  {
+    id: "addictionBehavioral",
+    labelKey: "matching.topics.addictionBehavioral",
+    unsplashId: "photo-1511512578047-dfb367046420",
+    section: "clinical",
+    mappedSpecialties: ["addiction"],
+    subTopics: [],
+  },
+  {
+    id: "eatingDisorders",
+    labelKey: "matching.topics.eatingDisorders",
+    unsplashId: "photo-1490645935967-10de6ba17061",
+    section: "clinical",
+    mappedSpecialties: ["eating_disorders"],
+    subTopics: [],
+  },
+  {
+    id: "sleepDisorders",
+    labelKey: "matching.topics.sleepDisorders",
+    unsplashId: "photo-1541781774459-bb2af2f05b55",
+    section: "clinical",
+    mappedSpecialties: ["depression", "anxiety"],
+    subTopics: [],
+  },
+  {
+    id: "stressBurnout",
+    labelKey: "matching.topics.stressBurnout",
+    unsplashId: "photo-1544027993-37dbfe43562a",
+    section: "clinical",
+    mappedSpecialties: ["burnout"],
+    subTopics: [],
+  },
+  {
+    id: "angerImpulse",
+    labelKey: "matching.topics.angerImpulse",
+    unsplashId: "photo-1533227268428-f9ed0900fb3b",
+    section: "clinical",
+    mappedSpecialties: [],
+    subTopics: [],
+  },
+  {
+    id: "selfEsteemIdentity",
+    labelKey: "matching.topics.selfEsteemIdentity",
+    unsplashId: "photo-1517836357463-d25dfeac3438",
+    section: "clinical",
+    mappedSpecialties: ["depression"],
+    subTopics: [],
+  },
+  {
+    id: "emotionRegulationPersonality",
+    labelKey: "matching.topics.emotionRegulationPersonality",
+    unsplashId: "photo-1506126613408-eca07ce68773",
+    section: "clinical",
+    mappedSpecialties: [],
+    subTopics: [],
+  },
+  {
+    id: "adhdExecutive",
+    labelKey: "matching.topics.adhdExecutive",
+    unsplashId: "photo-1434030216411-0b793f4b4173",
+    section: "clinical",
+    mappedSpecialties: ["adhd"],
+    subTopics: [],
+  },
+  {
+    id: "autismNeurodiversity",
+    labelKey: "matching.topics.autismNeurodiversity",
+    unsplashId: "photo-1522071820081-009f0129c71c",
+    section: "clinical",
+    mappedSpecialties: ["adhd"],
+    subTopics: [],
+  },
+  {
+    id: "griefLoss",
+    labelKey: "matching.topics.griefLoss",
+    unsplashId: "photo-1516585427167-9f4af9627e6c",
+    section: "clinical",
+    mappedSpecialties: ["depression", "trauma"],
+    subTopics: [],
+  },
+  {
+    id: "chronicIllnessPain",
+    labelKey: "matching.topics.chronicIllnessPain",
+    unsplashId: "photo-1576091160550-2173dba999ef",
+    section: "clinical",
+    mappedSpecialties: [],
+    subTopics: [],
+  },
+  {
+    id: "sexualityIntimacy",
+    labelKey: "matching.topics.sexualityIntimacy",
+    unsplashId: "photo-1518199266791-5375a83190b7",
+    section: "clinical",
+    mappedSpecialties: ["relationships"],
+    subTopics: [],
+  },
+];
+
+// Section C: Life Areas & Situations (common therapy entry points)
+const LIFE_TOPICS: Topic[] = [
+  {
+    id: "relationshipsCouple",
+    labelKey: "matching.topics.relationshipsCouple",
+    unsplashId: "photo-1516589178581-6cd7833ae3b2",
+    section: "life",
+    mappedSpecialties: ["relationships"],
+    subTopics: [],
+  },
+  {
+    id: "familyOfOrigin",
+    labelKey: "matching.topics.familyOfOrigin",
+    unsplashId: "photo-1511895426328-dc8714191300",
+    section: "life",
+    mappedSpecialties: ["relationships"],
+    subTopics: [],
+  },
+  {
+    id: "parentingPerinatal",
+    labelKey: "matching.topics.parentingPerinatal",
+    unsplashId: "photo-1476703993599-0035a21b17a9",
+    section: "life",
+    mappedSpecialties: ["relationships"],
+    subTopics: [],
+  },
+  {
+    id: "workCareer",
+    labelKey: "matching.topics.workCareer",
+    unsplashId: "photo-1454165804606-c3d57bc86b40",
+    section: "life",
+    mappedSpecialties: ["burnout"],
+    subTopics: [],
+  },
+  {
+    id: "schoolUniversity",
+    labelKey: "matching.topics.schoolUniversity",
+    unsplashId: "photo-1434030216411-0b793f4b4173",
+    section: "life",
+    mappedSpecialties: ["anxiety"],
+    subTopics: [],
+  },
+  {
+    id: "lifeTransitions",
+    labelKey: "matching.topics.lifeTransitions",
+    unsplashId: "photo-1499750310107-5fef28a66643",
+    section: "life",
+    mappedSpecialties: [],
+    subTopics: [],
+  },
+  {
+    id: "socialLoneliness",
+    labelKey: "matching.topics.socialLoneliness",
+    unsplashId: "photo-1499209974431-9dddcece7f88",
+    section: "life",
+    mappedSpecialties: ["depression"],
+    subTopics: [],
+  },
+  {
+    id: "decisionMakingValues",
+    labelKey: "matching.topics.decisionMakingValues",
+    unsplashId: "photo-1450101499163-c8848c66ca85",
+    section: "life",
+    mappedSpecialties: [],
+    subTopics: [],
+  },
+  {
+    id: "financialHousingStress",
+    labelKey: "matching.topics.financialHousingStress",
+    unsplashId: "photo-1621252179027-94459d278660",
+    section: "life",
+    mappedSpecialties: ["burnout"],
+    subTopics: [],
+  },
+];
+
+// Section D: Meta Categories
+const META_TOPICS: Topic[] = [
+  {
+    id: "assessmentClarification",
+    labelKey: "matching.topics.assessmentClarification",
+    unsplashId: "photo-1576091160550-2173dba999ef",
+    section: "meta",
+    mappedSpecialties: [],
+    subTopics: [],
+  },
+  {
+    id: "unsureOther",
+    labelKey: "matching.topics.unsureOther",
+    unsplashId: "photo-1499750310107-5fef28a66643",
+    section: "meta",
+    mappedSpecialties: [],
+    subTopics: [],
+  },
+];
+
+// Combined export
+export const MATCHING_TOPICS: Topic[] = [
+  ...ACUTE_FLAGS,
+  ...CLINICAL_TOPICS,
+  ...LIFE_TOPICS,
+  ...META_TOPICS,
+];
+
+// Grouped exports for UI sections
+export const TOPICS_BY_SECTION = {
+  flags: ACUTE_FLAGS,
+  clinical: CLINICAL_TOPICS,
+  life: LIFE_TOPICS,
+  meta: META_TOPICS,
+};
+
+// Section labels for UI
+export const SECTION_LABELS: Record<TopicSection, string> = {
+  flags: "Akute Flags",
+  clinical: "Klinische Themen",
+  life: "Lebensbereiche",
+  meta: "Sonstiges",
+};
 
 export function getTopicById(id: string): Topic | undefined {
   return MATCHING_TOPICS.find((topic) => topic.id === id);
@@ -178,6 +401,24 @@ export function getSpecialtiesFromTopics(topicIds: string[]): Specialty[] {
   return Array.from(specialties);
 }
 
+export function getTopicImageUrl(
+  unsplashId: string,
+  width = 400,
+  height = 300
+): string {
+  return `https://images.unsplash.com/${unsplashId}?w=${width}&h=${height}&fit=crop&crop=faces,center&auto=format&q=80`;
+}
+
+export function getTopicsBySection(section: TopicSection): Topic[] {
+  return MATCHING_TOPICS.filter((t) => t.section === section);
+}
+
+export function isAcuteFlag(topicId: string): boolean {
+  const topic = getTopicById(topicId);
+  return topic?.isFlag === true;
+}
+
+// Backwards compatibility - returns subtopics from all selected topics
 export function getSubTopicsForTopics(topicIds: string[]): SubTopic[] {
   const subTopics: SubTopic[] = [];
   for (const topicId of topicIds) {
@@ -189,17 +430,7 @@ export function getSubTopicsForTopics(topicIds: string[]): SubTopic[] {
   return subTopics;
 }
 
-export function getTopicImageUrl(
-  unsplashId: string,
-  width = 400,
-  height = 300
-): string {
-  return `https://images.unsplash.com/${unsplashId}?w=${width}&h=${height}&fit=crop&crop=faces,center&auto=format&q=80`;
-}
-
-/**
- * Get all SubTopics that belong to a given Specialty
- */
+// Backwards compatibility
 export function getSubTopicsForSpecialty(specialty: Specialty): SubTopic[] {
   const subTopics: SubTopic[] = [];
   for (const topic of MATCHING_TOPICS) {
@@ -210,9 +441,7 @@ export function getSubTopicsForSpecialty(specialty: Specialty): SubTopic[] {
   return subTopics;
 }
 
-/**
- * Get all SubTopic IDs as a Set (for validation)
- */
+// Backwards compatibility
 export function getAllSubTopicIds(): Set<string> {
   const ids = new Set<string>();
   for (const topic of MATCHING_TOPICS) {
@@ -221,9 +450,7 @@ export function getAllSubTopicIds(): Set<string> {
   return ids;
 }
 
-/**
- * Get the parent Specialty for a given SubTopic ID
- */
+// Backwards compatibility
 export function getSpecialtyForSubTopic(subTopicId: string): Specialty | undefined {
   for (const topic of MATCHING_TOPICS) {
     const found = topic.subTopics.find((st) => st.id === subTopicId);
