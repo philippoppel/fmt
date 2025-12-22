@@ -435,12 +435,13 @@ export async function saveLabelWithAudit(input: {
 }
 
 /**
- * Save a simple label (just text + categories)
+ * Save a simple label (text + category + subtopics)
  * Creates a new AI-generated case and labels it
  */
 export async function saveSimpleLabel(input: {
   text: string;
   categories: string[];
+  subtopics?: string[];
   aiSuggested?: string[];
 }): Promise<ActionResult<{ caseId: string; labelId: string }>> {
   const { error, user } = await requireLabellingAccess();
@@ -498,6 +499,12 @@ export async function saveSimpleLabel(input: {
       rank: (index + 1) as 1 | 2 | 3,
     }));
 
+    // Create subcategories map (subtopics grouped by category)
+    const subcategories: Record<string, string[]> = {};
+    if (input.subtopics && input.subtopics.length > 0 && input.categories[0]) {
+      subcategories[input.categories[0]] = input.subtopics;
+    }
+
     // Create the label
     const label = await db.label.create({
       data: {
@@ -505,7 +512,7 @@ export async function saveSimpleLabel(input: {
         raterId: user.id,
         taxonomyVersionId: taxonomy.id,
         primaryCategories: primaryCategories as Prisma.InputJsonValue,
-        subcategories: {},
+        subcategories: subcategories as Prisma.InputJsonValue,
         intensity: {},
         relatedTopics: Prisma.JsonNull,
         uncertain: false,
