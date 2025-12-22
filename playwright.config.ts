@@ -22,8 +22,12 @@ export default defineConfig({
       use: { ...devices["Desktop Firefox"] },
     },
     {
-      name: "mobile",
+      name: "mobile-ios",
       use: { ...devices["iPhone 14"] },
+    },
+    {
+      name: "mobile-android",
+      use: { ...devices["Pixel 7"] },
     },
   ],
   webServer: {

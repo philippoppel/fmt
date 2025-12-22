@@ -172,15 +172,49 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            {!isAuthenticated && (
-              <div className="pt-4 border-t border-black/10 dark:border-white/10">
-                <Button variant="outline" asChild className="w-full">
-                  <Link href="/fuer-therapeuten" onClick={() => setMobileMenuOpen(false)}>
-                    Für Therapeut:innen
-                  </Link>
-                </Button>
-              </div>
-            )}
+
+            {/* Auth Buttons - Mobile */}
+            <div className="pt-4 mt-2 border-t border-black/10 dark:border-white/10 space-y-2">
+              {isAuthenticated ? (
+                <>
+                  <Button variant="outline" asChild className="w-full justify-start gap-2">
+                    <Link href="/dashboard/settings" onClick={() => setMobileMenuOpen(false)}>
+                      <User className="h-4 w-4" />
+                      {t("profile")}
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2 text-muted-foreground"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      signOut({ callbackUrl: "/" });
+                    }}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    {t("logout")}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button asChild className="w-full">
+                    <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
+                      {t("login")}
+                    </Link>
+                  </Button>
+                  <Button variant="outline" asChild className="w-full">
+                    <Link href="/auth/register" onClick={() => setMobileMenuOpen(false)}>
+                      {t("register")}
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" asChild className="w-full text-muted-foreground">
+                    <Link href="/fuer-therapeuten" onClick={() => setMobileMenuOpen(false)}>
+                      Für Therapeut:innen
+                    </Link>
+                  </Button>
+                </>
+              )}
+            </div>
           </nav>
         </div>
       )}

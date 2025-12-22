@@ -272,7 +272,7 @@ export function ProfileForm({ initialData, accountType }: Props) {
         </CardHeader>
         {openSections.location && (
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="city">{t("sections.location.city")}</Label>
                 <Input
@@ -313,15 +313,15 @@ export function ProfileForm({ initialData, accountType }: Props) {
         {openSections.specializations && (
           <CardContent className="space-y-6">
             {/* Specialty Selection */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {SPECIALTIES.map((specialty) => (
-                <div key={specialty} className="flex items-center space-x-2">
+                <div key={specialty} className="flex items-center space-x-2 min-h-[44px]">
                   <Checkbox
                     id={`specialty-${specialty}`}
                     checked={specializations.includes(specialty)}
                     onCheckedChange={() => toggleArrayValue(specializations, specialty, setSpecializations)}
                   />
-                  <Label htmlFor={`specialty-${specialty}`} className="font-normal cursor-pointer">
+                  <Label htmlFor={`specialty-${specialty}`} className="font-normal cursor-pointer flex-1">
                     {tFilters(`specialty.${specialty}`)}
                   </Label>
                 </div>
@@ -404,15 +404,15 @@ export function ProfileForm({ initialData, accountType }: Props) {
         </CardHeader>
         {openSections.therapyTypes && (
           <CardContent>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {THERAPY_TYPES.map((type) => (
-                <div key={type} className="flex items-center space-x-2">
+                <div key={type} className="flex items-center space-x-2 min-h-[44px]">
                   <Checkbox
                     id={`therapy-${type}`}
                     checked={therapyTypes.includes(type)}
                     onCheckedChange={() => toggleArrayValue(therapyTypes, type, setTherapyTypes)}
                   />
-                  <Label htmlFor={`therapy-${type}`} className="font-normal cursor-pointer">
+                  <Label htmlFor={`therapy-${type}`} className="font-normal cursor-pointer flex-1">
                     {tFilters(`therapyType.${type}`)}
                   </Label>
                 </div>
@@ -438,15 +438,15 @@ export function ProfileForm({ initialData, accountType }: Props) {
         </CardHeader>
         {openSections.languages && (
           <CardContent>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {LANGUAGES.map((lang) => (
-                <div key={lang} className="flex items-center space-x-2">
+                <div key={lang} className="flex items-center space-x-2 min-h-[44px]">
                   <Checkbox
                     id={`lang-${lang}`}
                     checked={languages.includes(lang)}
                     onCheckedChange={() => toggleArrayValue(languages, lang, setLanguages)}
                   />
-                  <Label htmlFor={`lang-${lang}`} className="font-normal cursor-pointer">
+                  <Label htmlFor={`lang-${lang}`} className="font-normal cursor-pointer flex-1">
                     {tFilters(`language.${lang}`)}
                   </Label>
                 </div>
