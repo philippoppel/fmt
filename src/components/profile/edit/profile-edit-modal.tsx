@@ -234,7 +234,7 @@ export function ProfileEditModal({ open, onOpenChange, profile }: ProfileEditMod
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] p-0 flex flex-col">
+      <DialogContent className="max-w-2xl h-[90vh] p-0 flex flex-col overflow-hidden">
         <DialogHeader className="px-6 py-4 border-b bg-white z-10 shrink-0">
           <div className="flex items-center justify-between">
             <DialogTitle>Profil bearbeiten</DialogTitle>
@@ -248,7 +248,7 @@ export function ProfileEditModal({ open, onOpenChange, profile }: ProfileEditMod
           </div>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 min-h-0">
+        <ScrollArea className="flex-1 overflow-auto">
           <div className="px-6 py-4 space-y-2">
             {/* Error/Success Messages */}
             {error && (
