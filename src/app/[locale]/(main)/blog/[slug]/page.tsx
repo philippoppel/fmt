@@ -30,6 +30,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { Clock, ArrowLeft, BookOpen } from "lucide-react";
 
+// Safely parse dates that may be strings (from cache) or Date objects
+function safeParseDate(date: Date | string | null | undefined): Date | null {
+  if (!date) return null;
+  try {
+    const parsed = typeof date === "string" ? new Date(date) : date;
+    return isNaN(parsed.getTime()) ? null : parsed;
+  } catch {
+    return null;
+  }
+}
+
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };
@@ -42,9 +53,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {};
   }
 
-  // Ensure dates are properly converted (they might be strings from JSON serialization)
-  const publishedAt = post.publishedAt ? new Date(post.publishedAt) : null;
-  const updatedAt = new Date(post.updatedAt);
+  // Safely parse dates (may be strings from cache serialization)
+  const publishedAt = safeParseDate(post.publishedAt);
+  const updatedAt = safeParseDate(post.updatedAt);
 
   return generateSeoMetadata({
     title: post.metaTitle || post.title,
@@ -53,7 +64,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     path: `/blog/${slug}`,
     type: "article",
     publishedTime: publishedAt?.toISOString(),
-    modifiedTime: updatedAt.toISOString(),
+    modifiedTime: updatedAt?.toISOString(),
     authors: post.author.name ? [post.author.name] : undefined,
     image: post.featuredImage || undefined,
   });
@@ -96,10 +107,10 @@ export default async function BlogPostPage({ params }: Props) {
           ]
         : [];
 
-  // Ensure dates are properly converted (they might be strings from JSON serialization)
-  const publishedAt = post.publishedAt ? new Date(post.publishedAt) : null;
-  const createdAt = new Date(post.createdAt);
-  const updatedAt = new Date(post.updatedAt);
+  // Safely parse dates (may be strings from cache serialization)
+  const publishedAt = safeParseDate(post.publishedAt);
+  const createdAt = safeParseDate(post.createdAt);
+  const updatedAt = safeParseDate(post.updatedAt);
 
   // Generate JSON-LD
   const articleSchema = generateArticleSchema({
@@ -109,8 +120,8 @@ export default async function BlogPostPage({ params }: Props) {
     image:
       post.featuredImage ||
       `${process.env.NEXT_PUBLIC_APP_URL || ""}/og-image.svg`,
-    publishedTime: publishedAt?.toISOString() || createdAt.toISOString(),
-    modifiedTime: updatedAt.toISOString(),
+    publishedTime: publishedAt?.toISOString() || createdAt?.toISOString() || new Date().toISOString(),
+    modifiedTime: updatedAt?.toISOString() || new Date().toISOString(),
     authors: post.author.name ? [post.author.name] : [],
   });
 
@@ -122,7 +133,7 @@ export default async function BlogPostPage({ params }: Props) {
     description: post.summaryShort,
     url: `${process.env.NEXT_PUBLIC_APP_URL || ""}${localePath}/blog/${slug}`,
     datePublished: publishedAt?.toISOString(),
-    dateModified: updatedAt.toISOString(),
+    dateModified: updatedAt?.toISOString() || new Date().toISOString(),
     author: {
       "@type": "Person",
       name: post.author.name,

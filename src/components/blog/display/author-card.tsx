@@ -59,7 +59,7 @@ interface AuthorInlineProps {
     image: string | null;
   };
   locale: string;
-  publishedAt?: Date | null;
+  publishedAt?: Date | string | null; // Can be string from cache serialization
   className?: string;
 }
 
@@ -71,13 +71,27 @@ export function AuthorInline({
 }: AuthorInlineProps) {
   const t = useTranslations("blog");
 
-  const formattedDate = publishedAt
-    ? new Intl.DateTimeFormat(locale === "de" ? "de-DE" : "en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }).format(publishedAt)
-    : null;
+  // Safely parse publishedAt - it may be a string (from cache) or Date object
+  let parsedDate: Date | null = null;
+  let formattedDate: string | null = null;
+
+  if (publishedAt) {
+    try {
+      parsedDate = typeof publishedAt === "string"
+        ? new Date(publishedAt)
+        : publishedAt;
+
+      if (!isNaN(parsedDate.getTime())) {
+        formattedDate = new Intl.DateTimeFormat(locale === "de" ? "de-DE" : "en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }).format(parsedDate);
+      }
+    } catch {
+      // Invalid date - leave as null
+    }
+  }
 
   return (
     <div className={cn("flex items-center gap-3", className)}>
@@ -101,7 +115,7 @@ export function AuthorInline({
         </Link>
         {formattedDate && (
           <p className="text-muted-foreground">
-            <time dateTime={publishedAt?.toISOString()}>
+            <time dateTime={parsedDate?.toISOString()}>
               {formattedDate}
             </time>
           </p>

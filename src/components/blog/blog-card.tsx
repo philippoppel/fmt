@@ -15,7 +15,7 @@ interface BlogCardProps {
     featuredImageAlt: string | null;
     readingTimeMinutes: number;
     isReviewed?: boolean;
-    publishedAt: Date | null;
+    publishedAt: Date | string | null; // Can be string from cache serialization
     author: {
       name: string | null;
       image: string | null;
@@ -41,13 +41,25 @@ interface BlogCardProps {
 export function BlogCard({ post, locale, variant = "default", className }: BlogCardProps) {
   const href = locale === "de" ? `/blog/${post.slug}` : `/${locale}/blog/${post.slug}`;
 
-  const formattedDate = post.publishedAt
-    ? new Intl.DateTimeFormat(locale === "de" ? "de-DE" : "en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }).format(new Date(post.publishedAt))
-    : null;
+  // Safely parse publishedAt - it may be a string (from cache) or Date object
+  let formattedDate: string | null = null;
+  if (post.publishedAt) {
+    try {
+      const dateValue = typeof post.publishedAt === "string"
+        ? new Date(post.publishedAt)
+        : post.publishedAt;
+
+      if (!isNaN(dateValue.getTime())) {
+        formattedDate = new Intl.DateTimeFormat(locale === "de" ? "de-DE" : "en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }).format(dateValue);
+      }
+    } catch {
+      // Invalid date - leave formattedDate as null
+    }
+  }
 
   if (variant === "compact") {
     return (
