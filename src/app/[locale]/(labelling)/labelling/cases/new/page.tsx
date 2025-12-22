@@ -1,14 +1,14 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { QuickLabelInterface } from "@/components/labelling/quick-label";
+import { SimpleLabelling } from "@/components/labelling/simple-labelling";
 
 export const metadata = {
-  title: "Neuen Fall labeln | Labelling Portal",
+  title: "Labelling | Labelling Portal",
   description: "Erstelle Trainingsdaten für den Matching-Classifier",
 };
 
-export default async function QuickLabelPage() {
+export default async function SimpleLabelPage() {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -19,32 +19,10 @@ export default async function QuickLabelPage() {
     redirect("/de/dashboard");
   }
 
-  // Get stats for the current user
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // Get total count for the current user
+  const totalLabeled = await db.label.count({
+    where: { raterId: session.user.id },
+  });
 
-  const [totalLabeled, todayLabeled] = await Promise.all([
-    db.label.count({
-      where: { raterId: session.user.id },
-    }),
-    db.label.count({
-      where: {
-        raterId: session.user.id,
-        createdAt: { gte: today },
-      },
-    }),
-  ]);
-
-  return (
-    <div className="container max-w-4xl py-6">
-      <QuickLabelInterface
-        userId={session.user.id}
-        userName={session.user.name || "Therapeut"}
-        stats={{
-          todayLabeled,
-          totalLabeled,
-        }}
-      />
-    </div>
-  );
+  return <SimpleLabelling initialCount={totalLabeled} />;
 }

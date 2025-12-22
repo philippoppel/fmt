@@ -3,7 +3,7 @@
 import { ChevronRight, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { TOPIC_LABELS } from "@/components/labelling/quick-label/category-card";
+import { TOPIC_LABELS } from "@/lib/labelling/constants";
 import type { CaseStatus } from "@prisma/client";
 
 interface CaseListItemProps {

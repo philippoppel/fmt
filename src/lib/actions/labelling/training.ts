@@ -433,3 +433,99 @@ export async function saveLabelWithAudit(input: {
     return { success: false, error: "Fehler beim Speichern" };
   }
 }
+
+/**
+ * Save a simple label (just text + categories)
+ * Creates a new AI-generated case and labels it
+ */
+export async function saveSimpleLabel(input: {
+  text: string;
+  categories: string[];
+  aiSuggested?: string[];
+}): Promise<ActionResult<{ caseId: string; labelId: string }>> {
+  const { error, user } = await requireLabellingAccess();
+  if (error || !user) {
+    return { success: false, error: error || "Nicht authentifiziert" };
+  }
+
+  // Validate input
+  if (!input.text || input.text.trim().length < 10) {
+    return { success: false, error: "Text zu kurz" };
+  }
+
+  if (!input.categories || input.categories.length === 0) {
+    return { success: false, error: "Mindestens eine Kategorie erforderlich" };
+  }
+
+  if (input.categories.length > 3) {
+    return { success: false, error: "Maximal 3 Kategorien erlaubt" };
+  }
+
+  try {
+    // Get or create taxonomy version
+    let taxonomy = await db.taxonomyVersion.findFirst({
+      where: { isActive: true },
+    });
+
+    if (!taxonomy) {
+      taxonomy = await db.taxonomyVersion.create({
+        data: {
+          version: "v0.3",
+          description: "Simplified Labelling",
+          schema: { type: "simple", version: "v0.3" },
+          isActive: true,
+        },
+      });
+    }
+
+    // Create the case
+    const newCase = await db.labellingCase.create({
+      data: {
+        text: input.text.trim(),
+        language: "de",
+        source: "AI_SEEDED",
+        status: "LABELED",
+        metadata: input.aiSuggested
+          ? ({ aiSuggested: input.aiSuggested } as Prisma.InputJsonValue)
+          : Prisma.JsonNull,
+        createdById: user.id,
+      },
+    });
+
+    // Create ranked categories
+    const primaryCategories = input.categories.map((key, index) => ({
+      key,
+      rank: (index + 1) as 1 | 2 | 3,
+    }));
+
+    // Create the label
+    const label = await db.label.create({
+      data: {
+        caseId: newCase.id,
+        raterId: user.id,
+        taxonomyVersionId: taxonomy.id,
+        primaryCategories: primaryCategories as Prisma.InputJsonValue,
+        subcategories: {},
+        intensity: {},
+        relatedTopics: Prisma.JsonNull,
+        uncertain: false,
+        evidenceSnippets: Prisma.JsonNull,
+      },
+    });
+
+    revalidatePath("/labelling");
+    revalidatePath("/labelling/cases");
+    revalidatePath("/labelling/cases/new");
+
+    return {
+      success: true,
+      data: {
+        caseId: newCase.id,
+        labelId: label.id,
+      },
+    };
+  } catch (err) {
+    console.error("Save simple label error:", err);
+    return { success: false, error: "Fehler beim Speichern" };
+  }
+}
