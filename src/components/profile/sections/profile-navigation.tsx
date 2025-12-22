@@ -66,17 +66,19 @@ export function ProfileNavigation({ profile, locale }: ProfileNavigationProps) {
     setMobileMenuOpen(false);
   };
 
+  // Header should be solid when menu is open or when scrolled
+  const shouldBeOpaque = isScrolled || mobileMenuOpen;
+
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        isScrolled
-          ? "py-2 backdrop-blur-xl shadow-lg border-b"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        shouldBeOpaque
+          ? "py-2 backdrop-blur-xl shadow-lg border-b bg-white/95"
           : "py-4 bg-transparent"
       )}
       style={{
-        backgroundColor: isScrolled ? "rgba(255,255,255,0.85)" : "transparent",
-        borderColor: isScrolled ? "rgba(255,255,255,0.3)" : "transparent",
+        borderColor: shouldBeOpaque ? "rgba(0,0,0,0.08)" : "transparent",
       }}
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -86,10 +88,10 @@ export function ProfileNavigation({ profile, locale }: ProfileNavigationProps) {
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className={cn(
               "font-bold text-lg truncate max-w-[200px] sm:max-w-none transition-colors duration-300",
-              isScrolled ? "" : "text-white drop-shadow-md"
+              shouldBeOpaque ? "" : "text-white drop-shadow-md"
             )}
             style={{
-              color: isScrolled ? "var(--profile-primary)" : undefined,
+              color: shouldBeOpaque ? "var(--profile-primary)" : undefined,
             }}
           >
             {profile.name}
@@ -106,8 +108,8 @@ export function ProfileNavigation({ profile, locale }: ProfileNavigationProps) {
                   "after:absolute after:bottom-0 after:left-1/2 after:h-0.5",
                   "after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2",
                   "hover:after:w-full",
-                  isScrolled
-                    ? "text-gray-600 hover:text-gray-900"
+                  shouldBeOpaque
+                    ? "text-gray-700 hover:text-gray-900"
                     : "text-white/90 hover:text-white drop-shadow-md"
                 )}
                 style={{
@@ -145,8 +147,8 @@ export function ProfileNavigation({ profile, locale }: ProfileNavigationProps) {
             variant="ghost"
             size="icon"
             className={cn(
-              "md:hidden",
-              isScrolled ? "" : "text-white"
+              "md:hidden transition-colors duration-300",
+              shouldBeOpaque ? "text-gray-800 hover:text-gray-900" : "text-white hover:text-white/80"
             )}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -155,46 +157,34 @@ export function ProfileNavigation({ profile, locale }: ProfileNavigationProps) {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      {mobileMenuOpen && (
-        <div
-          className="md:hidden backdrop-blur-xl border-t shadow-lg mt-2"
-          style={{
-            backgroundColor: "rgba(255,255,255,0.95)",
-            borderColor: "rgba(255,255,255,0.3)",
-          }}
-        >
-          <div className="px-4 py-3 space-y-1">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="block w-full text-left px-4 py-3 rounded-xl text-gray-600 hover:text-gray-900 transition-colors"
-                style={{
-                  backgroundColor: "transparent",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "var(--profile-secondary)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "transparent";
-                }}
-              >
-                {item.label}
-              </button>
-            ))}
-            <Button
-              className="w-full mt-2 font-semibold text-white"
-              style={{
-                background: `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`,
-              }}
-              onClick={() => scrollToSection("contact")}
+      {/* Mobile Navigation - Clean dropdown */}
+      <div
+        className={cn(
+          "md:hidden overflow-hidden transition-all duration-300 ease-out",
+          mobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        )}
+      >
+        <div className="px-4 py-4 space-y-1 border-t border-gray-100">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollToSection(item.id)}
+              className="block w-full text-left px-4 py-3 rounded-xl text-gray-800 font-medium hover:bg-gray-100 active:bg-gray-200 transition-colors"
             >
-              {t.contact}
-            </Button>
-          </div>
+              {item.label}
+            </button>
+          ))}
+          <Button
+            className="w-full mt-3 font-semibold text-white shadow-md"
+            style={{
+              background: `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`,
+            }}
+            onClick={() => scrollToSection("contact")}
+          >
+            {t.contact}
+          </Button>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
