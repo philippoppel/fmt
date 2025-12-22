@@ -144,16 +144,16 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
     aiSuggestedTopics.every((t) => selectedTopics.includes(t));
 
   return (
-    <div className="flex flex-col min-h-[calc(100vh-4rem)] pb-24">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
+      <div className="flex-shrink-0 flex items-center justify-between p-4 border-b">
         <h1 className="text-lg font-semibold">Labelling</h1>
         <Badge variant="secondary" className="text-sm">
           {labelledCount} gelabelt
         </Badge>
       </div>
 
-      {/* Main content */}
+      {/* Main content - scrollable */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {/* Case text */}
         <Card className="p-4">
@@ -293,16 +293,14 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
         )}
       </div>
 
-      {/* Sticky footer */}
+      {/* Footer - sticky at bottom */}
       <div
         className={cn(
-          "fixed bottom-0 left-0 right-0 z-40",
-          "border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80",
-          "px-4 py-3",
-          "pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
+          "flex-shrink-0 border-t border-border bg-background",
+          "px-4 py-3"
         )}
       >
-        <div className="mx-auto max-w-2xl flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3">
           <Button
             variant="ghost"
             onClick={handleSkip}

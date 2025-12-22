@@ -38,9 +38,9 @@ export function LabellingSidebar({ user }: LabellingSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-52 flex-col border-r bg-card">
+    <aside className="sticky top-0 flex h-dvh w-52 flex-col border-r bg-card">
       {/* Header */}
-      <div className="border-b px-4 py-3">
+      <div className="flex-shrink-0 border-b px-4 py-3">
         <Link href="/de/labelling" className="flex items-center gap-2">
           <Tag className="h-5 w-5 text-primary" />
           <span className="font-semibold text-sm">Training Portal</span>
@@ -48,9 +48,8 @@ export function LabellingSidebar({ user }: LabellingSidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-1">
+      <nav className="flex-1 overflow-y-auto p-3 space-y-1">
         {navItems.map((item) => {
-          // Exact match for dashboard and cases/new, prefix match for inbox (but not cases/new)
           const isActive = pathname === item.href ||
             (item.href === "/de/labelling/cases" && pathname.startsWith("/de/labelling/cases") && !pathname.includes("/new"));
 
@@ -72,25 +71,22 @@ export function LabellingSidebar({ user }: LabellingSidebarProps) {
         })}
       </nav>
 
-      {/* User Info & Logout */}
-      <div className="border-t p-3">
-        <div className="mb-2">
-          <p className="text-sm font-medium truncate">
+      {/* User Info & Logout - Fixed at bottom */}
+      <div className="flex-shrink-0 border-t p-3">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm font-medium truncate flex-1">
             {user.name || user.email}
           </p>
-          <p className="text-xs text-muted-foreground">
-            {user.role === "ADMIN" ? "Administrator" : "Therapeut"}
-          </p>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground flex-shrink-0"
+            onClick={() => signOut({ callbackUrl: "/de/auth/login" })}
+            title="Abmelden"
+          >
+            <LogOut className="h-4 w-4" />
+          </Button>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full justify-start gap-2 h-8 text-muted-foreground hover:text-foreground"
-          onClick={() => signOut({ callbackUrl: "/de/auth/login" })}
-        >
-          <LogOut className="h-3.5 w-3.5" />
-          Abmelden
-        </Button>
       </div>
     </aside>
   );
