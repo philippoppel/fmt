@@ -78,9 +78,9 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full p-4">
       <div className="mx-auto flex h-14 max-w-[1400px] items-center justify-between px-6 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/20 shadow-lg shadow-black/5">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-1.5 sm:gap-2 font-semibold">
-          <Logo className="h-7 w-7 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
-          <span className="text-sm sm:text-lg whitespace-nowrap">
+        <Link href="/" className="flex items-center gap-2 font-semibold">
+          <Logo className="h-8 w-8 text-primary flex-shrink-0" />
+          <span className="hidden sm:inline text-lg whitespace-nowrap">
             <span className="font-bold">Find</span>
             <span className="font-normal text-muted-foreground">My</span>
             <span className="font-bold">Therapy</span>
