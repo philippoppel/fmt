@@ -8,11 +8,12 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
-  MATCHING_TOPICS,
-  TOPICS_BY_SECTION,
+  getAllLabelingTopics,
+  getLabelingTopicsBySection,
   SECTION_LABELS,
   getTopicImageUrl,
-  type TopicSection
+  type TopicSection,
+  type LabelingTopic
 } from "@/lib/matching/topics";
 import { generateCaseWithSuggestions } from "@/lib/actions/labelling/suggestions";
 import { saveSimpleLabel } from "@/lib/actions/labelling/training";
@@ -35,17 +36,20 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
   const [labelledCount, setLabelledCount] = useState(initialCount);
   const [error, setError] = useState<string | null>(null);
 
+  // Get all labeling topics (flat list of granular categories)
+  const allLabelingTopics = useMemo(() => getAllLabelingTopics(), []);
+
   // Filter topics based on search
   const filteredTopicsBySection = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
-    const result: Record<TopicSection, typeof MATCHING_TOPICS> = {
+    const result: Record<TopicSection, LabelingTopic[]> = {
       flags: [],
       clinical: [],
       life: [],
       meta: [],
     };
 
-    MATCHING_TOPICS.forEach((topic) => {
+    allLabelingTopics.forEach((topic) => {
       const label = TOPIC_LABELS_DE[topic.id] || topic.id;
       if (!query || label.toLowerCase().includes(query)) {
         result[topic.section].push(topic);
@@ -53,7 +57,7 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
     });
 
     return result;
-  }, [searchQuery]);
+  }, [searchQuery, allLabelingTopics]);
 
   // Load a new case
   const loadNewCase = useCallback(async () => {
@@ -266,7 +270,7 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
           <div className="flex flex-wrap items-center gap-2 p-3 bg-muted/50 rounded-lg">
             <span className="text-sm text-muted-foreground">Auswahl:</span>
             {selectedTopics.map((topicId) => {
-              const topic = MATCHING_TOPICS.find((t) => t.id === topicId);
+              const topic = allLabelingTopics.find((t) => t.id === topicId);
               const isFlag = topic?.isFlag;
               return (
                 <Badge

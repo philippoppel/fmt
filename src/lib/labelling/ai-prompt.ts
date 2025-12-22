@@ -2,11 +2,15 @@
  * AI Prompt for Label Suggestions
  *
  * System prompt for Groq to analyze therapy request texts
- * and suggest appropriate labels from the 40-category taxonomy.
+ * and suggest appropriate labels from the granular labeling taxonomy.
  */
 
-import { MATCHING_TOPICS, TOPICS_BY_SECTION, type TopicSection } from "@/lib/matching/topics";
+import { getAllLabelingTopics, getLabelingTopicsBySection, type TopicSection } from "@/lib/matching/topics";
 import { TOPIC_LABELS_DE, SECTION_LABELS_DE } from "@/lib/labelling/constants";
+
+// Get all labeling topics (flat list of granular categories)
+const ALL_LABELING_TOPICS = getAllLabelingTopics();
+const LABELING_TOPICS_BY_SECTION = getLabelingTopicsBySection();
 
 // Build dynamic taxonomy reference from existing definitions
 function buildTaxonomyReference(): string {
@@ -14,7 +18,7 @@ function buildTaxonomyReference(): string {
 
   const categoryList = sections.map((section) => {
     const sectionLabel = SECTION_LABELS_DE[section];
-    const topics = TOPICS_BY_SECTION[section];
+    const topics = LABELING_TOPICS_BY_SECTION[section];
     const topicList = topics
       .map((t) => `  - ${t.id}: ${TOPIC_LABELS_DE[t.id]}`)
       .join("\n");
@@ -24,9 +28,9 @@ function buildTaxonomyReference(): string {
   return categoryList;
 }
 
-// All valid category keys
+// All valid category keys (granular labeling categories)
 function getAllCategoryKeys(): string {
-  return MATCHING_TOPICS.map((t) => t.id).join(", ");
+  return ALL_LABELING_TOPICS.map((t) => t.id).join(", ");
 }
 
 export const LABEL_SUGGESTION_SYSTEM_PROMPT = `Du bist ein Experte für psychische Gesundheit und hilfst beim Klassifizieren von Therapie-Anfragen für ein Matching-System.
@@ -97,10 +101,10 @@ Antworte nur mit dem JSON-Objekt.`;
 }
 
 /**
- * Get all valid category keys for validation
+ * Get all valid category keys for validation (granular labeling categories)
  */
 export function getValidCategoryKeys(): Set<string> {
-  return new Set(MATCHING_TOPICS.map((t) => t.id));
+  return new Set(ALL_LABELING_TOPICS.map((t) => t.id));
 }
 
 /**

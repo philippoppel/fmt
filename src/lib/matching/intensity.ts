@@ -7,6 +7,120 @@ export interface IntensityStatement {
   weight: number; // 1-3 (how much this indicates severity)
 }
 
+// Map topic and subtopic IDs to intensity statement groups
+// Parent topics map to their main intensity group
+// Subtopics inherit from their parent's intensity group
+const TOPIC_TO_INTENSITY_GROUP: Record<string, string> = {
+  // ============ PARENT TOPICS ============
+  depression: "depression",
+  anxiety: "anxiety",
+  trauma: "trauma",
+  addiction: "addiction",
+  eatingDisorders: "eating_disorders",
+  adhd: "adhd",
+  stressBurnout: "burnout",
+  sleep: "sleep",
+  selfEsteem: "self_care",
+  chronicIllness: "stress",
+  sexuality: "relationships",
+  relationships: "relationships",
+  family: "family",
+  work: "burnout",
+  school: "stress",
+  lifeTransitions: "self_care",
+  existential: "stress",
+
+  // ============ SUBTOPICS ============
+  // Depression subtopics
+  depressionMood: "depression",
+  bipolarMood: "depression",
+  griefLoss: "depression",
+  socialLoneliness: "depression",
+
+  // Anxiety subtopics
+  anxietyGAD: "anxiety",
+  panicAgoraphobia: "anxiety",
+  socialAnxiety: "anxiety",
+  specificPhobias: "anxiety",
+  healthAnxiety: "anxiety",
+  ocdRelated: "anxiety",
+
+  // Trauma subtopics
+  traumaPTSD: "trauma",
+  dissociation: "trauma",
+
+  // Addiction subtopics
+  addictionSubstances: "addiction",
+  addictionBehavioral: "addiction",
+
+  // Eating disorder subtopics
+  eatingAnorexia: "eating_disorders",
+  eatingBulimia: "eating_disorders",
+  eatingBinge: "eating_disorders",
+  eatingBodyImage: "eating_disorders",
+
+  // ADHD subtopics
+  adhdExecutive: "adhd",
+  autismNeurodiversity: "adhd",
+
+  // Stress/Burnout subtopics
+  burnoutExhaustion: "burnout",
+  chronicStress: "stress",
+  workOverload: "burnout",
+
+  // Sleep subtopics
+  sleepInsomnia: "sleep",
+  sleepNightmares: "sleep",
+  sleepDisrupted: "sleep",
+
+  // Self-esteem subtopics
+  selfEsteemIdentity: "self_care",
+  emotionRegulationPersonality: "self_care",
+  angerImpulse: "self_care",
+
+  // Chronic illness subtopics
+  chronicIllnessPain: "stress",
+  chronicIllnessCoping: "stress",
+
+  // Sexuality subtopics
+  sexualityIntimacy: "relationships",
+  sexualityIdentity: "relationships",
+
+  // Relationship subtopics
+  relationshipsCouple: "relationships",
+  relationshipsTrust: "relationships",
+  relationshipsSeparation: "relationships",
+
+  // Family subtopics
+  familyOfOrigin: "family",
+  parentingPerinatal: "family",
+  familyConflicts: "family",
+
+  // Work subtopics
+  workCareer: "burnout",
+  workMobbing: "burnout",
+  workLifeBalance: "burnout",
+
+  // School subtopics
+  schoolUniversity: "stress",
+  schoolExamAnxiety: "anxiety",
+  schoolPressure: "stress",
+
+  // Life transitions subtopics
+  lifeTransitionsChange: "self_care",
+  lifeTransitionsDecisions: "self_care",
+
+  // Existential subtopics
+  financialHousingStress: "stress",
+  existentialMeaning: "self_care",
+
+  // Legacy mappings (backwards compatibility)
+  eating_disorders: "eating_disorders",
+  burnout: "burnout",
+  self_care: "self_care",
+  stress: "stress",
+};
+
 // Intensity statements per topic (3-7 statements each, layman-friendly language)
 export const INTENSITY_STATEMENTS: Record<string, IntensityStatement[]> = {
   depression: [
@@ -367,15 +481,29 @@ export const INTENSITY_STATEMENTS: Record<string, IntensityStatement[]> = {
 
 /**
  * Get intensity statements for given topic IDs
+ * Uses TOPIC_TO_INTENSITY_GROUP mapping to find appropriate statements
  */
 export function getIntensityStatementsForTopics(
   topicIds: string[]
 ): IntensityStatement[] {
   const statements: IntensityStatement[] = [];
+  const addedGroups = new Set<string>(); // Avoid duplicates when multiple topics map to same group
+
   for (const topicId of topicIds) {
-    const topicStatements = INTENSITY_STATEMENTS[topicId];
+    // Look up the intensity group for this topic
+    const intensityGroup = TOPIC_TO_INTENSITY_GROUP[topicId] || topicId;
+
+    // Skip if we already added statements for this group
+    if (addedGroups.has(intensityGroup)) continue;
+
+    const topicStatements = INTENSITY_STATEMENTS[intensityGroup];
     if (topicStatements) {
-      statements.push(...topicStatements);
+      // Clone statements with the original topicId for proper tracking
+      statements.push(...topicStatements.map(s => ({
+        ...s,
+        topicId: topicId, // Use original topicId for UI grouping
+      })));
+      addedGroups.add(intensityGroup);
     }
   }
   return statements;
