@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Loader2, SkipForward, Check, RefreshCw, Search, X } from "lucide-react";
+import { Loader2, SkipForward, Check, RefreshCw, Search, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -31,16 +31,11 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
   const [aiSuggestedSubtopics, setAiSuggestedSubtopics] = useState<string[]>([]);
   const [selection, setSelection] = useState<Selection | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [labelledCount, setLabelledCount] = useState(initialCount);
   const [error, setError] = useState<string | null>(null);
-
-  // Get subtopics for selected topic
-  const selectedTopicData = useMemo(() => {
-    if (!selection?.topicId) return null;
-    return AVAILABLE_TOPICS.find((t) => t.id === selection.topicId);
-  }, [selection?.topicId]);
 
   // Filter topics and subtopics based on search
   const filteredData = useMemo(() => {
@@ -79,11 +74,23 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
     return { topics, matchedSubtopics };
   }, [searchQuery]);
 
+  // Auto-expand topics that match search
+  useEffect(() => {
+    if (searchQuery) {
+      const newExpanded = new Set<string>();
+      filteredData.matchedSubtopics.forEach((_, topicId) => {
+        newExpanded.add(topicId);
+      });
+      setExpandedTopics(newExpanded);
+    }
+  }, [searchQuery, filteredData.matchedSubtopics]);
+
   // Load a new case
   const loadNewCase = useCallback(async () => {
     setIsLoading(true);
     setSelection(null);
     setSearchQuery("");
+    setExpandedTopics(new Set());
     setError(null);
     setAiSuggestedTopic(null);
     setAiSuggestedSubtopics([]);
@@ -96,9 +103,10 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
       if (result.suggestions.main.length > 0) {
         const mainKey = result.suggestions.main[0].key;
         setAiSuggestedTopic(mainKey);
-        // Get suggested subtopics for this topic
         const suggestedSubs = result.suggestions.sub[mainKey] || [];
         setAiSuggestedSubtopics(suggestedSubs);
+        // Auto-expand the suggested topic
+        setExpandedTopics(new Set([mainKey]));
       }
     } catch (err) {
       console.error("Failed to load case:", err);
@@ -113,30 +121,62 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
     loadNewCase();
   }, [loadNewCase]);
 
-  // Select a topic
-  const selectTopic = (topicId: string) => {
+  // Toggle topic expansion
+  const toggleExpanded = (topicId: string) => {
+    setExpandedTopics((prev) => {
+      const next = new Set(prev);
+      if (next.has(topicId)) {
+        next.delete(topicId);
+      } else {
+        next.add(topicId);
+      }
+      return next;
+    });
+  };
+
+  // Select topic (and optionally subtopic)
+  const selectTopic = (topicId: string, subtopicId?: string) => {
     if (selection?.topicId === topicId) {
-      // Deselect
-      setSelection(null);
+      // Same topic - toggle subtopic if provided
+      if (subtopicId) {
+        const has = selection.subtopicIds.includes(subtopicId);
+        setSelection({
+          ...selection,
+          subtopicIds: has
+            ? selection.subtopicIds.filter((id) => id !== subtopicId)
+            : [...selection.subtopicIds, subtopicId],
+        });
+      } else {
+        // Click on same topic header - deselect
+        setSelection(null);
+      }
     } else {
-      setSelection({ topicId, subtopicIds: [] });
+      // Different topic
+      setSelection({
+        topicId,
+        subtopicIds: subtopicId ? [subtopicId] : [],
+      });
+      // Expand the new topic
+      setExpandedTopics((prev) => new Set([...prev, topicId]));
     }
-    setSearchQuery("");
   };
 
   // Toggle subtopic
-  const toggleSubtopic = (subtopicId: string) => {
-    if (!selection) return;
-    setSelection((prev) => {
-      if (!prev) return prev;
-      const has = prev.subtopicIds.includes(subtopicId);
-      return {
-        ...prev,
+  const toggleSubtopic = (topicId: string, subtopicId: string) => {
+    if (selection?.topicId !== topicId) {
+      // Select this topic with this subtopic
+      setSelection({ topicId, subtopicIds: [subtopicId] });
+      setExpandedTopics((prev) => new Set([...prev, topicId]));
+    } else {
+      // Toggle subtopic in current selection
+      const has = selection.subtopicIds.includes(subtopicId);
+      setSelection({
+        ...selection,
         subtopicIds: has
-          ? prev.subtopicIds.filter((id) => id !== subtopicId)
-          : [...prev.subtopicIds, subtopicId],
-      };
-    });
+          ? selection.subtopicIds.filter((id) => id !== subtopicId)
+          : [...selection.subtopicIds, subtopicId],
+      });
+    }
   };
 
   // Accept AI suggestion
@@ -146,6 +186,7 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
         topicId: aiSuggestedTopic,
         subtopicIds: aiSuggestedSubtopics,
       });
+      setExpandedTopics(new Set([aiSuggestedTopic]));
     }
   };
 
@@ -178,7 +219,6 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
     }
   };
 
-  // Skip without saving
   const handleSkip = () => {
     loadNewCase();
   };
@@ -224,7 +264,7 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
             <Check className="h-5 w-5 shrink-0" />
             <div className="text-left">
               <span className="font-medium">
-                {TOPIC_LABELS_DE[aiSuggestedTopic] || aiSuggestedTopic}
+                {TOPIC_LABELS_DE[aiSuggestedTopic]}
               </span>
               {aiSuggestedSubtopics.length > 0 && (
                 <span className="text-muted-foreground ml-2">
@@ -239,7 +279,7 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Suche Thema oder Schwerpunkt..."
+            placeholder="Suche..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 pr-9"
@@ -255,91 +295,101 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
           )}
         </div>
 
-        {/* Topic grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+        {/* Topics with expandable subtopics */}
+        <div className="space-y-2">
           {filteredData.topics.map((topic) => {
             const isSelected = selection?.topicId === topic.id;
-            const imageUrl = getTopicImageUrl(topic.unsplashId, 150, 150);
-            const hasMatchingSubtopics = filteredData.matchedSubtopics.has(topic.id);
+            const isExpanded = expandedTopics.has(topic.id);
+            const imageUrl = getTopicImageUrl(topic.unsplashId, 80, 80);
+            const matchingSubtopicIds = filteredData.matchedSubtopics.get(topic.id);
 
             return (
-              <button
+              <div
                 key={topic.id}
-                onClick={() => selectTopic(topic.id)}
-                disabled={isLoading || isSaving}
                 className={cn(
-                  "relative aspect-square rounded-lg overflow-hidden transition-all",
-                  "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-                  "disabled:opacity-50 disabled:cursor-not-allowed",
-                  isSelected
-                    ? "ring-2 ring-primary ring-offset-2"
-                    : "hover:opacity-90",
-                  hasMatchingSubtopics && !isSelected && "ring-1 ring-primary/50"
+                  "rounded-lg border overflow-hidden transition-all",
+                  isSelected ? "border-primary bg-primary/5" : "border-border"
                 )}
               >
-                <img
-                  src={imageUrl}
-                  alt={TOPIC_LABELS_DE[topic.id] || topic.id}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-                <div
+                {/* Topic header */}
+                <button
+                  onClick={() => {
+                    if (isExpanded && !isSelected) {
+                      // Just toggle expand
+                      toggleExpanded(topic.id);
+                    } else if (!isExpanded) {
+                      // Expand and select
+                      selectTopic(topic.id);
+                    } else {
+                      // Already expanded and selected - deselect
+                      selectTopic(topic.id);
+                    }
+                  }}
+                  disabled={isLoading || isSaving}
                   className={cn(
-                    "absolute inset-0 flex items-end justify-center pb-1",
-                    "bg-gradient-to-t from-black/70 via-black/20 to-transparent"
+                    "w-full flex items-center gap-3 p-3 text-left",
+                    "hover:bg-muted/50 transition-colors",
+                    "disabled:opacity-50"
                   )}
                 >
-                  <span className="text-white text-xs font-medium px-1 text-center">
-                    {TOPIC_LABELS_DE[topic.id] || topic.id}
+                  <img
+                    src={imageUrl}
+                    alt=""
+                    className="w-10 h-10 rounded object-cover shrink-0"
+                  />
+                  <span className="flex-1 font-medium">
+                    {TOPIC_LABELS_DE[topic.id]}
                   </span>
-                </div>
-                {isSelected && (
-                  <div className="absolute top-1 right-1 bg-primary text-primary-foreground rounded-full p-0.5">
-                    <Check className="h-3 w-3" />
+                  {isSelected && (
+                    <Check className="h-5 w-5 text-primary shrink-0" />
+                  )}
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 text-muted-foreground transition-transform shrink-0",
+                      isExpanded && "rotate-180"
+                    )}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleExpanded(topic.id);
+                    }}
+                  />
+                </button>
+
+                {/* Subtopics */}
+                {isExpanded && (
+                  <div className="px-3 pb-3 pt-1">
+                    <div className="flex flex-wrap gap-1.5">
+                      {topic.subTopics.map((sub) => {
+                        const isSubSelected =
+                          isSelected && selection?.subtopicIds.includes(sub.id);
+                        const matchesSearch = matchingSubtopicIds?.includes(sub.id);
+
+                        return (
+                          <button
+                            key={sub.id}
+                            onClick={() => toggleSubtopic(topic.id, sub.id)}
+                            disabled={isLoading || isSaving}
+                            className={cn(
+                              "px-2.5 py-1 rounded-full text-sm transition-all",
+                              "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1",
+                              "disabled:opacity-50",
+                              isSubSelected
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-muted hover:bg-muted/80",
+                              matchesSearch && !isSubSelected && "ring-1 ring-primary"
+                            )}
+                          >
+                            {SUBTOPIC_LABELS_DE[sub.id] || sub.id}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>
-
-        {/* Subtopics for selected topic */}
-        {selectedTopicData && (
-          <div className="space-y-2 pt-2">
-            <p className="text-sm font-medium">
-              Schwerpunkte für {TOPIC_LABELS_DE[selectedTopicData.id]}:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {selectedTopicData.subTopics.map((sub) => {
-                const isSubSelected = selection?.subtopicIds.includes(sub.id);
-                const matchesSearch =
-                  searchQuery &&
-                  filteredData.matchedSubtopics
-                    .get(selectedTopicData.id)
-                    ?.includes(sub.id);
-
-                return (
-                  <button
-                    key={sub.id}
-                    onClick={() => toggleSubtopic(sub.id)}
-                    disabled={isLoading || isSaving}
-                    className={cn(
-                      "px-3 py-1.5 rounded-full text-sm transition-all",
-                      "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1",
-                      "disabled:opacity-50",
-                      isSubSelected
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted hover:bg-muted/80",
-                      matchesSearch && !isSubSelected && "ring-1 ring-primary"
-                    )}
-                  >
-                    {SUBTOPIC_LABELS_DE[sub.id] || sub.id}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
 
         {/* Current selection summary */}
         {selection && (
@@ -355,7 +405,7 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
           </div>
         )}
 
-        {/* Error message */}
+        {/* Error */}
         {error && (
           <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
             <p className="text-sm text-destructive">{error}</p>
