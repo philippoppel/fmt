@@ -1556,6 +1556,68 @@
     }
   },
   "mission": {
+    "seeker": {
+      "toggle": {
+        "seeker": "For people seeking therapy",
+        "therapist": "For psychotherapists"
+      },
+      "hero": {
+        "title": "The right therapy feels like a trusted recommendation.",
+        "subtitle": "That's exactly what we want to give you – digital, transparent, and at your own pace."
+      },
+      "trust": {
+        "text": "Most people don't find good therapists by searching. They find them through a tip from someone they trust. That's what we want to be for you.",
+        "pillars": {
+          "trust": "Trust",
+          "orientation": "Guidance",
+          "safety": "Safety"
+        }
+      },
+      "goal": {
+        "title": "Not just any therapist – the right therapy for you.",
+        "text": "We help you find a therapy that truly fits your topic, your situation, and your needs."
+      },
+      "howWeWork": {
+        "title": "How we build trust digitally",
+        "step1": {
+          "title": "Listen",
+          "text": "You tell us what's on your mind – simply, with visuals and choices."
+        },
+        "step2": {
+          "title": "Understand",
+          "text": "We contextualize your concern and consider what's often important for similar topics."
+        },
+        "step3": {
+          "title": "Recommend",
+          "text": "We show you therapists who are a particularly good fit – and explain why."
+        }
+      },
+      "paths": {
+        "title": "Two paths to your goal",
+        "self": {
+          "title": "Decide yourself",
+          "text": "If you already know what matters to you, you can filter on your own."
+        },
+        "guided": {
+          "title": "Guided decision",
+          "text": "If you're unsure, we'll guide you step by step – like a trusted recommendation."
+        }
+      },
+      "transparency": {
+        "title": "Transparency, not a black box",
+        "point1": "You see why someone is suggested",
+        "point2": "You can compare suggestions",
+        "point3": "Everything is traceable"
+      },
+      "knowledge": {
+        "title": "Sometimes knowledge helps. Sometimes a conversation. Both have their place.",
+        "text": "On our platform, you'll find free content written by experienced psychotherapists. For immediate help. For guidance. Or as a first step."
+      },
+      "cta": {
+        "statement": "Therapy starts with trust.",
+        "button": "Find the right therapy now"
+      }
+    },
     "hero": {
       "overline": "Our Mission",
       "title": "Therapy doesn't start with a list – it starts with understanding.",

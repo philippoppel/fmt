@@ -1556,6 +1556,68 @@
     }
   },
   "mission": {
+    "seeker": {
+      "toggle": {
+        "seeker": "Für Menschen, die Therapie suchen",
+        "therapist": "Für Psychotherapeut:innen"
+      },
+      "hero": {
+        "title": "Die richtige Therapie fühlt sich an wie eine gute Empfehlung.",
+        "subtitle": "Genau dieses Gefühl wollen wir dir geben – digital, transparent und in deinem Tempo."
+      },
+      "trust": {
+        "text": "Die meisten Menschen finden gute Therapeut:innen nicht durch Suchen. Sondern durch einen Tipp von jemandem, dem sie vertrauen. Genau das wollen wir für dich sein.",
+        "pillars": {
+          "trust": "Vertrauen",
+          "orientation": "Orientierung",
+          "safety": "Sicherheit"
+        }
+      },
+      "goal": {
+        "title": "Nicht irgendein Therapeut – sondern die richtige Therapie für dich.",
+        "text": "Wir helfen dir dabei, eine Therapie zu finden, die wirklich zu deinem Thema, deiner Situation und deinen Bedürfnissen passt."
+      },
+      "howWeWork": {
+        "title": "Wie wir Vertrauen digital nachbilden",
+        "step1": {
+          "title": "Zuhören",
+          "text": "Du erzählst, was dich gerade beschäftigt – einfach, mit Bildern und Auswahlmöglichkeiten."
+        },
+        "step2": {
+          "title": "Verstehen",
+          "text": "Wir ordnen dein Anliegen ein und berücksichtigen, was bei ähnlichen Themen oft wichtig ist."
+        },
+        "step3": {
+          "title": "Empfehlen",
+          "text": "Wir zeigen dir Therapeut:innen, die besonders gut dazu passen – und erklären dir auch warum."
+        }
+      },
+      "paths": {
+        "title": "Zwei Wege zum Ziel",
+        "self": {
+          "title": "Selbst entscheiden",
+          "text": "Wenn du schon weißt, was dir wichtig ist, kannst du selbst filtern."
+        },
+        "guided": {
+          "title": "Geführt entscheiden",
+          "text": "Wenn du unsicher bist, begleiten wir dich Schritt für Schritt – wie eine gute Empfehlung."
+        }
+      },
+      "transparency": {
+        "title": "Transparenz statt Blackbox",
+        "point1": "Du siehst, warum jemand vorgeschlagen wird",
+        "point2": "Du kannst Vorschläge vergleichen",
+        "point3": "Alles ist nachvollziehbar"
+      },
+      "knowledge": {
+        "title": "Manchmal hilft Wissen. Manchmal ein Gespräch. Beides hat Platz.",
+        "text": "Auf unserer Plattform findest du kostenlose Inhalte, geschrieben von erfahrenen Psychotherapeut:innen. Als Soforthilfe. Als Orientierung. Oder als erster Schritt."
+      },
+      "cta": {
+        "statement": "Therapie beginnt mit Vertrauen.",
+        "button": "Jetzt passende Therapie finden"
+      }
+    },
     "hero": {
       "overline": "Unsere Mission",
       "title": "Therapie beginnt nicht mit einer Liste – sondern mit Verstehen.",
