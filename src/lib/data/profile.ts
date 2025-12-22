@@ -1,13 +1,29 @@
 import { db } from "@/lib/db";
 import type { TherapistProfileData, WorkingHours, ThemeName } from "@/types/profile";
 import type { Specialty, TherapyType, TherapySetting, Language, SessionType, Insurance, Availability, Gender, CommunicationStyle, TherapyFocus, TherapyDepth, AccountType } from "@/types/therapist";
+import type { MicrositeConfig } from "@/types/microsite";
 import { getDemoProfileBySlug, getAllDemoProfileSlugs as getDemoSlugs } from "./demo-profiles";
+
+/** Result from getProfileBySlug including optional microsite config */
+export interface ProfileWithMicrosite {
+  profile: TherapistProfileData;
+  micrositeConfig: MicrositeConfig | null;
+}
 
 /**
  * Get a therapist profile by slug for public display
  * Falls back to ID lookup if slug not found, then demo profiles
  */
 export async function getProfileBySlug(slug: string): Promise<TherapistProfileData | null> {
+  const result = await getProfileWithMicrositeBySlug(slug);
+  return result?.profile ?? null;
+}
+
+/**
+ * Get a therapist profile with microsite config by slug for public display
+ * Returns both the profile data and the published microsite configuration
+ */
+export async function getProfileWithMicrositeBySlug(slug: string): Promise<ProfileWithMicrosite | null> {
   try {
     // First try to find by slug
     let profile = await db.therapistProfile.findUnique({
@@ -38,13 +54,25 @@ export async function getProfileBySlug(slug: string): Promise<TherapistProfileDa
     }
 
     if (profile) {
-      return transformProfileToData(profile);
+      // Get microsite config if published
+      const micrositeConfig =
+        profile.micrositeStatus === "published" && profile.micrositePublished
+          ? (profile.micrositePublished as unknown as MicrositeConfig)
+          : null;
+
+      return {
+        profile: transformProfileToData(profile),
+        micrositeConfig,
+      };
     }
 
     // Fallback to demo profile
     const demoProfile = getDemoProfileBySlug(slug);
     if (demoProfile) {
-      return transformDemoProfileToData(demoProfile);
+      return {
+        profile: transformDemoProfileToData(demoProfile),
+        micrositeConfig: null,
+      };
     }
 
     return null;
@@ -52,7 +80,10 @@ export async function getProfileBySlug(slug: string): Promise<TherapistProfileDa
     // On database error, try demo profiles
     const demoProfile = getDemoProfileBySlug(slug);
     if (demoProfile) {
-      return transformDemoProfileToData(demoProfile);
+      return {
+        profile: transformDemoProfileToData(demoProfile),
+        micrositeConfig: null,
+      };
     }
     return null;
   }

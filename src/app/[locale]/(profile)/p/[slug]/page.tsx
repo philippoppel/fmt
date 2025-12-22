@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import { getProfileBySlug, getAllProfileSlugs } from "@/lib/data/profile";
+import { getProfileWithMicrositeBySlug, getAllProfileSlugs } from "@/lib/data/profile";
 import { ProfilePage } from "@/components/profile/profile-page";
 import { generateProfileSchema } from "@/lib/seo/profile-schema";
 
@@ -24,20 +24,28 @@ export async function generateStaticParams() {
 // Generate SEO metadata for each profile
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
-  const profile = await getProfileBySlug(slug);
+  const result = await getProfileWithMicrositeBySlug(slug);
 
-  if (!profile) {
+  if (!result) {
     return {
       title: "Profil nicht gefunden",
     };
   }
 
+  const { profile, micrositeConfig } = result;
+
+  // Use hero tagline from microsite config if available
+  const heroTagline = micrositeConfig?.hero?.tagline;
+
   const title = profile.name + (profile.title ? ` - ${profile.title}` : "");
-  const description = profile.shortDescription || profile.headline ||
+  const description = heroTagline || profile.shortDescription || profile.headline ||
     `${profile.name} - Psychotherapeutin in ${profile.city}`;
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com";
   const profileUrl = `${baseUrl}/${locale === "de" ? "" : locale + "/"}p/${slug}`;
+
+  // Use cover image from microsite config if available, fallback to profile image
+  const ogImage = micrositeConfig?.hero?.coverImageUrl || profile.imageUrl;
 
   return {
     title,
@@ -55,21 +63,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       url: profileUrl,
       type: "profile",
-      images: profile.imageUrl ? [
+      images: ogImage ? [
         {
-          url: profile.imageUrl,
-          width: 400,
-          height: 400,
+          url: ogImage,
+          width: 1200,
+          height: 630,
           alt: profile.name,
         },
       ] : undefined,
       locale: locale === "de" ? "de_DE" : "en_US",
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description,
-      images: profile.imageUrl ? [profile.imageUrl] : undefined,
+      images: ogImage ? [ogImage] : undefined,
     },
     alternates: {
       canonical: profileUrl,
@@ -94,11 +102,13 @@ export default async function TherapistProfilePage({ params }: Props) {
 
   setRequestLocale(locale);
 
-  const profile = await getProfileBySlug(slug);
+  const result = await getProfileWithMicrositeBySlug(slug);
 
-  if (!profile) {
+  if (!result) {
     notFound();
   }
+
+  const { profile, micrositeConfig } = result;
 
   // Generate JSON-LD structured data
   const jsonLd = generateProfileSchema(profile, locale);
@@ -109,7 +119,11 @@ export default async function TherapistProfilePage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <ProfilePage profile={profile} locale={locale} />
+      <ProfilePage
+        profile={profile}
+        locale={locale}
+        micrositeConfig={micrositeConfig}
+      />
     </>
   );
 }

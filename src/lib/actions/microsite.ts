@@ -730,7 +730,7 @@ function mergeDraftData(
   updates: Record<string, unknown>
 ): MicrositeConfig {
   if (!existing) {
-    return updates as MicrositeConfig;
+    return updates as unknown as MicrositeConfig;
   }
 
   const merged = { ...existing };
