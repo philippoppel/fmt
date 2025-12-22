@@ -176,12 +176,12 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
         {!isLoading && aiSuggestedTopics.length > 0 && (
           <Button
             variant={isAiSuggestionSelected ? "default" : "outline"}
-            className="w-full h-auto py-3 justify-start gap-3 text-left"
+            className="w-full h-auto py-3 justify-start gap-3 text-left whitespace-normal"
             onClick={acceptAiSuggestion}
             disabled={isLoading || isSaving}
           >
             <Check className="h-5 w-5 shrink-0" />
-            <span className="font-medium break-words min-w-0 flex-1">
+            <span className="font-medium break-words min-w-0 flex-1 text-left">
               {aiSuggestedTopics.map((t) => TOPIC_LABELS_DE[t]).join(", ")}
             </span>
           </Button>
