@@ -149,8 +149,8 @@ export function SimpleLabelling({ initialCount = 0 }: SimpleLabellingProps) {
 
   return (
     <div className="flex flex-col h-full overflow-x-hidden min-w-0 w-full">
-      {/* Header - with padding-left for mobile hamburger button */}
-      <div className="flex-shrink-0 flex items-center justify-between p-4 pl-16 lg:pl-4 border-b min-w-0">
+      {/* Header */}
+      <div className="flex-shrink-0 flex items-center justify-between p-4 border-b min-w-0">
         <h1 className="text-lg font-semibold">Labelling</h1>
         <Badge variant="secondary" className="text-sm">
           {labelledCount} gelabelt

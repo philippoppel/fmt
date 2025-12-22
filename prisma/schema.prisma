@@ -62,6 +62,12 @@ enum SubscriptionStatus {
   past_due   // Zahlung fehlgeschlagen
 }
 
+// Microsite Status
+enum MicrositeStatus {
+  draft
+  published
+}
+
 // Blog Enums
 enum PostStatus {
   draft
@@ -341,6 +347,71 @@ model TherapistProfile {
   // Booking/Contact Stats (für ML)
   contactCount        Int        @default(0)
   bookingRate         Float?               // % der Kontakte die zu Terminen führen
+
+  // ============================================
+  // MICROSITE BUILDER FIELDS
+  // ============================================
+
+  // Status & Versionierung
+  micrositeStatus        MicrositeStatus @default(draft)
+  micrositeDraft         Json?           // Draft-Config als JSON
+  micrositePublished     Json?           // Published-Config (Copy on Publish)
+  micrositeLastSavedAt   DateTime?
+  micrositePublishedAt   DateTime?
+
+  // Hero Section
+  heroLogoUrl            String?         // Premium: Logo-Upload
+  heroBrandText          String?         // Name als Brand-Text
+  heroBrandStyle         Json?           // {font, weight, letterSpacing, color, effect}
+  heroTagline            String?
+  heroCoverImageUrl      String?
+  heroCtaPrimary         Json?           // {text, link, style}
+  heroCtaSecondary       Json?
+  heroLocationBadges     String[]
+
+  // About Section (erweitert bestehende Felder)
+  aboutRichContent       Json?           // TipTap JSON
+  aboutShowLanguages     Boolean         @default(true)
+  aboutShowMethods       Boolean         @default(true)
+  aboutShowTargetGroups  Boolean         @default(true)
+
+  // Kompetenzen Section
+  competencies           Json?           // [{id, icon, title, description, order, visible}]
+
+  // Angebote Section
+  offerings              Json?           // [{id, title, description, price, duration}]
+  showPricing            Boolean         @default(true)
+  showAvailability       Boolean         @default(true)
+
+  // Kontakt Section (erweitert)
+  contactButtonText      String?
+  showEmailPublic        Boolean         @default(true)
+  showPhonePublic        Boolean         @default(true)
+  socialLinks            Json?           // {instagram, linkedIn, xing, website}
+
+  // Footer
+  footerLegalLinks       Json?           // {impressum, datenschutz}
+  showPoweredBy          Boolean         @default(true)
+
+  // Section Order & Visibility (Premium)
+  sectionOrder           String[]        // ["hero","about","competencies","offerings","contact"]
+  hiddenSections         String[]
+
+  // Erweiterte Theme-Konfiguration
+  micrositeTheme         Json?           // Vollständiges Theme-Override
+
+  // Typography (Premium)
+  fontHeading            String?         // Google Font Name
+  fontBody               String?
+
+  // Layout Settings
+  cornerRadius           String?         @default("md")     // sm|md|lg|xl
+  cardStyle              String?         @default("glass")  // glass|solid|outline
+  sectionSpacing         String?         @default("normal") // compact|normal|spacious
+
+  // Effects (Premium)
+  heroOverlayStyle       String?         @default("gradient") // gradient|blur|none
+  enableTextGlow         Boolean         @default(false)
 
   // Profile visibility
   isPublished       Boolean      @default(true)

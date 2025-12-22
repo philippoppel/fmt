@@ -20,7 +20,7 @@ export default async function LabellingLayout({
   }
 
   return (
-    <div className="flex h-dvh bg-background overflow-x-hidden">
+    <div className="min-h-dvh bg-background overflow-x-hidden flex flex-col lg:flex-row">
       <LabellingSidebar
         user={{
           id: session.user.id,
@@ -29,7 +29,7 @@ export default async function LabellingLayout({
           role: session.user.role,
         }}
       />
-      <main className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 pt-14 lg:pt-0 w-full">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden min-w-0 pt-[88px] lg:pt-0 w-full">
         {children}
       </main>
     </div>
