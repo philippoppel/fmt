@@ -9,7 +9,14 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Save, Eye, Loader2, X, Plus, Sparkles, Lightbulb, FileText } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Save, Eye, Loader2, X, Plus, Sparkles, Lightbulb, FileText, User } from "lucide-react";
 import { createBlogPost, updateBlogPost, publishBlogPost } from "@/lib/actions/blog/posts";
 import { saveDraft } from "@/lib/actions/blog/drafts";
 import {
@@ -28,9 +35,17 @@ interface Category {
   nameEN: string;
 }
 
+interface Author {
+  id: string;
+  name: string | null;
+  email: string;
+}
+
 interface PostEditorFormProps {
   locale: string;
   categories: Category[];
+  authors?: Author[];
+  isAdmin?: boolean;
   initialData?: {
     id: string;
     title: string;
@@ -44,12 +59,15 @@ interface PostEditorFormProps {
     categoryIds: string[];
     tags: string[];
     status: "draft" | "published";
+    authorId?: string;
   };
 }
 
 export function PostEditorForm({
   locale,
   categories,
+  authors = [],
+  isAdmin = false,
   initialData,
 }: PostEditorFormProps) {
   const router = useRouter();
@@ -67,6 +85,7 @@ export function PostEditorForm({
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialData?.categoryIds || []);
   const [tags, setTags] = useState<string[]>(initialData?.tags || []);
   const [newTag, setNewTag] = useState("");
+  const [authorId, setAuthorId] = useState(initialData?.authorId || "");
   const [error, setError] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
@@ -260,6 +279,7 @@ export function PostEditorForm({
         categoryIds: selectedCategories,
         tags,
         status: "draft" as const,
+        ...(isAdmin && authorId ? { authorId } : {}),
       };
 
       const result = initialData?.id
@@ -311,6 +331,7 @@ export function PostEditorForm({
         categoryIds: selectedCategories,
         tags,
         status: "published" as const,
+        ...(isAdmin && authorId ? { authorId } : {}),
       };
 
       let result;
@@ -484,6 +505,32 @@ export function PostEditorForm({
           </div>
         </CardContent>
       </Card>
+
+      {/* Author Selection (Admin only) */}
+      {isAdmin && authors.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <User className="h-4 w-4" />
+              Autor
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Select value={authorId} onValueChange={setAuthorId}>
+              <SelectTrigger>
+                <SelectValue placeholder="Autor auswählen..." />
+              </SelectTrigger>
+              <SelectContent>
+                {authors.map((author) => (
+                  <SelectItem key={author.id} value={author.id}>
+                    {author.name || author.email}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Tags */}
       <Card>

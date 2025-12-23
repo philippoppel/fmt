@@ -104,12 +104,14 @@ export async function createBlogPost(
  */
 export async function updateBlogPost(
   postId: string,
-  input: Partial<BlogPostInput>
+  input: Partial<BlogPostInput> & { authorId?: string }
 ): Promise<ActionResult> {
   const session = await auth();
   if (!session?.user?.id) {
     return { success: false, error: "Nicht authentifiziert" };
   }
+
+  const isAdmin = session.user.role === "ADMIN";
 
   // Check ownership
   const existingPost = await db.blogPost.findUnique({
@@ -121,12 +123,18 @@ export async function updateBlogPost(
     return { success: false, error: "Artikel nicht gefunden" };
   }
 
-  if (existingPost.authorId !== session.user.id) {
+  // Admins can edit any post, others only their own
+  if (!isAdmin && existingPost.authorId !== session.user.id) {
     return { success: false, error: "Keine Berechtigung" };
   }
 
   try {
     const updateData: Record<string, unknown> = {};
+
+    // Only admins can change the author
+    if (isAdmin && input.authorId !== undefined) {
+      updateData.authorId = input.authorId;
+    }
 
     if (input.title !== undefined) {
       updateData.title = input.title;

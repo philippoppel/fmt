@@ -57,7 +57,16 @@ export default async function EditPostPage({ params }: Props) {
     redirect(`/${locale}/dashboard/blog`);
   }
 
-  const categories = await getCategories();
+  // Get categories and authors (for admin)
+  const [categories, authors] = await Promise.all([
+    getCategories(),
+    isAdmin
+      ? db.user.findMany({
+          select: { id: true, name: true, email: true },
+          orderBy: { name: "asc" },
+        })
+      : Promise.resolve([]),
+  ]);
 
   const initialData = {
     id: post.id,
@@ -72,6 +81,7 @@ export default async function EditPostPage({ params }: Props) {
     categoryIds: post.categories.map((c) => c.categoryId),
     tags: post.tags.map((t) => t.tag.name),
     status: post.status as "draft" | "published",
+    authorId: post.authorId,
   };
 
   return (
@@ -85,6 +95,8 @@ export default async function EditPostPage({ params }: Props) {
             locale={locale}
             categories={categories}
             initialData={initialData}
+            authors={authors}
+            isAdmin={isAdmin}
           />
         </div>
 
