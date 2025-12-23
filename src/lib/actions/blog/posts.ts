@@ -187,6 +187,42 @@ export async function updateBlogPost(
       }
     }
 
+    // Create a version before updating (if content or title changed)
+    if (input.content !== undefined || input.title !== undefined || input.summaryShort !== undefined) {
+      const currentPost = await db.blogPost.findUnique({
+        where: { id: postId },
+        select: {
+          title: true,
+          content: true,
+          contentHtml: true,
+          summaryShort: true,
+          summaryMedium: true,
+        },
+      });
+
+      if (currentPost) {
+        // Get next version number
+        const lastVersion = await db.blogPostVersion.findFirst({
+          where: { postId },
+          orderBy: { versionNumber: "desc" },
+          select: { versionNumber: true },
+        });
+
+        await db.blogPostVersion.create({
+          data: {
+            postId,
+            versionNumber: (lastVersion?.versionNumber || 0) + 1,
+            title: currentPost.title,
+            content: currentPost.content as object,
+            contentHtml: currentPost.contentHtml,
+            summaryShort: currentPost.summaryShort,
+            summaryMedium: currentPost.summaryMedium,
+            createdById: session.user.id,
+          },
+        });
+      }
+    }
+
     await db.blogPost.update({
       where: { id: postId },
       data: updateData,

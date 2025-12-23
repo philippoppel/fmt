@@ -9,10 +9,17 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Save, Eye, Loader2, X, Plus } from "lucide-react";
+import { Save, Eye, Loader2, X, Plus, Sparkles, Lightbulb, FileText } from "lucide-react";
 import { createBlogPost, updateBlogPost, publishBlogPost } from "@/lib/actions/blog/posts";
 import { saveDraft } from "@/lib/actions/blog/drafts";
+import {
+  suggestTags,
+  generateTakeaways,
+  generateMetaDescription,
+  suggestTitles,
+} from "@/lib/actions/blog/ai";
 import { cn } from "@/lib/utils";
+import { FeaturedImagePicker } from "./featured-image-picker";
 
 interface Category {
   id: string;
@@ -54,6 +61,7 @@ export function PostEditorForm({
   const [summaryMedium, setSummaryMedium] = useState(initialData?.summaryMedium || "");
   const [featuredImage, setFeaturedImage] = useState(initialData?.featuredImage || "");
   const [featuredImageAlt, setFeaturedImageAlt] = useState(initialData?.featuredImageAlt || "");
+  const [featuredImageCredit, setFeaturedImageCredit] = useState("");
   const [metaTitle, setMetaTitle] = useState(initialData?.metaTitle || "");
   const [metaDescription, setMetaDescription] = useState(initialData?.metaDescription || "");
   const [selectedCategories, setSelectedCategories] = useState<string[]>(initialData?.categoryIds || []);
@@ -61,6 +69,14 @@ export function PostEditorForm({
   const [newTag, setNewTag] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
+  // AI loading states
+  const [isGeneratingTags, setIsGeneratingTags] = useState(false);
+  const [isGeneratingTakeaways, setIsGeneratingTakeaways] = useState(false);
+  const [isGeneratingMeta, setIsGeneratingMeta] = useState(false);
+  const [isGeneratingTitles, setIsGeneratingTitles] = useState(false);
+  const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
+  const [takeaways, setTakeaways] = useState<string[]>([]);
 
   const localePath = locale === "de" ? "" : `/${locale}`;
 
@@ -100,6 +116,117 @@ export function PostEditorForm({
 
   const handleRemoveTag = (tag: string) => {
     setTags((prev) => prev.filter((t) => t !== tag));
+  };
+
+  const handleFeaturedImageChange = (url: string, alt: string, credit?: string) => {
+    setFeaturedImage(url);
+    setFeaturedImageAlt(alt);
+    if (credit) {
+      setFeaturedImageCredit(credit);
+    }
+  };
+
+  // AI Functions
+  const getContentAsHtml = (): string => {
+    if (!content) return "";
+    if (typeof content === "string") return content;
+    // TipTap JSON content - convert to simple text
+    try {
+      return JSON.stringify(content);
+    } catch {
+      return "";
+    }
+  };
+
+  const handleSuggestTags = async () => {
+    const htmlContent = getContentAsHtml();
+    if (!htmlContent) {
+      setError("Bitte schreiben Sie zuerst Inhalt für Tag-Vorschläge");
+      return;
+    }
+
+    setIsGeneratingTags(true);
+    setError(null);
+    try {
+      const result = await suggestTags(htmlContent);
+      if (result.error) {
+        setError(result.error);
+      } else if (result.tags.length > 0) {
+        // Add tags that don't already exist
+        const newTags = result.tags.filter((t) => !tags.includes(t.toLowerCase()));
+        setTags((prev) => [...prev, ...newTags.map((t) => t.toLowerCase())]);
+      }
+    } finally {
+      setIsGeneratingTags(false);
+    }
+  };
+
+  const handleGenerateTakeaways = async () => {
+    const htmlContent = getContentAsHtml();
+    if (!htmlContent) {
+      setError("Bitte schreiben Sie zuerst Inhalt für Takeaways");
+      return;
+    }
+
+    setIsGeneratingTakeaways(true);
+    setError(null);
+    try {
+      const result = await generateTakeaways(htmlContent);
+      if (result.error) {
+        setError(result.error);
+      } else if (result.takeaways.length > 0) {
+        setTakeaways(result.takeaways);
+        // Optionally add to summary if empty
+        if (!summaryMedium) {
+          setSummaryMedium(result.takeaways.map((t, i) => `${i + 1}. ${t}`).join("\n"));
+        }
+      }
+    } finally {
+      setIsGeneratingTakeaways(false);
+    }
+  };
+
+  const handleGenerateMetaDescription = async () => {
+    const htmlContent = getContentAsHtml();
+    if (!htmlContent || !title) {
+      setError("Bitte geben Sie einen Titel und Inhalt ein");
+      return;
+    }
+
+    setIsGeneratingMeta(true);
+    setError(null);
+    try {
+      const result = await generateMetaDescription(htmlContent, title);
+      if (result.error) {
+        setError(result.error);
+      } else if (result.metaDescription) {
+        setMetaDescription(result.metaDescription);
+      }
+    } finally {
+      setIsGeneratingMeta(false);
+    }
+  };
+
+  const handleSuggestTitles = async () => {
+    const htmlContent = getContentAsHtml();
+    if (!htmlContent) {
+      setError("Bitte schreiben Sie zuerst Inhalt für Titel-Vorschläge");
+      return;
+    }
+
+    setIsGeneratingTitles(true);
+    setError(null);
+    setSuggestedTitles([]);
+    try {
+      const result = await suggestTitles(htmlContent, title);
+      if (result.error) {
+        setError(result.error);
+      } else if (result.titles.length > 0) {
+        setSuggestedTitles(result.titles);
+      }
+    } finally {
+      setIsGeneratingTitles(false);
+    }
   };
 
   const handleSaveDraft = () => {
@@ -216,7 +343,24 @@ export function PostEditorForm({
 
       {/* Title */}
       <div className="space-y-2">
-        <Label htmlFor="title">Titel *</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="title">Titel *</Label>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleSuggestTitles}
+            disabled={isGeneratingTitles || !content}
+            className="text-xs gap-1.5 h-7"
+          >
+            {isGeneratingTitles ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <Sparkles className="h-3 w-3" />
+            )}
+            Titel vorschlagen
+          </Button>
+        </div>
         <Input
           id="title"
           value={title}
@@ -224,6 +368,24 @@ export function PostEditorForm({
           placeholder="Artikel-Titel..."
           className="text-xl font-semibold"
         />
+        {suggestedTitles.length > 0 && (
+          <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+            <p className="text-xs font-medium text-muted-foreground">Vorgeschlagene Titel:</p>
+            {suggestedTitles.map((suggestedTitle, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  setTitle(suggestedTitle);
+                  setSuggestedTitles([]);
+                }}
+                className="block w-full text-left text-sm p-2 rounded hover:bg-muted transition-colors"
+              >
+                {suggestedTitle}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Editor */}
@@ -238,8 +400,23 @@ export function PostEditorForm({
 
       {/* Summary */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-base">Zusammenfassung (TLDR) *</CardTitle>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleGenerateTakeaways}
+            disabled={isGeneratingTakeaways || !content}
+            className="text-xs gap-1.5 h-7"
+          >
+            {isGeneratingTakeaways ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <Lightbulb className="h-3 w-3" />
+            )}
+            Key Takeaways generieren
+          </Button>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -267,6 +444,19 @@ export function PostEditorForm({
               className="w-full min-h-[100px] px-3 py-2 border rounded-md bg-background text-sm resize-y"
             />
           </div>
+          {takeaways.length > 0 && (
+            <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+              <p className="text-xs font-medium text-muted-foreground">Generierte Takeaways:</p>
+              <ul className="space-y-1.5">
+                {takeaways.map((takeaway, idx) => (
+                  <li key={idx} className="text-sm flex gap-2">
+                    <span className="text-muted-foreground">{idx + 1}.</span>
+                    <span>{takeaway}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -297,8 +487,23 @@ export function PostEditorForm({
 
       {/* Tags */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-base">Tags</CardTitle>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleSuggestTags}
+            disabled={isGeneratingTags || !content}
+            className="text-xs gap-1.5 h-7"
+          >
+            {isGeneratingTags ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <Sparkles className="h-3 w-3" />
+            )}
+            Tags vorschlagen
+          </Button>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex gap-2">
@@ -341,39 +546,39 @@ export function PostEditorForm({
         <CardHeader>
           <CardTitle className="text-base">Titelbild</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="featuredImage">Bild-URL</Label>
-            <Input
-              id="featuredImage"
-              value={featuredImage}
-              onChange={(e) => setFeaturedImage(e.target.value)}
-              placeholder="https://..."
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="featuredImageAlt">Alt-Text</Label>
-            <Input
-              id="featuredImageAlt"
-              value={featuredImageAlt}
-              onChange={(e) => setFeaturedImageAlt(e.target.value)}
-              placeholder="Bildbeschreibung für Barrierefreiheit"
-            />
-          </div>
-          {featuredImage && (
-            <img
-              src={featuredImage}
-              alt={featuredImageAlt || "Vorschau"}
-              className="max-h-48 rounded-lg object-cover"
-            />
+        <CardContent>
+          <FeaturedImagePicker
+            value={featuredImage}
+            alt={featuredImageAlt}
+            onImageChange={handleFeaturedImageChange}
+          />
+          {featuredImageCredit && (
+            <p className="text-xs text-muted-foreground mt-2">
+              {featuredImageCredit}
+            </p>
           )}
         </CardContent>
       </Card>
 
       {/* SEO */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-base">SEO</CardTitle>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleGenerateMetaDescription}
+            disabled={isGeneratingMeta || !content || !title}
+            className="text-xs gap-1.5 h-7"
+          >
+            {isGeneratingMeta ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <FileText className="h-3 w-3" />
+            )}
+            Meta generieren
+          </Button>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">

@@ -78,7 +78,7 @@
 | familyConflicts      | Familienkonflikte     |
 | generationConflicts  | Generationenkonflikte |
 
-#### Intensitätsfragen
+#### Intensitätsfragen@
 
 | Key           | Frage                                                                    |
 |---------------|--------------------------------------------------------------------------|

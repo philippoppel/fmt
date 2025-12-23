@@ -10,6 +10,7 @@ import {
 } from "@/lib/blog/utils";
 
 import { ReadingProgress } from "@/components/blog/display/reading-progress";
+import { ViewTracker } from "@/components/blog/view-tracker";
 import { KeyTakeaways } from "@/components/blog/display/key-takeaways";
 import { TLDRBox } from "@/components/blog/display/tldr-box";
 import { ArticleInfoBox } from "@/components/blog/display/article-info-box";
@@ -24,7 +25,9 @@ import { MatchingCTA } from "@/components/blog/display/matching-cta";
 import { Badge } from "@/components/ui/badge";
 import { BookmarkButton } from "@/components/blog/interaction/bookmark-button";
 import { ShareButton } from "@/components/blog/interaction/share-button";
+import { ReactionButtons } from "@/components/blog/interaction/reaction-buttons";
 import { ReadingPreferences } from "@/components/blog/a11y/reading-preferences";
+import { SeriesNavigation } from "@/components/blog/display/series-navigation";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -153,6 +156,9 @@ export default async function BlogPostPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(medicalSchema) }}
       />
+
+      {/* View Tracking */}
+      <ViewTracker postId={post.id} />
 
       {/* Reading Progress Bar */}
       <ReadingProgress />
@@ -334,6 +340,23 @@ export default async function BlogPostPage({ params }: Props) {
                     ))}
                   </div>
                 </section>
+              )}
+
+              {/* Reactions */}
+              <section className="mt-12 pt-8 border-t">
+                <ReactionButtons postId={post.id} />
+              </section>
+
+              {/* Series Navigation */}
+              {post.series && post.series.posts.length > 1 && (
+                <SeriesNavigation
+                  seriesTitle={locale === "de" ? post.series.titleDE : post.series.titleEN}
+                  seriesSlug={post.series.slug}
+                  posts={post.series.posts}
+                  currentPostId={post.id}
+                  locale={locale}
+                  className="mt-12"
+                />
               )}
             </main>
 

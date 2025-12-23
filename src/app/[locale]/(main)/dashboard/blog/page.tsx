@@ -1,14 +1,14 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { auth } from "@/lib/auth";
-import { getUserPosts } from "@/lib/data/blog";
+import { getUserPostsWithReviews } from "@/lib/data/blog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Plus, FileText, Eye, Clock, MessageCircle, Bookmark, Edit, Trash2 } from "lucide-react";
+import { Plus, FileText, Eye, Clock, CalendarClock, Send } from "lucide-react";
 import { formatRelativeTime } from "@/lib/blog/utils";
+import { AuthorPostCard } from "@/components/blog/author/author-post-card";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -29,11 +29,13 @@ export default async function DashboardBlogPage({ params }: Props) {
     redirect(`/${locale}/auth/login`);
   }
 
-  const posts = await getUserPosts(session.user.id);
+  const posts = await getUserPostsWithReviews(session.user.id);
   const localePath = locale === "de" ? "" : `/${locale}`;
 
   const publishedCount = posts.filter((p) => p.status === "published").length;
   const draftCount = posts.filter((p) => p.status === "draft").length;
+  const reviewCount = posts.filter((p) => p.status === "review").length;
+  const scheduledCount = posts.filter((p) => p.status === "scheduled").length;
 
   return (
     <div>
@@ -54,14 +56,32 @@ export default async function DashboardBlogPage({ params }: Props) {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-3 mb-8">
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Gesamt</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Entwürfe</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{posts.length}</div>
+            <div className="text-2xl font-bold">{draftCount}</div>
+          </CardContent>
+        </Card>
+        <Card className={reviewCount > 0 ? "border-yellow-200 bg-yellow-50/50" : ""}>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Zur Prüfung</CardTitle>
+            <Send className="h-4 w-4 text-yellow-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-600">{reviewCount}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Geplant</CardTitle>
+            <CalendarClock className="h-4 w-4 text-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">{scheduledCount}</div>
           </CardContent>
         </Card>
         <Card>
@@ -70,16 +90,7 @@ export default async function DashboardBlogPage({ params }: Props) {
             <Eye className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{publishedCount}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Entwürfe</CardTitle>
-            <Clock className="h-4 w-4 text-yellow-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{draftCount}</div>
+            <div className="text-2xl font-bold text-green-600">{publishedCount}</div>
           </CardContent>
         </Card>
       </div>
@@ -104,65 +115,22 @@ export default async function DashboardBlogPage({ params }: Props) {
       ) : (
         <div className="space-y-4">
           {posts.map((post) => (
-            <Card key={post.id}>
-              <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Badge
-                        variant={post.status === "published" ? "default" : "secondary"}
-                      >
-                        {post.status === "published" ? "Veröffentlicht" : "Entwurf"}
-                      </Badge>
-                      {post.status === "published" && post.publishedAt && (
-                        <span className="text-xs text-muted-foreground">
-                          {formatRelativeTime(post.publishedAt, locale)}
-                        </span>
-                      )}
-                    </div>
-                    <Link
-                      href={`${localePath}/dashboard/blog/edit/${post.id}`}
-                      className="font-semibold hover:text-primary transition-colors line-clamp-1"
-                    >
-                      {post.title}
-                    </Link>
-                    <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {post.readingTimeMinutes} min
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MessageCircle className="h-3 w-3" />
-                        {post._count.comments}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Bookmark className="h-3 w-3" />
-                        {post._count.bookmarks}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {post.status === "published" && (
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link
-                          href={`${localePath}/blog/${post.slug}`}
-                          target="_blank"
-                        >
-                          <Eye className="h-4 w-4" />
-                          <span className="sr-only">Ansehen</span>
-                        </Link>
-                      </Button>
-                    )}
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href={`${localePath}/dashboard/blog/edit/${post.id}`}>
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Bearbeiten</span>
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <AuthorPostCard
+              key={post.id}
+              post={{
+                id: post.id,
+                title: post.title,
+                slug: post.slug,
+                status: post.status,
+                readingTimeMinutes: post.readingTimeMinutes,
+                commentCount: post._count.comments,
+                bookmarkCount: post._count.bookmarks,
+                publishedAt: post.publishedAt,
+                scheduledAt: post.scheduledAt,
+                latestFeedback: post.latestFeedback,
+              }}
+              locale={locale}
+            />
           ))}
         </div>
       )}

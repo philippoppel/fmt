@@ -71,6 +71,8 @@ enum MicrositeStatus {
 // Blog Enums
 enum PostStatus {
   draft
+  review      // Submitted for admin review
+  scheduled   // Approved, waiting for publish date
   published
   archived
 }
@@ -140,6 +142,11 @@ model User {
 
   // Blog Relations
   blogPosts             BlogPost[]
+  editedBlogPosts       BlogPost[]   @relation("BlogEditor")
+  blogReviews           BlogReview[]
+  blogPostVersions      BlogPostVersion[]
+  blogSeries            BlogSeries[]
+  blogReactions         BlogReaction[]
   comments              Comment[]
   bookmarks             Bookmark[]
   blogDrafts            BlogDraft[]
@@ -463,6 +470,10 @@ model BlogPost {
   readingTimeMinutes Int           @default(0)
   wordCount         Int            @default(0)
 
+  // Statistics
+  viewCount         Int            @default(0)
+  uniqueViewCount   Int            @default(0)
+
   // Key Takeaways & Article Context
   keyTakeaways      String[]       // Array of 3-6 key points
   targetAudience    String?        @db.Text // "Für wen ist dieser Artikel?"
@@ -476,10 +487,20 @@ model BlogPost {
   // Status & Visibility
   status            PostStatus     @default(draft)
   publishedAt       DateTime?
+  scheduledAt       DateTime?      // When to auto-publish (for scheduled status)
 
   // Author
   authorId          String
   author            User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Editor/Admin who manages this post
+  editorId          String?
+  editor            User?          @relation("BlogEditor", fields: [editorId], references: [id])
+
+  // Series
+  seriesId          String?
+  series            BlogSeries?    @relation(fields: [seriesId], references: [id])
+  seriesOrder       Int?           // Order within the series
 
   // Relations
   categories        BlogPostCategory[]
@@ -487,16 +508,107 @@ model BlogPost {
   citations         Citation[]
   comments          Comment[]
   bookmarks         Bookmark[]
+  reviews           BlogReview[]
+  versions          BlogPostVersion[]
+  reactions         BlogReaction[]
 
   // Timestamps
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
 
   @@index([authorId])
+  @@index([editorId])
   @@index([status])
   @@index([publishedAt])
+  @@index([scheduledAt])
   @@index([slug])
+  @@index([seriesId])
   @@map("blog_posts")
+}
+
+model BlogPostVersion {
+  id              String       @id @default(cuid())
+  postId          String
+  post            BlogPost     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  // Version info
+  versionNumber   Int
+  changeNote      String?      // Optional note about what changed
+
+  // Snapshot of content at this version
+  title           String
+  content         Json
+  contentHtml     String       @db.Text
+  summaryShort    String       @db.VarChar(280)
+  summaryMedium   String?      @db.Text
+
+  // Who created this version
+  createdById     String
+  createdBy       User         @relation(fields: [createdById], references: [id])
+
+  createdAt       DateTime     @default(now())
+
+  @@index([postId])
+  @@index([createdById])
+  @@unique([postId, versionNumber])
+  @@map("blog_post_versions")
+}
+
+model BlogSeries {
+  id              String       @id @default(cuid())
+  slug            String       @unique
+
+  // Content
+  title           String
+  titleDE         String
+  titleEN         String
+  description     String?      @db.Text
+  descriptionDE   String?      @db.Text
+  descriptionEN   String?      @db.Text
+
+  // Media
+  coverImage      String?
+  coverImageAlt   String?
+
+  // Status
+  isPublished     Boolean      @default(false)
+
+  // Author
+  authorId        String
+  author          User         @relation(fields: [authorId], references: [id])
+
+  // Posts in this series
+  posts           BlogPost[]
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([authorId])
+  @@map("blog_series")
+}
+
+model BlogReaction {
+  id              String       @id @default(cuid())
+  postId          String
+  post            BlogPost     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  // User (optional - allow anonymous reactions)
+  userId          String?
+  user            User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Reaction type
+  type            String       // "like", "love", "insightful", "helpful"
+
+  // For anonymous users, store a hash of IP/fingerprint
+  anonymousId     String?
+
+  createdAt       DateTime     @default(now())
+
+  @@unique([postId, userId, type])
+  @@unique([postId, anonymousId, type])
+  @@index([postId])
+  @@index([userId])
+  @@map("blog_reactions")
 }
 
 model BlogCategory {
@@ -669,6 +781,28 @@ model BlogDraft {
 
   @@index([authorId])
   @@map("blog_drafts")
+}
+
+model BlogReview {
+  id          String    @id @default(cuid())
+
+  // The post being reviewed
+  postId      String
+  post        BlogPost  @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  // The admin who reviewed
+  reviewerId  String
+  reviewer    User      @relation(fields: [reviewerId], references: [id])
+
+  // Review outcome
+  status      String    // "approved", "changes_requested", "rejected"
+  feedback    String?   @db.Text
+
+  createdAt   DateTime  @default(now())
+
+  @@index([postId])
+  @@index([reviewerId])
+  @@map("blog_reviews")
 }
 
 // ============================================

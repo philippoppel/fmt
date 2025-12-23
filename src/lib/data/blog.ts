@@ -268,6 +268,24 @@ export async function getBlogPostBySlug(slug: string) {
             },
             orderBy: { createdAt: "asc" },
           },
+          series: {
+            select: {
+              id: true,
+              slug: true,
+              titleDE: true,
+              titleEN: true,
+              posts: {
+                where: { status: "published" },
+                orderBy: { seriesOrder: "asc" },
+                select: {
+                  id: true,
+                  slug: true,
+                  title: true,
+                  seriesOrder: true,
+                },
+              },
+            },
+          },
           _count: {
             select: {
               comments: { where: { isApproved: true } },
@@ -430,6 +448,58 @@ export async function getUserPosts(userId: string, status?: PostStatus) {
     },
     orderBy: { updatedAt: "desc" },
   });
+}
+
+/**
+ * Get user's posts with review feedback for author dashboard
+ */
+export async function getUserPostsWithReviews(userId: string) {
+  const posts = await db.blogPost.findMany({
+    where: { authorId: userId },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      status: true,
+      publishedAt: true,
+      scheduledAt: true,
+      createdAt: true,
+      updatedAt: true,
+      readingTimeMinutes: true,
+      _count: {
+        select: {
+          comments: true,
+          bookmarks: true,
+        },
+      },
+      reviews: {
+        where: { status: "changes_requested" },
+        orderBy: { createdAt: "desc" },
+        take: 1,
+        select: {
+          feedback: true,
+          createdAt: true,
+          reviewer: {
+            select: { name: true },
+          },
+        },
+      },
+    },
+    orderBy: { updatedAt: "desc" },
+  });
+
+  // Transform to include latestFeedback
+  return posts.map((post) => ({
+    ...post,
+    latestFeedback:
+      post.status === "draft" && post.reviews.length > 0
+        ? {
+            feedback: post.reviews[0].feedback,
+            createdAt: post.reviews[0].createdAt,
+            reviewerName: post.reviews[0].reviewer.name,
+          }
+        : null,
+  }));
 }
 
 /**
