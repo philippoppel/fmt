@@ -176,7 +176,7 @@ export function AdminBlogTable({
                   <TableCell>
                     <div className="space-y-1">
                       <Link
-                        href={`/dashboard/blog/edit/${post.id}`}
+                        href={`/dashboard/blog/${post.id}/edit`}
                         className="font-medium hover:text-primary transition-colors line-clamp-1"
                       >
                         {post.title}
@@ -248,7 +248,7 @@ export function AdminBlogTable({
                         </Button>
                       )}
                       <Button variant="ghost" size="icon" asChild>
-                        <Link href={`/dashboard/blog/edit/${post.id}`}>
+                        <Link href={`/dashboard/blog/${post.id}/edit`}>
                           <Edit className="h-4 w-4" />
                           <span className="sr-only">Bearbeiten</span>
                         </Link>
