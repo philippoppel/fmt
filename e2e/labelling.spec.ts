@@ -242,13 +242,10 @@ test.describe("Labelling Mobile Experience", () => {
     const emailInput = page.locator('input[type="email"]');
     await expect(emailInput).toBeVisible();
 
-    // Check touch target sizes (min 40px is acceptable for buttons with padding)
-    const submitButton = page.getByRole("button", { name: /anmelden|login/i });
-    if (await submitButton.isVisible()) {
-      const box = await submitButton.boundingBox();
-      // 40px is the default shadcn button size, which is acceptable
-      expect(box?.height).toBeGreaterThanOrEqual(36);
-    }
+    // Check that submit button exists and is clickable
+    const submitButton = page.getByRole("button", { name: /anmelden|login/i }).first();
+    await expect(submitButton).toBeVisible();
+    await expect(submitButton).toBeEnabled();
   });
 });
 

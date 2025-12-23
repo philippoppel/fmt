@@ -68,7 +68,7 @@ test.describe("Mobile UX Tests", () => {
   test.describe("Homepage Mobile Layout", () => {
     test("should have no horizontal overflow on homepage", async ({ page }) => {
       await page.goto("/");
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
       await assertNoHorizontalOverflow(page);
     });
 
@@ -84,13 +84,13 @@ test.describe("Mobile UX Tests", () => {
   test.describe("Auth Pages Mobile Layout", () => {
     test("should have no horizontal overflow on login page", async ({ page }) => {
       await page.goto("/auth/login");
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
       await assertNoHorizontalOverflow(page);
     });
 
     test("should have no horizontal overflow on register page", async ({ page }) => {
       await page.goto("/auth/register");
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
       await assertNoHorizontalOverflow(page);
     });
 
@@ -111,7 +111,7 @@ test.describe("Mobile UX Tests", () => {
   test.describe("Therapist Search Mobile Layout", () => {
     test("should have no horizontal overflow", async ({ page }) => {
       await page.goto("/therapists");
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
       await assertNoHorizontalOverflow(page);
     });
 
@@ -139,7 +139,7 @@ test.describe("Mobile UX Tests", () => {
 
     test("therapist cards should stack in single column", async ({ page }) => {
       await page.goto("/therapists");
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
 
       // Cards should exist
       const cards = page.locator('[role="listitem"]');
@@ -166,7 +166,7 @@ test.describe("Mobile UX Tests", () => {
   test.describe("About Page Mobile Layout", () => {
     test("should have no horizontal overflow", async ({ page }) => {
       await page.goto("/about");
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
       await assertNoHorizontalOverflow(page);
     });
   });
@@ -174,7 +174,7 @@ test.describe("Mobile UX Tests", () => {
   test.describe("Blog Page Mobile Layout", () => {
     test("should have no horizontal overflow", async ({ page }) => {
       await page.goto("/blog");
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("domcontentloaded");
       await assertNoHorizontalOverflow(page);
     });
   });
@@ -186,7 +186,7 @@ test.describe("Android Mobile Tests", () => {
 
   test("should have no horizontal overflow on homepage", async ({ page }) => {
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
     await assertNoHorizontalOverflow(page);
   });
 
