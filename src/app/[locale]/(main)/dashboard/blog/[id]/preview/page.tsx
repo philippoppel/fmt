@@ -100,29 +100,29 @@ export default async function PreviewPage({ params }: Props) {
   return (
     <div className="min-h-screen">
       {/* Preview Banner */}
-      <div className="sticky top-0 z-50 bg-yellow-500 text-yellow-950 px-4 py-2">
-        <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" />
-            <span className="font-medium">Vorschau-Modus</span>
+      <div className="sticky top-0 z-50 bg-yellow-500 text-yellow-950 px-3 py-2 sm:px-4">
+        <div className="container mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <AlertTriangle className="h-4 w-4 shrink-0" />
+            <span className="font-medium text-sm sm:text-base">Vorschau</span>
             <Badge
               variant="secondary"
-              className={`${statusColors[post.status]} text-white`}
+              className={`${statusColors[post.status]} text-white text-xs`}
             >
               {statusLabels[post.status]}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="secondary" size="sm" asChild>
+            <Button variant="secondary" size="sm" asChild className="h-8 text-xs sm:text-sm">
               <Link href={`${localePath}/dashboard/blog/${post.id}/edit`}>
-                <Edit className="h-4 w-4 mr-1" />
-                Bearbeiten
+                <Edit className="h-3.5 w-3.5 sm:mr-1" />
+                <span className="hidden sm:inline">Bearbeiten</span>
               </Link>
             </Button>
-            <Button variant="secondary" size="sm" asChild>
+            <Button variant="secondary" size="sm" asChild className="h-8 text-xs sm:text-sm">
               <Link href={`${localePath}/dashboard/blog`}>
-                <ArrowLeft className="h-4 w-4 mr-1" />
-                Zurück
+                <ArrowLeft className="h-3.5 w-3.5 sm:mr-1" />
+                <span className="hidden sm:inline">Zurück</span>
               </Link>
             </Button>
           </div>

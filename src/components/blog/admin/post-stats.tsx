@@ -91,23 +91,23 @@ export function PostStats({ postId }: PostStatsProps) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="text-base">Statistiken</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {statItems.map((item) => (
-            <div key={item.label} className="flex items-center gap-2">
-              <item.icon className="h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="text-sm font-medium">{item.value}</p>
-                <p className="text-xs text-muted-foreground">{item.label}</p>
+            <div key={item.label} className="flex items-start gap-2 min-w-0">
+              <item.icon className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+              <div className="min-w-0">
+                <p className="text-sm font-semibold tabular-nums">{item.value}</p>
+                <p className="text-xs text-muted-foreground truncate">{item.label}</p>
               </div>
             </div>
           ))}
         </div>
         {stats.publishedAt && (
-          <p className="text-xs text-muted-foreground mt-4 pt-4 border-t">
+          <p className="text-xs text-muted-foreground mt-4 pt-3 border-t">
             Veröffentlicht{" "}
             {formatDistanceToNow(new Date(stats.publishedAt), {
               addSuffix: true,

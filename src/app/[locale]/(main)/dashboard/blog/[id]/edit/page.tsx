@@ -86,11 +86,11 @@ export default async function EditPostPage({ params }: Props) {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-8">Artikel bearbeiten</h1>
+      <h1 className="text-2xl font-bold mb-6 lg:mb-8">Artikel bearbeiten</h1>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="flex flex-col xl:flex-row gap-6 xl:gap-8">
         {/* Main Editor */}
-        <div className="lg:col-span-2">
+        <div className="flex-1 min-w-0">
           <PostEditorForm
             locale={locale}
             categories={categories}
@@ -101,7 +101,7 @@ export default async function EditPostPage({ params }: Props) {
         </div>
 
         {/* Sidebar with Stats and Versions */}
-        <div className="space-y-6">
+        <div className="w-full xl:w-80 shrink-0 space-y-6">
           {post.status === "published" && <PostStats postId={post.id} />}
           <VersionHistory postId={post.id} />
         </div>

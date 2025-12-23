@@ -132,7 +132,7 @@ export function AuthorPostCard({ post, locale }: AuthorPostCardProps) {
             </div>
 
             <Link
-              href={`${localePath}/dashboard/blog/edit/${post.id}`}
+              href={`${localePath}/dashboard/blog/${post.id}/edit`}
               className="font-semibold hover:text-primary transition-colors line-clamp-1"
             >
               {post.title}
@@ -185,7 +185,7 @@ export function AuthorPostCard({ post, locale }: AuthorPostCardProps) {
             {/* Edit Button (not for posts in review) */}
             {post.status !== "review" && (
               <Button variant="ghost" size="sm" asChild>
-                <Link href={`${localePath}/dashboard/blog/edit/${post.id}`}>
+                <Link href={`${localePath}/dashboard/blog/${post.id}/edit`}>
                   <Edit className="h-4 w-4" />
                   <span className="sr-only">Bearbeiten</span>
                 </Link>

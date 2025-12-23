@@ -100,58 +100,62 @@ export function AdminBlogTable({
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex-1 flex gap-2">
+      <div className="flex flex-col gap-3">
+        {/* Search row */}
+        <div className="flex gap-2">
           <Input
             placeholder="Suchen..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="max-w-xs"
+            className="flex-1"
           />
           <Button variant="outline" size="icon" onClick={handleSearch}>
             <Search className="h-4 w-4" />
           </Button>
         </div>
 
-        <Select
-          value={currentStatus}
-          onValueChange={(value) => updateFilters("status", value)}
-        >
-          <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Alle Status</SelectItem>
-            <SelectItem value="draft">Entwurf</SelectItem>
-            <SelectItem value="review">Zur Prüfung</SelectItem>
-            <SelectItem value="scheduled">Geplant</SelectItem>
-            <SelectItem value="published">Veröffentlicht</SelectItem>
-            <SelectItem value="archived">Archiviert</SelectItem>
-          </SelectContent>
-        </Select>
+        {/* Filter row */}
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Select
+            value={currentStatus}
+            onValueChange={(value) => updateFilters("status", value)}
+          >
+            <SelectTrigger className="w-full sm:w-[160px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alle Status</SelectItem>
+              <SelectItem value="draft">Entwurf</SelectItem>
+              <SelectItem value="review">Zur Prüfung</SelectItem>
+              <SelectItem value="scheduled">Geplant</SelectItem>
+              <SelectItem value="published">Veröffentlicht</SelectItem>
+              <SelectItem value="archived">Archiviert</SelectItem>
+            </SelectContent>
+          </Select>
 
-        <Select
-          value={currentAuthor || "all"}
-          onValueChange={(value) => updateFilters("author", value)}
-        >
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Autor" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Alle Autoren</SelectItem>
-            {authors.map((author) => (
-              <SelectItem key={author.id} value={author.id}>
-                {author.name || author.email}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          <Select
+            value={currentAuthor || "all"}
+            onValueChange={(value) => updateFilters("author", value)}
+          >
+            <SelectTrigger className="w-full sm:w-[200px]">
+              <SelectValue placeholder="Autor" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alle Autoren</SelectItem>
+              {authors.map((author) => (
+                <SelectItem key={author.id} value={author.id}>
+                  {author.name || author.email}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg overflow-hidden">
-        <Table>
+      <div className="border rounded-lg overflow-hidden overflow-x-auto">
+        <Table className="min-w-[800px]">
           <TableHeader>
             <TableRow>
               <TableHead className="min-w-[250px]">Titel</TableHead>
