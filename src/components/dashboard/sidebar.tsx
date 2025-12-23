@@ -14,12 +14,15 @@ import {
   BarChart3,
   Palette,
   Crown,
+  FileText,
+  ShieldCheck,
 } from "lucide-react";
 import type { AccountType } from "@prisma/client";
 
 interface SidebarProps {
   accountType: AccountType;
   userName?: string | null;
+  isAdmin?: boolean;
 }
 
 const NAV_ITEMS = [
@@ -29,6 +32,7 @@ const NAV_ITEMS = [
     labelKey: "overview",
     shortLabel: "Home",
     requiresTier: null,
+    adminOnly: false,
   },
   {
     href: "/dashboard/profile",
@@ -36,6 +40,7 @@ const NAV_ITEMS = [
     labelKey: "profile",
     shortLabel: "Profil",
     requiresTier: null,
+    adminOnly: false,
   },
   {
     href: "/dashboard/customize",
@@ -43,6 +48,23 @@ const NAV_ITEMS = [
     labelKey: "customize",
     shortLabel: "Design",
     requiresTier: "mittel" as AccountType,
+    adminOnly: false,
+  },
+  {
+    href: "/dashboard/blog",
+    icon: FileText,
+    labelKey: "blog",
+    shortLabel: "Artikel",
+    requiresTier: null,
+    adminOnly: false,
+  },
+  {
+    href: "/dashboard/admin/blogs",
+    icon: ShieldCheck,
+    labelKey: "blogAdmin",
+    shortLabel: "Blog Admin",
+    requiresTier: null,
+    adminOnly: true,
   },
   {
     href: "/dashboard/stats",
@@ -50,6 +72,7 @@ const NAV_ITEMS = [
     labelKey: "stats",
     shortLabel: "Stats",
     requiresTier: "premium" as AccountType,
+    adminOnly: false,
   },
   {
     href: "/dashboard/billing",
@@ -57,6 +80,7 @@ const NAV_ITEMS = [
     labelKey: "billing",
     shortLabel: "Abo",
     requiresTier: null,
+    adminOnly: false,
   },
   {
     href: "/dashboard/settings",
@@ -64,6 +88,7 @@ const NAV_ITEMS = [
     labelKey: "settings",
     shortLabel: "Settings",
     requiresTier: null,
+    adminOnly: false,
   },
 ];
 
@@ -80,10 +105,13 @@ const TIER_BADGES: Record<AccountType, { label: string; className: string }> = {
   premium: { label: "Premium", className: "bg-amber-100 text-amber-700" },
 };
 
-export function DashboardSidebar({ accountType, userName }: SidebarProps) {
+export function DashboardSidebar({ accountType, userName, isAdmin = false }: SidebarProps) {
   const t = useTranslations("dashboard.sidebar");
   const pathname = usePathname();
   const tierBadge = TIER_BADGES[accountType];
+
+  // Filter nav items based on admin status
+  const visibleNavItems = NAV_ITEMS.filter(item => !item.adminOnly || isAdmin);
 
   const isActive = (href: string) => {
     if (href === "/dashboard") {
@@ -97,7 +125,7 @@ export function DashboardSidebar({ accountType, userName }: SidebarProps) {
       {/* Mobile Navigation - Horizontal scrollable bar */}
       <div className="lg:hidden sticky top-[4rem] z-30 bg-background border-b">
         <div className="flex overflow-x-auto scrollbar-hide px-2 py-2 gap-1">
-          {NAV_ITEMS.map((item) => {
+          {visibleNavItems.map((item) => {
             const Icon = item.icon;
             const hasAccess = canAccessTier(accountType, item.requiresTier);
             const active = isActive(item.href);
@@ -144,7 +172,7 @@ export function DashboardSidebar({ accountType, userName }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {NAV_ITEMS.map((item) => {
+          {visibleNavItems.map((item) => {
             const Icon = item.icon;
             const hasAccess = canAccessTier(accountType, item.requiresTier);
             const active = isActive(item.href);
