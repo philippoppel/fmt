@@ -42,7 +42,8 @@ export function HeroImagePicker({
   const [mode, setMode] = useState<"upload" | "url">(cloudinaryConfigured ? "upload" : "url");
   const [urlInput, setUrlInput] = useState(value);
 
-  const handleUploadSuccess = (result: { info?: { secure_url?: string } }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleUploadSuccess = (result: any) => {
     if (result.info && typeof result.info === "object" && "secure_url" in result.info) {
       onImageChange(result.info.secure_url as string);
     }
