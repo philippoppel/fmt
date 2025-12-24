@@ -40,13 +40,16 @@ import * as LucideIcons from "lucide-react";
 import { THEME_PRESETS, type ThemeName } from "@/types/profile";
 import type { TherapistProfileData } from "@/types/profile";
 import type { AccountType } from "@/types/therapist";
+import { SPECIALTIES } from "@/types/therapist";
 import type { MicrositeConfig, Competency, MicrositeThemePreset } from "@/types/microsite";
 import { DEFAULT_MICROSITE_CONFIG } from "@/types/microsite";
 import { MICROSITE_THEME_PRESETS } from "@/lib/microsite/theme-presets";
 import { getTierLimits, getAllowedPresets } from "@/lib/microsite/tier-limits";
 import { CURATED_ICONS, ICON_CATEGORIES, searchIcons } from "@/lib/microsite/curated-icons";
-import { saveMicrositeDraft, publishMicrosite } from "@/lib/actions/microsite";
+import { saveMicrositeDraft, publishMicrosite, updateMicrositeProfileFields } from "@/lib/actions/microsite";
 import { ProfilePage } from "@/components/profile/profile-page";
+import { MicrositeHeroPicker } from "@/components/dashboard/customize/microsite-hero-picker";
+import { SpecialtyIconPicker, DEFAULT_SPECIALTY_ICONS, type IconName } from "@/components/dashboard/profile/specialty-icon-picker";
 
 interface CustomizeContentProps {
   hasAccess: boolean;
@@ -87,6 +90,13 @@ export function CustomizeContent({
   const [saveMessage, setSaveMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
 
+  // Profile-level fields (stored on TherapistProfile, not in micrositeDraft)
+  const [heroCoverImageUrl, setHeroCoverImageUrl] = useState(profile.heroCoverImageUrl || "");
+  const [specializationIcons, setSpecializationIcons] = useState<Record<string, string>>(
+    profile.specializationIcons || {}
+  );
+  const [isProfileFieldsDirty, setIsProfileFieldsDirty] = useState(false);
+
   // Update config helper
   const updateConfig = useCallback((updates: Partial<MicrositeConfig>) => {
     setConfig((prev) => ({ ...prev, ...updates }));
@@ -111,7 +121,22 @@ export function CustomizeContent({
     setSaveMessage(null);
 
     try {
+      // Save microsite draft config
       const result = await saveMicrositeDraft(config);
+
+      // Save profile-level fields if they changed
+      if (isProfileFieldsDirty) {
+        const profileResult = await updateMicrositeProfileFields({
+          heroCoverImageUrl,
+          specializationIcons,
+        });
+        if (!profileResult.success) {
+          setSaveMessage({ type: "error", text: profileResult.error || "Fehler beim Speichern" });
+          return;
+        }
+        setIsProfileFieldsDirty(false);
+      }
+
       if (result.success) {
         setIsDirty(false);
         setSaveMessage({ type: "success", text: "Gespeichert!" });
@@ -125,6 +150,36 @@ export function CustomizeContent({
       setIsSaving(false);
     }
   };
+
+  // Update hero image
+  const handleHeroImageChange = useCallback((url: string) => {
+    setHeroCoverImageUrl(url);
+    setIsProfileFieldsDirty(true);
+    setIsDirty(true);
+    setSaveMessage(null);
+  }, []);
+
+  // Update specialty icon
+  const handleIconChange = useCallback((specialty: string, iconName: IconName) => {
+    setSpecializationIcons(prev => {
+      const newIcons = { ...prev };
+      // Only store if different from default
+      if (DEFAULT_SPECIALTY_ICONS[specialty] === iconName) {
+        delete newIcons[specialty];
+      } else {
+        newIcons[specialty] = iconName;
+      }
+      return newIcons;
+    });
+    setIsProfileFieldsDirty(true);
+    setIsDirty(true);
+    setSaveMessage(null);
+  }, []);
+
+  // Get icon for a specialty
+  const getIconForSpecialty = useCallback((specialty: string): IconName => {
+    return (specializationIcons[specialty] as IconName) || DEFAULT_SPECIALTY_ICONS[specialty] || "Brain";
+  }, [specializationIcons]);
 
   const handlePublish = async () => {
     if (isPublishing) return;
@@ -343,6 +398,22 @@ export function CustomizeContent({
               </div>
             </CardContent>
           </Card>
+
+          {/* Hero Background Image */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Hero-Hintergrundbild</CardTitle>
+              <CardDescription>
+                Wähle ein Bild aus Unsplash oder lade ein eigenes hoch (empfohlen: 1920x640px)
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <MicrositeHeroPicker
+                value={heroCoverImageUrl}
+                onImageChange={handleHeroImageChange}
+              />
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Competencies Tab */}
@@ -520,6 +591,37 @@ export function CustomizeContent({
               )}
             </CardContent>
           </Card>
+
+          {/* Specialty Icons */}
+          {profile.specializations && profile.specializations.length > 0 && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Schwerpunkt-Icons</CardTitle>
+                <CardDescription>
+                  Passe die Icons für deine Fachgebiete an (werden auf deiner Microsite angezeigt)
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {profile.specializations.map((specialty) => (
+                    <div
+                      key={specialty}
+                      className="flex items-center gap-3 p-2 rounded-lg border bg-muted/30"
+                    >
+                      <SpecialtyIconPicker
+                        specialty={specialty}
+                        selectedIcon={getIconForSpecialty(specialty)}
+                        onIconChange={(icon) => handleIconChange(specialty, icon)}
+                      />
+                      <span className="text-sm font-medium">
+                        {t(`specializations.${specialty}`, { defaultValue: specialty })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
       </Tabs>
     </div>

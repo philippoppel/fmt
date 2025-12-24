@@ -722,6 +722,54 @@ export async function toggleSectionVisibility(
 }
 
 // ============================================
+// UPDATE PROFILE CUSTOMIZATION FIELDS
+// ============================================
+
+export async function updateMicrositeProfileFields(data: {
+  heroCoverImageUrl?: string;
+  specializationIcons?: Record<string, string>;
+}): Promise<ActionResult> {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return { success: false, error: "Nicht authentifiziert" };
+    }
+
+    const profile = await db.therapistProfile.findUnique({
+      where: { userId: session.user.id },
+      select: { id: true, accountType: true },
+    });
+
+    if (!profile) {
+      return { success: false, error: "Profil nicht gefunden" };
+    }
+
+    // Check if user has access (mittel or premium)
+    if (profile.accountType !== "mittel" && profile.accountType !== "premium") {
+      return { success: false, error: "Upgrade erforderlich für diese Funktion" };
+    }
+
+    await db.therapistProfile.update({
+      where: { id: profile.id },
+      data: {
+        ...(data.heroCoverImageUrl !== undefined && { heroCoverImageUrl: data.heroCoverImageUrl || null }),
+        ...(data.specializationIcons !== undefined && { specializationIcons: data.specializationIcons || {} }),
+      },
+    });
+
+    // Revalidate paths
+    revalidatePath("/dashboard/customize");
+    revalidatePath("/dashboard/profile");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating microsite profile fields:", error);
+    return { success: false, error: "Fehler beim Speichern" };
+  }
+}
+
+// ============================================
 // HELPER FUNCTIONS
 // ============================================
 

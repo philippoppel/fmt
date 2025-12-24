@@ -9,11 +9,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
-import { Loader2, Check, ChevronDown, ChevronUp, Crown, Star, ImageIcon } from "lucide-react";
+import { Loader2, Check, ChevronDown, ChevronUp, Crown, Star } from "lucide-react";
 import { updateProfile, type ProfileData } from "@/lib/actions/profile";
 import { updateSpecializationRanks } from "@/lib/actions/profile-update";
-import { HeroImagePicker } from "@/components/dashboard/profile/hero-image-picker";
-import { SpecialtyIconPicker, DEFAULT_SPECIALTY_ICONS, type IconName } from "@/components/dashboard/profile/specialty-icon-picker";
 import {
   SPECIALTIES,
   THERAPY_TYPES,
@@ -82,7 +80,6 @@ export function ProfileForm({ initialData, accountType }: Props) {
     basicInfo: true,
     location: true,
     specializations: true,
-    microsite: false,
     therapyTypes: false,
     languages: false,
     pricing: false,
@@ -124,21 +121,6 @@ export function ProfileForm({ initialData, accountType }: Props) {
     }
 
     setSpecializationRanks(newRanks);
-  }
-
-  function handleIconChange(specialty: string, iconName: IconName) {
-    const newIcons = { ...specializationIcons };
-    // Only store if different from default
-    if (DEFAULT_SPECIALTY_ICONS[specialty] === iconName) {
-      delete newIcons[specialty];
-    } else {
-      newIcons[specialty] = iconName;
-    }
-    setSpecializationIcons(newIcons);
-  }
-
-  function getIconForSpecialty(specialty: string): IconName {
-    return (specializationIcons[specialty] as IconName) || DEFAULT_SPECIALTY_ICONS[specialty] || "Brain";
   }
 
   // Validation for required fields
@@ -461,87 +443,6 @@ export function ProfileForm({ initialData, accountType }: Props) {
                   disabled={!permissions.isPremium}
                   emptyText={t("sections.specializations.empty")}
                 />
-              </div>
-            )}
-          </CardContent>
-        )}
-      </Card>
-
-      {/* Microsite Section - Hero Image & Icon Customization */}
-      <Card>
-        <CardHeader
-          className="cursor-pointer"
-          onClick={() => toggleSection("microsite")}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <ImageIcon className="h-5 w-5" />
-                Microsite-Anpassung
-              </CardTitle>
-              <CardDescription>
-                Titelbild und Icons für Ihre persönliche Webseite anpassen
-              </CardDescription>
-            </div>
-            {openSections.microsite ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-          </div>
-        </CardHeader>
-        {openSections.microsite && (
-          <CardContent className="space-y-6">
-            {/* Hero Image */}
-            <div className="space-y-3">
-              <Label className="font-medium">Titelbild (Hero)</Label>
-              <p className="text-sm text-muted-foreground">
-                Wird als großes Hintergrundbild auf Ihrer Microsite angezeigt (empfohlen: 1920x640px)
-              </p>
-              <HeroImagePicker
-                value={heroCoverImageUrl}
-                onImageChange={setHeroCoverImageUrl}
-                disabled={!permissions.canEditField("imageUrl")}
-                translations={{
-                  title: "Titelbild",
-                  description: "Kein Titelbild ausgewählt",
-                  upload: "Hochladen",
-                  url: "URL",
-                  urlLabel: "Bild-URL eingeben",
-                  clickUpload: "Klicken zum Hochladen",
-                  maxSize: "Max. 10MB",
-                  use: "Verwenden",
-                  hoverRemove: "Entfernen",
-                }}
-              />
-            </div>
-
-            {/* Custom Icons for Specializations */}
-            {specializations.length > 0 && (
-              <div className="space-y-3 border-t pt-4">
-                <Label className="font-medium">Icons für Schwerpunkte</Label>
-                <p className="text-sm text-muted-foreground">
-                  Passen Sie die Icons für Ihre Schwerpunkte auf der Microsite an
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {specializations.map((specialty) => (
-                    <div
-                      key={specialty}
-                      className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30"
-                    >
-                      <SpecialtyIconPicker
-                        specialty={specialty}
-                        selectedIcon={getIconForSpecialty(specialty)}
-                        onIconChange={(icon) => handleIconChange(specialty, icon)}
-                        disabled={!permissions.isPremium}
-                      />
-                      <span className="text-sm flex-1">
-                        {tFilters(`specialty.${specialty}`)}
-                      </span>
-                      {!permissions.isPremium && (
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Crown className="h-3 w-3 text-amber-500" />
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
               </div>
             )}
           </CardContent>
