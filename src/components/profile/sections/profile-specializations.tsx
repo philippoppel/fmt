@@ -309,11 +309,10 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
                       "group-hover:scale-110 group-hover:shadow-xl"
                     )}
                     style={{
-                      background: isRanked
-                        ? `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`
-                        : `linear-gradient(135deg, var(--profile-primary)90, var(--profile-accent)90)`,
+                      background: `linear-gradient(135deg, var(--profile-primary), var(--profile-accent))`,
+                      opacity: isRanked ? 1 : 0.85,
                       boxShadow: isRanked
-                        ? `0 8px 24px var(--profile-primary)40`
+                        ? `0 8px 24px color-mix(in srgb, var(--profile-primary) 40%, transparent)`
                         : undefined,
                     }}
                   >
