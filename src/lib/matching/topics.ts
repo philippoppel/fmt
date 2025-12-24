@@ -80,7 +80,7 @@ const ACUTE_FLAGS: Topic[] = [
 ];
 
 // ============================================================================
-// SECTION B: CLINICAL PARENT CATEGORIES WITH SUBCATEGORIES
+// SECTION B: CLINICAL TOPICS WITH SUBCATEGORIES
 // ============================================================================
 const CLINICAL_TOPICS: Topic[] = [
   // 1. DEPRESSION & STIMMUNG
@@ -92,28 +92,24 @@ const CLINICAL_TOPICS: Topic[] = [
     mappedSpecialties: ["depression"],
     subTopics: [
       {
-        id: "depressionMood",
-        labelKey: "matching.subtopics.depressionMood",
+        id: "depressiveMood",
+        labelKey: "matching.subtopics.depressiveMood",
         weight: 3,
-        unsplashId: "photo-1541199249251-f713e6145474",
       },
       {
         id: "bipolarMood",
         labelKey: "matching.subtopics.bipolarMood",
         weight: 3,
-        unsplashId: "photo-1507003211169-0a1dd7228f2d",
       },
       {
         id: "griefLoss",
         labelKey: "matching.subtopics.griefLoss",
         weight: 2,
-        unsplashId: "photo-1516585427167-9f4af9627e6c",
       },
       {
-        id: "socialLoneliness",
-        labelKey: "matching.subtopics.socialLoneliness",
+        id: "loneliness",
+        labelKey: "matching.subtopics.loneliness",
         weight: 2,
-        unsplashId: "photo-1499209974431-9dddcece7f88",
       },
     ],
   },
@@ -127,45 +123,29 @@ const CLINICAL_TOPICS: Topic[] = [
     mappedSpecialties: ["anxiety"],
     subTopics: [
       {
-        id: "anxietyGAD",
-        labelKey: "matching.subtopics.anxietyGAD",
+        id: "generalizedAnxiety",
+        labelKey: "matching.subtopics.generalizedAnxiety",
         weight: 3,
-        unsplashId: "photo-1493836512294-502baa1986e2",
       },
       {
         id: "panicAgoraphobia",
         labelKey: "matching.subtopics.panicAgoraphobia",
         weight: 3,
-        unsplashId: "photo-1474552226712-ac0f0961a954",
       },
       {
         id: "socialAnxiety",
         labelKey: "matching.subtopics.socialAnxiety",
         weight: 3,
-        unsplashId: "photo-1529156069898-49953e39b3ac",
       },
       {
         id: "specificPhobias",
         labelKey: "matching.subtopics.specificPhobias",
         weight: 2,
-        unsplashId: "photo-1509822929063-6b6cfc9b42f2",
-      },
-      {
-        id: "healthAnxiety",
-        labelKey: "matching.subtopics.healthAnxiety",
-        weight: 2,
-        unsplashId: "photo-1576091160550-2173dba999ef",
-      },
-      {
-        id: "ocdRelated",
-        labelKey: "matching.subtopics.ocdRelated",
-        weight: 3,
-        unsplashId: "photo-1434030216411-0b793f4b4173",
       },
     ],
   },
 
-  // 3. TRAUMA
+  // 3. TRAUMA & PTBS
   {
     id: "trauma",
     labelKey: "matching.topics.trauma",
@@ -174,21 +154,91 @@ const CLINICAL_TOPICS: Topic[] = [
     mappedSpecialties: ["trauma"],
     subTopics: [
       {
-        id: "traumaPTSD",
-        labelKey: "matching.subtopics.traumaPTSD",
+        id: "childhoodTrauma",
+        labelKey: "matching.subtopics.childhoodTrauma",
         weight: 3,
-        unsplashId: "photo-1499209974431-9dddcece7f88",
       },
       {
-        id: "dissociation",
-        labelKey: "matching.subtopics.dissociation",
+        id: "relationshipTrauma",
+        labelKey: "matching.subtopics.relationshipTrauma",
         weight: 3,
-        unsplashId: "photo-1518621736915-f3b1c41bfd00",
+      },
+      {
+        id: "acuteTrauma",
+        labelKey: "matching.subtopics.acuteTrauma",
+        weight: 3,
+      },
+      {
+        id: "complexPtsd",
+        labelKey: "matching.subtopics.complexPtsd",
+        weight: 3,
       },
     ],
   },
 
-  // 4. SUCHT
+  // 4. BURNOUT & ERSCHÖPFUNG
+  {
+    id: "burnout",
+    labelKey: "matching.topics.burnout",
+    unsplashId: "photo-1544027993-37dbfe43562a",
+    section: "clinical",
+    mappedSpecialties: ["burnout"],
+    subTopics: [
+      {
+        id: "workOverload",
+        labelKey: "matching.subtopics.workOverload",
+        weight: 3,
+      },
+      {
+        id: "exhaustionDepression",
+        labelKey: "matching.subtopics.exhaustionDepression",
+        weight: 3,
+      },
+      {
+        id: "workLifeBalance",
+        labelKey: "matching.subtopics.workLifeBalance",
+        weight: 2,
+      },
+      {
+        id: "chronicFatigue",
+        labelKey: "matching.subtopics.chronicFatigue",
+        weight: 2,
+      },
+    ],
+  },
+
+  // 5. ZWÄNGE & IMPULSKONTROLLE
+  {
+    id: "ocd",
+    labelKey: "matching.topics.ocd",
+    unsplashId: "photo-1434030216411-0b793f4b4173",
+    section: "clinical",
+    mappedSpecialties: ["anxiety"],
+    subTopics: [
+      {
+        id: "obsessiveThoughts",
+        labelKey: "matching.subtopics.obsessiveThoughts",
+        weight: 3,
+      },
+      {
+        id: "compulsiveBehaviors",
+        labelKey: "matching.subtopics.compulsiveBehaviors",
+        weight: 3,
+      },
+      {
+        id: "hoarding",
+        labelKey: "matching.subtopics.hoarding",
+        weight: 2,
+      },
+      {
+        id: "trichotillomania",
+        labelKey: "matching.subtopics.trichotillomania",
+        weight: 2,
+      },
+    ],
+  },
+
+  // 6. SUCHT & ABHÄNGIGKEIT
   {
     id: "addiction",
     labelKey: "matching.topics.addiction",
@@ -197,21 +247,29 @@ const CLINICAL_TOPICS: Topic[] = [
     mappedSpecialties: ["addiction"],
     subTopics: [
       {
-        id: "addictionSubstances",
-        labelKey: "matching.subtopics.addictionSubstances",
+        id: "alcoholAddiction",
+        labelKey: "matching.subtopics.alcoholAddiction",
         weight: 3,
-        unsplashId: "photo-1527137342181-19aab11a8ee8",
       },
       {
-        id: "addictionBehavioral",
-        labelKey: "matching.subtopics.addictionBehavioral",
+        id: "drugAddiction",
+        labelKey: "matching.subtopics.drugAddiction",
         weight: 3,
-        unsplashId: "photo-1511512578047-dfb367046420",
+      },
+      {
+        id: "gamblingAddiction",
+        labelKey: "matching.subtopics.gamblingAddiction",
+        weight: 3,
+      },
+      {
+        id: "internetMediaAddiction",
+        labelKey: "matching.subtopics.internetMediaAddiction",
+        weight: 2,
       },
     ],
   },
 
-  // 5. ESSSTÖRUNGEN
+  // 7. ESSSTÖRUNGEN
   {
     id: "eatingDisorders",
     labelKey: "matching.topics.eatingDisorders",
@@ -220,85 +278,29 @@ const CLINICAL_TOPICS: Topic[] = [
     mappedSpecialties: ["eating_disorders"],
     subTopics: [
       {
-        id: "eatingAnorexia",
-        labelKey: "matching.subtopics.eatingAnorexia",
+        id: "anorexia",
+        labelKey: "matching.subtopics.anorexia",
         weight: 3,
-        unsplashId: "photo-1490645935967-10de6ba17061",
       },
       {
-        id: "eatingBulimia",
-        labelKey: "matching.subtopics.eatingBulimia",
+        id: "bulimia",
+        labelKey: "matching.subtopics.bulimia",
         weight: 3,
-        unsplashId: "photo-1490645935967-10de6ba17061",
       },
       {
-        id: "eatingBinge",
-        labelKey: "matching.subtopics.eatingBinge",
+        id: "bingeEating",
+        labelKey: "matching.subtopics.bingeEating",
         weight: 3,
-        unsplashId: "photo-1490645935967-10de6ba17061",
       },
       {
-        id: "eatingBodyImage",
-        labelKey: "matching.subtopics.eatingBodyImage",
+        id: "orthorexia",
+        labelKey: "matching.subtopics.orthorexia",
         weight: 2,
-        unsplashId: "photo-1490645935967-10de6ba17061",
       },
     ],
   },
 
-  // 6. ADHS & NEURODIVERSITÄT
-  {
-    id: "adhd",
-    labelKey: "matching.topics.adhd",
-    unsplashId: "photo-1434030216411-0b793f4b4173",
-    section: "clinical",
-    mappedSpecialties: ["adhd"],
-    subTopics: [
-      {
-        id: "adhdExecutive",
-        labelKey: "matching.subtopics.adhdExecutive",
-        weight: 3,
-        unsplashId: "photo-1434030216411-0b793f4b4173",
-      },
-      {
-        id: "autismNeurodiversity",
-        labelKey: "matching.subtopics.autismNeurodiversity",
-        weight: 3,
-        unsplashId: "photo-1522071820081-009f0129c71c",
-      },
-    ],
-  },
-
-  // 7. STRESS & BURNOUT
-  {
-    id: "stressBurnout",
-    labelKey: "matching.topics.stressBurnout",
-    unsplashId: "photo-1544027993-37dbfe43562a",
-    section: "clinical",
-    mappedSpecialties: ["burnout"],
-    subTopics: [
-      {
-        id: "burnoutExhaustion",
-        labelKey: "matching.subtopics.burnoutExhaustion",
-        weight: 3,
-        unsplashId: "photo-1544027993-37dbfe43562a",
-      },
-      {
-        id: "chronicStress",
-        labelKey: "matching.subtopics.chronicStress",
-        weight: 2,
-        unsplashId: "photo-1544027993-37dbfe43562a",
-      },
-      {
-        id: "workOverload",
-        labelKey: "matching.subtopics.workOverload",
-        weight: 2,
-        unsplashId: "photo-1454165804606-c3d57bc86b40",
-      },
-    ],
-  },
-
-  // 8. SCHLAF
+  // 8. SCHLAFSTÖRUNGEN
   {
     id: "sleep",
     labelKey: "matching.topics.sleep",
@@ -307,27 +309,153 @@ const CLINICAL_TOPICS: Topic[] = [
     mappedSpecialties: ["depression", "anxiety"],
     subTopics: [
       {
-        id: "sleepInsomnia",
-        labelKey: "matching.subtopics.sleepInsomnia",
+        id: "insomnia",
+        labelKey: "matching.subtopics.insomnia",
         weight: 3,
-        unsplashId: "photo-1541781774459-bb2af2f05b55",
       },
       {
-        id: "sleepNightmares",
-        labelKey: "matching.subtopics.sleepNightmares",
-        weight: 2,
-        unsplashId: "photo-1541781774459-bb2af2f05b55",
+        id: "sleepMaintenance",
+        labelKey: "matching.subtopics.sleepMaintenance",
+        weight: 3,
       },
       {
-        id: "sleepDisrupted",
-        labelKey: "matching.subtopics.sleepDisrupted",
+        id: "nightmares",
+        labelKey: "matching.subtopics.nightmares",
         weight: 2,
-        unsplashId: "photo-1541781774459-bb2af2f05b55",
+      },
+      {
+        id: "sleepApnea",
+        labelKey: "matching.subtopics.sleepApnea",
+        weight: 2,
       },
     ],
   },
 
-  // 9. SELBSTWERT & IDENTITÄT
+  // 9. STRESS & ÜBERFORDERUNG
+  {
+    id: "stress",
+    labelKey: "matching.topics.stress",
+    unsplashId: "photo-1544027993-37dbfe43562a",
+    section: "clinical",
+    mappedSpecialties: ["burnout", "anxiety"],
+    subTopics: [
+      {
+        id: "chronicStress",
+        labelKey: "matching.subtopics.chronicStress",
+        weight: 3,
+      },
+      {
+        id: "examAnxiety",
+        labelKey: "matching.subtopics.examAnxiety",
+        weight: 3,
+      },
+      {
+        id: "performancePressure",
+        labelKey: "matching.subtopics.performancePressure",
+        weight: 2,
+      },
+      {
+        id: "dailyOverwhelm",
+        labelKey: "matching.subtopics.dailyOverwhelm",
+        weight: 2,
+      },
+    ],
+  },
+
+  // 10. ADHS & KONZENTRATION
+  {
+    id: "adhd",
+    labelKey: "matching.topics.adhd",
+    unsplashId: "photo-1434030216411-0b793f4b4173",
+    section: "clinical",
+    mappedSpecialties: ["adhd"],
+    subTopics: [
+      {
+        id: "attentionProblems",
+        labelKey: "matching.subtopics.attentionProblems",
+        weight: 3,
+      },
+      {
+        id: "hyperactivity",
+        labelKey: "matching.subtopics.hyperactivity",
+        weight: 3,
+      },
+      {
+        id: "impulsivity",
+        labelKey: "matching.subtopics.impulsivity",
+        weight: 2,
+      },
+      {
+        id: "organizationStructure",
+        labelKey: "matching.subtopics.organizationStructure",
+        weight: 2,
+      },
+    ],
+  },
+
+  // 11. AUTISMUS-SPEKTRUM
+  {
+    id: "autism",
+    labelKey: "matching.topics.autism",
+    unsplashId: "photo-1522071820081-009f0129c71c",
+    section: "clinical",
+    mappedSpecialties: ["adhd"],
+    subTopics: [
+      {
+        id: "socialInteraction",
+        labelKey: "matching.subtopics.socialInteraction",
+        weight: 3,
+      },
+      {
+        id: "sensoryProcessing",
+        labelKey: "matching.subtopics.sensoryProcessing",
+        weight: 3,
+      },
+      {
+        id: "routinesFlexibility",
+        labelKey: "matching.subtopics.routinesFlexibility",
+        weight: 2,
+      },
+      {
+        id: "communicationAutism",
+        labelKey: "matching.subtopics.communicationAutism",
+        weight: 2,
+      },
+    ],
+  },
+
+  // 12. PSYCHOSOMATIK
+  {
+    id: "psychosomatic",
+    labelKey: "matching.topics.psychosomatic",
+    unsplashId: "photo-1576091160550-2173dba999ef",
+    section: "clinical",
+    mappedSpecialties: ["depression", "anxiety"],
+    subTopics: [
+      {
+        id: "chronicPain",
+        labelKey: "matching.subtopics.chronicPain",
+        weight: 3,
+      },
+      {
+        id: "somatoformDisorders",
+        labelKey: "matching.subtopics.somatoformDisorders",
+        weight: 3,
+      },
+      {
+        id: "bodyRelatedFears",
+        labelKey: "matching.subtopics.bodyRelatedFears",
+        weight: 2,
+      },
+      {
+        id: "stressRelatedSymptoms",
+        labelKey: "matching.subtopics.stressRelatedSymptoms",
+        weight: 2,
+      },
+    ],
+  },
+
+  // 13. IDENTITÄT & SELBSTWERT
   {
     id: "selfEsteem",
     labelKey: "matching.topics.selfEsteem",
@@ -336,68 +464,24 @@ const CLINICAL_TOPICS: Topic[] = [
     mappedSpecialties: ["depression"],
     subTopics: [
       {
-        id: "selfEsteemIdentity",
-        labelKey: "matching.subtopics.selfEsteemIdentity",
+        id: "selfWorthProblems",
+        labelKey: "matching.subtopics.selfWorthProblems",
         weight: 3,
-        unsplashId: "photo-1517836357463-d25dfeac3438",
       },
       {
-        id: "emotionRegulationPersonality",
-        labelKey: "matching.subtopics.emotionRegulationPersonality",
+        id: "identityFinding",
+        labelKey: "matching.subtopics.identityFinding",
         weight: 3,
-        unsplashId: "photo-1506126613408-eca07ce68773",
       },
       {
-        id: "angerImpulse",
-        labelKey: "matching.subtopics.angerImpulse",
+        id: "perfectionism",
+        labelKey: "matching.subtopics.perfectionism",
         weight: 2,
-        unsplashId: "photo-1533227268428-f9ed0900fb3b",
-      },
-    ],
-  },
-
-  // 10. CHRONISCHE ERKRANKUNG & SCHMERZ
-  {
-    id: "chronicIllness",
-    labelKey: "matching.topics.chronicIllness",
-    unsplashId: "photo-1576091160550-2173dba999ef",
-    section: "clinical",
-    mappedSpecialties: [],
-    subTopics: [
-      {
-        id: "chronicIllnessPain",
-        labelKey: "matching.subtopics.chronicIllnessPain",
-        weight: 3,
-        unsplashId: "photo-1576091160550-2173dba999ef",
       },
       {
-        id: "chronicIllnessCoping",
-        labelKey: "matching.subtopics.chronicIllnessCoping",
+        id: "shameGuilt",
+        labelKey: "matching.subtopics.shameGuilt",
         weight: 2,
-        unsplashId: "photo-1576091160550-2173dba999ef",
-      },
-    ],
-  },
-
-  // 11. SEXUALITÄT & INTIMITÄT
-  {
-    id: "sexuality",
-    labelKey: "matching.topics.sexuality",
-    unsplashId: "photo-1518199266791-5375a83190b7",
-    section: "clinical",
-    mappedSpecialties: ["relationships"],
-    subTopics: [
-      {
-        id: "sexualityIntimacy",
-        labelKey: "matching.subtopics.sexualityIntimacy",
-        weight: 3,
-        unsplashId: "photo-1518199266791-5375a83190b7",
-      },
-      {
-        id: "sexualityIdentity",
-        labelKey: "matching.subtopics.sexualityIdentity",
-        weight: 2,
-        unsplashId: "photo-1518199266791-5375a83190b7",
       },
     ],
   },
@@ -416,27 +500,29 @@ const LIFE_TOPICS: Topic[] = [
     mappedSpecialties: ["relationships"],
     subTopics: [
       {
-        id: "relationshipsCouple",
-        labelKey: "matching.subtopics.relationshipsCouple",
+        id: "communicationProblems",
+        labelKey: "matching.subtopics.communicationProblems",
         weight: 3,
-        unsplashId: "photo-1516589178581-6cd7833ae3b2",
       },
       {
-        id: "relationshipsTrust",
-        labelKey: "matching.subtopics.relationshipsTrust",
-        weight: 2,
-        unsplashId: "photo-1516589178581-6cd7833ae3b2",
+        id: "trustIssues",
+        labelKey: "matching.subtopics.trustIssues",
+        weight: 3,
       },
       {
-        id: "relationshipsSeparation",
-        labelKey: "matching.subtopics.relationshipsSeparation",
+        id: "separationDivorce",
+        labelKey: "matching.subtopics.separationDivorce",
         weight: 2,
-        unsplashId: "photo-1516589178581-6cd7833ae3b2",
+      },
+      {
+        id: "relationshipFears",
+        labelKey: "matching.subtopics.relationshipFears",
+        weight: 2,
       },
     ],
   },
 
-  // 2. FAMILIE
+  // 2. FAMILIE & ERZIEHUNG
   {
     id: "family",
     labelKey: "matching.topics.family",
@@ -445,126 +531,179 @@ const LIFE_TOPICS: Topic[] = [
     mappedSpecialties: ["relationships"],
     subTopics: [
       {
-        id: "familyOfOrigin",
-        labelKey: "matching.subtopics.familyOfOrigin",
+        id: "parentChildConflicts",
+        labelKey: "matching.subtopics.parentChildConflicts",
         weight: 3,
-        unsplashId: "photo-1511895426328-dc8714191300",
       },
       {
-        id: "parentingPerinatal",
-        labelKey: "matching.subtopics.parentingPerinatal",
-        weight: 3,
-        unsplashId: "photo-1476703993599-0035a21b17a9",
-      },
-      {
-        id: "familyConflicts",
-        labelKey: "matching.subtopics.familyConflicts",
+        id: "siblingRivalry",
+        labelKey: "matching.subtopics.siblingRivalry",
         weight: 2,
-        unsplashId: "photo-1511895426328-dc8714191300",
+      },
+      {
+        id: "patchworkFamily",
+        labelKey: "matching.subtopics.patchworkFamily",
+        weight: 2,
+      },
+      {
+        id: "parentingQuestions",
+        labelKey: "matching.subtopics.parentingQuestions",
+        weight: 2,
       },
     ],
   },
 
-  // 3. ARBEIT & KARRIERE
+  // 3. LGBTQ+
   {
-    id: "work",
-    labelKey: "matching.topics.work",
+    id: "lgbtq",
+    labelKey: "matching.topics.lgbtq",
+    unsplashId: "photo-1518199266791-5375a83190b7",
+    section: "life",
+    mappedSpecialties: ["relationships"],
+    subTopics: [
+      {
+        id: "comingOut",
+        labelKey: "matching.subtopics.comingOut",
+        weight: 3,
+      },
+      {
+        id: "genderIdentity",
+        labelKey: "matching.subtopics.genderIdentity",
+        weight: 3,
+      },
+      {
+        id: "discriminationExperiences",
+        labelKey: "matching.subtopics.discriminationExperiences",
+        weight: 2,
+      },
+      {
+        id: "lgbtqRelationships",
+        labelKey: "matching.subtopics.lgbtqRelationships",
+        weight: 2,
+      },
+    ],
+  },
+
+  // 4. MIGRATION & KULTUR
+  {
+    id: "migration",
+    labelKey: "matching.topics.migration",
+    unsplashId: "photo-1529156069898-49953e39b3ac",
+    section: "life",
+    mappedSpecialties: [],
+    subTopics: [
+      {
+        id: "culturalAdaptation",
+        labelKey: "matching.subtopics.culturalAdaptation",
+        weight: 3,
+      },
+      {
+        id: "homesicknessUprooting",
+        labelKey: "matching.subtopics.homesicknessUprooting",
+        weight: 3,
+      },
+      {
+        id: "languageBarriers",
+        labelKey: "matching.subtopics.languageBarriers",
+        weight: 2,
+      },
+      {
+        id: "interculturalConflicts",
+        labelKey: "matching.subtopics.interculturalConflicts",
+        weight: 2,
+      },
+    ],
+  },
+
+  // 5. BERUF & KARRIERE
+  {
+    id: "career",
+    labelKey: "matching.topics.career",
     unsplashId: "photo-1454165804606-c3d57bc86b40",
     section: "life",
     mappedSpecialties: ["burnout"],
     subTopics: [
       {
-        id: "workCareer",
-        labelKey: "matching.subtopics.workCareer",
+        id: "careerReorientation",
+        labelKey: "matching.subtopics.careerReorientation",
         weight: 3,
-        unsplashId: "photo-1454165804606-c3d57bc86b40",
       },
       {
-        id: "workMobbing",
-        labelKey: "matching.subtopics.workMobbing",
+        id: "workplaceConflicts",
+        labelKey: "matching.subtopics.workplaceConflicts",
         weight: 3,
-        unsplashId: "photo-1454165804606-c3d57bc86b40",
       },
       {
-        id: "workLifeBalance",
-        labelKey: "matching.subtopics.workLifeBalance",
+        id: "terminationUnemployment",
+        labelKey: "matching.subtopics.terminationUnemployment",
         weight: 2,
-        unsplashId: "photo-1454165804606-c3d57bc86b40",
+      },
+      {
+        id: "careerPlanning",
+        labelKey: "matching.subtopics.careerPlanning",
+        weight: 2,
       },
     ],
   },
 
-  // 4. SCHULE & STUDIUM
+  // 6. KINDER & JUGENDLICHE
   {
-    id: "school",
-    labelKey: "matching.topics.school",
-    unsplashId: "photo-1434030216411-0b793f4b4173",
-    section: "life",
-    mappedSpecialties: ["anxiety"],
-    subTopics: [
-      {
-        id: "schoolUniversity",
-        labelKey: "matching.subtopics.schoolUniversity",
-        weight: 3,
-        unsplashId: "photo-1434030216411-0b793f4b4173",
-      },
-      {
-        id: "schoolExamAnxiety",
-        labelKey: "matching.subtopics.schoolExamAnxiety",
-        weight: 3,
-        unsplashId: "photo-1434030216411-0b793f4b4173",
-      },
-      {
-        id: "schoolPressure",
-        labelKey: "matching.subtopics.schoolPressure",
-        weight: 2,
-        unsplashId: "photo-1434030216411-0b793f4b4173",
-      },
-    ],
-  },
-
-  // 5. LEBENSÜBERGÄNGE
-  {
-    id: "lifeTransitions",
-    labelKey: "matching.topics.lifeTransitions",
-    unsplashId: "photo-1499750310107-5fef28a66643",
+    id: "childrenYouth",
+    labelKey: "matching.topics.childrenYouth",
+    unsplashId: "photo-1503454537195-1dcabb73ffb9",
     section: "life",
     mappedSpecialties: [],
     subTopics: [
       {
-        id: "lifeTransitionsChange",
-        labelKey: "matching.subtopics.lifeTransitionsChange",
-        weight: 2,
-        unsplashId: "photo-1499750310107-5fef28a66643",
+        id: "schoolProblems",
+        labelKey: "matching.subtopics.schoolProblems",
+        weight: 3,
       },
       {
-        id: "lifeTransitionsDecisions",
-        labelKey: "matching.subtopics.lifeTransitionsDecisions",
+        id: "bullying",
+        labelKey: "matching.subtopics.bullying",
+        weight: 3,
+      },
+      {
+        id: "developmentalCrises",
+        labelKey: "matching.subtopics.developmentalCrises",
         weight: 2,
-        unsplashId: "photo-1450101499163-c8848c66ca85",
+      },
+      {
+        id: "familyProblemsYouth",
+        labelKey: "matching.subtopics.familyProblemsYouth",
+        weight: 2,
       },
     ],
   },
 
-  // 6. EXISTENZIELLE SORGEN
+  // 7. ÄLTERE MENSCHEN
   {
-    id: "existential",
-    labelKey: "matching.topics.existential",
-    unsplashId: "photo-1621252179027-94459d278660",
+    id: "elderly",
+    labelKey: "matching.topics.elderly",
+    unsplashId: "photo-1499750310107-5fef28a66643",
     section: "life",
-    mappedSpecialties: ["burnout"],
+    mappedSpecialties: ["depression"],
     subTopics: [
       {
-        id: "financialHousingStress",
-        labelKey: "matching.subtopics.financialHousingStress",
+        id: "ageRelatedDepression",
+        labelKey: "matching.subtopics.ageRelatedDepression",
         weight: 3,
-        unsplashId: "photo-1621252179027-94459d278660",
       },
       {
-        id: "existentialMeaning",
-        labelKey: "matching.subtopics.existentialMeaning",
+        id: "lonelinessInAge",
+        labelKey: "matching.subtopics.lonelinessInAge",
+        weight: 3,
+      },
+      {
+        id: "lifeReview",
+        labelKey: "matching.subtopics.lifeReview",
         weight: 2,
-        unsplashId: "photo-1621252179027-94459d278660",
+      },
+      {
+        id: "lossGriefElderly",
+        labelKey: "matching.subtopics.lossGriefElderly",
+        weight: 2,
       },
     ],
   },
