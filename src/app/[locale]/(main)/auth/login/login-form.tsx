@@ -22,7 +22,7 @@ export function LoginForm() {
     startTransition(async () => {
       const result = await login(formData);
       if (result.success) {
-        router.push("/dashboard/settings");
+        router.push("/dashboard/profile");
         router.refresh();
       } else {
         setError(result.error);
@@ -31,7 +31,7 @@ export function LoginForm() {
   }
 
   async function handleOAuthLogin(provider: "google") {
-    await signIn(provider, { callbackUrl: "/dashboard/settings" });
+    await signIn(provider, { callbackUrl: "/dashboard/profile" });
   }
 
   return (

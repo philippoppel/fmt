@@ -1,6 +1,12 @@
 "use client";
 
-import { Brain, Heart, Users, Flame, Pill, Utensils, Zap, Battery } from "lucide-react";
+import {
+  Brain, Heart, Users, Flame, Pill, Utensils, Zap, Battery,
+  Frown, AlertTriangle, Target, Lightbulb, Moon, Gauge,
+  Baby, UserRound, Sparkles, HeartHandshake, Home, Scale,
+  Briefcase, Fingerprint, Rainbow, Globe, BedDouble, Activity,
+  PersonStanding, GraduationCap, Puzzle
+} from "lucide-react";
 import type { TherapistProfileData } from "@/types/profile";
 import type { Specialty, TherapyType } from "@/types/therapist";
 import { Badge } from "@/components/ui/badge";
@@ -24,14 +30,40 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
       primaryFocus: "#1",
       secondaryFocus: "#2",
       thirdFocus: "#3",
+      // Mental Health (8)
       depression: "Depression",
       anxiety: "Angststörungen",
       trauma: "Trauma & PTBS",
-      relationships: "Beziehungen",
-      addiction: "Sucht",
-      eating_disorders: "Essstörungen",
-      adhd: "ADHS",
       burnout: "Burnout",
+      ocd: "Zwangsstörungen",
+      phobias: "Phobien",
+      panic: "Panikstörungen",
+      bipolar: "Bipolare Störung",
+      // Relationships (4)
+      couples: "Paartherapie",
+      family: "Familientherapie",
+      divorce: "Trennung & Scheidung",
+      parenting: "Elternberatung",
+      // Life Transitions (5)
+      grief: "Trauer & Verlust",
+      career: "Beruf & Karriere",
+      identity: "Identität & Selbstfindung",
+      lgbtq: "LGBTQ+",
+      migration: "Migration & Kultur",
+      // Behavioral (5)
+      eating_disorders: "Essstörungen",
+      addiction: "Sucht",
+      sleep: "Schlafstörungen",
+      stress: "Stressbewältigung",
+      psychosomatic: "Psychosomatik",
+      // Special Groups (4)
+      children: "Kinder & Jugendliche",
+      elderly: "Ältere Menschen",
+      adhd: "ADHS",
+      autism: "Autismus-Spektrum",
+      // Legacy
+      relationships: "Beziehungen",
+      // Therapy Types
       cbt: "Kognitive Verhaltenstherapie",
       psychoanalysis: "Psychoanalyse",
       systemic: "Systemische Therapie",
@@ -44,14 +76,40 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
       primaryFocus: "#1",
       secondaryFocus: "#2",
       thirdFocus: "#3",
+      // Mental Health (8)
       depression: "Depression",
       anxiety: "Anxiety",
       trauma: "Trauma & PTSD",
-      relationships: "Relationships",
-      addiction: "Addiction",
-      eating_disorders: "Eating Disorders",
-      adhd: "ADHD",
       burnout: "Burnout",
+      ocd: "OCD",
+      phobias: "Phobias",
+      panic: "Panic Disorders",
+      bipolar: "Bipolar Disorder",
+      // Relationships (4)
+      couples: "Couples Therapy",
+      family: "Family Therapy",
+      divorce: "Divorce & Separation",
+      parenting: "Parenting Support",
+      // Life Transitions (5)
+      grief: "Grief & Loss",
+      career: "Career & Work",
+      identity: "Identity & Self-Discovery",
+      lgbtq: "LGBTQ+",
+      migration: "Migration & Culture",
+      // Behavioral (5)
+      eating_disorders: "Eating Disorders",
+      addiction: "Addiction",
+      sleep: "Sleep Disorders",
+      stress: "Stress Management",
+      psychosomatic: "Psychosomatic Issues",
+      // Special Groups (4)
+      children: "Children & Adolescents",
+      elderly: "Elderly Care",
+      adhd: "ADHD",
+      autism: "Autism Spectrum",
+      // Legacy
+      relationships: "Relationships",
+      // Therapy Types
       cbt: "Cognitive Behavioral Therapy",
       psychoanalysis: "Psychoanalysis",
       systemic: "Systemic Therapy",
@@ -59,37 +117,79 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
       humanistic: "Humanistic Therapy",
     },
   }[locale] || {
-    de: {
-      specializations: "Meine Schwerpunkte",
-      therapyTypes: "Therapieverfahren",
-      primaryFocus: "#1",
-      secondaryFocus: "#2",
-      thirdFocus: "#3",
-      depression: "Depression",
-      anxiety: "Angststörungen",
-      trauma: "Trauma & PTBS",
-      relationships: "Beziehungen",
-      addiction: "Sucht",
-      eating_disorders: "Essstörungen",
-      adhd: "ADHS",
-      burnout: "Burnout",
-      cbt: "Kognitive Verhaltenstherapie",
-      psychoanalysis: "Psychoanalyse",
-      systemic: "Systemische Therapie",
-      gestalt: "Gestalttherapie",
-      humanistic: "Humanistische Therapie",
-    },
+    specializations: "Meine Schwerpunkte",
+    therapyTypes: "Therapieverfahren",
+    primaryFocus: "#1",
+    secondaryFocus: "#2",
+    thirdFocus: "#3",
+    depression: "Depression",
+    anxiety: "Angststörungen",
+    trauma: "Trauma & PTBS",
+    burnout: "Burnout",
+    ocd: "Zwangsstörungen",
+    phobias: "Phobien",
+    panic: "Panikstörungen",
+    bipolar: "Bipolare Störung",
+    couples: "Paartherapie",
+    family: "Familientherapie",
+    divorce: "Trennung & Scheidung",
+    parenting: "Elternberatung",
+    grief: "Trauer & Verlust",
+    career: "Beruf & Karriere",
+    identity: "Identität & Selbstfindung",
+    lgbtq: "LGBTQ+",
+    migration: "Migration & Kultur",
+    eating_disorders: "Essstörungen",
+    addiction: "Sucht",
+    sleep: "Schlafstörungen",
+    stress: "Stressbewältigung",
+    psychosomatic: "Psychosomatik",
+    children: "Kinder & Jugendliche",
+    elderly: "Ältere Menschen",
+    adhd: "ADHS",
+    autism: "Autismus-Spektrum",
+    relationships: "Beziehungen",
+    cbt: "Kognitive Verhaltenstherapie",
+    psychoanalysis: "Psychoanalyse",
+    systemic: "Systemische Therapie",
+    gestalt: "Gestalttherapie",
+    humanistic: "Humanistische Therapie",
   };
 
   const specialtyIcons: Record<Specialty, React.ReactNode> = {
+    // Mental Health (8)
     depression: <Brain className="h-7 w-7" />,
     anxiety: <Zap className="h-7 w-7" />,
     trauma: <Heart className="h-7 w-7" />,
-    relationships: <Users className="h-7 w-7" />,
-    addiction: <Pill className="h-7 w-7" />,
-    eating_disorders: <Utensils className="h-7 w-7" />,
-    adhd: <Flame className="h-7 w-7" />,
     burnout: <Battery className="h-7 w-7" />,
+    ocd: <Target className="h-7 w-7" />,
+    phobias: <AlertTriangle className="h-7 w-7" />,
+    panic: <Gauge className="h-7 w-7" />,
+    bipolar: <Lightbulb className="h-7 w-7" />,
+    // Relationships (4)
+    couples: <HeartHandshake className="h-7 w-7" />,
+    family: <Home className="h-7 w-7" />,
+    divorce: <Scale className="h-7 w-7" />,
+    parenting: <Baby className="h-7 w-7" />,
+    // Life Transitions (5)
+    grief: <Frown className="h-7 w-7" />,
+    career: <Briefcase className="h-7 w-7" />,
+    identity: <Fingerprint className="h-7 w-7" />,
+    lgbtq: <Rainbow className="h-7 w-7" />,
+    migration: <Globe className="h-7 w-7" />,
+    // Behavioral (5)
+    eating_disorders: <Utensils className="h-7 w-7" />,
+    addiction: <Pill className="h-7 w-7" />,
+    sleep: <BedDouble className="h-7 w-7" />,
+    stress: <Activity className="h-7 w-7" />,
+    psychosomatic: <Sparkles className="h-7 w-7" />,
+    // Special Groups (4)
+    children: <GraduationCap className="h-7 w-7" />,
+    elderly: <PersonStanding className="h-7 w-7" />,
+    adhd: <Flame className="h-7 w-7" />,
+    autism: <Puzzle className="h-7 w-7" />,
+    // Legacy
+    relationships: <Users className="h-7 w-7" />,
   };
 
   // Rank badge gradients

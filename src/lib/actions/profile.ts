@@ -101,7 +101,7 @@ export async function updateProfile(data: ProfileData): Promise<UpdateProfileRes
   });
 
   revalidatePath("/therapists");
-  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard/profile");
 
   return { success: true };
 }

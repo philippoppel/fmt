@@ -91,7 +91,7 @@ export function VerifyForm({ token }: VerifyFormProps) {
                 </div>
               )}
               <Button
-                onClick={() => router.push("/dashboard/settings")}
+                onClick={() => router.push("/dashboard/profile")}
                 className="w-full"
               >
                 {t("continueToDashboard")}

@@ -170,7 +170,7 @@ export async function updateTherapistProfile(data: UpdateProfileData): Promise<{
     // Revalidate paths
     revalidatePath(`/p/${slug}`);
     revalidatePath("/therapists");
-    revalidatePath("/dashboard/settings");
+    revalidatePath("/dashboard/profile");
 
     return { success: true };
   } catch (error) {

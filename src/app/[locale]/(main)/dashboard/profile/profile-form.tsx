@@ -28,6 +28,8 @@ import {
 import { useProfilePermissions } from "@/hooks/use-profile-permissions";
 import { TierBadge } from "@/components/dashboard/tier-badge";
 import { UpgradeBanner, GratisBlocker } from "@/components/dashboard/upgrade-banner";
+import { ProfileImagePicker } from "@/components/dashboard/profile/profile-image-picker";
+import { SortableSpecializations } from "@/components/dashboard/profile/sortable-specializations";
 import { cn } from "@/lib/utils";
 
 type ProfileFormData = ProfileData & {
@@ -50,7 +52,7 @@ export function ProfileForm({ initialData, accountType }: Props) {
   // Form state
   const [name, setName] = useState(initialData.name);
   const [title, setTitle] = useState(initialData.title);
-  const [imageUrl, setImageUrl] = useState(initialData.imageUrl);
+  const [imageUrl, setImageUrl] = useState(initialData.imageUrl || "");
   const [shortDescription, setShortDescription] = useState(initialData.shortDescription);
   const [city, setCity] = useState(initialData.city);
   const [postalCode, setPostalCode] = useState(initialData.postalCode);
@@ -116,10 +118,41 @@ export function ProfileForm({ initialData, accountType }: Props) {
     setSpecializationRanks(newRanks);
   }
 
+  // Validation for required fields
+  const validationErrors: string[] = [];
+
+  function validateRequiredFields(): boolean {
+    validationErrors.length = 0;
+
+    if (!name.trim()) {
+      validationErrors.push("Name ist erforderlich");
+    }
+    if (!title?.trim()) {
+      validationErrors.push("Titel/Berufsbezeichnung ist erforderlich");
+    }
+    if (!city?.trim()) {
+      validationErrors.push("Stadt ist erforderlich");
+    }
+    if (!postalCode?.trim()) {
+      validationErrors.push("PLZ ist erforderlich");
+    }
+    if (specializations.length === 0) {
+      validationErrors.push("Mindestens ein Fachgebiet ist erforderlich");
+    }
+
+    return validationErrors.length === 0;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setSuccess(false);
+
+    // Validate required fields
+    if (!validateRequiredFields()) {
+      setError(validationErrors.join(". "));
+      return;
+    }
 
     startTransition(async () => {
       const result = await updateProfile({
@@ -214,32 +247,37 @@ export function ProfileForm({ initialData, accountType }: Props) {
         {openSections.basicInfo && (
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name" required>{t("sections.basicInfo.name")}</Label>
+              <Label htmlFor="name">
+                {t("sections.basicInfo.name")} <span className="text-destructive">*</span>
+              </Label>
               <Input
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={t("sections.basicInfo.namePlaceholder")}
                 required
+                className={cn(!name.trim() && "border-destructive")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="title">{t("sections.basicInfo.professionalTitle")}</Label>
+              <Label htmlFor="title">
+                {t("sections.basicInfo.professionalTitle")} <span className="text-destructive">*</span>
+              </Label>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder={t("sections.basicInfo.titlePlaceholder")}
+                required
+                className={cn(!title?.trim() && "border-destructive")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="imageUrl">{t("sections.basicInfo.image")}</Label>
-              <Input
-                id="imageUrl"
-                type="url"
+              <Label>{t("sections.basicInfo.image")}</Label>
+              <ProfileImagePicker
                 value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="https://..."
+                onImageChange={setImageUrl}
+                disabled={!permissions.canEditField("imageUrl")}
               />
             </div>
             <div className="space-y-2">
@@ -276,21 +314,29 @@ export function ProfileForm({ initialData, accountType }: Props) {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="city">{t("sections.location.city")}</Label>
+                <Label htmlFor="city">
+                  {t("sections.location.city")} <span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="city"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder={t("sections.location.cityPlaceholder")}
+                  required
+                  className={cn(!city?.trim() && "border-destructive")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="postalCode">{t("sections.location.postalCode")}</Label>
+                <Label htmlFor="postalCode">
+                  {t("sections.location.postalCode")} <span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="postalCode"
                   value={postalCode}
                   onChange={(e) => setPostalCode(e.target.value)}
                   placeholder={t("sections.location.postalCodePlaceholder")}
+                  required
+                  className={cn(!postalCode?.trim() && "border-destructive")}
                 />
               </div>
             </div>
@@ -299,14 +345,16 @@ export function ProfileForm({ initialData, accountType }: Props) {
       </Card>
 
       {/* Specializations Section */}
-      <Card>
+      <Card className={cn(specializations.length === 0 && "border-destructive")}>
         <CardHeader
           className="cursor-pointer"
           onClick={() => toggleSection("specializations")}
         >
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-lg">{tFilters("specialty.title")}</CardTitle>
+              <CardTitle className="text-lg">
+                {tFilters("specialty.title")} <span className="text-destructive">*</span>
+              </CardTitle>
               <CardDescription>{t("sections.specializations.description")}</CardDescription>
             </div>
             {openSections.specializations ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
@@ -314,6 +362,13 @@ export function ProfileForm({ initialData, accountType }: Props) {
         </CardHeader>
         {openSections.specializations && (
           <CardContent className="space-y-6">
+            {specializations.length === 0 && (
+              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                <p className="text-sm text-destructive">
+                  Bitte wählen Sie mindestens ein Fachgebiet aus.
+                </p>
+              </div>
+            )}
             {/* Specialty Selection */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {SPECIALTIES.map((specialty) => (
@@ -344,48 +399,30 @@ export function ProfileForm({ initialData, accountType }: Props) {
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {t("sections.specializations.ranking.description")}
+                  {permissions.isPremium
+                    ? "Ziehe die Fachgebiete in die gewünschte Reihenfolge. Die ersten 3 werden auf deinem Profil hervorgehoben."
+                    : t("sections.specializations.ranking.description")}
                 </p>
 
-                <div className="space-y-2">
-                  {specializations
-                    .filter((s) => SPECIALTIES.includes(s as typeof SPECIALTIES[number]))
-                    .map((specialty) => {
-                    const currentRank = specializationRanks[specialty];
-                    return (
-                      <div
-                        key={specialty}
-                        className={cn(
-                          "flex items-center justify-between rounded-lg border p-3",
-                          !permissions.isPremium && "opacity-60"
-                        )}
-                      >
-                        <span className="text-sm">{tFilters(`specialty.${specialty}`)}</span>
-                        <div className="flex gap-1">
-                          {[1, 2, 3].map((rank) => (
-                            <button
-                              key={rank}
-                              type="button"
-                              disabled={!permissions.isPremium}
-                              onClick={() =>
-                                handleRankChange(specialty, currentRank === rank ? null : rank)
-                              }
-                              className={cn(
-                                "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
-                                currentRank === rank
-                                  ? "bg-primary text-primary-foreground"
-                                  : "bg-muted hover:bg-muted/80",
-                                !permissions.isPremium && "cursor-not-allowed"
-                              )}
-                            >
-                              {rank}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                <SortableSpecializations
+                  items={specializations.filter((s) =>
+                    SPECIALTIES.includes(s as typeof SPECIALTIES[number])
+                  )}
+                  labels={Object.fromEntries(
+                    specializations.map((s) => [s, tFilters(`specialty.${s}`)])
+                  )}
+                  onOrderChange={(newOrder) => {
+                    // Update specializations order
+                    setSpecializations(newOrder);
+                    // Update ranks: first 3 items get ranks 1, 2, 3
+                    const newRanks: Record<string, number> = {};
+                    newOrder.slice(0, 3).forEach((specialty, index) => {
+                      newRanks[specialty] = index + 1;
+                    });
+                    setSpecializationRanks(newRanks);
+                  }}
+                  disabled={!permissions.isPremium}
+                />
               </div>
             )}
           </CardContent>

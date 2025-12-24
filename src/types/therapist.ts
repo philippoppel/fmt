@@ -1,16 +1,41 @@
 // Content types for search results
 export type ContentType = "all" | "therapists" | "blogs";
 
-// Specialization areas
+// Specialization areas (expanded from 8 to 28)
 export type Specialty =
+  // Mental Health (8)
   | "depression"
   | "anxiety"
   | "trauma"
-  | "relationships"
-  | "addiction"
+  | "burnout"
+  | "ocd"
+  | "phobias"
+  | "panic"
+  | "bipolar"
+  // Relationships (4)
+  | "couples"
+  | "family"
+  | "divorce"
+  | "parenting"
+  // Life Transitions (5)
+  | "grief"
+  | "career"
+  | "identity"
+  | "lgbtq"
+  | "migration"
+  // Behavioral (5)
   | "eating_disorders"
+  | "addiction"
+  | "sleep"
+  | "stress"
+  | "psychosomatic"
+  // Special Groups (4)
+  | "children"
+  | "elderly"
   | "adhd"
-  | "burnout";
+  | "autism"
+  // Legacy (for backwards compatibility)
+  | "relationships";
 
 // Sub-specialization areas (matches SubTopic ids in topics.ts)
 export type SubSpecialty =
@@ -256,14 +281,39 @@ export const defaultFilters: FilterState = {
 
 // Constants for filter options
 export const SPECIALTIES: Specialty[] = [
+  // Mental Health (8)
   "depression",
   "anxiety",
   "trauma",
-  "relationships",
-  "addiction",
-  "eating_disorders",
-  "adhd",
   "burnout",
+  "ocd",
+  "phobias",
+  "panic",
+  "bipolar",
+  // Relationships (4)
+  "couples",
+  "family",
+  "divorce",
+  "parenting",
+  // Life Transitions (5)
+  "grief",
+  "career",
+  "identity",
+  "lgbtq",
+  "migration",
+  // Behavioral (5)
+  "eating_disorders",
+  "addiction",
+  "sleep",
+  "stress",
+  "psychosomatic",
+  // Special Groups (4)
+  "children",
+  "elderly",
+  "adhd",
+  "autism",
+  // Legacy
+  "relationships",
 ];
 
 export const THERAPY_TYPES: TherapyType[] = [

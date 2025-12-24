@@ -10,19 +10,21 @@ import {
   LayoutDashboard,
   User,
   CreditCard,
-  Settings,
   BarChart3,
-  Palette,
+  Globe,
   Crown,
   FileText,
-  ShieldCheck,
+  Settings,
 } from "lucide-react";
 import type { AccountType } from "@prisma/client";
+import { UserAvatar } from "./profile/user-avatar";
 
 interface SidebarProps {
   accountType: AccountType;
   userName?: string | null;
+  userImageUrl?: string | null;
   isAdmin?: boolean;
+  profileCompleteness?: number;
 }
 
 const NAV_ITEMS = [
@@ -44,9 +46,9 @@ const NAV_ITEMS = [
   },
   {
     href: "/dashboard/customize",
-    icon: Palette,
-    labelKey: "customize",
-    shortLabel: "Design",
+    icon: Globe,
+    labelKey: "website",
+    shortLabel: "Webseite",
     requiresTier: "mittel" as AccountType,
     adminOnly: false,
   },
@@ -54,17 +56,9 @@ const NAV_ITEMS = [
     href: "/dashboard/blog",
     icon: FileText,
     labelKey: "blog",
-    shortLabel: "Artikel",
+    shortLabel: "Blog",
     requiresTier: null,
     adminOnly: false,
-  },
-  {
-    href: "/dashboard/admin/blogs",
-    icon: ShieldCheck,
-    labelKey: "blogAdmin",
-    shortLabel: "Blog Admin",
-    requiresTier: null,
-    adminOnly: true,
   },
   {
     href: "/dashboard/stats",
@@ -88,7 +82,7 @@ const NAV_ITEMS = [
     labelKey: "settings",
     shortLabel: "Settings",
     requiresTier: null,
-    adminOnly: false,
+    adminOnly: true,
   },
 ];
 
@@ -105,10 +99,18 @@ const TIER_BADGES: Record<AccountType, { label: string; className: string }> = {
   premium: { label: "Premium", className: "bg-amber-100 text-amber-700" },
 };
 
-export function DashboardSidebar({ accountType, userName, isAdmin = false }: SidebarProps) {
+export function DashboardSidebar({ accountType, userName, userImageUrl, isAdmin = false, profileCompleteness = 0 }: SidebarProps) {
   const t = useTranslations("dashboard.sidebar");
   const pathname = usePathname();
   const tierBadge = TIER_BADGES[accountType];
+
+  // Determine progress bar color based on completeness
+  const getProgressColor = (percent: number) => {
+    if (percent >= 100) return "bg-green-500";
+    if (percent >= 70) return "bg-blue-500";
+    if (percent >= 40) return "bg-amber-500";
+    return "bg-red-500";
+  };
 
   // Filter nav items based on admin status
   const visibleNavItems = NAV_ITEMS.filter(item => !item.adminOnly || isAdmin);
@@ -158,9 +160,7 @@ export function DashboardSidebar({ accountType, userName, isAdmin = false }: Sid
         {/* User Info */}
         <div className="p-4 border-b">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <User className="h-5 w-5 text-primary" />
-            </div>
+            <UserAvatar imageUrl={userImageUrl} name={userName} size="md" />
             <div className="flex-1 min-w-0">
               <p className="font-medium truncate">{userName || t("therapist")}</p>
               <Badge className={cn("text-xs mt-1", tierBadge.className)}>
@@ -168,6 +168,31 @@ export function DashboardSidebar({ accountType, userName, isAdmin = false }: Sid
               </Badge>
             </div>
           </div>
+          {/* Profile Completeness */}
+          {profileCompleteness < 100 && (
+            <Link href="/dashboard/profile" className="block mt-3 group">
+              <div className="flex items-center justify-between text-xs mb-1">
+                <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+                  {t("profileCompleteness")}
+                </span>
+                <span className={cn(
+                  "font-medium",
+                  profileCompleteness >= 70 ? "text-blue-600" : "text-amber-600"
+                )}>
+                  {profileCompleteness}%
+                </span>
+              </div>
+              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                <div
+                  className={cn(
+                    "h-full rounded-full transition-all duration-500",
+                    getProgressColor(profileCompleteness)
+                  )}
+                  style={{ width: `${profileCompleteness}%` }}
+                />
+              </div>
+            </Link>
+          )}
         </div>
 
         {/* Navigation */}

@@ -1,27 +1,20 @@
 import { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
+import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { redirect } from "next/navigation";
-import { setRequestLocale, getTranslations } from "next-intl/server";
-import { generateSeoMetadata } from "@/lib/seo";
-import { ProfileForm } from "./profile-form";
-import type { AccountType } from "@/types/therapist";
+import { CategoryList } from "@/components/blog/admin/category-list";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tags, FileText, Settings } from "lucide-react";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "dashboard.settings" });
-
-  return generateSeoMetadata({
-    title: t("title"),
-    description: t("subtitle"),
-    locale,
-    path: "/dashboard/settings",
-    noIndex: true,
-  });
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Einstellungen - Dashboard",
+  };
 }
 
 export default async function SettingsPage({ params }: Props) {
@@ -30,45 +23,115 @@ export default async function SettingsPage({ params }: Props) {
 
   const session = await auth();
 
-  if (!session?.user?.id) {
-    redirect(`/${locale}/auth/login`);
+  // Admin-only page
+  if (!session?.user || session.user.role !== "ADMIN") {
+    redirect(`/${locale}/dashboard`);
   }
 
-  const profile = await db.therapistProfile.findUnique({
-    where: { userId: session.user.id },
-    include: { user: true },
+  // Get categories with post counts
+  const categories = await db.blogCategory.findMany({
+    orderBy: { sortOrder: "asc" },
+    include: {
+      _count: {
+        select: { posts: true },
+      },
+    },
   });
 
-  if (!profile) {
-    // Create profile if it doesn't exist (for OAuth users)
-    await db.therapistProfile.create({
-      data: { userId: session.user.id },
-    });
-    redirect(`/${locale}/dashboard/settings`);
-  }
+  // Get tags with post counts
+  const tags = await db.blogTag.findMany({
+    orderBy: { name: "asc" },
+    include: {
+      _count: {
+        select: { posts: true },
+      },
+    },
+  });
 
   return (
-    <div>
-      <ProfileForm
-        initialData={{
-          name: profile.user.name || "",
-          title: profile.title || "",
-          imageUrl: profile.imageUrl || "",
-          shortDescription: profile.shortDescription || "",
-          city: profile.city || "",
-          postalCode: profile.postalCode || "",
-          specializations: profile.specializations,
-          specializationRanks: (profile.specializationRanks as Record<string, number>) || {},
-          therapyTypes: profile.therapyTypes,
-          languages: profile.languages,
-          insurance: profile.insurance,
-          pricePerSession: profile.pricePerSession || 0,
-          sessionType: profile.sessionType,
-          availability: profile.availability,
-          gender: profile.gender,
-        }}
-        accountType={(profile.accountType as AccountType) || "gratis"}
-      />
+    <div className="space-y-8">
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <Settings className="h-6 w-6" />
+          <h1 className="text-2xl font-bold">Einstellungen</h1>
+        </div>
+        <p className="text-muted-foreground">
+          Plattform-Einstellungen und Inhaltsverwaltung (nur für Administratoren)
+        </p>
+      </div>
+
+      {/* Blog Categories Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-primary" />
+              <CardTitle>Blog-Kategorien</CardTitle>
+            </div>
+            <span className="text-sm text-muted-foreground">
+              {categories.length} Kategorien
+            </span>
+          </div>
+          <CardDescription>
+            Verwalte die Kategorien für Blog-Artikel
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CategoryList
+            categories={categories.map((cat) => ({
+              id: cat.id,
+              slug: cat.slug,
+              name: cat.name,
+              nameDE: cat.nameDE,
+              nameEN: cat.nameEN,
+              description: cat.description,
+              color: cat.color,
+              icon: cat.icon,
+              sortOrder: cat.sortOrder,
+              postCount: cat._count.posts,
+            }))}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Tags Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Tags className="h-5 w-5 text-primary" />
+              <CardTitle>Tags</CardTitle>
+            </div>
+            <span className="text-sm text-muted-foreground">
+              {tags.length} Tags
+            </span>
+          </div>
+          <CardDescription>
+            Übersicht aller verwendeten Tags
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {tags.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              Noch keine Tags vorhanden
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <div
+                  key={tag.id}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full text-sm"
+                >
+                  <span>{tag.name}</span>
+                  <span className="text-xs text-muted-foreground">
+                    ({tag._count.posts})
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

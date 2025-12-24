@@ -86,7 +86,7 @@ export function RegisterForm() {
             <div className="flex flex-col gap-2">
               <Button
                 variant="outline"
-                onClick={() => router.push("/dashboard/settings")}
+                onClick={() => router.push("/dashboard/profile")}
                 className="w-full"
               >
                 {t("continueToDashboard")}

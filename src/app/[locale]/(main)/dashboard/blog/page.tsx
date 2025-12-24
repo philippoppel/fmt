@@ -3,12 +3,12 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
 import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
 import { getUserPostsWithReviews } from "@/lib/data/blog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, FileText, Eye, Clock, CalendarClock, Send } from "lucide-react";
-import { formatRelativeTime } from "@/lib/blog/utils";
-import { AuthorPostCard } from "@/components/blog/author/author-post-card";
+import { Plus, Clock, CalendarClock, Eye, Send } from "lucide-react";
+import { BlogTabs } from "@/components/dashboard/blog/blog-tabs";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -16,7 +16,7 @@ type Props = {
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Meine Artikel - Dashboard",
+    title: "Blog - Dashboard",
   };
 }
 
@@ -29,22 +29,137 @@ export default async function DashboardBlogPage({ params }: Props) {
     redirect(`/${locale}/auth/login`);
   }
 
-  const posts = await getUserPostsWithReviews(session.user.id);
+  const isAdmin = session.user.role === "ADMIN";
   const localePath = locale === "de" ? "" : `/${locale}`;
 
-  const publishedCount = posts.filter((p) => p.status === "published").length;
-  const draftCount = posts.filter((p) => p.status === "draft").length;
-  const reviewCount = posts.filter((p) => p.status === "review").length;
-  const scheduledCount = posts.filter((p) => p.status === "scheduled").length;
+  // Fetch user's own posts
+  const userPostsRaw = await getUserPostsWithReviews(session.user.id);
+  const userPosts = userPostsRaw.map((post) => ({
+    id: post.id,
+    title: post.title,
+    slug: post.slug,
+    status: post.status as "draft" | "review" | "scheduled" | "published" | "archived",
+    readingTimeMinutes: post.readingTimeMinutes,
+    commentCount: post._count.comments,
+    bookmarkCount: post._count.bookmarks,
+    publishedAt: post.publishedAt,
+    scheduledAt: post.scheduledAt,
+    latestFeedback: post.latestFeedback,
+  }));
+
+  // Stats for user's own posts
+  const draftCount = userPosts.filter((p) => p.status === "draft").length;
+  const userReviewCount = userPosts.filter((p) => p.status === "review").length;
+  const userScheduledCount = userPosts.filter((p) => p.status === "scheduled").length;
+  const publishedCount = userPosts.filter((p) => p.status === "published").length;
+
+  // Admin-only data
+  let allPosts: any[] = [];
+  let reviewPosts: any[] = [];
+  let scheduledPosts: any[] = [];
+  let authors: any[] = [];
+  let globalReviewCount = 0;
+  let globalScheduledCount = 0;
+
+  if (isAdmin) {
+    // Fetch all posts for admin
+    const [allPostsRaw, reviewPostsRaw, scheduledPostsRaw, authorsRaw] = await Promise.all([
+      db.blogPost.findMany({
+        orderBy: { updatedAt: "desc" },
+        include: {
+          author: { select: { name: true, email: true } },
+          categories: {
+            include: {
+              category: { select: { nameDE: true, slug: true } },
+            },
+          },
+          _count: { select: { comments: true, bookmarks: true } },
+        },
+        take: 50,
+      }),
+      db.blogPost.findMany({
+        where: { status: "review" },
+        orderBy: { updatedAt: "asc" },
+        include: {
+          author: { select: { id: true, name: true, email: true } },
+          categories: {
+            include: {
+              category: { select: { nameDE: true, slug: true } },
+            },
+          },
+        },
+      }),
+      db.blogPost.findMany({
+        where: { status: "scheduled", scheduledAt: { not: null } },
+        orderBy: { scheduledAt: "asc" },
+        include: {
+          author: { select: { id: true, name: true, email: true } },
+          categories: {
+            include: {
+              category: { select: { nameDE: true, slug: true } },
+            },
+          },
+        },
+      }),
+      db.user.findMany({
+        where: { blogPosts: { some: {} } },
+        select: { id: true, name: true, email: true },
+        orderBy: { name: "asc" },
+      }),
+    ]);
+
+    allPosts = allPostsRaw.map((post) => ({
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      status: post.status as "draft" | "review" | "scheduled" | "published" | "archived",
+      author: post.author,
+      categories: post.categories.map((c) => c.category),
+      readingTimeMinutes: post.readingTimeMinutes,
+      commentCount: post._count.comments,
+      bookmarkCount: post._count.bookmarks,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+      publishedAt: post.publishedAt,
+      scheduledAt: post.scheduledAt,
+    }));
+
+    reviewPosts = reviewPostsRaw.map((post) => ({
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      excerpt: post.excerpt || post.summaryShort,
+      author: post.author,
+      categories: post.categories.map((c) => c.category),
+      readingTimeMinutes: post.readingTimeMinutes,
+      wordCount: post.wordCount,
+      submittedAt: post.updatedAt,
+      featuredImage: post.featuredImage,
+    }));
+
+    scheduledPosts = scheduledPostsRaw.map((post) => ({
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      author: post.author,
+      categories: post.categories.map((c) => c.category),
+      readingTimeMinutes: post.readingTimeMinutes,
+      scheduledAt: post.scheduledAt!,
+    }));
+
+    authors = authorsRaw;
+    globalReviewCount = reviewPostsRaw.length;
+    globalScheduledCount = scheduledPostsRaw.length;
+  }
 
   return (
     <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold">Meine Artikel</h1>
+          <h1 className="text-2xl font-bold">Blog</h1>
           <p className="text-muted-foreground">
-            Verwalten Sie Ihre Blog-Artikel
+            {isAdmin ? "Verwalten Sie alle Blog-Artikel" : "Verwalten Sie Ihre Blog-Artikel"}
           </p>
         </div>
         <Button asChild>
@@ -55,7 +170,7 @@ export default async function DashboardBlogPage({ params }: Props) {
         </Button>
       </div>
 
-      {/* Stats */}
+      {/* Stats (user's own posts) */}
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -66,13 +181,13 @@ export default async function DashboardBlogPage({ params }: Props) {
             <div className="text-2xl font-bold">{draftCount}</div>
           </CardContent>
         </Card>
-        <Card className={reviewCount > 0 ? "border-yellow-200 bg-yellow-50/50" : ""}>
+        <Card className={userReviewCount > 0 ? "border-yellow-200 bg-yellow-50/50" : ""}>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Zur Prüfung</CardTitle>
             <Send className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{reviewCount}</div>
+            <div className="text-2xl font-bold text-yellow-600">{userReviewCount}</div>
           </CardContent>
         </Card>
         <Card>
@@ -81,7 +196,7 @@ export default async function DashboardBlogPage({ params }: Props) {
             <CalendarClock className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{scheduledCount}</div>
+            <div className="text-2xl font-bold text-blue-600">{userScheduledCount}</div>
           </CardContent>
         </Card>
         <Card>
@@ -95,45 +210,18 @@ export default async function DashboardBlogPage({ params }: Props) {
         </Card>
       </div>
 
-      {/* Posts List */}
-      {posts.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="font-semibold mb-2">Noch keine Artikel</h3>
-            <p className="text-muted-foreground text-center mb-4">
-              Erstellen Sie Ihren ersten Blog-Artikel
-            </p>
-            <Button asChild>
-              <Link href={`${localePath}/dashboard/blog/new`}>
-                <Plus className="h-4 w-4 mr-2" />
-                Artikel erstellen
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {posts.map((post) => (
-            <AuthorPostCard
-              key={post.id}
-              post={{
-                id: post.id,
-                title: post.title,
-                slug: post.slug,
-                status: post.status,
-                readingTimeMinutes: post.readingTimeMinutes,
-                commentCount: post._count.comments,
-                bookmarkCount: post._count.bookmarks,
-                publishedAt: post.publishedAt,
-                scheduledAt: post.scheduledAt,
-                latestFeedback: post.latestFeedback,
-              }}
-              locale={locale}
-            />
-          ))}
-        </div>
-      )}
+      {/* Blog Tabs */}
+      <BlogTabs
+        isAdmin={isAdmin}
+        locale={locale}
+        userPosts={userPosts}
+        allPosts={allPosts}
+        reviewPosts={reviewPosts}
+        scheduledPosts={scheduledPosts}
+        authors={authors}
+        reviewCount={globalReviewCount}
+        scheduledCount={globalScheduledCount}
+      />
     </div>
   );
 }

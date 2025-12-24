@@ -4,12 +4,16 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
-import { ProfileForm } from "../settings/profile-form";
+import { ProfileForm } from "./profile-form";
 import type { ProfileData } from "@/lib/actions/profile";
 import type { AccountType } from "@/types/therapist";
 
+type ProfileFormData = ProfileData & {
+  specializationRanks?: Record<string, number>;
+};
+
 interface ProfileContentProps {
-  initialData: ProfileData;
+  initialData: ProfileFormData;
   accountType: AccountType;
   slug?: string | null;
 }
