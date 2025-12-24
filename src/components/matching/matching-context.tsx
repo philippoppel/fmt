@@ -29,9 +29,12 @@ import {
   type SubTopic,
 } from "@/lib/matching/topics";
 
-// Steps: 1 = Topics, 1.25 = SubTopics, 1.5 = Intensity (optional), 1.75 = Screening, 2 = Criteria
-// Optional: 0.75 = Freetext (alternative to topic selection)
-export type WizardStep = 0.75 | 1 | 1.25 | 1.5 | 1.75 | 2;
+// Steps: 1 = Topics (with inline freetext + inline screening)
+//        1.25 = SubTopics
+//        2 = Criteria
+//        2.5 = Summary (NEW - review before results)
+// NOTE: Steps 0.75 (freetext), 1.5 (intensity), 1.75 (screening) removed for streamlined flow
+export type WizardStep = 1 | 1.25 | 2 | 2.5;
 
 export type IntensityLevel = "low" | "medium" | "high";
 export type MatchingMode = "quick" | "full";
@@ -60,10 +63,10 @@ export interface MatchingState {
   currentStep: WizardStep;
   // Mode Selection
   matchingMode: MatchingMode;
-  // Screening (Step 0)
-  screeningCompleted: boolean;
+  // Crisis Detection (inline in topic selection)
   crisisDetected: boolean;
-  // Freetext Analysis (Step 0.75)
+  crisisAcknowledged: boolean; // User saw crisis resources and chose to continue
+  // Freetext Analysis (inline in TopicSelection card)
   freetextInput: string;
   freetextAnalysis: FreetextAnalysis | null;
   // Inline freetext (in TopicSelection card)
@@ -100,9 +103,9 @@ export interface MatchingState {
 type MatchingAction =
   | { type: "SET_STEP"; step: WizardStep }
   | { type: "SET_MODE"; mode: MatchingMode }
-  | { type: "COMPLETE_SCREENING"; crisisDetected: boolean }
-  | { type: "RESET_SCREENING" }
-  | { type: "SWITCH_TO_FREETEXT" }
+  | { type: "SET_CRISIS_DETECTED"; crisisDetected: boolean }
+  | { type: "ACKNOWLEDGE_CRISIS" } // User saw resources and wants to continue
+  | { type: "RESET_CRISIS" }
   | { type: "SET_FREETEXT"; text: string }
   | { type: "SET_FREETEXT_ANALYSIS"; analysis: FreetextAnalysis }
   | { type: "SET_INLINE_FREETEXT"; value: string }
@@ -180,8 +183,8 @@ function calculateOverallIntensity(
 const initialState: MatchingState = {
   currentStep: 1, // Start with topic selection
   matchingMode: "full",
-  screeningCompleted: false,
   crisisDetected: false,
+  crisisAcknowledged: false,
   freetextInput: "",
   freetextAnalysis: null,
   inlineFreetextValue: "",
@@ -219,26 +222,25 @@ function matchingReducer(
     case "SET_MODE":
       return { ...state, matchingMode: action.mode };
 
-    case "COMPLETE_SCREENING":
+    case "SET_CRISIS_DETECTED":
       return {
         ...state,
-        screeningCompleted: true,
         crisisDetected: action.crisisDetected,
-        // Stay on screening step - wizard will handle showing crisis or results
+        // If crisis detected, don't auto-block - user can acknowledge and continue
       };
 
-    case "RESET_SCREENING":
+    case "ACKNOWLEDGE_CRISIS":
       return {
         ...state,
-        screeningCompleted: false,
+        crisisAcknowledged: true,
+        // User can continue after seeing crisis resources
+      };
+
+    case "RESET_CRISIS":
+      return {
+        ...state,
         crisisDetected: false,
-        currentStep: 1.75,
-      };
-
-    case "SWITCH_TO_FREETEXT":
-      return {
-        ...state,
-        currentStep: 0.75,
+        crisisAcknowledged: false,
       };
 
     case "SET_FREETEXT":
@@ -513,15 +515,15 @@ interface MatchingContextValue {
   actions: {
     setStep: (step: WizardStep) => void;
     setMode: (mode: MatchingMode) => void;
-    // Screening actions
-    completeScreening: (crisisDetected: boolean) => void;
-    resetScreening: () => void;
+    // Crisis actions (inline detection, can continue after acknowledging)
+    setCrisisDetected: (crisisDetected: boolean) => void;
+    acknowledgeCrisis: () => void;
+    resetCrisis: () => void;
     // Freetext actions
     setFreetext: (text: string) => void;
     setFreetextAnalysis: (analysis: FreetextAnalysis) => void;
     applyFreetextAnalysis: () => void;
     skipFreetext: () => void;
-    switchToFreetext: () => void;
     // Inline freetext actions
     setInlineFreetext: (value: string) => void;
     setInlineFreetextAnalysisState: (state: "idle" | "pending" | "success" | "empty" | "crisis") => void;
@@ -590,13 +592,17 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
     dispatch({ type: "SET_STEP", step });
   }, []);
 
-  // Screening actions
-  const completeScreening = useCallback((crisisDetected: boolean) => {
-    dispatch({ type: "COMPLETE_SCREENING", crisisDetected });
+  // Crisis actions
+  const setCrisisDetected = useCallback((crisisDetected: boolean) => {
+    dispatch({ type: "SET_CRISIS_DETECTED", crisisDetected });
   }, []);
 
-  const resetScreening = useCallback(() => {
-    dispatch({ type: "RESET_SCREENING" });
+  const acknowledgeCrisis = useCallback(() => {
+    dispatch({ type: "ACKNOWLEDGE_CRISIS" });
+  }, []);
+
+  const resetCrisis = useCallback(() => {
+    dispatch({ type: "RESET_CRISIS" });
   }, []);
 
   // Topic actions
@@ -726,10 +732,6 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
     dispatch({ type: "SKIP_FREETEXT" });
   }, []);
 
-  const switchToFreetext = useCallback(() => {
-    dispatch({ type: "SWITCH_TO_FREETEXT" });
-  }, []);
-
   const setInlineFreetext = useCallback((value: string) => {
     dispatch({ type: "SET_INLINE_FREETEXT", value });
   }, []);
@@ -738,12 +740,10 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
     dispatch({ type: "SET_INLINE_FREETEXT_ANALYSIS_STATE", state });
   }, []);
 
-  // Navigation: 1 -> 1.25 (subtopics) -> 1.5 -> 2 -> 2.5 (screening) -> results
-  // Alternative: 0.75 (freetext) -> 1 -> ...
-  // SubTopics step (1.25) is skipped if no topics selected
-  // Screening (1.75) comes before Criteria (2)
+  // Navigation: 1 (topics) -> 1.25 (subtopics) -> 2 (criteria) -> 2.5 (summary) -> results
+  // SubTopics step (1.25) is skipped if no subtopics available AND "other" not selected
   const goNext = useCallback(() => {
-    const stepOrder: WizardStep[] = [0.75, 1, 1.25, 1.5, 1.75, 2];
+    const stepOrder: WizardStep[] = [1, 1.25, 2, 2.5];
     const currentIndex = stepOrder.indexOf(state.currentStep);
 
     // Skip SubTopics step if no available subtopics AND "other" not selected
@@ -752,7 +752,7 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
       const availableSubs = getSubTopicsForTopics(state.selectedTopics);
       // Don't skip if "other" is selected - they need to describe in freetext
       if (availableSubs.length === 0 && !hasOtherTopic) {
-        dispatch({ type: "SET_STEP", step: 1.5 }); // Skip to intensity
+        dispatch({ type: "SET_STEP", step: 2 }); // Skip to criteria
         return;
       }
     }
@@ -763,18 +763,15 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
   }, [state.currentStep, state.selectedTopics]);
 
   const goBack = useCallback(() => {
-    const stepOrder: WizardStep[] = [0.75, 1, 1.25, 1.5, 1.75, 2];
+    const stepOrder: WizardStep[] = [1, 1.25, 2, 2.5];
     const currentIndex = stepOrder.indexOf(state.currentStep);
-    // Can go back from any step except the first (freetext or topics)
+    // Can go back from any step except the first (topics)
     if (currentIndex > 0) {
-      // From topics (1), if came from freetext, go back there
-      if (state.currentStep === 1 && state.freetextAnalysis) {
-        dispatch({ type: "SET_STEP", step: 0.75 });
-      } else if (state.currentStep === 1) {
-        // Can't go back from topics if no freetext
+      if (state.currentStep === 1) {
+        // Can't go back from topics - it's the first step
         return;
-      } else if (state.currentStep === 1.5) {
-        // From intensity, check if we should skip subtopics
+      } else if (state.currentStep === 2) {
+        // From criteria, check if we should skip subtopics
         const hasOtherTopic = state.selectedTopics.includes("other");
         const availableSubs = getSubTopicsForTopics(state.selectedTopics);
         if (availableSubs.length === 0 && !hasOtherTopic) {
@@ -784,7 +781,7 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
       }
       dispatch({ type: "SET_STEP", step: stepOrder[currentIndex - 1] });
     }
-  }, [state.currentStep, state.freetextAnalysis, state.selectedTopics]);
+  }, [state.currentStep, state.selectedTopics]);
 
   // Computed values
   const selectedTopicDetails = useMemo(
@@ -799,32 +796,31 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
 
   const canProceed = useMemo(() => {
     switch (state.currentStep) {
-      case 0.75:
-        return true; // Freetext is optional
       case 1:
+        // Topics step - require at least one topic
+        // If crisis detected and not acknowledged, block proceeding
+        if (state.crisisDetected && !state.crisisAcknowledged) {
+          return false;
+        }
         return state.selectedTopics.length > 0;
       case 1.25:
         return true; // SubTopics are optional (but recommended)
-      case 1.5:
-        return true; // Intensity is optional
-      case 1.75:
-        return state.screeningCompleted && !state.crisisDetected;
       case 2:
         return true; // All criteria are optional
+      case 2.5:
+        return true; // Summary - just review, can always proceed
       default:
         return false;
     }
-  }, [state.currentStep, state.screeningCompleted, state.crisisDetected, state.selectedTopics.length]);
+  }, [state.currentStep, state.crisisDetected, state.crisisAcknowledged, state.selectedTopics.length]);
 
-  // Progress: 1 = 20%, 1.25 = 35%, 1.5 = 50%, 1.75 = 65%, 2 = 85%, results = 100%
+  // Progress: 1 = 25%, 1.25 = 50%, 2 = 75%, 2.5 = 95%
   const progress = useMemo(() => {
     const stepProgress: Record<WizardStep, number> = {
-      0.75: 10,
-      1: 20,
-      1.25: 35,
-      1.5: 50,
-      1.75: 65,
-      2: 85,
+      1: 25,
+      1.25: 50,
+      2: 75,
+      2.5: 95,
     };
     return stepProgress[state.currentStep] ?? 0;
   }, [state.currentStep]);
@@ -834,15 +830,15 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
     actions: {
       setStep,
       setMode,
-      // Screening
-      completeScreening,
-      resetScreening,
+      // Crisis
+      setCrisisDetected,
+      acknowledgeCrisis,
+      resetCrisis,
       // Freetext
       setFreetext,
       setFreetextAnalysis,
       applyFreetextAnalysis,
       skipFreetext,
-      switchToFreetext,
       // Inline freetext
       setInlineFreetext,
       setInlineFreetextAnalysisState,

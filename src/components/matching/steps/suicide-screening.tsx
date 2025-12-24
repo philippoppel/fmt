@@ -34,20 +34,19 @@ export function SuicideScreening() {
 
     // If both answered "no", automatically proceed to next step
     if (newResponses.question1 === false && newResponses.question2 === false) {
-      actions.completeScreening(false);
+      actions.resetCrisis();
       actions.goNext();
     }
   };
 
   const handleGetHelp = () => {
-    // User chose to get help - show full crisis resources
-    actions.completeScreening(true);
+    // User chose to get help - set crisis detected to show full resources
+    actions.setCrisisDetected(true);
   };
 
   const handleContinueAnyway = () => {
     // User acknowledged but wants to continue with matching
-    actions.completeScreening(false);
-    actions.goNext();
+    actions.acknowledgeCrisis();
   };
 
   const handleBack = () => {

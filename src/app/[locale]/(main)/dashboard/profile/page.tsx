@@ -58,6 +58,7 @@ export default async function ProfilePage({ params }: Props) {
         postalCode: profile.postalCode || "",
         specializations: profile.specializations,
         specializationRanks: (profile.specializationRanks as Record<string, number>) || {},
+        specializationIcons: (profile.specializationIcons as Record<string, string>) || {},
         therapyTypes: profile.therapyTypes,
         languages: profile.languages,
         insurance: profile.insurance,
@@ -65,6 +66,7 @@ export default async function ProfilePage({ params }: Props) {
         sessionType: profile.sessionType,
         availability: profile.availability,
         gender: profile.gender,
+        heroCoverImageUrl: profile.heroCoverImageUrl || "",
       }}
       accountType={(profile.accountType as AccountType) || "gratis"}
       slug={profile.slug}

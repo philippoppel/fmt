@@ -977,7 +977,8 @@
         "subtopics": "Details",
         "intensity": "Intensität",
         "preferences": "Präferenzen",
-        "style": "Arbeitsstil"
+        "style": "Arbeitsstil",
+        "summary": "Übersicht"
       },
       "step1_25Title": "Beschreibe genauer",
       "subtopicHint": "Wähle spezifische Bereiche für bessere Ergebnisse",
@@ -1585,7 +1586,80 @@
       },
       "closing": "Du bist auf dem richtigen Weg. Der erste Schritt ist oft der wichtigste.",
       "understood": "Verstanden"
-    }
+    },
+    "counter": {
+      "matchingTherapists": "passende Therapeut:innen",
+      "currentCriteria": "Aktuelle Kriterien",
+      "topics": "Themen",
+      "noCriteriaYet": "Noch keine Kriterien ausgewählt",
+      "noMatchesHint": "Mit den aktuellen Kriterien gibt es keine exakten Treffer. Versuche, weniger Filter zu setzen.",
+      "sessionTypes": {
+        "online": "Online",
+        "in_person": "Vor Ort",
+        "both": "Online & Vor Ort"
+      },
+      "genders": {
+        "male": "Männlich",
+        "female": "Weiblich",
+        "diverse": "Divers"
+      }
+    },
+    "summary": {
+      "title": "Zusammenfassung",
+      "subtitle": "Überprüfe deine Angaben, bevor wir die passenden Therapeut:innen anzeigen",
+      "yourTopics": "Deine Themen",
+      "yourDetails": "Deine Details",
+      "yourPreferences": "Deine Präferenzen",
+      "edit": "Bearbeiten",
+      "noTopicsSelected": "Keine Themen ausgewählt",
+      "noPreferencesSet": "Keine Präferenzen gesetzt",
+      "location": "Standort",
+      "sessionType": "Sitzungsart",
+      "gender": "Geschlecht",
+      "insurance": "Versicherung",
+      "previewTitle": "Top 3 Vorschau",
+      "noPreviewAvailable": "Keine Vorschau verfügbar",
+      "howWeSort": "Wie wir sortieren",
+      "sortingExplanation": "Die Ergebnisse werden nach Übereinstimmung mit deinen Themen, Details und Präferenzen sortiert. Je mehr Angaben du machst, desto präziser das Matching.",
+      "fairnessTitle": "Faire Sortierung",
+      "fairnessNote": "Premium-Therapeut:innen werden NICHT bevorzugt. Alle Therapeut:innen haben die gleiche Chance, basierend auf echten Qualitäten wie Spezialisierung und Profilvollständigkeit."
+    },
+    "contact": {
+      "title": "Nachricht an {name}",
+      "description": "Sende eine unverbindliche Anfrage. Der/die Therapeut:in wird sich bei dir melden.",
+      "name": "Dein Name",
+      "namePlaceholder": "Wie dürfen wir dich nennen?",
+      "email": "E-Mail",
+      "emailPlaceholder": "deine@email.de",
+      "phoneOptional": "Telefon (optional)",
+      "phonePlaceholder": "+49 123 456789",
+      "message": "Deine Nachricht",
+      "messagePlaceholder": "Beschreibe kurz, was dich beschäftigt und warum du dich meldest...",
+      "intensityOptional": "Optional: Wie stark belastet dich das Thema?",
+      "intensityDisclaimer": "Diese Angabe ist komplett freiwillig und beeinflusst NICHT die Suchergebnisse. Sie hilft dem/der Therapeut:in, deine Situation besser einzuschätzen.",
+      "intensityDescriptionOptional": "Zusätzliche Beschreibung (optional)",
+      "intensityDescriptionPlaceholder": "z.B. Es belastet mich besonders bei...",
+      "consentText": "Ich stimme zu, dass diese Angabe zur Belastungsintensität an den/die Therapeut:in übermittelt wird (DSGVO-konform).",
+      "levels": {
+        "low": "Leicht",
+        "medium": "Mittel",
+        "high": "Stark"
+      },
+      "dataPreview": "Daten-Vorschau",
+      "previewEmail": "E-Mail",
+      "previewTopics": "Themen",
+      "previewMessage": "Nachricht",
+      "previewIntensity": "Intensität",
+      "selected": "ausgewählt",
+      "included": "enthalten",
+      "cancel": "Abbrechen",
+      "send": "Nachricht senden",
+      "successTitle": "Anfrage gesendet!",
+      "successMessage": "{name} wird deine Anfrage erhalten und sich bei dir melden.",
+      "errorMessage": "Beim Senden ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+      "close": "Schließen"
+    },
+    "editFilters": "Filter bearbeiten"
   },
   "feedback": {
     "title": "Wie war deine Erfahrung?",

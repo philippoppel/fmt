@@ -5,8 +5,22 @@ import {
   Frown, AlertTriangle, Target, Lightbulb, Moon, Gauge,
   Baby, UserRound, Sparkles, HeartHandshake, Home, Scale,
   Briefcase, Fingerprint, Rainbow, Globe, BedDouble, Activity,
-  PersonStanding, GraduationCap, Puzzle
+  PersonStanding, GraduationCap, Puzzle, Shield, Smile, Sun,
+  Cloud, TreePine, Leaf, Star, Coffee, Book, Music, Palette,
+  Camera, Compass, Anchor, Feather, Wind, Droplets, Mountain,
+  type LucideIcon,
 } from "lucide-react";
+
+// Icon lookup map for custom icons
+const iconMap: Record<string, LucideIcon> = {
+  Brain, Heart, Users, Flame, Pill, Utensils, Zap, Battery,
+  Frown, AlertTriangle, Target, Lightbulb, Moon, Gauge,
+  Baby, UserRound, Sparkles, HeartHandshake, Home, Scale,
+  Briefcase, Fingerprint, Rainbow, Globe, BedDouble, Activity,
+  PersonStanding, GraduationCap, Puzzle, Shield, Smile, Sun,
+  Cloud, TreePine, Leaf, Star, Coffee, Book, Music, Palette,
+  Camera, Compass, Anchor, Feather, Wind, Droplets, Mountain,
+};
 import type { TherapistProfileData } from "@/types/profile";
 import type { Specialty, TherapyType } from "@/types/therapist";
 import { Badge } from "@/components/ui/badge";
@@ -317,7 +331,13 @@ export function ProfileSpecializations({ profile, locale }: ProfileSpecializatio
                     }}
                   >
                     <span className="text-white">
-                      {specialtyIcons[specialty]}
+                      {/* Use custom icon if set, otherwise default */}
+                      {profile.specializationIcons?.[specialty] && iconMap[profile.specializationIcons[specialty]]
+                        ? (() => {
+                            const CustomIcon = iconMap[profile.specializationIcons[specialty]];
+                            return <CustomIcon className="h-7 w-7" />;
+                          })()
+                        : specialtyIcons[specialty]}
                     </span>
                   </div>
 

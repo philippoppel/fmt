@@ -72,7 +72,11 @@ const CRISIS_RESOURCES_EN: CrisisResource[] = [
   },
 ];
 
-export function CrisisResources() {
+interface CrisisResourcesProps {
+  onContinue?: () => void;
+}
+
+export function CrisisResources({ onContinue }: CrisisResourcesProps) {
   const t = useTranslations();
   const locale = useLocale();
   const { actions } = useMatching();
@@ -80,8 +84,12 @@ export function CrisisResources() {
   const resources = locale === "de" ? CRISIS_RESOURCES_DE : CRISIS_RESOURCES_EN;
 
   const handleContinueMatching = () => {
-    // Reset crisis state and go back to screening
-    actions.resetScreening();
+    // Use provided callback or fall back to resetting crisis
+    if (onContinue) {
+      onContinue();
+    } else {
+      actions.resetCrisis();
+    }
   };
 
   return (

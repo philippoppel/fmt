@@ -14,7 +14,8 @@ import { countMatchingTherapists } from "@/lib/actions/count-matches";
 import Link from "next/link";
 
 // Calculate precision based on filled information
-// Aligned with score weights: Topics 35, Intensity 15, Criteria 40 (no Style Quiz)
+// Aligned with new score weights: Topics 30, SubTopics 15, Criteria 40, ProfileQuality 15
+// NOTE: Intensity removed for fairness - no longer affects scoring
 function calculatePrecision(state: ReturnType<typeof useMatching>["state"]): number {
   let precision = 0;
 
@@ -23,29 +24,24 @@ function calculatePrecision(state: ReturnType<typeof useMatching>["state"]): num
     precision += 35;
   }
 
-  // SubTopics add refinement: up to 10%
+  // SubTopics add refinement: up to 15%
   if (state.selectedSubTopics.length > 0) {
-    precision += Math.min(state.selectedSubTopics.length * 3, 10);
+    precision += Math.min(state.selectedSubTopics.length * 5, 15);
   }
 
-  // Intensity assessment: 15%
-  if (state.intensityLevel !== null) {
-    precision += 15;
-  }
-
-  // Location: 15%
+  // Location: 20%
   if (state.criteria.location.trim().length > 0) {
-    precision += 15;
+    precision += 20;
   }
 
-  // Gender preference: 8%
+  // Gender preference: 10%
   if (state.criteria.gender !== null) {
-    precision += 8;
+    precision += 10;
   }
 
-  // Session type: 12%
+  // Session type: 15%
   if (state.criteria.sessionType !== null) {
-    precision += 12;
+    precision += 15;
   }
 
   // Insurance: 5%

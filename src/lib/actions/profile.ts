@@ -22,6 +22,9 @@ const profileSchema = z.object({
   sessionType: z.enum(["online", "in_person", "both"]),
   availability: z.enum(["immediately", "this_week", "flexible"]),
   gender: z.enum(["male", "female", "diverse"]).nullable(),
+  // Microsite fields
+  heroCoverImageUrl: z.string().url().optional().or(z.literal("")),
+  specializationIcons: z.record(z.string(), z.string()).optional(),
 });
 
 export type ProfileData = z.infer<typeof profileSchema>;
@@ -97,6 +100,9 @@ export async function updateProfile(data: ProfileData): Promise<UpdateProfileRes
       sessionType: profileData.sessionType,
       availability: profileData.availability,
       gender: profileData.gender,
+      // Microsite fields
+      heroCoverImageUrl: profileData.heroCoverImageUrl || null,
+      specializationIcons: profileData.specializationIcons || {},
     },
   });
 

@@ -12,13 +12,8 @@ export function ModeSelection() {
 
   const handleSelectMode = (mode: MatchingMode) => {
     actions.setMode(mode);
-    if (mode === "quick") {
-      // Quick mode goes directly to a simplified flow (handled by parent)
-      actions.setStep(1);
-    } else {
-      // Full mode goes to freetext analysis
-      actions.setStep(0.75);
-    }
+    // Both modes now start at topic selection (step 1)
+    actions.setStep(1);
   };
 
   return (

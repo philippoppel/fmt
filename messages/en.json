@@ -977,7 +977,8 @@
         "subtopics": "Details",
         "intensity": "Intensity",
         "preferences": "Preferences",
-        "style": "Work Style"
+        "style": "Work Style",
+        "summary": "Summary"
       },
       "step1_25Title": "Describe more specifically",
       "subtopicHint": "Select specific areas for better results",
@@ -1585,7 +1586,80 @@
       },
       "closing": "You're on the right path. The first step is often the most important.",
       "understood": "Got it"
-    }
+    },
+    "counter": {
+      "matchingTherapists": "matching therapists",
+      "currentCriteria": "Current Criteria",
+      "topics": "topics",
+      "noCriteriaYet": "No criteria selected yet",
+      "noMatchesHint": "No exact matches with current criteria. Try using fewer filters.",
+      "sessionTypes": {
+        "online": "Online",
+        "in_person": "In-person",
+        "both": "Online & In-person"
+      },
+      "genders": {
+        "male": "Male",
+        "female": "Female",
+        "diverse": "Diverse"
+      }
+    },
+    "summary": {
+      "title": "Summary",
+      "subtitle": "Review your selections before we show you matching therapists",
+      "yourTopics": "Your Topics",
+      "yourDetails": "Your Details",
+      "yourPreferences": "Your Preferences",
+      "edit": "Edit",
+      "noTopicsSelected": "No topics selected",
+      "noPreferencesSet": "No preferences set",
+      "location": "Location",
+      "sessionType": "Session Type",
+      "gender": "Gender",
+      "insurance": "Insurance",
+      "previewTitle": "Top 3 Preview",
+      "noPreviewAvailable": "No preview available",
+      "howWeSort": "How We Sort",
+      "sortingExplanation": "Results are sorted by match with your topics, details, and preferences. The more information you provide, the more precise the matching.",
+      "fairnessTitle": "Fair Sorting",
+      "fairnessNote": "Premium therapists are NOT favored. All therapists have equal opportunity, based on real qualities like specialization and profile completeness."
+    },
+    "contact": {
+      "title": "Message to {name}",
+      "description": "Send a non-binding inquiry. The therapist will get back to you.",
+      "name": "Your Name",
+      "namePlaceholder": "What should we call you?",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "phoneOptional": "Phone (optional)",
+      "phonePlaceholder": "+1 234 567 8900",
+      "message": "Your Message",
+      "messagePlaceholder": "Briefly describe what's on your mind and why you're reaching out...",
+      "intensityOptional": "Optional: How much is this affecting you?",
+      "intensityDisclaimer": "This information is completely voluntary and does NOT affect search results. It helps the therapist better understand your situation.",
+      "intensityDescriptionOptional": "Additional description (optional)",
+      "intensityDescriptionPlaceholder": "e.g. It affects me especially when...",
+      "consentText": "I consent to sharing this intensity information with the therapist (GDPR compliant).",
+      "levels": {
+        "low": "Mild",
+        "medium": "Moderate",
+        "high": "Severe"
+      },
+      "dataPreview": "Data Preview",
+      "previewEmail": "Email",
+      "previewTopics": "Topics",
+      "previewMessage": "Message",
+      "previewIntensity": "Intensity",
+      "selected": "selected",
+      "included": "included",
+      "cancel": "Cancel",
+      "send": "Send Message",
+      "successTitle": "Inquiry Sent!",
+      "successMessage": "{name} will receive your inquiry and get back to you.",
+      "errorMessage": "An error occurred while sending. Please try again.",
+      "close": "Close"
+    },
+    "editFilters": "Edit Filters"
   },
   "feedback": {
     "title": "How was your experience?",

@@ -23,6 +23,7 @@ export interface TherapistProfileData {
   // Professional Details
   specializations: Specialty[];
   specializationRanks: Record<string, number>;
+  specializationIcons: Record<string, string>;
   therapyTypes: TherapyType[];
   therapySettings: TherapySetting[];
   languages: Language[];
@@ -48,6 +49,7 @@ export interface TherapistProfileData {
   // Images
   galleryImages: string[];
   officeImages: string[];
+  heroCoverImageUrl: string;
 
   // Contact
   phone: string;

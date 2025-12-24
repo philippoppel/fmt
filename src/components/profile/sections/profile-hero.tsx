@@ -65,10 +65,10 @@ export function ProfileHero({ profile, locale }: ProfileHeroProps) {
     both: t.both,
   }[profile.sessionType] || t.both;
 
-  // Get background image from office images, gallery, or use default calm nature image
+  // Get background image: prioritize hero cover image, then office images, gallery, or default
   // Default: Serene mountain lake scene from Unsplash (by Dave Hoefler)
   const DEFAULT_HERO_BG = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80&fit=crop";
-  const backgroundImage = profile.officeImages?.[0] || profile.galleryImages?.[0] || DEFAULT_HERO_BG;
+  const backgroundImage = profile.heroCoverImageUrl || profile.officeImages?.[0] || profile.galleryImages?.[0] || DEFAULT_HERO_BG;
 
   // Count up for experience years
   const experienceCount = useCountUp({

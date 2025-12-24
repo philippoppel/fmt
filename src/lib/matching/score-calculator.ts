@@ -7,44 +7,44 @@ import type {
   ScoreBreakdown,
   ScoreCategory,
   ExclusionResult,
-  IntensityLevel,
   SubSpecialty,
 } from "@/types/therapist";
 import { getSpecialtiesFromTopics, getTopicById } from "./topics";
 
 /**
- * Score Weights (Optimized for SubTopic matching):
- * - Topic match: 25 points (with specialization ranking)
- * - SubTopic match: 10 points (precise sub-specialization matching)
- * - Intensity ↔ Experience: 15 points
+ * Score Weights (Fairness Update - No Intensity or Premium Bonus):
+ * - Topic match: 30 points (with specialization ranking)
+ * - SubTopic match: 15 points (precise sub-specialization matching)
  * - Criteria match: 40 points (location 12, gender 8, session type 12, insurance 8)
  * - Therapy Style: 0 points (REMOVED)
- * - Profile Quality: 10 points (image, description, verified, account type)
+ * - Profile Quality: 15 points (image, description, verified - NO premium bonus)
+ *
+ * FAIRNESS: Intensity no longer affects scoring (moved to contact inquiry).
+ * FAIRNESS: Premium accounts do NOT receive ranking benefits.
  */
 
 const WEIGHTS = {
-  topics: 25,
-  subTopics: 10, // SubTopic matching for precision
-  intensityExperience: 15,
+  topics: 30, // Increased from 25 (fairness redistribution)
+  subTopics: 15, // Increased from 10 (fairness redistribution)
   criteria: 40,
   therapyStyle: 0, // Removed - Style Quiz no longer used
-  profileQuality: 10,
+  profileQuality: 15, // Increased from 10 (NO premium bonus)
 };
 
 // Specialization ranking multipliers
 const RANK_MULTIPLIERS = {
-  1: 1.0,   // Full points for rank 1
-  2: 0.7,   // 70% for rank 2
-  3: 0.4,   // 40% for rank 3
+  1: 1.0, // Full points for rank 1
+  2: 0.7, // 70% for rank 2
+  3: 0.4, // 40% for rank 3
   unranked: 0.3, // 30% for unranked
 };
 
-// Profile quality bonuses (within 10 points)
+// Profile quality bonuses (within 15 points) - NO premium bonus for fairness
 const QUALITY_BONUSES = {
-  hasImage: 3,
-  hasDescription: 2,
-  verified: 3,
-  premium: 2,
+  hasImage: 5, // Increased from 3
+  hasDescription: 4, // Increased from 2
+  verified: 6, // Increased from 3
+  // premium: REMOVED - All therapists are treated equally
 };
 
 /**
@@ -87,66 +87,29 @@ export function calculateMatchScore(
   therapist: Therapist,
   criteria: MatchingCriteria
 ): number {
-  // 1. TOPIC MATCH with ranking (max 25 points)
+  // 1. TOPIC MATCH with ranking (max 30 points)
   const topicScore = calculateTopicScoreWithRanking(therapist, criteria);
 
-  // 2. SUBTOPIC MATCH with ranking (max 10 points)
+  // 2. SUBTOPIC MATCH with ranking (max 15 points)
   const subTopicScore = calculateSubTopicScore(therapist, criteria);
 
-  // 3. INTENSITY ↔ EXPERIENCE (max 15 points)
-  const intensityScore = calculateIntensityExperienceScore(
-    therapist.experienceYears,
-    criteria.intensityLevel
-  );
-
-  // 4. CRITERIA MATCH (max 40 points)
+  // 3. CRITERIA MATCH (max 40 points)
   const criteriaScore = calculateCriteriaScore(therapist, criteria);
 
-  // 5. THERAPY STYLE MATCH (max 0 points - removed)
+  // 4. THERAPY STYLE MATCH (max 0 points - removed)
   const styleScore = calculateTherapyStyleScore(therapist, criteria.therapyStyle);
 
-  // 6. PROFILE QUALITY (max 10 points)
+  // 5. PROFILE QUALITY (max 15 points - NO premium bonus)
   const qualityScore = calculateProfileQualityScore(therapist);
 
-  const total = topicScore + subTopicScore + intensityScore + criteriaScore + styleScore + qualityScore;
+  // NOTE: Intensity score removed for fairness - moved to contact inquiry
+  const total = topicScore + subTopicScore + criteriaScore + styleScore + qualityScore;
   return Math.round(Math.min(100, Math.max(0, total)));
 }
 
 /**
- * Calculate intensity ↔ experience score (max 15 points)
- * Higher intensity prefers more experienced therapists
- */
-function calculateIntensityExperienceScore(
-  experienceYears: number | undefined | null,
-  intensityLevel: IntensityLevel | null | undefined
-): number {
-  // If no intensity specified, give full points
-  if (!intensityLevel || intensityLevel === "low") {
-    return WEIGHTS.intensityExperience;
-  }
-
-  const exp = experienceYears ?? 0;
-
-  if (intensityLevel === "high") {
-    // High intensity strongly prefers experienced therapists
-    if (exp >= 10) return 15;
-    if (exp >= 5) return 12;
-    if (exp >= 2) return 8;
-    return 4;
-  }
-
-  if (intensityLevel === "medium") {
-    // Medium intensity slightly prefers experience
-    if (exp >= 5) return 15;
-    if (exp >= 2) return 12;
-    return 10;
-  }
-
-  return WEIGHTS.intensityExperience;
-}
-
-/**
- * Calculate profile quality score (max 10 points)
+ * Calculate profile quality score (max 15 points)
+ * NOTE: Premium bonus removed for fairness - all therapists treated equally
  */
 function calculateProfileQualityScore(therapist: Therapist): number {
   let score = 0;
@@ -166,10 +129,7 @@ function calculateProfileQualityScore(therapist: Therapist): number {
     score += QUALITY_BONUSES.verified;
   }
 
-  // Premium account bonus
-  if (therapist.accountType === "premium") {
-    score += QUALITY_BONUSES.premium;
-  }
+  // NOTE: Premium bonus REMOVED for fairness - all therapists treated equally
 
   return Math.min(WEIGHTS.profileQuality, score);
 }
@@ -271,24 +231,21 @@ function getSubTopicMatchDetails(
 
 /**
  * Calculate match score with detailed breakdown for transparent scoring
+ * NOTE: Intensity score removed for fairness - moved to contact inquiry
  */
 export function calculateMatchScoreWithBreakdown(
   therapist: Therapist,
   criteria: MatchingCriteria
 ): { score: number; breakdown: ScoreBreakdown } {
-  // Calculate individual scores
+  // Calculate individual scores (NO intensity score for fairness)
   const topicScore = calculateTopicScoreWithRanking(therapist, criteria);
   const subTopicScore = calculateSubTopicScore(therapist, criteria);
-  const intensityScore = calculateIntensityExperienceScore(
-    therapist.experienceYears,
-    criteria.intensityLevel
-  );
   const criteriaScore = calculateCriteriaScore(therapist, criteria);
   const styleScore = calculateTherapyStyleScore(therapist, criteria.therapyStyle);
   const qualityScore = calculateProfileQualityScore(therapist);
 
   const total = Math.round(
-    Math.min(100, Math.max(0, topicScore + subTopicScore + intensityScore + criteriaScore + styleScore + qualityScore))
+    Math.min(100, Math.max(0, topicScore + subTopicScore + criteriaScore + styleScore + qualityScore))
   );
 
   // Generate match reasons
@@ -299,7 +256,7 @@ export function calculateMatchScoreWithBreakdown(
     practical: criteriaScore,
   });
 
-  // Build breakdown
+  // Build breakdown (NO intensityExperience for fairness)
   const breakdown: ScoreBreakdown = {
     total,
     categories: {
@@ -314,12 +271,6 @@ export function calculateMatchScoreWithBreakdown(
         maxScore: WEIGHTS.subTopics,
         label: "subSpecialization",
         details: getSubTopicMatchDetails(therapist, criteria),
-      },
-      intensityExperience: {
-        score: intensityScore,
-        maxScore: WEIGHTS.intensityExperience,
-        label: "intensityExperience",
-        details: getIntensityExperienceDetails(therapist, criteria),
       },
       therapyStyle: {
         score: styleScore,
@@ -347,26 +298,15 @@ export function calculateMatchScoreWithBreakdown(
 }
 
 /**
- * Get details for intensity-experience matching
- */
-function getIntensityExperienceDetails(
-  therapist: Therapist,
-  criteria: MatchingCriteria
-): string {
-  if (!criteria.intensityLevel) return "";
-  const years = therapist.experienceYears ?? 0;
-  return `${years} years experience`;
-}
-
-/**
  * Get details for profile quality
+ * NOTE: Premium removed for fairness - all therapists treated equally
  */
 function getProfileQualityDetails(therapist: Therapist): string {
   const details: string[] = [];
   if (therapist.imageUrl) details.push("image");
   if (therapist.shortDescription && therapist.shortDescription.length > 50) details.push("description");
   if (therapist.isVerified) details.push("verified");
-  if (therapist.accountType === "premium") details.push("premium");
+  // NOTE: premium removed for fairness
   return details.join(", ");
 }
 

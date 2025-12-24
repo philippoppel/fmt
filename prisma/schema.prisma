@@ -333,6 +333,9 @@ model TherapistProfile {
   // Schwerpunkt-Ranking (JSON: {"anxiety": 1, "depression": 2, "trauma": 3})
   specializationRanks Json?                @default("{}")
 
+  // Custom Icons für Schwerpunkte (JSON: {"anxiety": "Zap", "depression": "Brain"})
+  specializationIcons Json?                @default("{}")
+
   // Sub-Spezialisierungen für präziseres Matching
   subSpecializations      String[]
   subSpecializationRanks  Json?            @default("{}")
@@ -432,6 +435,7 @@ model TherapistProfile {
   matchInteractions MatchInteraction[]
   paymentHistory    PaymentHistory[]
   profileStats      ProfileStats[]
+  contactInquiries  ContactInquiry[]
 
   @@index([city])
   @@index([isPublished])
@@ -848,6 +852,43 @@ model MatchFeedback {
   @@index([sessionId])
   @@index([timestamp])
   @@map("match_feedback")
+}
+
+// Contact Inquiry from Matching Wizard (GDPR-compliant)
+model ContactInquiry {
+  id              String   @id @default(cuid())
+
+  // Therapist relation
+  therapistId     String
+  therapist       TherapistProfile @relation(fields: [therapistId], references: [id], onDelete: Cascade)
+
+  // Contact details
+  name            String
+  email           String
+  phone           String?
+  message         String   @db.Text
+
+  // Matching context (for therapist reference)
+  selectedTopics    String[]
+  selectedSubTopics String[]
+  matchScore        Int?
+
+  // Optional intensity (with GDPR consent)
+  intensityLevel       String?    // "low" | "medium" | "high"
+  intensityDescription String?   @db.Text
+  intensityConsent     Boolean   @default(false)
+
+  // Status
+  status          String   @default("new")  // new, read, replied, archived
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([therapistId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("contact_inquiries")
 }
 
 // ============================================

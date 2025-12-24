@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Heart, Sparkles, Star, Sun } from "lucide-react";
+import { Check, Heart, Sparkles, Star, Sun, CheckCircle2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useMatching, type WizardStep } from "../matching-context";
@@ -9,10 +9,9 @@ interface StepIndicatorProps {
   labels: {
     topics: string;
     subtopics: string;
-    intensity: string;
     preferences: string;
+    summary: string;
   };
-  optionalLabel?: string;
   compact?: boolean;
 }
 
@@ -20,26 +19,22 @@ export function StepIndicator({ labels, compact = false }: StepIndicatorProps) {
   const { state } = useMatching();
   const t = useTranslations("matching.wizard");
 
-  // All 4 wizard steps
+  // All 4 wizard steps: Topics -> SubTopics -> Preferences -> Summary
   const steps: { step: WizardStep; label: string }[] = [
     { step: 1, label: labels.topics },
     { step: 1.25, label: labels.subtopics },
-    { step: 1.5, label: labels.intensity },
     { step: 2, label: labels.preferences },
+    { step: 2.5, label: labels.summary },
   ];
 
   const currentStep = state.currentStep;
 
   // Determine if a step is active or completed
   const isStepActive = (step: WizardStep) => {
-    // Step 1 is active for both 0.75 (freetext) and 1 (topic selection)
-    if (step === 1) return currentStep === 0.75 || currentStep === 1;
     return currentStep === step;
   };
 
   const isStepCompleted = (step: WizardStep) => {
-    // Step 1 is completed when we're past topic selection
-    if (step === 1) return currentStep > 1;
     return currentStep > step;
   };
 
@@ -48,10 +43,8 @@ export function StepIndicator({ labels, compact = false }: StepIndicatorProps) {
     // Context-aware encouragement based on user progress
     const hasTopics = state.selectedTopics.length > 0;
     const hasSubtopics = state.selectedSubTopics.length > 0;
-    const hasIntensity = state.intensityLevel !== null;
 
     switch (currentStep) {
-      case 0.75:
       case 1:
         if (hasTopics) {
           return {
@@ -74,21 +67,15 @@ export function StepIndicator({ labels, compact = false }: StepIndicatorProps) {
           icon: <Heart className="h-3.5 w-3.5 text-rose-400" />,
           text: t("motivation.subtopics"),
         };
-      case 1.5:
-        if (hasIntensity) {
-          return {
-            icon: <Star className="h-3.5 w-3.5 text-amber-500" />,
-            text: t("encouragement.progress"),
-          };
-        }
-        return {
-          icon: <Heart className="h-3.5 w-3.5 text-rose-500" />,
-          text: t("motivation.intensity"),
-        };
       case 2:
         return {
           icon: <Sparkles className="h-3.5 w-3.5 text-primary" />,
           text: t("motivation.preferences"),
+        };
+      case 2.5:
+        return {
+          icon: <CheckCircle2 className="h-3.5 w-3.5 text-accent-emerald" />,
+          text: t("encouragement.almostDone"),
         };
       default:
         return null;

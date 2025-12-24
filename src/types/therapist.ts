@@ -170,10 +170,10 @@ export interface ScoreBreakdown {
   categories: {
     specialization: ScoreCategory;
     subSpecialization?: ScoreCategory; // Sub-specialization matching
-    intensityExperience?: ScoreCategory; // Intensity ↔ Experience matching
+    // NOTE: intensityExperience removed for fairness - intensity moved to contact inquiry
     therapyStyle: ScoreCategory;
     practicalCriteria: ScoreCategory;
-    profileQuality?: ScoreCategory; // Profile quality bonus
+    profileQuality?: ScoreCategory; // Profile quality bonus (NO premium bonus)
   };
   matchReasons: string[];
 }

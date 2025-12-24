@@ -222,6 +222,7 @@ function transformProfileToData(profile: any): TherapistProfileData {
     // Professional Details
     specializations: (profile.specializations || []) as Specialty[],
     specializationRanks: (profile.specializationRanks as Record<string, number>) || {},
+    specializationIcons: (profile.specializationIcons as Record<string, string>) || {},
     therapyTypes: (profile.therapyTypes || []) as TherapyType[],
     therapySettings: (profile.therapySettings || []) as TherapySetting[],
     languages: (profile.languages || []) as Language[],
@@ -247,6 +248,7 @@ function transformProfileToData(profile: any): TherapistProfileData {
     // Images
     galleryImages: profile.galleryImages || [],
     officeImages: profile.officeImages || [],
+    heroCoverImageUrl: profile.heroCoverImageUrl || "",
 
     // Contact
     phone: profile.phone || "",
@@ -303,6 +305,7 @@ function transformDemoProfileToData(profile: Partial<TherapistProfileData>): The
     // Professional Details
     specializations: (profile.specializations || []) as Specialty[],
     specializationRanks: profile.specializationRanks || {},
+    specializationIcons: profile.specializationIcons || {},
     therapyTypes: (profile.therapyTypes || []) as TherapyType[],
     therapySettings: (profile.therapySettings || []) as TherapySetting[],
     languages: (profile.languages || []) as Language[],
@@ -328,6 +331,7 @@ function transformDemoProfileToData(profile: Partial<TherapistProfileData>): The
     // Images
     galleryImages: profile.galleryImages || [],
     officeImages: profile.officeImages || [],
+    heroCoverImageUrl: profile.heroCoverImageUrl || "",
 
     // Contact
     phone: profile.phone || "",

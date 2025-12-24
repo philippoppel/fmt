@@ -190,13 +190,13 @@ export function CompareModal({ open, onOpenChange, therapists, onRemove }: Compa
                   })}
                 </CompareRow>
 
-                {/* Experience */}
+                {/* Profile Quality */}
                 <CompareRow
                   label={t("matching.compare.experience")}
                   icon={<TrendingUp className="h-3 w-3 text-purple-500" />}
                 >
                   {therapists.map((th) => {
-                    const cat = th.scoreBreakdown?.categories?.intensityExperience;
+                    const cat = th.scoreBreakdown?.categories?.profileQuality;
                     const pct = cat ? Math.round((cat.score / cat.maxScore) * 100) : 0;
                     return (
                       <div key={th.id} className="flex-1 min-w-0">

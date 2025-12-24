@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, Sparkles, RotateCcw } from "lucide-react";
+import { SlidersHorizontal, Sparkles, RotateCcw, Pencil } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { FilterSidebar, FilterSheet } from "./filters";
@@ -154,6 +154,17 @@ export function SearchPage() {
         onReset={resetFilters}
         resultCount={totalResults}
       />
+
+      {/* Floating Edit Filters Button - only shows in matching mode */}
+      {matchingCriteria && (
+        <Link
+          href="/therapists/matching"
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-primary px-4 py-3 text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        >
+          <Pencil className="h-4 w-4" />
+          <span className="font-medium">{tMatching("editFilters")}</span>
+        </Link>
+      )}
     </div>
   );
 }
