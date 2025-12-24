@@ -88,24 +88,22 @@ export function SummaryStep({ onNavigateToStep }: SummaryStepProps) {
   ]);
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-            <CheckCircle2 className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold">{t("summary.title")}</h2>
-            <p className="text-sm text-muted-foreground">
-              {t("summary.subtitle")}
-            </p>
-          </div>
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+          <CheckCircle2 className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold">{t("summary.title")}</h2>
+          <p className="text-sm text-muted-foreground">
+            {t("summary.subtitle")}
+          </p>
         </div>
       </div>
 
       {/* 2-Column Layout */}
-      <div className="flex-1 grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         {/* Left Column: Topics & SubTopics */}
         <div className="space-y-4">
           {/* Topics Card */}
@@ -234,7 +232,7 @@ export function SummaryStep({ onNavigateToStep }: SummaryStepProps) {
       </div>
 
       {/* Top-3 Therapist Preview */}
-      <div className="mt-6">
+      <div>
         <h3 className="font-semibold mb-3">{t("summary.previewTitle")}</h3>
         <div className="grid gap-3 sm:grid-cols-3">
           {isLoadingPreview ? (
@@ -258,7 +256,7 @@ export function SummaryStep({ onNavigateToStep }: SummaryStepProps) {
       </div>
 
       {/* Transparency Section */}
-      <div className="mt-6 space-y-4">
+      <div className="space-y-3">
         {/* Sorting Explanation */}
         <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
           <div className="flex items-start gap-3">

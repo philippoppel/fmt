@@ -746,11 +746,11 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
     const stepOrder: WizardStep[] = [1, 1.25, 2, 2.5];
     const currentIndex = stepOrder.indexOf(state.currentStep);
 
-    // Skip SubTopics step if no available subtopics AND "other" not selected
+    // Skip SubTopics step if no available subtopics AND "unsureOther" not selected
     if (state.currentStep === 1) {
-      const hasOtherTopic = state.selectedTopics.includes("other");
+      const hasOtherTopic = state.selectedTopics.includes("unsureOther");
       const availableSubs = getSubTopicsForTopics(state.selectedTopics);
-      // Don't skip if "other" is selected - they need to describe in freetext
+      // Don't skip if "unsureOther" is selected - they need to describe in freetext
       if (availableSubs.length === 0 && !hasOtherTopic) {
         dispatch({ type: "SET_STEP", step: 2 }); // Skip to criteria
         return;
@@ -772,7 +772,7 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
         return;
       } else if (state.currentStep === 2) {
         // From criteria, check if we should skip subtopics
-        const hasOtherTopic = state.selectedTopics.includes("other");
+        const hasOtherTopic = state.selectedTopics.includes("unsureOther");
         const availableSubs = getSubTopicsForTopics(state.selectedTopics);
         if (availableSubs.length === 0 && !hasOtherTopic) {
           dispatch({ type: "SET_STEP", step: 1 }); // Skip back to topics

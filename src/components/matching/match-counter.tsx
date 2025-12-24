@@ -14,13 +14,16 @@ import {
 
 interface MatchCounterProps {
   className?: string;
+  /** Compact mode for inline header display */
+  compact?: boolean;
 }
 
 /**
- * Sticky match counter that shows real-time therapist count
+ * Match counter that shows real-time therapist count
  * Updates on every criteria change with debounced API calls
+ * Supports both floating and compact (inline) modes
  */
-export function MatchCounter({ className }: MatchCounterProps) {
+export function MatchCounter({ className, compact = false }: MatchCounterProps) {
   const t = useTranslations("matching.counter");
   const { state } = useMatching();
 
@@ -99,6 +102,67 @@ export function MatchCounter({ className }: MatchCounterProps) {
     criteriaPreview.push(t(`sessionTypes.${state.criteria.sessionType}`));
   }
 
+  // Compact mode: simple inline badge for header
+  if (compact) {
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            className={cn(
+              "flex items-center gap-1.5 rounded-full px-3 py-1 text-sm transition-all",
+              "border shrink-0",
+              isZeroMatches
+                ? "bg-warning/10 text-warning border-warning/30"
+                : "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20",
+              className
+            )}
+          >
+            {isLoading ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : isZeroMatches ? (
+              <AlertTriangle className="h-3.5 w-3.5" />
+            ) : (
+              <Search className="h-3.5 w-3.5" />
+            )}
+            <span
+              className={cn(
+                "font-semibold tabular-nums",
+                countChanged && "animate-pulse"
+              )}
+            >
+              {count ?? "..."}
+            </span>
+            <span className="hidden sm:inline text-xs opacity-80">
+              {t("matchingTherapistsShort")}
+            </span>
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-64 p-3">
+          <div className="space-y-2">
+            <h4 className="font-medium text-xs">{t("currentCriteria")}</h4>
+            <div className="flex flex-wrap gap-1.5">
+              {state.selectedTopics.length > 0 && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs">
+                  {state.selectedTopics.length} {t("topics")}
+                </span>
+              )}
+              {state.criteria.location && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs">
+                  <MapPin className="h-3 w-3" />
+                  {state.criteria.location}
+                </span>
+              )}
+            </div>
+            {isZeroMatches && (
+              <p className="text-xs text-warning">{t("noMatchesHint")}</p>
+            )}
+          </div>
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
+  // Full floating mode
   return (
     <Popover>
       <PopoverTrigger asChild>

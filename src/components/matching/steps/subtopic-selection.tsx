@@ -336,13 +336,13 @@ export function SubTopicSelection() {
   // Track which topics have "none of these" selected
   const [noneSelectedTopics, setNoneSelectedTopics] = useState<Set<string>>(new Set());
 
-  // Check if "other" topic is selected
-  const hasOtherTopic = state.selectedTopics.includes("other");
+  // Check if "unsureOther" topic is selected
+  const hasOtherTopic = state.selectedTopics.includes("unsureOther");
   const onlyOtherTopic = state.selectedTopics.length === 1 && hasOtherTopic;
 
-  // Group subtopics by their parent topic (excluding "other" which has no subtopics)
+  // Group subtopics by their parent topic (excluding "unsureOther" which has no subtopics)
   const initialGroupedSubTopics = computed.selectedTopicDetails
-    .filter(topic => topic.id !== "other")
+    .filter(topic => topic.id !== "unsureOther")
     .map((topic) => ({
       topic,
       subTopics: topic.subTopics,

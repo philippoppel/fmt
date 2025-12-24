@@ -1,7 +1,6 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { getSpecialtiesFromTopics } from "@/lib/matching";
 
 export interface MatchCountCriteria {
   selectedTopics: string[];
@@ -26,16 +25,11 @@ export async function countMatchingTherapists(
       isPublished: true,
     };
 
-    // Filter by specialties from topics
-    // Note: SubTopics are NOT used as hard filters here - they only affect scoring
-    // This matches the behavior in matching.ts where subSpecializations
-    // are used for ranking, not filtering
-    if (criteria.selectedTopics.length > 0) {
-      const specialties = getSpecialtiesFromTopics(criteria.selectedTopics);
-      if (specialties.length > 0) {
-        whereClause.specializations = { hasSome: specialties };
-      }
-    }
+    // IMPORTANT: Topics and SubTopics do NOT filter the count!
+    // They only affect ranking/scoring in the search results.
+    // This ensures the count stays the same or increases as users add more topics
+    // (more topics = broader match potential, not narrower).
+    // Only hard criteria (location, gender, session type, insurance) affect the count.
 
     // Location filter
     if (criteria.location && criteria.location.trim() !== "") {

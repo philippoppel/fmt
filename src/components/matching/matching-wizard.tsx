@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MatchingProvider, useMatching, type WizardStep } from "./matching-context";
-import { PrecisionMeter } from "./precision-meter";
 import { MatchCounter } from "./match-counter";
 import { StepIndicator, TopicSelection, SubTopicSelection, CriteriaSelection } from "./steps";
 import { SummaryStep } from "./steps/summary-step";
@@ -95,9 +94,6 @@ function WizardContent() {
 
   return (
     <div className="flex h-[100dvh] flex-col overflow-hidden bg-background">
-      {/* Floating Match Counter */}
-      <MatchCounter />
-
       {/* Compact single-line header */}
       <header className="shrink-0 border-b bg-card/95 backdrop-blur-sm px-3 py-1.5 pt-[calc(0.375rem+env(safe-area-inset-top))]">
         <div className="flex items-center gap-2">
@@ -120,8 +116,8 @@ function WizardContent() {
             />
           </div>
 
-          {/* Precision Meter */}
-          <PrecisionMeter compact />
+          {/* Match Counter - inline in header */}
+          <MatchCounter compact />
         </div>
       </header>
 

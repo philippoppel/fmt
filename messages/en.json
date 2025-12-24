@@ -1589,6 +1589,7 @@
     },
     "counter": {
       "matchingTherapists": "matching therapists",
+      "matchingTherapistsShort": "matches",
       "currentCriteria": "Current Criteria",
       "topics": "topics",
       "noCriteriaYet": "No criteria selected yet",

@@ -1589,6 +1589,7 @@
     },
     "counter": {
       "matchingTherapists": "passende Therapeut:innen",
+      "matchingTherapistsShort": "Treffer",
       "currentCriteria": "Aktuelle Kriterien",
       "topics": "Themen",
       "noCriteriaYet": "Noch keine Kriterien ausgewählt",
