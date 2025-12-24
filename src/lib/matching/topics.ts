@@ -213,7 +213,7 @@ const CLINICAL_TOPICS: Topic[] = [
     labelKey: "matching.topics.ocd",
     unsplashId: "photo-1434030216411-0b793f4b4173",
     section: "clinical",
-    mappedSpecialties: ["anxiety"],
+    mappedSpecialties: ["ocd"],
     subTopics: [
       {
         id: "obsessiveThoughts",
@@ -306,7 +306,7 @@ const CLINICAL_TOPICS: Topic[] = [
     labelKey: "matching.topics.sleep",
     unsplashId: "photo-1541781774459-bb2af2f05b55",
     section: "clinical",
-    mappedSpecialties: ["depression", "anxiety"],
+    mappedSpecialties: ["sleep"],
     subTopics: [
       {
         id: "insomnia",
@@ -337,7 +337,7 @@ const CLINICAL_TOPICS: Topic[] = [
     labelKey: "matching.topics.stress",
     unsplashId: "photo-1544027993-37dbfe43562a",
     section: "clinical",
-    mappedSpecialties: ["burnout", "anxiety"],
+    mappedSpecialties: ["stress", "burnout"],
     subTopics: [
       {
         id: "chronicStress",
@@ -399,7 +399,7 @@ const CLINICAL_TOPICS: Topic[] = [
     labelKey: "matching.topics.autism",
     unsplashId: "photo-1522071820081-009f0129c71c",
     section: "clinical",
-    mappedSpecialties: ["adhd"],
+    mappedSpecialties: ["autism"],
     subTopics: [
       {
         id: "socialInteraction",
@@ -430,7 +430,7 @@ const CLINICAL_TOPICS: Topic[] = [
     labelKey: "matching.topics.psychosomatic",
     unsplashId: "photo-1576091160550-2173dba999ef",
     section: "clinical",
-    mappedSpecialties: ["depression", "anxiety"],
+    mappedSpecialties: ["psychosomatic"],
     subTopics: [
       {
         id: "chronicPain",
@@ -461,7 +461,7 @@ const CLINICAL_TOPICS: Topic[] = [
     labelKey: "matching.topics.selfEsteem",
     unsplashId: "photo-1517836357463-d25dfeac3438",
     section: "clinical",
-    mappedSpecialties: ["depression"],
+    mappedSpecialties: ["identity"],
     subTopics: [
       {
         id: "selfWorthProblems",
@@ -528,7 +528,7 @@ const LIFE_TOPICS: Topic[] = [
     labelKey: "matching.topics.family",
     unsplashId: "photo-1511895426328-dc8714191300",
     section: "life",
-    mappedSpecialties: ["relationships"],
+    mappedSpecialties: ["family", "parenting"],
     subTopics: [
       {
         id: "parentChildConflicts",
@@ -559,7 +559,7 @@ const LIFE_TOPICS: Topic[] = [
     labelKey: "matching.topics.lgbtq",
     unsplashId: "photo-1518199266791-5375a83190b7",
     section: "life",
-    mappedSpecialties: ["relationships"],
+    mappedSpecialties: ["lgbtq", "identity"],
     subTopics: [
       {
         id: "comingOut",
@@ -590,7 +590,7 @@ const LIFE_TOPICS: Topic[] = [
     labelKey: "matching.topics.migration",
     unsplashId: "photo-1529156069898-49953e39b3ac",
     section: "life",
-    mappedSpecialties: [],
+    mappedSpecialties: ["migration"],
     subTopics: [
       {
         id: "culturalAdaptation",
@@ -621,7 +621,7 @@ const LIFE_TOPICS: Topic[] = [
     labelKey: "matching.topics.career",
     unsplashId: "photo-1454165804606-c3d57bc86b40",
     section: "life",
-    mappedSpecialties: ["burnout"],
+    mappedSpecialties: ["career", "burnout"],
     subTopics: [
       {
         id: "careerReorientation",
@@ -652,7 +652,7 @@ const LIFE_TOPICS: Topic[] = [
     labelKey: "matching.topics.childrenYouth",
     unsplashId: "photo-1503454537195-1dcabb73ffb9",
     section: "life",
-    mappedSpecialties: [],
+    mappedSpecialties: ["children"],
     subTopics: [
       {
         id: "schoolProblems",
@@ -683,7 +683,7 @@ const LIFE_TOPICS: Topic[] = [
     labelKey: "matching.topics.elderly",
     unsplashId: "photo-1499750310107-5fef28a66643",
     section: "life",
-    mappedSpecialties: ["depression"],
+    mappedSpecialties: ["elderly"],
     subTopics: [
       {
         id: "ageRelatedDepression",
