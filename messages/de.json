@@ -1370,18 +1370,25 @@
       "anyAvailability": "Egal",
       "maxPrice": "Maximaler Preis",
       "anyPrice": "Egal",
-      "upToPrice": "Bis {price}€"
+      "upToPrice": "Bis {price}€",
+      "additionalPreferences": "Weitere Präferenzen (optional)"
     },
     "location": {
       "placeholder": "Stadt eingeben oder automatisch erkennen",
       "useMyLocation": "Meinen Standort verwenden",
       "hint": "Wir ermitteln deinen Standort automatisch oder du gibst eine Stadt ein",
-      "detecting": "Standort wird ermittelt...",
+      "detecting": "Standort wird erkannt...",
       "detected": "Standort erkannt",
       "notSupported": "Standorterkennung wird nicht unterstützt",
       "denied": "Standortzugriff verweigert",
       "notFound": "Stadt konnte nicht ermittelt werden",
-      "error": "Fehler bei der Standorterkennung"
+      "error": "Fehler bei der Standorterkennung",
+      "heroTitle": "Wo suchst du?",
+      "heroSubtitle": "Hilft uns, Therapeuten in deiner Nähe zu finden",
+      "detectButton": "Meinen Standort verwenden",
+      "orEnterManually": "Oder Stadt/PLZ eingeben",
+      "foundNearby": "{count} Therapeuten in {location} gefunden",
+      "counting": "Suche Therapeuten..."
     },
     "results": {
       "title": "Deine Matches",

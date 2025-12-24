@@ -1374,7 +1374,8 @@
       "anyAvailability": "Any",
       "maxPrice": "Max Price",
       "anyPrice": "Any",
-      "upToPrice": "Up to {price}€"
+      "upToPrice": "Up to {price}€",
+      "additionalPreferences": "Additional preferences (optional)"
     },
     "location": {
       "placeholder": "Enter city or detect automatically",
@@ -1385,7 +1386,13 @@
       "notSupported": "Location detection not supported",
       "denied": "Location access denied",
       "notFound": "Could not determine city",
-      "error": "Error detecting location"
+      "error": "Error detecting location",
+      "heroTitle": "Where are you looking?",
+      "heroSubtitle": "Helps us find therapists near you",
+      "detectButton": "Use my location",
+      "orEnterManually": "Or enter city/postal code",
+      "foundNearby": "{count} therapists found in {location}",
+      "counting": "Searching therapists..."
     },
     "results": {
       "title": "Your Matches",

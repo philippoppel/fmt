@@ -135,7 +135,8 @@ type MatchingAction =
   | { type: "SET_THERAPY_FOCUS"; focus: TherapyFocus | null }
   | { type: "SET_TALK_PREFERENCE"; value: "more_self" | "guided" | null }
   | { type: "SET_THERAPY_DEPTH"; depth: TherapyDepth | null }
-  | { type: "RESET" };
+  | { type: "RESET" }
+  | { type: "RESTORE_STATE"; payload: Partial<MatchingState> };
 
 // Helper function to calculate weighted overall intensity from per-topic intensities
 function calculateOverallIntensity(
@@ -505,6 +506,22 @@ function matchingReducer(
     case "RESET":
       return initialState;
 
+    case "RESTORE_STATE":
+      return {
+        ...initialState,
+        ...action.payload,
+        // Ensure criteria is properly merged
+        criteria: {
+          ...initialState.criteria,
+          ...(action.payload.criteria || {}),
+        },
+        // Ensure therapyStyle is properly merged
+        therapyStyle: {
+          ...initialState.therapyStyle,
+          ...(action.payload.therapyStyle || {}),
+        },
+      };
+
     default:
       return state;
   }
@@ -571,11 +588,30 @@ const MatchingContext = createContext<MatchingContextValue | null>(null);
 interface MatchingProviderProps {
   children: ReactNode;
   initialTopic?: string;
+  /** Restore state from sessionStorage (for edit flow from results page) */
+  resumeState?: Partial<MatchingState>;
 }
 
-export function MatchingProvider({ children, initialTopic }: MatchingProviderProps) {
-  // Create initial state with pre-selected topic if provided
-  const initialStateWithTopic = useMemo(() => {
+export function MatchingProvider({ children, initialTopic, resumeState }: MatchingProviderProps) {
+  // Create initial state with pre-selected topic or resumed state
+  const computedInitialState = useMemo(() => {
+    // If resuming from results page, use that state and go to summary
+    if (resumeState && Object.keys(resumeState).length > 0) {
+      return {
+        ...initialState,
+        ...resumeState,
+        criteria: {
+          ...initialState.criteria,
+          ...(resumeState.criteria || {}),
+        },
+        therapyStyle: {
+          ...initialState.therapyStyle,
+          ...(resumeState.therapyStyle || {}),
+        },
+        currentStep: 2.5 as WizardStep, // Go directly to summary for editing
+      };
+    }
+    // Otherwise, check for initial topic
     if (initialTopic && MATCHING_TOPICS.some(t => t.id === initialTopic)) {
       return {
         ...initialState,
@@ -583,9 +619,9 @@ export function MatchingProvider({ children, initialTopic }: MatchingProviderPro
       };
     }
     return initialState;
-  }, [initialTopic]);
+  }, [initialTopic, resumeState]);
 
-  const [state, dispatch] = useReducer(matchingReducer, initialStateWithTopic);
+  const [state, dispatch] = useReducer(matchingReducer, computedInitialState);
 
   // Actions
   const setStep = useCallback((step: WizardStep) => {

@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { FilterSidebar, FilterSheet } from "./filters";
 import { ResultsSections } from "./results/results-sections";
 import { useFilters, useSearchResults } from "./hooks";
-import type { MatchingCriteria } from "@/types/therapist";
+import type { MatchingCriteria, Specialty } from "@/types/therapist";
+import { getSpecialtiesFromTopics } from "@/lib/matching/topics";
 
 export function SearchPage() {
   const t = useTranslations("therapists");
@@ -30,19 +31,31 @@ export function SearchPage() {
         if (stored) {
           const criteria = JSON.parse(stored) as MatchingCriteria;
           setMatchingCriteria(criteria);
-          // Apply basic filters from matching criteria
+
+          // Apply all filters from matching criteria (including specialties from topics)
+          const filtersToApply: Parameters<typeof updateFilters>[0] = {};
+
           if (criteria.location) {
-            updateFilters({ location: criteria.location });
+            filtersToApply.location = criteria.location;
           }
           if (criteria.gender) {
-            updateFilters({ gender: criteria.gender });
+            filtersToApply.gender = criteria.gender;
           }
           if (criteria.sessionType) {
-            updateFilters({ sessionType: criteria.sessionType });
+            filtersToApply.sessionType = criteria.sessionType;
           }
           if (criteria.insurance && criteria.insurance.length > 0) {
-            updateFilters({ insurance: criteria.insurance });
+            filtersToApply.insurance = criteria.insurance;
           }
+          // Map selected topics to specialties for filter sidebar
+          if (criteria.selectedTopics && criteria.selectedTopics.length > 0) {
+            const specialties = getSpecialtiesFromTopics(criteria.selectedTopics);
+            if (specialties.length > 0) {
+              filtersToApply.specialties = specialties as Specialty[];
+            }
+          }
+
+          updateFilters(filtersToApply);
         }
       } catch {
         // Ignore parsing errors
@@ -158,7 +171,7 @@ export function SearchPage() {
       {/* Floating Edit Filters Button - only shows in matching mode */}
       {matchingCriteria && (
         <Link
-          href="/therapists/matching"
+          href="/therapists/matching?resume=true"
           className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-primary px-4 py-3 text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           <Pencil className="h-4 w-4" />

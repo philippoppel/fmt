@@ -67,6 +67,7 @@ export function CustomizeContent({
   slug,
 }: CustomizeContentProps) {
   const t = useTranslations("dashboard.customize");
+  const tFilters = useTranslations("therapists.filters");
   const limits = getTierLimits(accountType);
   const allowedPresets = getAllowedPresets(accountType);
 
@@ -614,7 +615,7 @@ export function CustomizeContent({
                         onIconChange={(icon) => handleIconChange(specialty, icon)}
                       />
                       <span className="text-sm font-medium">
-                        {t(`specializations.${specialty}`, { defaultValue: specialty })}
+                        {tFilters(`specialty.${specialty}`)}
                       </span>
                     </div>
                   ))}

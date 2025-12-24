@@ -25,12 +25,11 @@ import {
   UserCircle,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import type { Gender, SessionType, Insurance, Language, TherapyType, TherapySetting, Availability } from "@/types/therapist";
 import { LANGUAGES, THERAPY_TYPES, THERAPY_SETTINGS, AVAILABILITY_OPTIONS } from "@/types/therapist";
 import { useMatching } from "../matching-context";
-import { LocationInput } from "./location-input";
+import { LocationHero } from "./location-hero";
 
 export function CriteriaSelection() {
   const t = useTranslations();
@@ -39,30 +38,32 @@ export function CriteriaSelection() {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-4">
         <h2 className="text-xl font-semibold sm:text-2xl">
           {t("matching.wizard.step2Title")}
         </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t("matching.wizard.allOptional")}
-        </p>
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 flex-col gap-8">
-        {/* Location */}
-        <div className="space-y-3">
-          <Label className="flex items-center gap-2 text-sm font-semibold">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-              <MapPinned className="h-4 w-4 text-primary" />
-            </div>
-            {t("matching.criteria.location")}
-          </Label>
-          <LocationInput
-            value={state.criteria.location}
-            onChange={actions.setLocation}
-            placeholder={t("matching.criteria.locationPlaceholder")}
-          />
+      <div className="flex flex-1 flex-col gap-6">
+        {/* Location Hero - Prominent */}
+        <LocationHero
+          location={state.criteria.location}
+          onLocationChange={actions.setLocation}
+          selectedTopics={state.selectedTopics}
+          selectedSubTopics={state.selectedSubTopics}
+        />
+
+        {/* Divider - Additional Preferences */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-background px-3 text-sm text-muted-foreground">
+              {t("matching.criteria.additionalPreferences")}
+            </span>
+          </div>
         </div>
 
         {/* Session Type */}

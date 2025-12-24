@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { MatchingWizard } from "@/components/matching";
+import { MatchingWizardWrapper } from "@/components/matching/matching-wizard-wrapper";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("matching.meta");
@@ -16,10 +17,20 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 type Props = {
-  searchParams: Promise<{ topic?: string }>;
+  searchParams: Promise<{ topic?: string; resume?: string }>;
 };
 
 export default async function MatchingPage({ searchParams }: Props) {
   const { topic } = await searchParams;
-  return <MatchingWizard initialTopic={topic} />;
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-[100dvh] items-center justify-center bg-background">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        </div>
+      }
+    >
+      <MatchingWizardWrapper initialTopic={topic} />
+    </Suspense>
+  );
 }

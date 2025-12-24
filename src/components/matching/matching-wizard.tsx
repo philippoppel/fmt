@@ -175,11 +175,13 @@ function WizardContent() {
 
 interface MatchingWizardProps {
   initialTopic?: string;
+  /** Resume state from sessionStorage (for edit flow from results page) */
+  resumeState?: Parameters<typeof MatchingProvider>[0]["resumeState"];
 }
 
-export function MatchingWizard({ initialTopic }: MatchingWizardProps) {
+export function MatchingWizard({ initialTopic, resumeState }: MatchingWizardProps) {
   return (
-    <MatchingProvider initialTopic={initialTopic}>
+    <MatchingProvider initialTopic={initialTopic} resumeState={resumeState}>
       <WizardContent />
     </MatchingProvider>
   );
