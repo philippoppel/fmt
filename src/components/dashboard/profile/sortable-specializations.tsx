@@ -101,6 +101,7 @@ interface SortableSpecializationsProps {
   labels: Record<string, string>;
   onOrderChange: (newOrder: string[]) => void;
   disabled?: boolean;
+  emptyText?: string;
 }
 
 export function SortableSpecializations({
@@ -108,6 +109,7 @@ export function SortableSpecializations({
   labels,
   onOrderChange,
   disabled = false,
+  emptyText = "Select specializations first",
 }: SortableSpecializationsProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -137,7 +139,7 @@ export function SortableSpecializations({
   if (items.length === 0) {
     return (
       <p className="text-sm text-muted-foreground text-center py-4">
-        Wähle zuerst Fachgebiete aus
+        {emptyText}
       </p>
     );
   }

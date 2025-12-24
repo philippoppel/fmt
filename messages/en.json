@@ -423,7 +423,17 @@
           "namePlaceholder": "Dr. John Smith",
           "professionalTitle": "Professional Title",
           "titlePlaceholder": "e.g., Licensed Psychotherapist",
-          "image": "Profile Image URL",
+          "image": "Profile Image",
+          "imageAlt": "Profile picture",
+          "imageAdd": "Add image",
+          "imageHoverRemove": "Hover to remove",
+          "imageUpload": "Upload",
+          "imageUrl": "URL",
+          "imageUrlLabel": "Image URL",
+          "imageClickUpload": "Click to upload",
+          "imageMaxSize": "Max. 5MB, square",
+          "imageUse": "Use image",
+          "imageRecommendation": "A professional photo significantly increases trust and contact rates.",
           "description": "Short Description",
           "descriptionPlaceholder": "Describe your therapeutic approach and specialties..."
         },
@@ -437,9 +447,11 @@
         },
         "specializations": {
           "description": "Select your areas of expertise",
+          "empty": "Select specializations first",
           "ranking": {
             "title": "Prioritize Specializations",
-            "description": "Assign priorities (1-3) to highlight your most important specializations. These will be prominently displayed on your profile."
+            "description": "Assign priorities (1-3) to highlight your most important specializations. These will be prominently displayed on your profile.",
+            "dragDescription": "Drag specializations to reorder. The top 3 will be highlighted on your profile."
           }
         },
         "therapyTypes": {
@@ -788,11 +800,30 @@
         "depression": "Depression",
         "anxiety": "Anxiety",
         "trauma": "Trauma",
-        "relationships": "Relationships",
-        "addiction": "Addiction",
+        "burnout": "Burnout",
+        "ocd": "OCD",
+        "phobias": "Phobias",
+        "panic": "Panic Disorders",
+        "bipolar": "Bipolar Disorder",
+        "couples": "Couples Therapy",
+        "family": "Family Therapy",
+        "divorce": "Divorce & Separation",
+        "parenting": "Parenting Support",
+        "grief": "Grief & Loss",
+        "career": "Career & Work",
+        "identity": "Identity & Self-Discovery",
+        "lgbtq": "LGBTQ+",
+        "migration": "Migration & Culture",
         "eating_disorders": "Eating Disorders",
+        "addiction": "Addiction",
+        "sleep": "Sleep Disorders",
+        "stress": "Stress Management",
+        "psychosomatic": "Psychosomatic Issues",
+        "children": "Children & Adolescents",
+        "elderly": "Elderly Care",
         "adhd": "ADHD",
-        "burnout": "Burnout"
+        "autism": "Autism Spectrum",
+        "relationships": "Relationships"
       },
       "therapyType": {
         "title": "Therapy Type",

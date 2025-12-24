@@ -13,12 +13,25 @@ interface ProfileImagePickerProps {
   value: string;
   onImageChange: (url: string) => void;
   disabled?: boolean;
+  translations: {
+    imageAlt: string;
+    imageAdd: string;
+    imageHoverRemove: string;
+    imageUpload: string;
+    imageUrl: string;
+    imageUrlLabel: string;
+    imageClickUpload: string;
+    imageMaxSize: string;
+    imageUse: string;
+    imageRecommendation: string;
+  };
 }
 
 export function ProfileImagePicker({
   value,
   onImageChange,
   disabled = false,
+  translations: t,
 }: ProfileImagePickerProps) {
   const [mode, setMode] = useState<"upload" | "url">("upload");
   const [urlInput, setUrlInput] = useState(value);
@@ -48,7 +61,7 @@ export function ProfileImagePicker({
           <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/20">
             <img
               src={value}
-              alt="Profilbild"
+              alt={t.imageAlt}
               className="w-full h-full object-cover"
             />
           </div>
@@ -68,7 +81,7 @@ export function ProfileImagePicker({
         </div>
         {!disabled && (
           <p className="text-xs text-muted-foreground text-center">
-            Hover zum Entfernen
+            {t.imageHoverRemove}
           </p>
         )}
       </div>
@@ -89,7 +102,7 @@ export function ProfileImagePicker({
       <div className="w-32 h-32 mx-auto rounded-full bg-muted/50 flex items-center justify-center border-4 border-dashed border-muted-foreground/30">
         <div className="text-center">
           <Camera className="h-8 w-8 text-muted-foreground mx-auto mb-1" />
-          <span className="text-xs text-muted-foreground">Bild hinzufügen</span>
+          <span className="text-xs text-muted-foreground">{t.imageAdd}</span>
         </div>
       </div>
 
@@ -97,11 +110,11 @@ export function ProfileImagePicker({
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="upload" className="text-xs gap-1.5">
             <Upload className="h-3.5 w-3.5" />
-            Hochladen
+            {t.imageUpload}
           </TabsTrigger>
           <TabsTrigger value="url" className="text-xs gap-1.5">
             <LinkIcon className="h-3.5 w-3.5" />
-            URL
+            {t.imageUrl}
           </TabsTrigger>
         </TabsList>
 
@@ -133,10 +146,10 @@ export function ProfileImagePicker({
                 <div className="flex flex-col items-center gap-1">
                   <Upload className="h-6 w-6 text-muted-foreground" />
                   <span className="text-sm text-muted-foreground">
-                    Klicken zum Hochladen
+                    {t.imageClickUpload}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    Max. 5MB, quadratisch
+                    {t.imageMaxSize}
                   </span>
                 </div>
               </Button>
@@ -147,7 +160,7 @@ export function ProfileImagePicker({
         {/* URL Tab */}
         <TabsContent value="url" className="space-y-3 mt-3">
           <div className="space-y-2">
-            <Label htmlFor="profileImageUrl" className="text-xs">Bild-URL</Label>
+            <Label htmlFor="profileImageUrl" className="text-xs">{t.imageUrlLabel}</Label>
             <Input
               id="profileImageUrl"
               type="url"
@@ -164,7 +177,7 @@ export function ProfileImagePicker({
             size="sm"
             className="w-full"
           >
-            Bild verwenden
+            {t.imageUse}
           </Button>
         </TabsContent>
       </Tabs>
@@ -172,7 +185,7 @@ export function ProfileImagePicker({
       {/* Recommendation hint */}
       <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
         <p className="text-xs text-amber-800">
-          <strong>Empfohlen:</strong> Ein professionelles Foto erhöht das Vertrauen und die Kontaktrate deutlich.
+          <strong>💡</strong> {t.imageRecommendation}
         </p>
       </div>
     </div>

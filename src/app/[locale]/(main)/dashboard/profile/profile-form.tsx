@@ -278,6 +278,18 @@ export function ProfileForm({ initialData, accountType }: Props) {
                 value={imageUrl}
                 onImageChange={setImageUrl}
                 disabled={!permissions.canEditField("imageUrl")}
+                translations={{
+                  imageAlt: t("sections.basicInfo.imageAlt"),
+                  imageAdd: t("sections.basicInfo.imageAdd"),
+                  imageHoverRemove: t("sections.basicInfo.imageHoverRemove"),
+                  imageUpload: t("sections.basicInfo.imageUpload"),
+                  imageUrl: t("sections.basicInfo.imageUrl"),
+                  imageUrlLabel: t("sections.basicInfo.imageUrlLabel"),
+                  imageClickUpload: t("sections.basicInfo.imageClickUpload"),
+                  imageMaxSize: t("sections.basicInfo.imageMaxSize"),
+                  imageUse: t("sections.basicInfo.imageUse"),
+                  imageRecommendation: t("sections.basicInfo.imageRecommendation"),
+                }}
               />
             </div>
             <div className="space-y-2">
@@ -400,7 +412,7 @@ export function ProfileForm({ initialData, accountType }: Props) {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {permissions.isPremium
-                    ? "Ziehe die Fachgebiete in die gewünschte Reihenfolge. Die ersten 3 werden auf deinem Profil hervorgehoben."
+                    ? t("sections.specializations.ranking.dragDescription")
                     : t("sections.specializations.ranking.description")}
                 </p>
 
@@ -422,6 +434,7 @@ export function ProfileForm({ initialData, accountType }: Props) {
                     setSpecializationRanks(newRanks);
                   }}
                   disabled={!permissions.isPremium}
+                  emptyText={t("sections.specializations.empty")}
                 />
               </div>
             )}

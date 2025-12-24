@@ -393,7 +393,17 @@
           "namePlaceholder": "Dr. Max Mustermann",
           "professionalTitle": "Berufstitel",
           "titlePlaceholder": "z.B. Psychologische Psychotherapeutin",
-          "image": "Profilbild-URL",
+          "image": "Profilbild",
+          "imageAlt": "Profilbild",
+          "imageAdd": "Bild hinzufügen",
+          "imageHoverRemove": "Hover zum Entfernen",
+          "imageUpload": "Hochladen",
+          "imageUrl": "URL",
+          "imageUrlLabel": "Bild-URL",
+          "imageClickUpload": "Klicken zum Hochladen",
+          "imageMaxSize": "Max. 5MB, quadratisch",
+          "imageUse": "Bild verwenden",
+          "imageRecommendation": "Ein professionelles Foto erhöht das Vertrauen und die Kontaktrate deutlich.",
           "description": "Kurzbeschreibung",
           "descriptionPlaceholder": "Beschreibe deinen therapeutischen Ansatz und deine Schwerpunkte..."
         },
@@ -407,9 +417,11 @@
         },
         "specializations": {
           "description": "Wähle deine Fachgebiete",
+          "empty": "Wähle zuerst Fachgebiete aus",
           "ranking": {
             "title": "Schwerpunkte priorisieren",
-            "description": "Vergib Prioritäten (1-3), um deine wichtigsten Schwerpunkte hervorzuheben. Diese werden auf deinem Profil besonders hervorgehoben."
+            "description": "Vergib Prioritäten (1-3), um deine wichtigsten Schwerpunkte hervorzuheben. Diese werden auf deinem Profil besonders hervorgehoben.",
+            "dragDescription": "Ziehe die Fachgebiete in die gewünschte Reihenfolge. Die ersten 3 werden auf deinem Profil hervorgehoben."
           }
         },
         "therapyTypes": {
@@ -788,11 +800,30 @@
         "depression": "Depression",
         "anxiety": "Angststörungen",
         "trauma": "Trauma",
-        "relationships": "Beziehungen",
-        "addiction": "Sucht",
+        "burnout": "Burnout",
+        "ocd": "Zwangsstörungen",
+        "phobias": "Phobien",
+        "panic": "Panikstörungen",
+        "bipolar": "Bipolare Störung",
+        "couples": "Paartherapie",
+        "family": "Familientherapie",
+        "divorce": "Trennung & Scheidung",
+        "parenting": "Elternberatung",
+        "grief": "Trauer & Verlust",
+        "career": "Beruf & Karriere",
+        "identity": "Identität & Selbstfindung",
+        "lgbtq": "LGBTQ+",
+        "migration": "Migration & Kultur",
         "eating_disorders": "Essstörungen",
+        "addiction": "Sucht",
+        "sleep": "Schlafstörungen",
+        "stress": "Stressbewältigung",
+        "psychosomatic": "Psychosomatik",
+        "children": "Kinder & Jugendliche",
+        "elderly": "Ältere Menschen",
         "adhd": "ADHS",
-        "burnout": "Burnout"
+        "autism": "Autismus-Spektrum",
+        "relationships": "Beziehungen"
       },
       "therapyType": {
         "title": "Therapieart",
