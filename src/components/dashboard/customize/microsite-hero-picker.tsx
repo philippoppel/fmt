@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,20 +52,66 @@ export function MicrositeHeroPicker({
   const [photos, setPhotos] = useState<UnsplashPhoto[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
+  const [unsplashError, setUnsplashError] = useState<string | null>(null);
+
+  // Auto-search with debounce
+  useEffect(() => {
+    if (!searchQuery.trim() || searchQuery.length < 2) return;
+
+    const timer = setTimeout(async () => {
+      setIsSearching(true);
+      setUnsplashError(null);
+      try {
+        const response = await fetch(
+          `/api/unsplash/search?query=${encodeURIComponent(searchQuery)}&per_page=12`
+        );
+        const data = await response.json();
+        if (!response.ok) {
+          if (response.status === 500 && data.error === "Unsplash API not configured") {
+            setUnsplashError("Unsplash ist nicht konfiguriert. Nutze den Upload oder eine URL.");
+          } else {
+            setUnsplashError("Fehler bei der Suche. Bitte versuche es erneut.");
+          }
+          return;
+        }
+        if (data.photos) {
+          setPhotos(data.photos);
+        }
+      } catch (error) {
+        console.error("Unsplash search error:", error);
+        setUnsplashError("Verbindungsfehler. Bitte versuche es erneut.");
+      } finally {
+        setIsSearching(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const searchUnsplash = useCallback(async () => {
     if (!searchQuery.trim()) return;
 
     setIsSearching(true);
+    setUnsplashError(null);
     try {
       const response = await fetch(
         `/api/unsplash/search?query=${encodeURIComponent(searchQuery)}&per_page=12`
       );
       const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 500 && data.error === "Unsplash API not configured") {
+          setUnsplashError("Unsplash ist nicht konfiguriert. Nutze den Upload oder eine URL.");
+        } else {
+          setUnsplashError("Fehler bei der Suche. Bitte versuche es erneut.");
+        }
+        return;
+      }
       if (data.photos) {
         setPhotos(data.photos);
       }
     } catch (error) {
       console.error("Unsplash search error:", error);
+      setUnsplashError("Verbindungsfehler. Bitte versuche es erneut.");
     } finally {
       setIsSearching(false);
     }
@@ -199,13 +245,19 @@ export function MicrositeHeroPicker({
             </div>
           )}
 
-          {!isSearching && photos.length === 0 && !searchQuery && (
+          {unsplashError && (
+            <div className="text-center py-6 px-4 bg-amber-50 border border-amber-200 rounded-lg">
+              <p className="text-sm text-amber-800">{unsplashError}</p>
+            </div>
+          )}
+
+          {!isSearching && !unsplashError && photos.length === 0 && !searchQuery && (
             <p className="text-center text-sm text-muted-foreground py-6">
               Suchen Sie nach kostenlosen Bildern auf Unsplash
             </p>
           )}
 
-          {!isSearching && photos.length === 0 && searchQuery && (
+          {!isSearching && !unsplashError && photos.length === 0 && searchQuery && (
             <p className="text-center text-sm text-muted-foreground py-6">
               Keine Bilder gefunden. Versuchen Sie einen anderen Suchbegriff.
             </p>
