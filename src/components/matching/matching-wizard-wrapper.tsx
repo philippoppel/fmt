@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { MatchingWizard } from "./matching-wizard";
 import type { MatchingState } from "./matching-context";
+import { getTopicById } from "@/lib/matching/topics";
 
 interface MatchingWizardWrapperProps {
   initialTopic?: string;
@@ -25,9 +26,17 @@ export function MatchingWizardWrapper({ initialTopic }: MatchingWizardWrapperPro
         const stored = sessionStorage.getItem("matchingCriteria");
         if (stored) {
           const parsed = JSON.parse(stored);
+
+          // SECURITY: Filter out crisis flag topics - they should NOT be restored
+          // User must explicitly select them again and see crisis resources
+          const safeTopics = (parsed.selectedTopics || []).filter((topicId: string) => {
+            const topic = getTopicById(topicId);
+            return !topic?.isFlag; // Exclude flag topics (crisis, suicidal, etc.)
+          });
+
           // Map sessionStorage format to MatchingState format
           const state: Partial<MatchingState> = {
-            selectedTopics: parsed.selectedTopics || [],
+            selectedTopics: safeTopics,
             selectedSubTopics: parsed.selectedSubTopics || [],
             criteria: {
               location: parsed.location || "",

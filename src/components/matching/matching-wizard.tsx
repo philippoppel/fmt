@@ -9,6 +9,7 @@ import { MatchCounter } from "./match-counter";
 import { StepIndicator, TopicSelection, SubTopicSelection, CriteriaSelection } from "./steps";
 import { SummaryStep } from "./steps/summary-step";
 import { CrisisResources } from "./steps/crisis-resources";
+import { getTopicById } from "@/lib/matching/topics";
 
 function WizardContent() {
   const router = useRouter();
@@ -48,9 +49,16 @@ function WizardContent() {
   };
 
   const handleShowResults = () => {
+    // SECURITY: Filter out crisis flag topics - they should NOT be stored
+    // User must explicitly select them again and see crisis resources each time
+    const safeTopics = state.selectedTopics.filter((topicId) => {
+      const topic = getTopicById(topicId);
+      return !topic?.isFlag;
+    });
+
     // Encode matching data for URL
     const matchingData = {
-      selectedTopics: state.selectedTopics,
+      selectedTopics: safeTopics,
       selectedSubTopics: state.selectedSubTopics,
       otherTopicSpecialties: state.otherTopicSpecialties,
       location: state.criteria.location,
