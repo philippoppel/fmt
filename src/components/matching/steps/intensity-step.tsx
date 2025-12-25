@@ -163,7 +163,7 @@ function TopicIntensityCard({
 
 export function IntensityStep() {
   const t = useTranslations("matching.intensity");
-  const tTopics = useTranslations("matching");
+  const tAll = useTranslations(); // For full labelKey paths like "matching.topics.sleep"
   const locale = useLocale() as "de" | "en";
   const { state, actions } = useMatching();
 
@@ -277,7 +277,7 @@ export function IntensityStep() {
             <TopicIntensityCard
               key={topicId}
               topicId={topicId}
-              topicLabel={tTopics(topic.labelKey)}
+              topicLabel={tAll(topic.labelKey)}
               statements={statements}
               intro={intro}
               selectedLevel={topicIntensity?.level || null}
