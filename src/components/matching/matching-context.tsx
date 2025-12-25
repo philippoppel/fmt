@@ -32,10 +32,9 @@ import {
 
 // Steps: 1 = Topics (with inline freetext + inline screening)
 //        1.25 = SubTopics
-//        2 = Criteria
-//        2.5 = Summary (NEW - review before results)
-// NOTE: Steps 0.75 (freetext), 1.5 (intensity), 1.75 (screening) removed for streamlined flow
-export type WizardStep = 1 | 1.25 | 2 | 2.5;
+//        2 = Criteria (combined with summary - shows topics/subtopics for editing + preferences)
+// NOTE: Step 2.5 (Summary) removed - now integrated into step 2
+export type WizardStep = 1 | 1.25 | 2;
 
 export type IntensityLevel = "low" | "medium" | "high";
 export type MatchingMode = "quick" | "full";
@@ -604,7 +603,7 @@ interface MatchingProviderProps {
 export function MatchingProvider({ children, initialTopic, resumeState }: MatchingProviderProps) {
   // Create initial state with pre-selected topic or resumed state
   const computedInitialState = useMemo(() => {
-    // If resuming from results page, use that state and go to summary
+    // If resuming from results page, use that state and go to criteria/summary
     if (resumeState && Object.keys(resumeState).length > 0) {
       return {
         ...initialState,
@@ -617,7 +616,7 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
           ...initialState.therapyStyle,
           ...(resumeState.therapyStyle || {}),
         },
-        currentStep: 2.5 as WizardStep, // Go directly to summary for editing
+        currentStep: 2 as WizardStep, // Go directly to criteria for editing
       };
     }
     // Otherwise, check for initial topic
@@ -785,10 +784,10 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
     dispatch({ type: "SET_INLINE_FREETEXT_ANALYSIS_STATE", state });
   }, []);
 
-  // Navigation: 1 (topics) -> 1.25 (subtopics) -> 2 (criteria) -> 2.5 (summary) -> results
+  // Navigation: 1 (topics) -> 1.25 (subtopics) -> 2 (criteria/summary) -> results
   // SubTopics step (1.25) is skipped if no subtopics available AND "other" not selected
   const goNext = useCallback(() => {
-    const stepOrder: WizardStep[] = [1, 1.25, 2, 2.5];
+    const stepOrder: WizardStep[] = [1, 1.25, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
 
     // Skip SubTopics step if no available subtopics AND "unsureOther" not selected
@@ -808,7 +807,7 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
   }, [state.currentStep, state.selectedTopics]);
 
   const goBack = useCallback(() => {
-    const stepOrder: WizardStep[] = [1, 1.25, 2, 2.5];
+    const stepOrder: WizardStep[] = [1, 1.25, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
     // Can go back from any step except the first (topics)
     if (currentIndex > 0) {
@@ -859,21 +858,18 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
         return true;
       }
       case 2:
-        return true; // All criteria are optional
-      case 2.5:
-        return true; // Summary - just review, can always proceed
+        return true; // Criteria/Summary - all optional, can always show results
       default:
         return false;
     }
   }, [state.currentStep, state.crisisDetected, state.crisisAcknowledged, state.selectedTopics, state.otherTopicSpecialties.length]);
 
-  // Progress: 1 = 25%, 1.25 = 50%, 2 = 75%, 2.5 = 95%
+  // Progress: 1 = 33%, 1.25 = 66%, 2 = 100%
   const progress = useMemo(() => {
     const stepProgress: Record<WizardStep, number> = {
-      1: 25,
-      1.25: 50,
-      2: 75,
-      2.5: 95,
+      1: 33,
+      1.25: 66,
+      2: 100,
     };
     return stepProgress[state.currentStep] ?? 0;
   }, [state.currentStep]);

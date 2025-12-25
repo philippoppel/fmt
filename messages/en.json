@@ -1375,7 +1375,8 @@
       "maxPrice": "Max Price",
       "anyPrice": "Any",
       "upToPrice": "Up to {price}€",
-      "additionalPreferences": "Additional preferences (optional)"
+      "additionalPreferences": "Additional preferences (optional)",
+      "yourPreferences": "Your Preferences"
     },
     "location": {
       "placeholder": "Enter city or detect automatically",
@@ -1658,6 +1659,8 @@
       "yourPreferences": "Your Preferences",
       "edit": "Edit",
       "noTopicsSelected": "No topics selected",
+      "noDetailsSelected": "No details selected",
+      "noDetailsAvailable": "No details available",
       "noPreferencesSet": "No preferences set",
       "location": "Location",
       "sessionType": "Session Type",

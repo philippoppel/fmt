@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Heart, Sparkles, Star, Sun, CheckCircle2 } from "lucide-react";
+import { Check, Heart, Sparkles, Star, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { useMatching, type WizardStep } from "../matching-context";
@@ -10,7 +10,6 @@ interface StepIndicatorProps {
     topics: string;
     subtopics: string;
     preferences: string;
-    summary: string;
   };
   compact?: boolean;
 }
@@ -19,12 +18,11 @@ export function StepIndicator({ labels, compact = false }: StepIndicatorProps) {
   const { state } = useMatching();
   const t = useTranslations("matching.wizard");
 
-  // All 4 wizard steps: Topics -> SubTopics -> Preferences -> Summary
+  // 3 wizard steps: Topics -> SubTopics -> Preferences (with summary)
   const steps: { step: WizardStep; label: string }[] = [
     { step: 1, label: labels.topics },
     { step: 1.25, label: labels.subtopics },
     { step: 2, label: labels.preferences },
-    { step: 2.5, label: labels.summary },
   ];
 
   const currentStep = state.currentStep;
@@ -71,11 +69,6 @@ export function StepIndicator({ labels, compact = false }: StepIndicatorProps) {
         return {
           icon: <Sparkles className="h-3.5 w-3.5 text-primary" />,
           text: t("motivation.preferences"),
-        };
-      case 2.5:
-        return {
-          icon: <CheckCircle2 className="h-3.5 w-3.5 text-accent-emerald" />,
-          text: t("encouragement.almostDone"),
         };
       default:
         return null;

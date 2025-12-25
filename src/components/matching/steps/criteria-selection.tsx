@@ -24,17 +24,41 @@ import {
   Briefcase,
   UserCircle,
   Scale,
+  Pencil,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Gender, SessionType, Insurance, Language, TherapyType, TherapySetting, Availability } from "@/types/therapist";
 import { LANGUAGES, THERAPY_TYPES, THERAPY_SETTINGS, AVAILABILITY_OPTIONS } from "@/types/therapist";
-import { useMatching } from "../matching-context";
+import { useMatching, type WizardStep } from "../matching-context";
 import { LocationHero } from "./location-hero";
+import { MATCHING_TOPICS, getSubTopicsForTopics } from "@/lib/matching/topics";
 
-export function CriteriaSelection() {
+interface CriteriaSelectionProps {
+  onNavigateToStep?: (step: WizardStep) => void;
+}
+
+export function CriteriaSelection({ onNavigateToStep }: CriteriaSelectionProps) {
   const t = useTranslations();
   const { state, actions } = useMatching();
+
+  // Get selected topic and subtopic details
+  const selectedTopicDetails = MATCHING_TOPICS.filter((topic) =>
+    state.selectedTopics.includes(topic.id)
+  );
+  const allSubTopics = getSubTopicsForTopics(state.selectedTopics);
+  const selectedSubTopicDetails = allSubTopics.filter((st) =>
+    state.selectedSubTopics.includes(st.id)
+  );
+
+  const handleEditStep = (step: WizardStep) => {
+    if (onNavigateToStep) {
+      onNavigateToStep(step);
+    } else {
+      actions.setStep(step);
+    }
+  };
 
   return (
     <div className="flex h-full flex-col">
@@ -47,6 +71,86 @@ export function CriteriaSelection() {
 
       {/* Main Content */}
       <div className="flex flex-1 flex-col gap-6">
+        {/* Your Selections Summary - Editable */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          {/* Topics Card */}
+          <div className="rounded-lg border bg-card p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-sm">{t("matching.summary.yourTopics")}</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleEditStep(1)}
+                className="h-7 gap-1 px-2"
+              >
+                <Pencil className="h-3 w-3" />
+                {t("matching.summary.edit")}
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {selectedTopicDetails.map((topic) => (
+                <span
+                  key={topic.id}
+                  className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary"
+                >
+                  {t(`matching.topics.${topic.id}`)}
+                </span>
+              ))}
+              {selectedTopicDetails.length === 0 && (
+                <span className="text-xs text-muted-foreground">
+                  {t("matching.summary.noTopicsSelected")}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* SubTopics Card */}
+          <div className="rounded-lg border bg-card p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-sm">{t("matching.summary.yourDetails")}</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleEditStep(1.25)}
+                className="h-7 gap-1 px-2"
+                disabled={allSubTopics.length === 0}
+              >
+                <Pencil className="h-3 w-3" />
+                {t("matching.summary.edit")}
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {selectedSubTopicDetails.length > 0 ? (
+                selectedSubTopicDetails.map((st) => (
+                  <span
+                    key={st.id}
+                    className="rounded-full bg-accent/50 px-2.5 py-0.5 text-xs font-medium"
+                  >
+                    {t(`matching.subtopics.${st.id}`)}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs text-muted-foreground">
+                  {allSubTopics.length > 0
+                    ? t("matching.summary.noDetailsSelected")
+                    : t("matching.summary.noDetailsAvailable")}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-background px-3 text-sm text-muted-foreground">
+              {t("matching.criteria.yourPreferences")}
+            </span>
+          </div>
+        </div>
         {/* Location Hero - Prominent */}
         <LocationHero
           location={state.criteria.location}

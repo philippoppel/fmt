@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { MatchingProvider, useMatching, type WizardStep } from "./matching-context";
 import { MatchCounter } from "./match-counter";
 import { StepIndicator, TopicSelection, SubTopicSelection, CriteriaSelection } from "./steps";
-import { SummaryStep } from "./steps/summary-step";
 import { CrisisResources } from "./steps/crisis-resources";
 import { getTopicById } from "@/lib/matching/topics";
 
@@ -20,30 +19,9 @@ function WizardContent() {
     topics: t("matching.wizard.stepLabels.topics"),
     subtopics: t("matching.wizard.stepLabels.subtopics"),
     preferences: t("matching.wizard.stepLabels.preferences"),
-    summary: t("matching.wizard.stepLabels.summary"),
   };
 
-  // New step order: Topics (1) -> SubTopics (1.25) -> Criteria (2) -> Summary (2.5)
-  const getStepPosition = () => {
-    if (state.currentStep === 1) return 1;
-    if (state.currentStep === 1.25) return 2;
-    if (state.currentStep === 2) return 3;
-    if (state.currentStep === 2.5) return 4;
-    return 1;
-  };
-
-  const activeStepLabel =
-    state.currentStep === 1
-      ? stepLabels.topics
-      : state.currentStep === 1.25
-        ? stepLabels.subtopics
-        : state.currentStep === 2
-          ? stepLabels.preferences
-          : stepLabels.summary;
-  const stepPosition = getStepPosition();
-  const totalSteps = 4; // Topics, SubTopics, Preferences, Summary
-
-  // Handle navigation to specific step from summary
+  // Handle navigation to specific step (for editing from preferences)
   const handleNavigateToStep = (step: WizardStep) => {
     actions.setStep(step);
   };
@@ -135,8 +113,7 @@ function WizardContent() {
         <div className="mx-auto h-full max-w-6xl">
           {state.currentStep === 1 && <TopicSelection />}
           {state.currentStep === 1.25 && <SubTopicSelection />}
-          {state.currentStep === 2 && <CriteriaSelection />}
-          {state.currentStep === 2.5 && <SummaryStep onNavigateToStep={handleNavigateToStep} />}
+          {state.currentStep === 2 && <CriteriaSelection onNavigateToStep={handleNavigateToStep} />}
         </div>
       </main>
 
@@ -155,7 +132,7 @@ function WizardContent() {
           </Button>
 
           <div className="flex items-center gap-2">
-            {state.currentStep === 2.5 ? (
+            {state.currentStep === 2 ? (
               <Button
                 size="sm"
                 onClick={handleShowResults}
