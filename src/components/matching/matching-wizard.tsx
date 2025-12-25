@@ -52,6 +52,7 @@ function WizardContent() {
     const matchingData = {
       selectedTopics: state.selectedTopics,
       selectedSubTopics: state.selectedSubTopics,
+      otherTopicSpecialties: state.otherTopicSpecialties,
       location: state.criteria.location,
       gender: state.criteria.gender,
       sessionType: state.criteria.sessionType,

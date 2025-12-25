@@ -25,6 +25,7 @@ import { defaultTherapyStylePreferences } from "@/types/therapist";
 import {
   MATCHING_TOPICS,
   getSubTopicsForTopics,
+  getTopicById,
   type Topic,
   type SubTopic,
 } from "@/lib/matching/topics";
@@ -314,10 +315,18 @@ function matchingReducer(
         availableSubTopicIds.has(id)
       );
 
+      // Check if any selected topic is a crisis flag
+      const hasCrisisFlag = newTopics.some((topicId) => {
+        const topic = getTopicById(topicId);
+        return topic?.isFlag === true;
+      });
+
       return {
         ...state,
         selectedTopics: newTopics,
         selectedSubTopics: newSubTopics,
+        // Set crisis detected if a flag topic is selected (and not already acknowledged)
+        crisisDetected: hasCrisisFlag && !state.crisisAcknowledged,
       };
     }
 
@@ -839,8 +848,16 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
           return false;
         }
         return state.selectedTopics.length > 0;
-      case 1.25:
-        return true; // SubTopics are optional (but recommended)
+      case 1.25: {
+        // SubTopics are optional UNLESS "unsureOther" is the ONLY selected topic
+        // In that case, require freetext analysis to have matched specialties
+        const onlyOtherTopic = state.selectedTopics.length === 1 &&
+          state.selectedTopics[0] === "unsureOther";
+        if (onlyOtherTopic && state.otherTopicSpecialties.length === 0) {
+          return false; // Must analyze freetext to get specialty matches
+        }
+        return true;
+      }
       case 2:
         return true; // All criteria are optional
       case 2.5:
@@ -848,7 +865,7 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
       default:
         return false;
     }
-  }, [state.currentStep, state.crisisDetected, state.crisisAcknowledged, state.selectedTopics.length]);
+  }, [state.currentStep, state.crisisDetected, state.crisisAcknowledged, state.selectedTopics, state.otherTopicSpecialties.length]);
 
   // Progress: 1 = 25%, 1.25 = 50%, 2 = 75%, 2.5 = 95%
   const progress = useMemo(() => {

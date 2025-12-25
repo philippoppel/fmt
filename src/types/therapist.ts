@@ -349,6 +349,8 @@ export const GENDER_OPTIONS: Gender[] = ["male", "female", "diverse"];
 export interface MatchingCriteria {
   selectedTopics: string[];
   selectedSubTopics: string[];
+  // Specialty overrides from "unsureOther" freetext analysis
+  otherTopicSpecialties?: string[];
   // Intensity assessment
   selectedIntensityStatements?: string[];
   intensityScore?: number;

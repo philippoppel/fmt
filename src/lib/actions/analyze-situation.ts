@@ -14,6 +14,8 @@ import {
   detectCrisis,
   detectIntensity,
 } from "@/lib/matching/situation-detection";
+import { matchWithEmbeddings } from "@/lib/matching/embedding-matcher";
+import { matchWithEmpathy, type EmpathicMatchResult } from "@/lib/matching/empathic-matcher";
 
 // Re-export types for consumers
 export type { IntensityLevel, CrisisType } from "@/lib/matching/situation-detection";
@@ -24,7 +26,7 @@ export type { CrisisDetectionResult } from "@/lib/matching/situation-detection";
 // ============================================================================
 
 const MAX_INPUT_LENGTH = 1000; // Max characters for input text
-const RATE_LIMIT_REQUESTS = 5; // Max requests per IP
+const RATE_LIMIT_REQUESTS = 20; // Max requests per IP (increased for better UX during exploration)
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour window
 
 // In-memory rate limit store (Note: resets on server restart, consider Redis for production)
@@ -468,13 +470,14 @@ export async function analyzeSituation(text: string): Promise<SituationAnalysis>
     const anonymizedText = anonymizeText(sanitizedText);
 
     // Use Groq AI for analysis (optimized settings per Groq Best Practices)
+    // Temperature set to 0 for reproducible results
     const completion = await getGroqClient().chat.completions.create({
       messages: [
         { role: "system", content: AI_SYSTEM_PROMPT },
         { role: "user", content: anonymizedText }
       ],
       model: "llama-3.1-8b-instant",
-      temperature: 0.2,
+      temperature: 0, // Set to 0 for maximum reproducibility
       max_tokens: 250, // Reduced from 500 - we only need topics, subtopics, reasoning, intensity
       response_format: { type: "json_object" },
     });
@@ -644,7 +647,7 @@ Output: {"matchedIds":["couple_conflicts"],"explanation":"Being bullied by a fri
         { role: "system", content: systemPrompt },
         { role: "user", content: sanitizedDesc }
       ],
-      temperature: 0.2,
+      temperature: 0, // Set to 0 for maximum reproducibility
       max_tokens: 200,
       response_format: { type: "json_object" },
     });
@@ -709,7 +712,7 @@ Example: "sometimes stressed" → {"level":"low","explanation":"Mild distress."}
         { role: "system", content: systemPrompt },
         { role: "user", content: sanitizedDesc }
       ],
-      temperature: 0.2,
+      temperature: 0, // Set to 0 for maximum reproducibility
       max_tokens: 80, // Reduced - only need level + short explanation
       response_format: { type: "json_object" },
     });
@@ -751,23 +754,61 @@ export interface SpecialtyMatchResult {
   matchedSpecialties: string[];
   explanation: string;
   confidence: "high" | "medium" | "low";
+  // Empathische Reflexion die zeigt, dass wir verstanden haben
+  reflection?: string;
+  // Erkannte Themen in natürlicher Sprache
+  recognizedThemes?: string[];
+  // Intensität der Belastung
+  intensity?: "mild" | "moderate" | "severe";
+  // Krise erkannt?
+  crisisDetected?: boolean;
+}
+
+/**
+ * Deterministic keyword-based specialty matching.
+ * Maps detected topics to therapist specialties.
+ */
+function matchSpecialtiesFromKeywords(
+  text: string,
+  lang: "de" | "en"
+): { specialties: string[]; confidence: "high" | "medium" | "low" } {
+  const detectedTopics = detectTopics(text, lang);
+
+  if (detectedTopics.length === 0) {
+    return { specialties: [], confidence: "low" };
+  }
+
+  // Map topics to specialties
+  const specialtySet = new Set<string>();
+  for (const topic of detectedTopics) {
+    const specialty = SPECIALTY_MAPPING[topic];
+    if (specialty) {
+      specialtySet.add(specialty);
+    }
+  }
+
+  const specialties = Array.from(specialtySet).slice(0, 2);
+  const confidence = detectedTopics.length >= 2 ? "high" : "medium";
+
+  return { specialties, confidence };
 }
 
 /**
  * Match freetext description against all available therapist specialties.
- * Used for "Other" topic when no predefined category fits.
+ *
+ * NEUER ANSATZ: Empathisches LLM-Matching als Primary
+ *
+ * Warum LLM statt Keywords?
+ * - Menschen schreiben chaotisch, emotional, mit Rechtschreibfehlern
+ * - Sie müssen sich VERSTANDEN fühlen, nicht nur klassifiziert
+ * - LLM versteht "panickattaken", "hab keine lust auf nix", "alles scheiße"
+ * - Mit temperature=0 ist es reproduzierbar
+ *
+ * Fallback auf Keywords nur wenn LLM nicht verfügbar
  */
 export async function matchFreetextToSpecialties(
   description: string
 ): Promise<SpecialtyMatchResult> {
-  // PROTECTION: Rate limiting per IP
-  const clientIP = await getClientIP();
-  const rateLimit = checkRateLimit(clientIP);
-  if (!rateLimit.allowed) {
-    console.warn(`Rate limit exceeded for IP: ${clientIP}`);
-    return { matchedSpecialties: [], explanation: "Bitte warte einen Moment.", confidence: "low" };
-  }
-
   // PROTECTION: Sanitize and truncate input
   const sanitizedDesc = sanitizeAndTruncateInput(description);
 
@@ -776,72 +817,72 @@ export async function matchFreetextToSpecialties(
   }
 
   const lang = detectLanguage(sanitizedDesc);
-  const specialtyList = ALL_SPECIALTIES.map(s => `- ${s.id}: ${lang === "de" ? s.de : s.en}`).join("\n");
 
-  const systemPrompt = lang === "de"
-    ? `Therapeuten-Matching. Ordne die Beschreibung der passendsten Spezialisierung zu. NUR JSON.
+  // PRIVACY: Anonymize text before sending to external AI
+  const anonymizedDesc = anonymizeText(sanitizedDesc);
 
-Spezialisierungen:
-${specialtyList}
+  // PRIMARY: Empathisches LLM-Matching
+  // - Versteht Rechtschreibfehler und Umgangssprache
+  // - Gibt personalisierte, empathische Antworten
+  // - Mit temperature=0 reproduzierbar
+  const clientIP = await getClientIP();
+  const rateLimit = checkRateLimit(clientIP);
 
-Regeln:
-- Wähle 1-2 passende Spezialisierungen
-- confidence: high (klar erkennbar), medium (könnte passen), low (unklar)
-- explanation: 1 Satz, warum diese Spezialisierung passt, direkt, ohne Floskeln
+  if (rateLimit.allowed) {
+    try {
+      const empathicResult = await matchWithEmpathy(anonymizedDesc);
 
-Output: {"specialties":["id"],"explanation":"Grund","confidence":"medium"}
-
-Beispiel:
-"Mobbing in der Schule" → {"specialties":["relationships"],"explanation":"Mobbing ist ein Beziehungskonflikt, der therapeutisch bearbeitet werden kann.","confidence":"high"}`
-    : `Therapist matching. Match the description to the best specialty. JSON only.
-
-Specialties:
-${specialtyList}
-
-Rules:
-- Choose 1-2 matching specialties
-- confidence: high (clearly matches), medium (might fit), low (unclear)
-- explanation: 1 sentence why this specialty fits, direct, no fluff
-
-Output: {"specialties":["id"],"explanation":"Reason","confidence":"medium"}
-
-Example:
-"Bullying at school" → {"specialties":["relationships"],"explanation":"Bullying is a relationship conflict that can be addressed therapeutically.","confidence":"high"}`;
-
-  try {
-    // PRIVACY: Anonymize text before sending to external AI
-    const anonymizedText = anonymizeText(sanitizedDesc);
-
-    const completion = await getGroqClient().chat.completions.create({
-      model: "llama-3.1-8b-instant",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: anonymizedText }
-      ],
-      temperature: 0.2,
-      max_tokens: 150,
-      response_format: { type: "json_object" },
-    });
-
-    const content = completion.choices[0]?.message?.content;
-    if (!content) {
-      return { matchedSpecialties: [], explanation: "", confidence: "low" };
+      if (empathicResult.matchedSpecialties.length > 0) {
+        return {
+          matchedSpecialties: empathicResult.matchedSpecialties,
+          explanation: empathicResult.explanation,
+          confidence: empathicResult.confidence,
+          reflection: empathicResult.reflection,
+          recognizedThemes: empathicResult.recognizedThemes,
+          intensity: empathicResult.intensity,
+          crisisDetected: empathicResult.crisisDetected,
+        };
+      }
+    } catch (error) {
+      console.error("Empathic matching failed, falling back:", error);
     }
+  }
 
-    const result = JSON.parse(content);
-    const validIds = ALL_SPECIALTIES.map(s => s.id);
-    const matchedSpecialties = (result.specialties || []).filter((id: string) => validIds.includes(id));
+  // FALLBACK: Keyword + Embedding Matching (wenn LLM nicht verfügbar)
+  const keywordResult = matchSpecialtiesFromKeywords(sanitizedDesc, lang);
+  const embeddingResult = matchWithEmbeddings(sanitizedDesc);
+
+  // Merge results
+  const mergedSpecialties = [...new Set([
+    ...keywordResult.specialties,
+    ...embeddingResult.matchedSpecialties,
+  ])].slice(0, 2);
+
+  if (mergedSpecialties.length > 0) {
+    const specialtyLabels = mergedSpecialties
+      .map(id => ALL_SPECIALTIES.find(s => s.id === id)?.[lang] || id)
+      .join(lang === "de" ? " und " : " and ");
+
+    // Generiere eine einfache empathische Nachricht als Fallback
+    const fallbackReflection = lang === "de"
+      ? "Danke, dass du das mit uns teilst."
+      : "Thank you for sharing this with us.";
 
     return {
-      matchedSpecialties,
-      explanation: result.explanation || "",
-      confidence: ["high", "medium", "low"].includes(result.confidence) ? result.confidence : "medium",
+      matchedSpecialties: mergedSpecialties,
+      explanation: lang === "de"
+        ? `Therapeuten mit Erfahrung in ${specialtyLabels} können dir helfen.`
+        : `Therapists experienced in ${specialtyLabels} can help you.`,
+      confidence: keywordResult.confidence === "high" || embeddingResult.confidence === "high"
+        ? "high"
+        : "medium",
+      reflection: fallbackReflection,
     };
-  } catch (error) {
-    console.error("Specialty matching failed:", error);
-    return { matchedSpecialties: [], explanation: "", confidence: "low" };
   }
+
+  return { matchedSpecialties: [], explanation: "", confidence: "low" };
 }
+
 
 /**
  * Get specialty label for display (exported via SpecialtyMatchResult)

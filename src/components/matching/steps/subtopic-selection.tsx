@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { getTopicImageUrl, type SubTopic, type Topic } from "@/lib/matching/topics";
 import { useMatching } from "../matching-context";
 import { Textarea } from "@/components/ui/textarea";
-import { analyzeSituation, matchFreetextToSpecialties, type SpecialtyMatchResult } from "@/lib/actions/analyze-situation";
+import { matchFreetextToSpecialties, type SpecialtyMatchResult } from "@/lib/actions/analyze-situation";
 
 // Specialty labels for client-side display
 const SPECIALTY_LABELS: Record<string, { de: string; en: string }> = {
@@ -481,7 +481,8 @@ export function SubTopicSelection() {
     if (freetextValue.trim().length < 10) return;
 
     startTransition(async () => {
-      const result = await analyzeSituation(freetextValue);
+      // Use empathic matcher for consistent, caring UX
+      const result = await matchFreetextToSpecialties(freetextValue);
 
       // Check for crisis detection
       if (result.crisisDetected) {
@@ -490,11 +491,11 @@ export function SubTopicSelection() {
         return;
       }
 
-      // REFLECTION MODE: Only show understanding summary, NO auto-selection
-      const summary = result.understandingSummary || "";
-      setUnderstandingSummary(summary);
+      // Show empathic reflection (not specialty matches - user already chose topic)
+      const reflection = result.reflection || "";
+      setUnderstandingSummary(reflection);
 
-      if (summary.length > 0) {
+      if (reflection.length > 0) {
         setAnalysisState("success");
         // NO auto-selection - user picks subtopics manually
       } else {
@@ -519,6 +520,13 @@ export function SubTopicSelection() {
     setOtherAnalysisState("pending");
     startTransition(async () => {
       const result = await matchFreetextToSpecialties(otherFreetextValue);
+
+      // CRITICAL: Check for crisis detection FIRST
+      if (result.crisisDetected) {
+        actions.setCrisisDetected(true);
+        setOtherAnalysisState("idle"); // Reset so user can try again after crisis
+        return; // Crisis UI will be shown by parent component
+      }
 
       setOtherMatchResult(result);
 
@@ -623,13 +631,38 @@ export function SubTopicSelection() {
         )}>
           {otherAnalysisState === "success" && otherMatchResult ? (
             <div className="p-4 space-y-4">
-              {/* Success: Show matched specialties */}
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
-                <span className="font-semibold text-green-800 dark:text-green-300">
-                  {t("matching.other.matchFound")}
-                </span>
-              </div>
+              {/* Empathic Reflection - most important, shown first */}
+              {otherMatchResult.reflection && (
+                <div className="rounded-lg bg-primary/5 border border-primary/20 p-4">
+                  <div className="flex items-start gap-3">
+                    <Heart className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                    <p className="text-base text-foreground leading-relaxed italic">
+                      "{otherMatchResult.reflection}"
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Recognized Themes */}
+              {otherMatchResult.recognizedThemes && otherMatchResult.recognizedThemes.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {otherMatchResult.recognizedThemes.map((theme, idx) => (
+                    <span
+                      key={idx}
+                      className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"
+                    >
+                      {theme}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Explanation - why these therapists can help */}
+              {otherMatchResult.explanation && (
+                <p className="text-sm text-muted-foreground">
+                  {otherMatchResult.explanation}
+                </p>
+              )}
 
               {/* Matched Specialties */}
               <div className="rounded-md bg-green-100 dark:bg-green-900/40 p-3">
@@ -648,13 +681,6 @@ export function SubTopicSelection() {
                   ))}
                 </div>
               </div>
-
-              {/* Explanation */}
-              {otherMatchResult.explanation && (
-                <p className="text-sm text-foreground">
-                  {otherMatchResult.explanation}
-                </p>
-              )}
 
               {/* Actions */}
               <div className="flex gap-2 pt-2">

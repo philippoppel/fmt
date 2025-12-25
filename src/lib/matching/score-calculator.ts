@@ -136,16 +136,23 @@ function calculateProfileQualityScore(therapist: Therapist): number {
 
 /**
  * Calculate topic score with specialization ranking (max 35 points)
+ * Also considers otherTopicSpecialties from "unsureOther" freetext analysis
  */
 function calculateTopicScoreWithRanking(
   therapist: Therapist,
   criteria: MatchingCriteria
 ): number {
-  if (criteria.selectedTopics.length === 0) {
+  if (criteria.selectedTopics.length === 0 && (!criteria.otherTopicSpecialties || criteria.otherTopicSpecialties.length === 0)) {
     return WEIGHTS.topics; // No topics selected = full points
   }
 
-  const selectedSpecialties = getSpecialtiesFromTopics(criteria.selectedTopics);
+  // Get specialties from selected topics
+  const topicSpecialties = getSpecialtiesFromTopics(criteria.selectedTopics);
+
+  // Merge with otherTopicSpecialties from "unsureOther" freetext analysis
+  const otherSpecs = (criteria.otherTopicSpecialties || []) as typeof topicSpecialties;
+  const selectedSpecialties = [...new Set([...topicSpecialties, ...otherSpecs])];
+
   if (selectedSpecialties.length === 0) {
     return WEIGHTS.topics;
   }
@@ -473,9 +480,15 @@ function getMatchingSpecialtiesText(
   therapist: Therapist,
   criteria: MatchingCriteria
 ): string {
-  if (criteria.selectedTopics.length === 0) return "";
+  if (criteria.selectedTopics.length === 0 && (!criteria.otherTopicSpecialties || criteria.otherTopicSpecialties.length === 0)) {
+    return "";
+  }
 
-  const selectedSpecialties = getSpecialtiesFromTopics(criteria.selectedTopics);
+  // Get specialties from selected topics + otherTopicSpecialties
+  const topicSpecialties = getSpecialtiesFromTopics(criteria.selectedTopics);
+  const otherSpecs = (criteria.otherTopicSpecialties || []) as typeof topicSpecialties;
+  const selectedSpecialties = [...new Set([...topicSpecialties, ...otherSpecs])];
+
   const matching = therapist.specializations.filter((spec) =>
     selectedSpecialties.includes(spec)
   );
