@@ -110,9 +110,17 @@ export function SearchPage() {
               {tMatching("results.matchingActive")}
             </span>
           </div>
-          <Button variant="ghost" size="sm" onClick={clearMatching} className="h-7 px-2 text-xs">
-            {tMatching("results.clearMatching")}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" asChild className="h-7 px-2 text-xs gap-1 border-primary/30 text-primary hover:bg-primary/10">
+              <Link href="/therapists/matching?resume=true">
+                <Pencil className="h-3 w-3" />
+                {tMatching("editFilters")}
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" onClick={clearMatching} className="h-7 px-2 text-xs">
+              {tMatching("results.clearMatching")}
+            </Button>
+          </div>
         </div>
       )}
 
