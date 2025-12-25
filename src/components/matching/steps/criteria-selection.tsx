@@ -23,6 +23,7 @@ import {
   Euro,
   Briefcase,
   UserCircle,
+  Scale,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -249,6 +250,39 @@ export function CriteriaSelection() {
                 }
               />
             ))}
+          </div>
+        </div>
+
+        {/* Transparency Section */}
+        <div className="space-y-3 mt-2">
+          {/* Sorting Explanation */}
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+            <div className="flex items-start gap-3">
+              <Scale className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+              <div>
+                <h4 className="font-semibold text-primary">
+                  {t("matching.summary.howWeSort")}
+                </h4>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {t("matching.summary.sortingExplanation")}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Fairness Note */}
+          <div className="rounded-lg border border-accent-emerald/30 bg-accent-emerald/5 p-4">
+            <div className="flex items-start gap-3">
+              <Shield className="h-5 w-5 text-accent-emerald mt-0.5 shrink-0" />
+              <div>
+                <h4 className="font-semibold text-accent-emerald">
+                  {t("matching.summary.fairnessTitle")}
+                </h4>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {t("matching.summary.fairnessNote")}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
