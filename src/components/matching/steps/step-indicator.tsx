@@ -9,6 +9,7 @@ interface StepIndicatorProps {
   labels: {
     topics: string;
     subtopics: string;
+    intensity: string;
     preferences: string;
   };
   compact?: boolean;
@@ -18,10 +19,11 @@ export function StepIndicator({ labels, compact = false }: StepIndicatorProps) {
   const { state } = useMatching();
   const t = useTranslations("matching.wizard");
 
-  // 3 wizard steps: Topics -> SubTopics -> Preferences (with summary)
+  // 4 wizard steps: Topics -> SubTopics -> Intensity -> Preferences
   const steps: { step: WizardStep; label: string }[] = [
     { step: 1, label: labels.topics },
     { step: 1.25, label: labels.subtopics },
+    { step: 1.5, label: labels.intensity },
     { step: 2, label: labels.preferences },
   ];
 
@@ -64,6 +66,11 @@ export function StepIndicator({ labels, compact = false }: StepIndicatorProps) {
         return {
           icon: <Heart className="h-3.5 w-3.5 text-rose-400" />,
           text: t("motivation.subtopics"),
+        };
+      case 1.5:
+        return {
+          icon: <Heart className="h-3.5 w-3.5 text-rose-500" />,
+          text: t("motivation.intensity"),
         };
       case 2:
         return {

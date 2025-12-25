@@ -345,13 +345,23 @@ export const AVAILABILITY_OPTIONS: Availability[] = [
 
 export const GENDER_OPTIONS: Gender[] = ["male", "female", "diverse"];
 
+// Per-topic intensity for weighted matching
+export interface TopicIntensityInfo {
+  level: IntensityLevel;
+  score: number; // 0-100
+  source: "statements" | "ai";
+  aiDescription?: string;
+}
+
 // Matching-specific types
 export interface MatchingCriteria {
   selectedTopics: string[];
   selectedSubTopics: string[];
   // Specialty overrides from "unsureOther" freetext analysis
   otherTopicSpecialties?: string[];
-  // Intensity assessment
+  // Per-topic intensity (for weighted matching - high intensity topics prioritized)
+  topicIntensities?: Record<string, TopicIntensityInfo>;
+  // Legacy intensity assessment
   selectedIntensityStatements?: string[];
   intensityScore?: number;
   intensityLevel?: IntensityLevel | null;

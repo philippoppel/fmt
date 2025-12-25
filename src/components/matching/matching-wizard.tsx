@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MatchingProvider, useMatching, type WizardStep } from "./matching-context";
 import { MatchCounter } from "./match-counter";
-import { StepIndicator, TopicSelection, SubTopicSelection, CriteriaSelection } from "./steps";
+import { StepIndicator, TopicSelection, SubTopicSelection, CriteriaSelection, IntensityStep } from "./steps";
 import { CrisisResources } from "./steps/crisis-resources";
 import { getTopicById } from "@/lib/matching/topics";
 
@@ -18,6 +18,7 @@ function WizardContent() {
   const stepLabels = {
     topics: t("matching.wizard.stepLabels.topics"),
     subtopics: t("matching.wizard.stepLabels.subtopics"),
+    intensity: t("matching.wizard.stepLabels.intensity"),
     preferences: t("matching.wizard.stepLabels.preferences"),
   };
 
@@ -39,6 +40,7 @@ function WizardContent() {
       selectedTopics: safeTopics,
       selectedSubTopics: state.selectedSubTopics,
       otherTopicSpecialties: state.otherTopicSpecialties,
+      topicIntensities: state.topicIntensities,
       location: state.criteria.location,
       gender: state.criteria.gender,
       sessionType: state.criteria.sessionType,
@@ -113,6 +115,7 @@ function WizardContent() {
         <div className="mx-auto h-full max-w-6xl">
           {state.currentStep === 1 && <TopicSelection />}
           {state.currentStep === 1.25 && <SubTopicSelection />}
+          {state.currentStep === 1.5 && <IntensityStep />}
           {state.currentStep === 2 && <CriteriaSelection onNavigateToStep={handleNavigateToStep} />}
         </div>
       </main>

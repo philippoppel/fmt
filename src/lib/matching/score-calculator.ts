@@ -12,14 +12,17 @@ import type {
 import { getSpecialtiesFromTopics, getTopicById } from "./topics";
 
 /**
- * Score Weights (Fairness Update - No Intensity or Premium Bonus):
- * - Topic match: 30 points (with specialization ranking)
+ * Score Weights:
+ * - Topic match: 30 points (with specialization ranking + intensity weighting)
  * - SubTopic match: 15 points (precise sub-specialization matching)
  * - Criteria match: 40 points (location 12, gender 8, session type 12, insurance 8)
  * - Therapy Style: 0 points (REMOVED)
  * - Profile Quality: 15 points (image, description, verified - NO premium bonus)
  *
- * FAIRNESS: Intensity no longer affects scoring (moved to contact inquiry).
+ * INTENSITY WEIGHTING: Topics with higher user-reported intensity are weighted
+ * more heavily (high=1.5x, medium=1.0x, low=0.7x), so therapists matching
+ * the user's most pressing concerns rank higher.
+ *
  * FAIRNESS: Premium accounts do NOT receive ranking benefits.
  */
 
@@ -134,9 +137,17 @@ function calculateProfileQualityScore(therapist: Therapist): number {
   return Math.min(WEIGHTS.profileQuality, score);
 }
 
+// Intensity-based weight multipliers (high intensity topics count more)
+const INTENSITY_WEIGHTS = {
+  high: 1.5, // High intensity topics count 1.5x
+  medium: 1.0, // Medium is baseline
+  low: 0.7, // Low intensity topics count 0.7x
+};
+
 /**
- * Calculate topic score with specialization ranking (max 35 points)
- * Also considers otherTopicSpecialties from "unsureOther" freetext analysis
+ * Calculate topic score with specialization ranking and intensity weighting (max 30 points)
+ * Topics with higher intensity are prioritized in matching.
+ * Also considers otherTopicSpecialties from "unsureOther" freetext analysis.
  */
 function calculateTopicScoreWithRanking(
   therapist: Therapist,
@@ -146,34 +157,66 @@ function calculateTopicScoreWithRanking(
     return WEIGHTS.topics; // No topics selected = full points
   }
 
-  // Get specialties from selected topics
-  const topicSpecialties = getSpecialtiesFromTopics(criteria.selectedTopics);
+  // Build intensity-weighted specialty map
+  // Key: specialty, Value: { weight: number based on topic intensity }
+  const specialtyWeights: Record<string, number> = {};
+  const topicIntensities = criteria.topicIntensities ?? {};
 
-  // Merge with otherTopicSpecialties from "unsureOther" freetext analysis
-  const otherSpecs = (criteria.otherTopicSpecialties || []) as typeof topicSpecialties;
-  const selectedSpecialties = [...new Set([...topicSpecialties, ...otherSpecs])];
+  // Process each selected topic and map to specialties with intensity weight
+  for (const topicId of criteria.selectedTopics) {
+    const topic = getTopicById(topicId);
+    if (!topic) continue;
 
+    // Get intensity weight for this topic
+    const intensityInfo = topicIntensities[topicId];
+    const intensityWeight = intensityInfo
+      ? INTENSITY_WEIGHTS[intensityInfo.level] ?? 1.0
+      : 1.0;
+
+    // Map topic to its specialties with intensity weight
+    for (const specialty of topic.mappedSpecialties) {
+      // Take the higher weight if specialty appears in multiple topics
+      specialtyWeights[specialty] = Math.max(
+        specialtyWeights[specialty] ?? 0,
+        intensityWeight
+      );
+    }
+  }
+
+  // Add otherTopicSpecialties (no intensity data, use baseline weight)
+  const otherSpecs = criteria.otherTopicSpecialties || [];
+  for (const specialty of otherSpecs) {
+    if (!specialtyWeights[specialty]) {
+      specialtyWeights[specialty] = 1.0; // Baseline weight
+    }
+  }
+
+  const selectedSpecialties = Object.keys(specialtyWeights);
   if (selectedSpecialties.length === 0) {
     return WEIGHTS.topics;
   }
 
-  let totalScore = 0;
+  let totalWeightedScore = 0;
+  let totalWeight = 0;
   const ranks = therapist.specializationRanks ?? {};
 
   for (const specialty of selectedSpecialties) {
-    if (therapist.specializations.includes(specialty)) {
+    const intensityWeight = specialtyWeights[specialty];
+    totalWeight += intensityWeight;
+
+    if (therapist.specializations.includes(specialty as Parameters<typeof therapist.specializations.includes>[0])) {
       const rank = ranks[specialty] as 1 | 2 | 3 | undefined;
-      const multiplier = rank
+      const rankMultiplier = rank
         ? RANK_MULTIPLIERS[rank]
         : RANK_MULTIPLIERS.unranked;
-      totalScore += multiplier;
+      // Score contribution = rank multiplier × intensity weight
+      totalWeightedScore += rankMultiplier * intensityWeight;
     }
   }
 
-  const maxScore = selectedSpecialties.length;
-  if (maxScore === 0) return WEIGHTS.topics;
+  if (totalWeight === 0) return WEIGHTS.topics;
 
-  const ratio = totalScore / maxScore;
+  const ratio = totalWeightedScore / totalWeight;
   return Math.round(ratio * WEIGHTS.topics);
 }
 

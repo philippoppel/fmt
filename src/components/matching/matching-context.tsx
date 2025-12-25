@@ -32,9 +32,9 @@ import {
 
 // Steps: 1 = Topics (with inline freetext + inline screening)
 //        1.25 = SubTopics
+//        1.5 = Intensity Assessment (empathic statements per topic)
 //        2 = Criteria (combined with summary - shows topics/subtopics for editing + preferences)
-// NOTE: Step 2.5 (Summary) removed - now integrated into step 2
-export type WizardStep = 1 | 1.25 | 2;
+export type WizardStep = 1 | 1.25 | 1.5 | 2;
 
 export type IntensityLevel = "low" | "medium" | "high";
 export type MatchingMode = "quick" | "full";
@@ -784,11 +784,18 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
     dispatch({ type: "SET_INLINE_FREETEXT_ANALYSIS_STATE", state });
   }, []);
 
-  // Navigation: 1 (topics) -> 1.25 (subtopics) -> 2 (criteria/summary) -> results
+  // Navigation: 1 (topics) -> 1.25 (subtopics) -> 1.5 (intensity) -> 2 (criteria/summary) -> results
   // SubTopics step (1.25) is skipped if no subtopics available AND "other" not selected
+  // Intensity step (1.5) shows empathic statements for each selected topic (skip if only flag topics)
   const goNext = useCallback(() => {
-    const stepOrder: WizardStep[] = [1, 1.25, 2];
+    const stepOrder: WizardStep[] = [1, 1.25, 1.5, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
+
+    // Get non-flag topics for intensity step
+    const nonFlagTopics = state.selectedTopics.filter((topicId) => {
+      const topic = getTopicById(topicId);
+      return topic && !topic.isFlag;
+    });
 
     // Skip SubTopics step if no available subtopics AND "unsureOther" not selected
     if (state.currentStep === 1) {
@@ -796,9 +803,20 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
       const availableSubs = getSubTopicsForTopics(state.selectedTopics);
       // Don't skip if "unsureOther" is selected - they need to describe in freetext
       if (availableSubs.length === 0 && !hasOtherTopic) {
-        dispatch({ type: "SET_STEP", step: 2 }); // Skip to criteria
+        // If only flag topics, skip intensity too
+        if (nonFlagTopics.length === 0) {
+          dispatch({ type: "SET_STEP", step: 2 }); // Skip to criteria
+        } else {
+          dispatch({ type: "SET_STEP", step: 1.5 }); // Skip to intensity
+        }
         return;
       }
+    }
+
+    // Skip intensity step if only flag topics selected
+    if (state.currentStep === 1.25 && nonFlagTopics.length === 0) {
+      dispatch({ type: "SET_STEP", step: 2 }); // Skip to criteria
+      return;
     }
 
     if (currentIndex < stepOrder.length - 1) {
@@ -807,15 +825,35 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
   }, [state.currentStep, state.selectedTopics]);
 
   const goBack = useCallback(() => {
-    const stepOrder: WizardStep[] = [1, 1.25, 2];
+    const stepOrder: WizardStep[] = [1, 1.25, 1.5, 2];
     const currentIndex = stepOrder.indexOf(state.currentStep);
+
+    // Get non-flag topics for intensity step
+    const nonFlagTopics = state.selectedTopics.filter((topicId) => {
+      const topic = getTopicById(topicId);
+      return topic && !topic.isFlag;
+    });
+
     // Can go back from any step except the first (topics)
     if (currentIndex > 0) {
       if (state.currentStep === 1) {
         // Can't go back from topics - it's the first step
         return;
       } else if (state.currentStep === 2) {
-        // From criteria, check if we should skip subtopics
+        // From criteria, check if we should skip intensity (only flag topics)
+        if (nonFlagTopics.length === 0) {
+          // Also check if we should skip subtopics
+          const hasOtherTopic = state.selectedTopics.includes("unsureOther");
+          const availableSubs = getSubTopicsForTopics(state.selectedTopics);
+          if (availableSubs.length === 0 && !hasOtherTopic) {
+            dispatch({ type: "SET_STEP", step: 1 }); // Skip back to topics
+          } else {
+            dispatch({ type: "SET_STEP", step: 1.25 }); // Skip to subtopics
+          }
+          return;
+        }
+      } else if (state.currentStep === 1.5) {
+        // From intensity, check if we should skip subtopics
         const hasOtherTopic = state.selectedTopics.includes("unsureOther");
         const availableSubs = getSubTopicsForTopics(state.selectedTopics);
         if (availableSubs.length === 0 && !hasOtherTopic) {
@@ -857,6 +895,9 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
         }
         return true;
       }
+      case 1.5:
+        // Intensity step is always optional - can skip
+        return true;
       case 2:
         return true; // Criteria/Summary - all optional, can always show results
       default:
@@ -864,11 +905,12 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
     }
   }, [state.currentStep, state.crisisDetected, state.crisisAcknowledged, state.selectedTopics, state.otherTopicSpecialties.length]);
 
-  // Progress: 1 = 33%, 1.25 = 66%, 2 = 100%
+  // Progress: 1 = 25%, 1.25 = 50%, 1.5 = 75%, 2 = 100%
   const progress = useMemo(() => {
     const stepProgress: Record<WizardStep, number> = {
-      1: 33,
-      1.25: 66,
+      1: 25,
+      1.25: 50,
+      1.5: 75,
       2: 100,
     };
     return stepProgress[state.currentStep] ?? 0;
