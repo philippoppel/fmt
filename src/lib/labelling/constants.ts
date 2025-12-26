@@ -1,11 +1,13 @@
 /**
- * Shared constants for labelling - uses subtopics as granular categories
+ * Shared constants for labelling - synchronized with matching topics
  */
 
 // German labels for all labeling categories
-// This includes: acute flags, all subtopics, and meta categories
+// Keys must match the IDs from src/lib/matching/topics.ts
 export const TOPIC_LABELS_DE: Record<string, string> = {
-  // A) Acute Flags (6)
+  // ============================================================================
+  // ACUTE FLAGS (6)
+  // ============================================================================
   suicideSelfHarm: "Suizidgedanken / Selbstverletzung",
   psychosisMania: "Psychose / (Hypo-)Manie",
   violenceAbuse: "Gewalt / Missbrauch / Unsicherheit",
@@ -13,90 +15,137 @@ export const TOPIC_LABELS_DE: Record<string, string> = {
   medicallySevereEating: "Medizinisch kritische Essstörung",
   childProtection: "Kindeswohlgefährdung / Familienkrise",
 
-  // B) Depression subtopics
-  depressionMood: "Depressive Verstimmung / Niedergeschlagenheit",
+  // ============================================================================
+  // CLINICAL TOPICS - SUBTOPICS
+  // ============================================================================
+
+  // Depression subtopics
+  depressiveMood: "Depressive Verstimmung / Niedergeschlagenheit",
   bipolarMood: "Bipolare Stimmungsschwankungen",
   griefLoss: "Trauer & Verlust",
-  socialLoneliness: "Einsamkeit / soziale Isolation",
+  loneliness: "Einsamkeit / soziale Isolation",
 
-  // C) Anxiety subtopics
-  anxietyGAD: "Generalisierte Angst / ständiges Sorgen",
+  // Anxiety subtopics
+  generalizedAnxiety: "Generalisierte Angst / ständiges Sorgen",
   panicAgoraphobia: "Panikattacken / Platzangst",
   socialAnxiety: "Soziale Angst / Schüchternheit",
   specificPhobias: "Spezifische Phobien",
-  healthAnxiety: "Krankheitsangst / Hypochondrie",
-  ocdRelated: "Zwangsstörung (OCD) / Zwangsgedanken",
 
-  // D) Trauma subtopics
-  traumaPTSD: "PTBS / Traumafolgestörung",
-  dissociation: "Dissoziation / Depersonalisation",
+  // Trauma subtopics
+  childhoodTrauma: "Kindheitstrauma",
+  relationshipTrauma: "Beziehungstrauma",
+  acuteTrauma: "Akutes Trauma / Schockerlebnis",
+  complexPtsd: "Komplexe PTBS",
 
-  // E) Addiction subtopics
-  addictionSubstances: "Alkohol / Drogen / Medikamente",
-  addictionBehavioral: "Gaming / Glücksspiel / Internet",
-
-  // F) Eating disorder subtopics
-  eatingAnorexia: "Magersucht (Anorexie)",
-  eatingBulimia: "Bulimie / Ess-Brech-Sucht",
-  eatingBinge: "Binge Eating / Essanfälle",
-  eatingBodyImage: "Körperbild / Unzufriedenheit",
-
-  // G) ADHD subtopics
-  adhdExecutive: "ADHS / Konzentration / Organisation",
-  autismNeurodiversity: "Autismus-Spektrum / Neurodiversität",
-
-  // H) Stress/Burnout subtopics
-  burnoutExhaustion: "Erschöpfung / Burnout",
-  chronicStress: "Chronischer Stress / Überlastung",
+  // Burnout subtopics
   workOverload: "Arbeitsüberlastung",
-
-  // I) Sleep subtopics
-  sleepInsomnia: "Einschlaf- / Durchschlafprobleme",
-  sleepNightmares: "Albträume / Schlafstörungen",
-  sleepDisrupted: "Unruhiger Schlaf / frühes Erwachen",
-
-  // J) Self-esteem subtopics
-  selfEsteemIdentity: "Selbstwert / Scham / Identität",
-  emotionRegulationPersonality: "Emotionsregulation / Stimmungsschwankungen",
-  angerImpulse: "Wut / Impulskontrolle",
-
-  // K) Chronic illness subtopics
-  chronicIllnessPain: "Chronische Schmerzen / Krankheit",
-  chronicIllnessCoping: "Umgang mit Diagnose / Krankheitsbewältigung",
-
-  // L) Sexuality subtopics
-  sexualityIntimacy: "Sexuelle Probleme / Lustlosigkeit",
-  sexualityIdentity: "Sexuelle Identität / Orientierung",
-
-  // M) Relationship subtopics
-  relationshipsCouple: "Paarkonflikte / Kommunikation",
-  relationshipsTrust: "Vertrauensprobleme / Eifersucht",
-  relationshipsSeparation: "Trennung / Scheidung",
-
-  // N) Family subtopics
-  familyOfOrigin: "Herkunftsfamilie / alte Muster",
-  parentingPerinatal: "Elternschaft / Schwangerschaft / Baby",
-  familyConflicts: "Familienkonflikte / Generationen",
-
-  // O) Work subtopics
-  workCareer: "Karriere / berufliche Neuorientierung",
-  workMobbing: "Mobbing / Konflikte am Arbeitsplatz",
+  exhaustionDepression: "Erschöpfungsdepression",
   workLifeBalance: "Work-Life-Balance",
+  chronicFatigue: "Chronische Erschöpfung",
 
-  // P) School subtopics
-  schoolUniversity: "Studium / Ausbildung",
-  schoolExamAnxiety: "Prüfungsangst",
-  schoolPressure: "Leistungsdruck / Überforderung",
+  // OCD subtopics
+  obsessiveThoughts: "Zwangsgedanken",
+  compulsiveBehaviors: "Zwangshandlungen",
+  hoarding: "Messie / Horten",
+  trichotillomania: "Trichotillomanie / Dermatillomanie",
 
-  // Q) Life transitions subtopics
-  lifeTransitionsChange: "Umzug / Neuanfang / Veränderung",
-  lifeTransitionsDecisions: "Entscheidungsfindung / Lebensziele",
+  // Addiction subtopics
+  alcoholAddiction: "Alkoholabhängigkeit",
+  drugAddiction: "Drogenabhängigkeit",
+  gamblingAddiction: "Spielsucht",
+  internetMediaAddiction: "Internet- / Mediensucht",
 
-  // R) Existential subtopics
-  financialHousingStress: "Geldsorgen / Wohnungssuche",
-  existentialMeaning: "Sinnfragen / Lebensorientierung",
+  // Eating disorder subtopics
+  anorexia: "Magersucht (Anorexie)",
+  bulimia: "Bulimie",
+  bingeEating: "Binge Eating / Essanfälle",
+  orthorexia: "Orthorexie / zwanghaft gesundes Essen",
 
-  // S) Meta categories (2)
+  // Sleep subtopics
+  insomnia: "Einschlafprobleme",
+  sleepMaintenance: "Durchschlafprobleme",
+  nightmares: "Albträume",
+  sleepApnea: "Schlafapnoe / Atemaussetzer",
+
+  // Stress subtopics
+  chronicStress: "Chronischer Stress",
+  examAnxiety: "Prüfungsangst",
+  performancePressure: "Leistungsdruck",
+  dailyOverwhelm: "Alltägliche Überforderung",
+
+  // ADHD subtopics
+  attentionProblems: "Aufmerksamkeitsprobleme",
+  hyperactivity: "Hyperaktivität",
+  impulsivity: "Impulsivität",
+  organizationStructure: "Organisation / Struktur",
+
+  // Autism subtopics
+  socialInteraction: "Soziale Interaktion",
+  sensoryProcessing: "Sensorische Verarbeitung",
+  routinesFlexibility: "Routinen / Flexibilität",
+  communicationAutism: "Kommunikation (Autismus)",
+
+  // Psychosomatic subtopics
+  chronicPain: "Chronische Schmerzen",
+  somatoformDisorders: "Somatoforme Störungen",
+  bodyRelatedFears: "Körperbezogene Ängste",
+  stressRelatedSymptoms: "Stressbedingte Symptome",
+
+  // Self-esteem subtopics
+  selfWorthProblems: "Selbstwertprobleme",
+  identityFinding: "Identitätsfindung",
+  perfectionism: "Perfektionismus",
+  shameGuilt: "Scham / Schuld",
+
+  // ============================================================================
+  // LIFE TOPICS - SUBTOPICS
+  // ============================================================================
+
+  // Relationships subtopics
+  communicationProblems: "Kommunikationsprobleme",
+  trustIssues: "Vertrauensprobleme",
+  separationDivorce: "Trennung / Scheidung",
+  relationshipFears: "Beziehungsängste",
+
+  // Family subtopics
+  parentChildConflicts: "Eltern-Kind-Konflikte",
+  siblingRivalry: "Geschwisterrivalität",
+  patchworkFamily: "Patchwork-Familie",
+  parentingQuestions: "Erziehungsfragen",
+
+  // LGBTQ+ subtopics
+  comingOut: "Coming-Out",
+  genderIdentity: "Geschlechtsidentität",
+  discriminationExperiences: "Diskriminierungserfahrungen",
+  lgbtqRelationships: "LGBTQ+ Beziehungen",
+
+  // Migration subtopics
+  culturalAdaptation: "Kulturelle Anpassung",
+  homesicknessUprooting: "Heimweh / Entwurzelung",
+  languageBarriers: "Sprachbarrieren",
+  interculturalConflicts: "Interkulturelle Konflikte",
+
+  // Career subtopics
+  careerReorientation: "Berufliche Neuorientierung",
+  workplaceConflicts: "Konflikte am Arbeitsplatz",
+  terminationUnemployment: "Kündigung / Arbeitslosigkeit",
+  careerPlanning: "Karriereplanung",
+
+  // Children & Youth subtopics
+  schoolProblems: "Schulprobleme",
+  bullying: "Mobbing",
+  developmentalCrises: "Entwicklungskrisen",
+  familyProblemsYouth: "Familienprobleme (Jugend)",
+
+  // Elderly subtopics
+  ageRelatedDepression: "Altersdepression",
+  lonelinessInAge: "Einsamkeit im Alter",
+  lifeReview: "Lebensrückblick",
+  lossGriefElderly: "Verlust / Trauer (Ältere)",
+
+  // ============================================================================
+  // META CATEGORIES (2)
+  // ============================================================================
   assessmentClarification: "Abklärung / Diagnostik-Wunsch",
   unsureOther: "Unsicher / Sonstiges",
 };
