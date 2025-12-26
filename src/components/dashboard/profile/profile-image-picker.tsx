@@ -1,21 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import dynamic from "next/dynamic";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, Link as LinkIcon, X, User, Camera } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Upload, Link as LinkIcon, X, User, Camera, Loader2 } from "lucide-react";
 
 // Check if Cloudinary is configured
 const cloudinaryConfigured = !!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-
-// Dynamic import for Cloudinary widget to avoid errors when not configured
-const CldUploadWidget = cloudinaryConfigured
-  ? dynamic(() => import("next-cloudinary").then((mod) => mod.CldUploadWidget), { ssr: false })
-  : null;
 
 interface ProfileImagePickerProps {
   value: string;
@@ -43,11 +36,41 @@ export function ProfileImagePicker({
 }: ProfileImagePickerProps) {
   const [mode, setMode] = useState<"upload" | "url">(cloudinaryConfigured ? "upload" : "url");
   const [urlInput, setUrlInput] = useState(value);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleUploadSuccess = (result: any) => {
-    if (result.info && typeof result.info === "object" && "secure_url" in result.info) {
-      onImageChange(result.info.secure_url as string);
+  const handleFileUpload = async (file: File) => {
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Upload failed");
+      }
+
+      onImageChange(data.url);
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : "Upload failed");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileUpload(file);
     }
   };
 
@@ -130,42 +153,41 @@ export function ProfileImagePicker({
 
           {/* Upload Tab */}
           <TabsContent value="upload" className="space-y-3 mt-3">
-            {CldUploadWidget && (
-              <CldUploadWidget
-                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "blog_images"}
-                options={{
-                  maxFiles: 1,
-                  resourceType: "image",
-                  folder: "profiles/avatars",
-                  clientAllowedFormats: ["jpg", "jpeg", "png", "webp"],
-                  maxFileSize: 5000000, // 5MB
-                  cropping: true,
-                  croppingAspectRatio: 1,
-                  croppingShowDimensions: true,
-                  croppingDefaultSelectionRatio: 1,
-                  showSkipCropButton: false,
-                }}
-                onSuccess={handleUploadSuccess}
-              >
-                {({ open: openWidget }: { open: () => void }) => (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => openWidget()}
-                    className="w-full h-20 border-dashed"
-                  >
-                    <div className="flex flex-col items-center gap-1">
-                      <Upload className="h-6 w-6 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">
-                        {t.imageClickUpload}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {t.imageMaxSize}
-                      </span>
-                    </div>
-                  </Button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="w-full h-20 border-dashed"
+            >
+              <div className="flex flex-col items-center gap-1">
+                {isUploading ? (
+                  <>
+                    <Loader2 className="h-6 w-6 text-muted-foreground animate-spin" />
+                    <span className="text-sm text-muted-foreground">Uploading...</span>
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-6 w-6 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      {t.imageClickUpload}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {t.imageMaxSize}
+                    </span>
+                  </>
                 )}
-              </CldUploadWidget>
+              </div>
+            </Button>
+            {uploadError && (
+              <p className="text-sm text-destructive text-center">{uploadError}</p>
             )}
           </TabsContent>
 
