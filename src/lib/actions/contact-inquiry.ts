@@ -18,9 +18,14 @@ const contactInquirySchema = z.object({
     .string()
     .min(10, "Message must be at least 10 characters")
     .max(2000, "Message too long"),
+  // Matching context (optional - user can opt out)
   selectedTopics: z.array(z.string()),
   selectedSubTopics: z.array(z.string()),
   matchScore: z.number().optional(),
+  location: z.string().nullable().optional(),
+  gender: z.enum(["male", "female", "diverse"]).nullable().optional(),
+  sessionType: z.enum(["online", "in_person", "both"]).nullable().optional(),
+  insurance: z.array(z.enum(["public", "private", "self_pay"])).optional(),
 });
 
 export type ContactInquiryInput = z.infer<typeof contactInquirySchema>;
@@ -42,6 +47,14 @@ export async function submitContactInquiry(
       return { success: false, error: "Therapist not found" };
     }
 
+    // Build matching criteria JSON
+    const matchingCriteria = {
+      location: validated.location ?? null,
+      gender: validated.gender ?? null,
+      sessionType: validated.sessionType ?? null,
+      insurance: validated.insurance ?? [],
+    };
+
     // Create contact inquiry
     const inquiry = await db.contactInquiry.create({
       data: {
@@ -53,6 +66,7 @@ export async function submitContactInquiry(
         selectedTopics: validated.selectedTopics,
         selectedSubTopics: validated.selectedSubTopics,
         matchScore: validated.matchScore ?? null,
+        matchingCriteria,
       },
     });
 

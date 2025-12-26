@@ -50,8 +50,6 @@ interface TopMatchCardProps {
   rank: number;
   onCompareToggle?: (id: string) => void;
   isComparing?: boolean;
-  /** Topics from matching wizard to include in contact */
-  matchingTopics?: string[];
 }
 
 const rankConfig: Record<number, { Icon: typeof Crown; color: string; bg: string; ring: string }> = {
@@ -86,7 +84,6 @@ export function TopMatchCard({
   rank,
   onCompareToggle,
   isComparing,
-  matchingTopics = [],
 }: TopMatchCardProps) {
   const t = useTranslations();
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -309,8 +306,6 @@ export function TopMatchCard({
         therapistId={therapist.id}
         therapistName={therapist.name}
         matchScore={therapist.matchScore}
-        selectedTopics={matchingTopics}
-        selectedSubTopics={[]}
       />
     </>
   );

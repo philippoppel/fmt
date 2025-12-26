@@ -45,7 +45,14 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { ref: contactRef, isVisible: contactVisible } = useScrollAnimation();
-  const { selectedTopics, selectedSubTopics } = useMatchingCriteria();
+  const {
+    selectedTopics,
+    selectedSubTopics,
+    location,
+    gender,
+    sessionType: matchingSessionType,
+    insurance: matchingInsurance,
+  } = useMatchingCriteria();
 
   const t = {
     de: {
@@ -189,6 +196,10 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
         message: formData.message,
         selectedTopics,
         selectedSubTopics,
+        location,
+        gender,
+        sessionType: matchingSessionType,
+        insurance: matchingInsurance,
       });
 
       if (result.success) {

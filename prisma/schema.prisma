@@ -872,9 +872,11 @@ model ContactInquiry {
   selectedTopics    String[]
   selectedSubTopics String[]
   matchScore        Int?
+  // Additional matching criteria as JSON (location, gender, sessionType, insurance)
+  matchingCriteria  Json?
 
-  // Optional intensity (with GDPR consent)
-  intensityLevel       String?    // "low" | "medium" | "high"
+  // Legacy intensity fields (deprecated, kept for backwards compatibility)
+  intensityLevel       String?
   intensityDescription String?   @db.Text
   intensityConsent     Boolean   @default(false)
 

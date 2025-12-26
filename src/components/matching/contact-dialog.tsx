@@ -15,8 +15,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Send, Loader2, CheckCircle2, Sparkles } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Send,
+  Loader2,
+  CheckCircle2,
+  Sparkles,
+  MapPin,
+  User,
+  Video,
+  Building2,
+  CreditCard,
+} from "lucide-react";
 import { submitContactInquiry } from "@/lib/actions/contact-inquiry";
+import { useMatchingCriteria } from "@/hooks/use-matching-criteria";
 
 interface ContactDialogProps {
   open: boolean;
@@ -24,8 +36,6 @@ interface ContactDialogProps {
   therapistId: string;
   therapistName: string;
   matchScore?: number;
-  selectedTopics?: string[];
-  selectedSubTopics?: string[];
 }
 
 export function ContactDialog({
@@ -34,12 +44,22 @@ export function ContactDialog({
   therapistId,
   therapistName,
   matchScore,
-  selectedTopics = [],
-  selectedSubTopics = [],
 }: ContactDialogProps) {
   const t = useTranslations("matching.contact");
   const tTopics = useTranslations("matching.topics");
   const tSubTopics = useTranslations("matching.subTopics");
+  const tFilters = useTranslations("therapists.filters");
+
+  // Get matching data from sessionStorage
+  const {
+    hasMatchingData,
+    selectedTopics,
+    selectedSubTopics,
+    location,
+    gender,
+    sessionType,
+    insurance,
+  } = useMatchingCriteria();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -48,6 +68,7 @@ export function ContactDialog({
     message: "",
   });
 
+  const [includeMatchingData, setIncludeMatchingData] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,9 +82,14 @@ export function ContactDialog({
       const result = await submitContactInquiry({
         therapistId,
         ...formData,
-        selectedTopics,
-        selectedSubTopics,
         matchScore,
+        // Only include matching data if checkbox is checked
+        selectedTopics: includeMatchingData ? selectedTopics : [],
+        selectedSubTopics: includeMatchingData ? selectedSubTopics : [],
+        location: includeMatchingData ? location : null,
+        gender: includeMatchingData ? gender : null,
+        sessionType: includeMatchingData ? sessionType : null,
+        insurance: includeMatchingData ? insurance : [],
       });
 
       if (result.success) {
@@ -88,9 +114,7 @@ export function ContactDialog({
 
   // Helper to get translated topic name
   const getTopicLabel = (topicId: string): string => {
-    // Try matching.topics first (e.g., "trauma" -> "Trauma & PTBS")
     const label = tTopics(topicId);
-    // If translation returns the key itself, it wasn't found
     if (label === topicId || label.includes(".")) {
       return topicId;
     }
@@ -106,7 +130,35 @@ export function ContactDialog({
     return label;
   };
 
-  const hasMatchingContext = selectedTopics.length > 0 || selectedSubTopics.length > 0;
+  // Helper to get gender label
+  const getGenderLabel = (g: string): string => {
+    const labels: Record<string, string> = {
+      male: tFilters("male"),
+      female: tFilters("female"),
+      diverse: tFilters("diverse"),
+    };
+    return labels[g] || g;
+  };
+
+  // Helper to get session type label
+  const getSessionTypeLabel = (st: string): string => {
+    const labels: Record<string, string> = {
+      online: tFilters("online"),
+      in_person: tFilters("inPerson"),
+      both: tFilters("both"),
+    };
+    return labels[st] || st;
+  };
+
+  // Helper to get insurance label
+  const getInsuranceLabel = (ins: string): string => {
+    const labels: Record<string, string> = {
+      public: tFilters("publicInsurance"),
+      private: tFilters("privateInsurance"),
+      self_pay: tFilters("selfPay"),
+    };
+    return labels[ins] || ins;
+  };
 
   // Success State
   if (submitted) {
@@ -139,48 +191,6 @@ export function ContactDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Matching Context - Show selected topics from wizard */}
-          {hasMatchingContext && (
-            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
-              <div className="flex items-center gap-2 text-sm font-medium text-primary mb-3">
-                <Sparkles className="h-4 w-4" />
-                {t("matchingContext")}
-              </div>
-
-              {/* Selected Topics */}
-              {selectedTopics.length > 0 && (
-                <div className="mb-2">
-                  <p className="text-xs text-muted-foreground mb-1.5">{t("selectedTopics")}:</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {selectedTopics.map((topic) => (
-                      <Badge key={topic} variant="secondary" className="text-xs">
-                        {getTopicLabel(topic)}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Selected SubTopics */}
-              {selectedSubTopics.length > 0 && (
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1.5">{t("selectedSubTopics")}:</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {selectedSubTopics.map((subTopic) => (
-                      <Badge key={subTopic} variant="outline" className="text-xs">
-                        {getSubTopicLabel(subTopic)}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <p className="text-xs text-muted-foreground mt-3 pt-2 border-t border-primary/10">
-                {t("matchingContextHint")}
-              </p>
-            </div>
-          )}
-
           {/* Basic Fields */}
           <div className="space-y-3">
             <div>
@@ -234,6 +244,109 @@ export function ContactDialog({
               />
             </div>
           </div>
+
+          {/* Optional Matching Context */}
+          {hasMatchingData && (
+            <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  id="include-matching"
+                  checked={includeMatchingData}
+                  onCheckedChange={(checked) => setIncludeMatchingData(!!checked)}
+                  className="mt-0.5"
+                />
+                <div className="flex-1">
+                  <Label
+                    htmlFor="include-matching"
+                    className="text-sm font-medium cursor-pointer flex items-center gap-2"
+                  >
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    {t("includeMatchingData")}
+                  </Label>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {t("includeMatchingDataHint")}
+                  </p>
+                </div>
+              </div>
+
+              {/* Show matching data preview when checkbox is checked */}
+              {includeMatchingData && (
+                <div className="pt-3 border-t border-border/50 space-y-2.5">
+                  {/* Topics */}
+                  {selectedTopics.length > 0 && (
+                    <div className="flex items-start gap-2">
+                      <span className="text-xs text-muted-foreground w-20 shrink-0 pt-0.5">
+                        {t("topics")}:
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {selectedTopics.map((topic) => (
+                          <Badge key={topic} variant="secondary" className="text-xs">
+                            {getTopicLabel(topic)}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* SubTopics */}
+                  {selectedSubTopics.length > 0 && (
+                    <div className="flex items-start gap-2">
+                      <span className="text-xs text-muted-foreground w-20 shrink-0 pt-0.5">
+                        {t("details")}:
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {selectedSubTopics.map((subTopic) => (
+                          <Badge key={subTopic} variant="outline" className="text-xs">
+                            {getSubTopicLabel(subTopic)}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Location */}
+                  {location && (
+                    <div className="flex items-center gap-2 text-xs">
+                      <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-muted-foreground">{t("location")}:</span>
+                      <span>{location}</span>
+                    </div>
+                  )}
+
+                  {/* Gender Preference */}
+                  {gender && (
+                    <div className="flex items-center gap-2 text-xs">
+                      <User className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-muted-foreground">{t("genderPreference")}:</span>
+                      <span>{getGenderLabel(gender)}</span>
+                    </div>
+                  )}
+
+                  {/* Session Type */}
+                  {sessionType && (
+                    <div className="flex items-center gap-2 text-xs">
+                      {sessionType === "online" ? (
+                        <Video className="h-3.5 w-3.5 text-muted-foreground" />
+                      ) : (
+                        <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
+                      )}
+                      <span className="text-muted-foreground">{t("sessionType")}:</span>
+                      <span>{getSessionTypeLabel(sessionType)}</span>
+                    </div>
+                  )}
+
+                  {/* Insurance */}
+                  {insurance.length > 0 && (
+                    <div className="flex items-center gap-2 text-xs">
+                      <CreditCard className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-muted-foreground">{t("insurance")}:</span>
+                      <span>{insurance.map(getInsuranceLabel).join(", ")}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {error && (
             <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3">

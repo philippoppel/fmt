@@ -22,11 +22,25 @@ export function useMatchingCriteria() {
     }
   }, []);
 
+  const hasMatchingData = criteria !== null && (
+    (criteria.selectedTopics?.length ?? 0) > 0 ||
+    (criteria.selectedSubTopics?.length ?? 0) > 0 ||
+    !!criteria.location ||
+    !!criteria.gender ||
+    !!criteria.sessionType ||
+    (criteria.insurance?.length ?? 0) > 0
+  );
+
   return {
     criteria,
+    hasMatchingData,
+    // Individual fields for convenience
     selectedTopics: criteria?.selectedTopics ?? [],
     selectedSubTopics: criteria?.selectedSubTopics ?? [],
-    intensityLevel: criteria?.intensityLevel ?? null,
-    hasMatchingData: criteria !== null,
+    location: criteria?.location ?? null,
+    gender: criteria?.gender ?? null,
+    sessionType: criteria?.sessionType ?? null,
+    insurance: criteria?.insurance ?? [],
+    requiredLanguages: criteria?.requiredLanguages ?? [],
   };
 }
