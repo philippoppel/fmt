@@ -10,21 +10,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Configure Cloudinary per-request to ensure env vars are loaded
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const apiKey = process.env.CLOUDINARY_API_KEY;
-    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    // Configure Cloudinary - use CLOUDINARY_URL if available (auto-parsed by SDK)
+    if (process.env.CLOUDINARY_URL) {
+      // SDK auto-parses CLOUDINARY_URL
+    } else {
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      const apiKey = process.env.CLOUDINARY_API_KEY;
+      const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-    if (!cloudName || !apiKey || !apiSecret) {
-      console.error("Missing Cloudinary config:", { cloudName: !!cloudName, apiKey: !!apiKey, apiSecret: !!apiSecret });
-      return NextResponse.json({ error: "Upload service not configured" }, { status: 500 });
+      if (!cloudName || !apiKey || !apiSecret) {
+        console.error("Missing Cloudinary config");
+        return NextResponse.json({ error: "Upload service not configured" }, { status: 500 });
+      }
+
+      cloudinary.config({
+        cloud_name: cloudName,
+        api_key: apiKey,
+        api_secret: apiSecret,
+      });
     }
-
-    cloudinary.config({
-      cloud_name: cloudName,
-      api_key: apiKey,
-      api_secret: apiSecret,
-    });
 
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
