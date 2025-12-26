@@ -7,7 +7,6 @@ import { getOrCreateMatchingSession } from "./tracking";
 /**
  * Contact Inquiry Server Action
  * Submits a contact inquiry from the matching wizard to a therapist
- * Supports optional intensity data with GDPR consent
  */
 
 const contactInquirySchema = z.object({
@@ -22,12 +21,6 @@ const contactInquirySchema = z.object({
   selectedTopics: z.array(z.string()),
   selectedSubTopics: z.array(z.string()),
   matchScore: z.number().optional(),
-  intensity: z
-    .object({
-      level: z.enum(["low", "medium", "high"]).nullable(),
-      description: z.string().optional(),
-    })
-    .optional(),
 });
 
 export type ContactInquiryInput = z.infer<typeof contactInquirySchema>;
@@ -60,10 +53,6 @@ export async function submitContactInquiry(
         selectedTopics: validated.selectedTopics,
         selectedSubTopics: validated.selectedSubTopics,
         matchScore: validated.matchScore ?? null,
-        // Only include intensity if explicitly provided (GDPR consent required on frontend)
-        intensityLevel: validated.intensity?.level ?? null,
-        intensityDescription: validated.intensity?.description ?? null,
-        intensityConsent: !!validated.intensity,
       },
     });
 

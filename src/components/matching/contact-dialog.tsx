@@ -14,27 +14,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  ChevronDown,
-  Info,
-  Send,
-  Shield,
-  Loader2,
-  CheckCircle2,
-  Mail,
-  Tag,
-  MessageSquare,
-  Activity,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { Send, Loader2, CheckCircle2, Sparkles } from "lucide-react";
 import { submitContactInquiry } from "@/lib/actions/contact-inquiry";
-import type { IntensityLevel } from "@/types/therapist";
 
 interface ContactDialogProps {
   open: boolean;
@@ -56,19 +38,14 @@ export function ContactDialog({
   selectedSubTopics = [],
 }: ContactDialogProps) {
   const t = useTranslations("matching.contact");
+  const tTopics = useTranslations("matching.topics");
+  const tSubTopics = useTranslations("matching.subTopics");
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
-  });
-
-  const [intensityData, setIntensityData] = useState({
-    enabled: false,
-    level: null as IntensityLevel | null,
-    description: "",
-    consent: false,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,13 +64,6 @@ export function ContactDialog({
         selectedTopics,
         selectedSubTopics,
         matchScore,
-        intensity:
-          intensityData.enabled && intensityData.consent
-            ? {
-                level: intensityData.level,
-                description: intensityData.description || undefined,
-              }
-            : undefined,
       });
 
       if (result.success) {
@@ -109,14 +79,32 @@ export function ContactDialog({
   };
 
   const handleClose = () => {
-    // Reset form when closing
     if (submitted) {
       setFormData({ name: "", email: "", phone: "", message: "" });
-      setIntensityData({ enabled: false, level: null, description: "", consent: false });
       setSubmitted(false);
     }
     onOpenChange(false);
   };
+
+  // Helper to get translated topic name
+  const getTopicLabel = (topicId: string): string => {
+    try {
+      return tTopics(`${topicId}.title`);
+    } catch {
+      return topicId;
+    }
+  };
+
+  // Helper to get translated subtopic name
+  const getSubTopicLabel = (subTopicId: string): string => {
+    try {
+      return tSubTopics(subTopicId);
+    } catch {
+      return subTopicId;
+    }
+  };
+
+  const hasMatchingContext = selectedTopics.length > 0 || selectedSubTopics.length > 0;
 
   // Success State
   if (submitted) {
@@ -149,6 +137,48 @@ export function ContactDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Matching Context - Show selected topics from wizard */}
+          {hasMatchingContext && (
+            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-primary mb-3">
+                <Sparkles className="h-4 w-4" />
+                {t("matchingContext")}
+              </div>
+
+              {/* Selected Topics */}
+              {selectedTopics.length > 0 && (
+                <div className="mb-2">
+                  <p className="text-xs text-muted-foreground mb-1.5">{t("selectedTopics")}:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedTopics.map((topic) => (
+                      <Badge key={topic} variant="secondary" className="text-xs">
+                        {getTopicLabel(topic)}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Selected SubTopics */}
+              {selectedSubTopics.length > 0 && (
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1.5">{t("selectedSubTopics")}:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedSubTopics.map((subTopic) => (
+                      <Badge key={subTopic} variant="outline" className="text-xs">
+                        {getSubTopicLabel(subTopic)}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <p className="text-xs text-muted-foreground mt-3 pt-2 border-t border-primary/10">
+                {t("matchingContextHint")}
+              </p>
+            </div>
+          )}
+
           {/* Basic Fields */}
           <div className="space-y-3">
             <div>
@@ -203,144 +233,6 @@ export function ContactDialog({
             </div>
           </div>
 
-          {/* Optional Intensity Section */}
-          <Collapsible
-            open={intensityData.enabled}
-            onOpenChange={(open: boolean) =>
-              setIntensityData({ ...intensityData, enabled: open })
-            }
-          >
-            <CollapsibleTrigger asChild>
-              <button
-                type="button"
-                className="w-full flex items-center justify-between rounded-lg border bg-muted/50 p-4 hover:bg-muted transition-colors"
-              >
-                <div className="flex items-center gap-2">
-                  <Info className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">
-                    {t("intensityOptional")}
-                  </span>
-                </div>
-                <ChevronDown
-                  className={cn(
-                    "h-4 w-4 transition-transform duration-200",
-                    intensityData.enabled && "rotate-180"
-                  )}
-                />
-              </button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="mt-3 space-y-4 rounded-lg border p-4">
-              {/* Disclaimer */}
-              <div className="flex items-start gap-2 p-3 rounded-lg bg-primary/5 border border-primary/20">
-                <Shield className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                <p className="text-xs text-muted-foreground">
-                  {t("intensityDisclaimer")}
-                </p>
-              </div>
-
-              {/* Intensity Level Selection */}
-              <div className="grid grid-cols-3 gap-2">
-                {(["low", "medium", "high"] as const).map((level) => (
-                  <button
-                    key={level}
-                    type="button"
-                    onClick={() =>
-                      setIntensityData({ ...intensityData, level })
-                    }
-                    className={cn(
-                      "rounded-lg border p-3 text-center transition-all",
-                      intensityData.level === level
-                        ? "border-primary bg-primary/10 text-primary ring-1 ring-primary"
-                        : "hover:bg-muted hover:border-muted-foreground/20"
-                    )}
-                  >
-                    <span className="text-sm font-medium">
-                      {t(`levels.${level}`)}
-                    </span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Optional Description */}
-              <div>
-                <Label htmlFor="intensity-desc">
-                  {t("intensityDescriptionOptional")}
-                </Label>
-                <Textarea
-                  id="intensity-desc"
-                  rows={2}
-                  placeholder={t("intensityDescriptionPlaceholder")}
-                  value={intensityData.description}
-                  onChange={(e) =>
-                    setIntensityData({
-                      ...intensityData,
-                      description: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              {/* GDPR Consent */}
-              <div className="flex items-start gap-2">
-                <Checkbox
-                  id="intensity-consent"
-                  checked={intensityData.consent}
-                  onCheckedChange={(checked) =>
-                    setIntensityData({
-                      ...intensityData,
-                      consent: !!checked,
-                    })
-                  }
-                />
-                <Label
-                  htmlFor="intensity-consent"
-                  className="text-xs text-muted-foreground leading-relaxed cursor-pointer"
-                >
-                  {t("consentText")}
-                </Label>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-
-          {/* Data Preview */}
-          <div className="rounded-lg border bg-muted/30 p-4">
-            <h4 className="text-sm font-medium mb-3">{t("dataPreview")}</h4>
-            <dl className="space-y-2 text-xs">
-              <div className="flex items-center gap-2">
-                <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                <dt className="text-muted-foreground">{t("previewEmail")}:</dt>
-                <dd className="font-medium">{formData.email || "-"}</dd>
-              </div>
-              {selectedTopics.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <Tag className="h-3.5 w-3.5 text-muted-foreground" />
-                  <dt className="text-muted-foreground">{t("previewTopics")}:</dt>
-                  <dd className="font-medium">
-                    {selectedTopics.length} {t("selected")}
-                  </dd>
-                </div>
-              )}
-              <div className="flex items-center gap-2">
-                <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
-                <dt className="text-muted-foreground">{t("previewMessage")}:</dt>
-                <dd className="font-medium">
-                  {formData.message.length > 0 ? t("included") : "-"}
-                </dd>
-              </div>
-              {intensityData.enabled && intensityData.consent && (
-                <div className="flex items-center gap-2 text-primary">
-                  <Activity className="h-3.5 w-3.5" />
-                  <dt>{t("previewIntensity")}:</dt>
-                  <dd className="font-medium">
-                    {intensityData.level
-                      ? t(`levels.${intensityData.level}`)
-                      : "-"}
-                  </dd>
-                </div>
-              )}
-            </dl>
-          </div>
-
           {error && (
             <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3">
               <p className="text-sm text-destructive">{error}</p>
@@ -356,13 +248,7 @@ export function ContactDialog({
             >
               {t("cancel")}
             </Button>
-            <Button
-              type="submit"
-              disabled={
-                isSubmitting ||
-                (intensityData.enabled && !intensityData.consent)
-              }
-            >
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
