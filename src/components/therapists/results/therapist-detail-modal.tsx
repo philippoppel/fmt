@@ -111,7 +111,7 @@ export function TherapistDetailModal({
               {/* Location */}
               <div className="flex items-center gap-3">
                 <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-                <span>{therapist.location.city}</span>
+                <span>{therapist.location.postalCode} {therapist.location.city}</span>
               </div>
 
               {/* Session Type */}

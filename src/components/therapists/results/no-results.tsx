@@ -132,7 +132,7 @@ export function NoResults({ onClearFilters, filters, alternativeTherapists }: No
                     {therapist.name}
                   </p>
                   <p className="truncate text-xs text-muted-foreground">
-                    {therapist.location.city}
+                    {therapist.location.postalCode} {therapist.location.city}
                   </p>
                 </div>
                 <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />

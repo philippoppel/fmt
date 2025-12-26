@@ -97,7 +97,7 @@ export function TherapistCard({ therapist, matchScore }: TherapistCardProps) {
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
-                  {therapist.location.city}
+                  {therapist.location.postalCode} {therapist.location.city}
                 </span>
                 <span className="flex items-center gap-1">
                   <Euro className="h-3.5 w-3.5" aria-hidden="true" />

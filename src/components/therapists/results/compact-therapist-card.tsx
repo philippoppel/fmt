@@ -83,7 +83,7 @@ export function CompactTherapistCard({
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span className="flex items-center gap-1">
             <MapPin className="h-3 w-3" />
-            {therapist.location.city}
+            {therapist.location.postalCode} {therapist.location.city}
           </span>
           <span className="text-muted-foreground/50">|</span>
           {therapist.sessionType === "online" && (

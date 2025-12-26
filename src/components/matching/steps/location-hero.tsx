@@ -234,14 +234,14 @@ export function LocationHero({
               <span>{t("counting")}</span>
             </div>
           ) : matchCount !== null ? (
-            <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
-              <div className="flex items-center gap-1.5">
-                <Check className="h-4 w-4" />
-                <Users className="h-4 w-4" />
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <div className="flex items-center justify-center gap-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 px-2 py-1">
+                <Check className="h-4 w-4 text-emerald-700 dark:text-emerald-300" />
+                <Users className="h-4 w-4 text-emerald-700 dark:text-emerald-300" />
+                <span className="text-emerald-800 dark:text-emerald-200">
+                  {t("foundNearby", { count: matchCount, location })}
+                </span>
               </div>
-              <span>
-                {t("foundNearby", { count: matchCount, location })}
-              </span>
             </div>
           ) : null}
         </div>
