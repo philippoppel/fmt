@@ -88,20 +88,22 @@ export function ContactDialog({
 
   // Helper to get translated topic name
   const getTopicLabel = (topicId: string): string => {
-    try {
-      return tTopics(`${topicId}.title`);
-    } catch {
+    // Try matching.topics first (e.g., "trauma" -> "Trauma & PTBS")
+    const label = tTopics(topicId);
+    // If translation returns the key itself, it wasn't found
+    if (label === topicId || label.includes(".")) {
       return topicId;
     }
+    return label;
   };
 
   // Helper to get translated subtopic name
   const getSubTopicLabel = (subTopicId: string): string => {
-    try {
-      return tSubTopics(subTopicId);
-    } catch {
+    const label = tSubTopics(subTopicId);
+    if (label === subTopicId || label.includes(".")) {
       return subTopicId;
     }
+    return label;
   };
 
   const hasMatchingContext = selectedTopics.length > 0 || selectedSubTopics.length > 0;
