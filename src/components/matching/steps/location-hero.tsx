@@ -30,7 +30,7 @@ export function LocationHero({
   const [isCountingMatches, setIsCountingMatches] = useState(false);
   const [hasAttemptedAutoLocation, setHasAttemptedAutoLocation] = useState(false);
 
-  // Reverse geocode coordinates to city name
+  // Reverse geocode coordinates to postal code + city
   const reverseGeocode = useCallback(
     async (lat: number, lon: number): Promise<string> => {
       try {
@@ -44,13 +44,19 @@ export function LocationHero({
           }
         );
         const data = await response.json();
-        return (
+        const city =
           data.address?.city ||
           data.address?.town ||
           data.address?.village ||
           data.address?.municipality ||
-          ""
-        );
+          "";
+        const postcode = data.address?.postcode || "";
+
+        // Return "PLZ Stadt" format if both available, otherwise just city
+        if (postcode && city) {
+          return `${postcode} ${city}`;
+        }
+        return city;
       } catch {
         return "";
       }
