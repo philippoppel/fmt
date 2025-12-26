@@ -162,6 +162,7 @@ export function SearchPage() {
             error={error}
             filters={filters}
             alternativeTherapists={alternativeTherapists}
+            matchingTopics={matchingCriteria?.selectedTopics}
           />
         </main>
       </div>

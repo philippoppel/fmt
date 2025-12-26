@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
@@ -7,9 +8,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/ui/star-rating";
-import { MapPin, Euro, Video, Building2, UserCircle, ExternalLink } from "lucide-react";
+import { MapPin, Euro, Video, Building2, UserCircle, ExternalLink, MessageCircle } from "lucide-react";
 import type { Therapist } from "@/types/therapist";
 import { MatchScoreBadge } from "./match-score-badge";
+import { ContactDialog } from "@/components/matching/contact-dialog";
 
 // Generate URL-friendly slug from therapist name (fallback if slug not available)
 function generateSlug(name: string): string {
@@ -38,6 +40,7 @@ export function TherapistCard({ therapist, matchScore }: TherapistCardProps) {
   const t = useTranslations("therapists");
   const tFilters = useTranslations("therapists.filters");
   const tSpec = useTranslations("therapists.specialties");
+  const [showContact, setShowContact] = useState(false);
 
   return (
     <Card className="overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/10 border-l-4 border-l-primary">
@@ -132,8 +135,16 @@ export function TherapistCard({ therapist, matchScore }: TherapistCardProps) {
             </div>
 
             {/* Action */}
-            <div className="mt-4 pt-4 border-t">
-              <Button asChild className="w-full sm:w-auto gap-2">
+            <div className="mt-4 pt-4 border-t flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowContact(true)}
+                className="gap-2"
+              >
+                <MessageCircle className="h-4 w-4" />
+                {t("contact")}
+              </Button>
+              <Button asChild className="flex-1 sm:flex-initial gap-2">
                 <a
                   href={getProfileUrl(therapist)}
                   target="_blank"
@@ -147,6 +158,17 @@ export function TherapistCard({ therapist, matchScore }: TherapistCardProps) {
           </div>
         </div>
       </CardContent>
+
+      {/* Contact Dialog */}
+      <ContactDialog
+        open={showContact}
+        onOpenChange={setShowContact}
+        therapistId={therapist.id}
+        therapistName={therapist.name}
+        matchScore={matchScore}
+        selectedTopics={[]}
+        selectedSubTopics={[]}
+      />
     </Card>
   );
 }

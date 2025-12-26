@@ -35,6 +35,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ScoreBreakdownModal } from "./score-breakdown-modal";
+import { ContactDialog } from "@/components/matching/contact-dialog";
 
 interface TopMatchCardProps {
   therapist: MatchedTherapist & {
@@ -49,6 +50,8 @@ interface TopMatchCardProps {
   rank: number;
   onCompareToggle?: (id: string) => void;
   isComparing?: boolean;
+  /** Topics from matching wizard to include in contact */
+  matchingTopics?: string[];
 }
 
 const rankConfig: Record<number, { Icon: typeof Crown; color: string; bg: string; ring: string }> = {
@@ -83,10 +86,12 @@ export function TopMatchCard({
   rank,
   onCompareToggle,
   isComparing,
+  matchingTopics = [],
 }: TopMatchCardProps) {
   const t = useTranslations();
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showBreakdown, setShowBreakdown] = useState(false);
+  const [showContact, setShowContact] = useState(false);
 
   const config = rankConfig[rank] ?? { Icon: CheckCircle2, color: "text-primary", bg: "bg-primary/20", ring: "ring-primary/30" };
   const RankIcon = config.Icon;
@@ -260,6 +265,7 @@ export function TopMatchCard({
               <span>{t("therapists.viewProfile")}</span>
             </Link>
             <button
+              onClick={() => setShowContact(true)}
               className="flex flex-col items-center justify-center gap-0.5 rounded-br-lg bg-primary/10 py-2.5 text-[10px] text-primary transition-colors hover:bg-primary/20"
             >
               <MessageCircle className="h-4 w-4" />
@@ -294,6 +300,17 @@ export function TopMatchCard({
         onOpenChange={setShowBreakdown}
         therapist={therapist}
         rank={rank}
+      />
+
+      {/* Contact Dialog */}
+      <ContactDialog
+        open={showContact}
+        onOpenChange={setShowContact}
+        therapistId={therapist.id}
+        therapistName={therapist.name}
+        matchScore={therapist.matchScore}
+        selectedTopics={matchingTopics}
+        selectedSubTopics={[]}
       />
     </>
   );

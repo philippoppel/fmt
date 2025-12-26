@@ -16,6 +16,7 @@ import {
   Building2,
   Gift,
   CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
 import type { TherapistProfileData, WorkingHours } from "@/types/profile";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { GlassCard } from "@/components/ui/glass-card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
+import { submitContactInquiry } from "@/lib/actions/contact-inquiry";
 
 interface ProfileContactProps {
   profile: TherapistProfileData;
@@ -40,6 +42,7 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
   });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { ref: contactRef, isVisible: contactVisible } = useScrollAnimation();
 
   const t = {
@@ -72,6 +75,7 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
       sendMessage: "Nachricht senden",
       messageSent: "Nachricht gesendet!",
       sendingMessage: "Wird gesendet...",
+      errorMessage: "Nachricht konnte nicht gesendet werden. Bitte versuche es erneut.",
       // Days
       monday: "Montag",
       tuesday: "Dienstag",
@@ -111,6 +115,7 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
       sendMessage: "Send Message",
       messageSent: "Message sent!",
       sendingMessage: "Sending...",
+      errorMessage: "Failed to send message. Please try again.",
       // Days
       monday: "Monday",
       tuesday: "Tuesday",
@@ -150,6 +155,7 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
       sendMessage: "Nachricht senden",
       messageSent: "Nachricht gesendet!",
       sendingMessage: "Wird gesendet...",
+      errorMessage: "Nachricht konnte nicht gesendet werden. Bitte versuche es erneut.",
       monday: "Montag",
       tuesday: "Dienstag",
       wednesday: "Mittwoch",
@@ -170,16 +176,32 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
+    setError(null);
 
-    // Simulate sending - in production, this would call an API
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const result = await submitContactInquiry({
+        therapistId: profile.id,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        message: formData.message,
+        selectedTopics: [],
+        selectedSubTopics: [],
+      });
 
-    setSending(false);
-    setSent(true);
-    setFormData({ name: "", email: "", phone: "", message: "" });
-
-    // Reset success message after a few seconds
-    setTimeout(() => setSent(false), 5000);
+      if (result.success) {
+        setSent(true);
+        setFormData({ name: "", email: "", phone: "", message: "" });
+        // Reset success message after a few seconds
+        setTimeout(() => setSent(false), 5000);
+      } else {
+        setError(result.error ?? t.errorMessage ?? "Failed to send message");
+      }
+    } catch {
+      setError(t.errorMessage ?? "Failed to send message");
+    } finally {
+      setSending(false);
+    }
   };
 
   const formatWorkingHours = (hours: WorkingHours) => {
@@ -327,6 +349,12 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
                       onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
                     />
                   </div>
+                  {error && (
+                    <div className="flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/20 p-3">
+                      <AlertCircle className="h-4 w-4 text-destructive shrink-0" />
+                      <p className="text-sm text-destructive">{error}</p>
+                    </div>
+                  )}
                   <Button
                     type="submit"
                     className={cn(

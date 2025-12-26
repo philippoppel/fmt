@@ -25,6 +25,8 @@ interface ResultsSectionsProps {
   error?: string;
   filters?: Partial<FilterState>;
   alternativeTherapists?: Therapist[];
+  /** Topics from matching wizard to include in contact dialog */
+  matchingTopics?: string[];
 }
 
 export function ResultsSections({
@@ -36,6 +38,7 @@ export function ResultsSections({
   error,
   filters,
   alternativeTherapists,
+  matchingTopics = [],
 }: ResultsSectionsProps) {
   const t = useTranslations("therapists");
   const [showAllResults, setShowAllResults] = useState(false);
@@ -96,6 +99,7 @@ export function ResultsSections({
             topTherapists={topTherapists}
             onShowMore={() => setShowAllResults(true)}
             totalCount={therapists.length}
+            matchingTopics={matchingTopics}
           />
         </section>
 

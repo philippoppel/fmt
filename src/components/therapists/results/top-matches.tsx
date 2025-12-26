@@ -27,6 +27,8 @@ interface TopMatchesProps {
   }>;
   onShowMore: () => void;
   totalCount: number;
+  /** Topics from matching wizard to include in contact dialog */
+  matchingTopics?: string[];
 }
 
 const TOP_COUNT = 6;
@@ -36,6 +38,7 @@ export function TopMatches({
   topTherapists,
   onShowMore,
   totalCount,
+  matchingTopics = [],
 }: TopMatchesProps) {
   const t = useTranslations();
   const [showHowItWorks, setShowHowItWorks] = useState(false);
@@ -211,6 +214,7 @@ export function TopMatches({
             rank={index + 1}
             onCompareToggle={handleCompareToggle}
             isComparing={compareIds.includes(therapist.id)}
+            matchingTopics={matchingTopics}
           />
         ))}
       </div>
