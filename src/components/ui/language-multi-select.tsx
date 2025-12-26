@@ -33,6 +33,8 @@ interface LanguageMultiSelectProps {
   placeholder?: string;
   maxDisplay?: number;
   className?: string;
+  /** If provided, only these language codes will be shown */
+  availableLanguages?: string[];
 }
 
 export function LanguageMultiSelect({
@@ -41,12 +43,19 @@ export function LanguageMultiSelect({
   placeholder = "Sprachen auswählen...",
   maxDisplay = 5,
   className,
+  availableLanguages,
 }: LanguageMultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const locale = useLocale() as "de" | "en";
 
-  const options = useMemo(() => getLanguageOptions(locale), [locale]);
+  const allOptions = useMemo(() => getLanguageOptions(locale), [locale]);
+
+  // Filter to only available languages if specified
+  const options = useMemo(() => {
+    if (!availableLanguages) return allOptions;
+    return allOptions.filter((o) => availableLanguages.includes(o.code));
+  }, [allOptions, availableLanguages]);
 
   const commonOptions = options.filter((o) => o.isCommon);
   const otherOptions = options.filter((o) => !o.isCommon);

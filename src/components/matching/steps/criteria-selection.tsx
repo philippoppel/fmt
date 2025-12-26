@@ -34,7 +34,7 @@ import { THERAPY_TYPES, THERAPY_SETTINGS, AVAILABILITY_OPTIONS } from "@/types/t
 import { useMatching, type WizardStep } from "../matching-context";
 import { LocationHero } from "./location-hero";
 import { MATCHING_TOPICS, getSubTopicsForTopics } from "@/lib/matching/topics";
-import { LanguageMultiSelect } from "@/components/ui/language-multi-select";
+import { AvailableLanguageSelect } from "@/components/ui/available-language-select";
 
 interface CriteriaSelectionProps {
   onNavigateToStep?: (step: WizardStep) => void;
@@ -274,7 +274,7 @@ export function CriteriaSelection({ onNavigateToStep }: CriteriaSelectionProps) 
             </div>
             {t("matching.criteria.language")}
           </Label>
-          <LanguageMultiSelect
+          <AvailableLanguageSelect
             selected={state.criteria.languages}
             onChange={actions.setLanguages}
             placeholder={t("matching.criteria.selectLanguages")}
