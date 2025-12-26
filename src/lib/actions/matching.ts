@@ -21,6 +21,7 @@ export interface AdditionalFilters {
   insurance?: string[];
   priceRange?: { min: number; max: number };
   minRating?: number;
+  therapyTypes?: string[];
 }
 
 export async function searchWithMatching(
@@ -66,6 +67,9 @@ export async function searchWithMatching(
     }
     if (additionalFilters?.insurance && additionalFilters.insurance.length > 0) {
       whereClause.insurance = { hasSome: additionalFilters.insurance };
+    }
+    if (additionalFilters?.therapyTypes && additionalFilters.therapyTypes.length > 0) {
+      whereClause.therapyTypes = { hasSome: additionalFilters.therapyTypes };
     }
 
     console.log("[searchWithMatching] Querying database...");

@@ -78,6 +78,7 @@ export function useSearchResults(
         insurance: filters.insurance.length > 0 ? filters.insurance : undefined,
         priceRange: filters.priceRange,
         minRating: filters.minRating,
+        therapyTypes: filters.therapyTypes.length > 0 ? filters.therapyTypes : undefined,
       };
 
       startTransition(async () => {
@@ -123,6 +124,7 @@ export function useSearchResults(
         setInitialized(true);
       }
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     matchingCriteria,
     filters.contentType,
