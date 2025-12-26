@@ -48,6 +48,7 @@ export function useSearchResults(
           location: "",
           specialties: [],
           therapyTypes: [],
+          therapySettings: [],
           languages: [],
           priceRange: { min: 0, max: 300 },
           sessionType: null,
@@ -79,6 +80,7 @@ export function useSearchResults(
         priceRange: filters.priceRange,
         minRating: filters.minRating,
         therapyTypes: filters.therapyTypes.length > 0 ? filters.therapyTypes : undefined,
+        therapySettings: filters.therapySettings.length > 0 ? filters.therapySettings : undefined,
       };
 
       startTransition(async () => {
@@ -132,6 +134,7 @@ export function useSearchResults(
     filters.location,
     JSON.stringify(filters.specialties),
     JSON.stringify(filters.therapyTypes),
+    JSON.stringify(filters.therapySettings),
     JSON.stringify(filters.languages),
     filters.priceRange.min,
     filters.priceRange.max,

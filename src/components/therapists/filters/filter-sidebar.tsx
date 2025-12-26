@@ -6,6 +6,7 @@ import { TextSearchFilter } from "./text-search-filter";
 import { LocationFilter } from "./location-filter";
 import { SpecialtyFilter } from "./specialty-filter";
 import { TherapyTypeFilter } from "./therapy-type-filter";
+import { TherapySettingFilter } from "./therapy-setting-filter";
 import { LanguageFilter } from "./language-filter";
 import { PriceRangeFilter } from "./price-range-filter";
 import { SessionTypeFilter } from "./session-type-filter";
@@ -55,6 +56,11 @@ export function FilterSidebar({
         <TherapyTypeFilter
           selected={filters.therapyTypes}
           onChange={(therapyTypes) => onFilterChange({ therapyTypes })}
+        />
+
+        <TherapySettingFilter
+          selected={filters.therapySettings}
+          onChange={(therapySettings) => onFilterChange({ therapySettings })}
         />
 
         <LanguageFilter

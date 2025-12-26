@@ -25,6 +25,11 @@ export async function getTherapists(filters: FilterState): Promise<Therapist[]> 
     where.therapyTypes = { hasSome: filters.therapyTypes };
   }
 
+  // Therapy settings filter
+  if (filters.therapySettings.length > 0) {
+    where.therapySettings = { hasSome: filters.therapySettings };
+  }
+
   // Languages filter
   if (filters.languages.length > 0) {
     where.languages = { hasSome: filters.languages };

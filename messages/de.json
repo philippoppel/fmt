@@ -874,6 +874,13 @@
         "female": "Weiblich",
         "diverse": "Divers"
       },
+      "therapySetting": {
+        "label": "Therapie-Setting",
+        "individual": "Einzeltherapie",
+        "group": "Gruppentherapie",
+        "couples": "Paartherapie",
+        "corporate": "Unternehmenscoaching"
+      },
       "rating": {
         "label": "Mindestbewertung",
         "stars": "Sterne"

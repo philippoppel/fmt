@@ -255,6 +255,7 @@ export interface FilterState {
   location: string;
   specialties: Specialty[];
   therapyTypes: TherapyType[];
+  therapySettings: TherapySetting[];
   languages: Language[];
   priceRange: { min: number; max: number };
   sessionType: SessionType | null;
@@ -271,6 +272,7 @@ export const defaultFilters: FilterState = {
   location: "",
   specialties: [],
   therapyTypes: [],
+  therapySettings: [],
   languages: [],
   priceRange: { min: 0, max: 300 },
   sessionType: null,
