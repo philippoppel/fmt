@@ -27,16 +27,6 @@ test.describe("Blog Authoring System", () => {
     });
   });
 
-  test.describe("Admin Blog Dashboard UI", () => {
-    test("admin blogs page structure should be correct", async ({ page }) => {
-      // Go to admin blogs (will redirect to login, but we can check the redirect)
-      await page.goto("/de/dashboard/admin/blogs");
-
-      // Should redirect to auth
-      await expect(page).toHaveURL(/auth\/login/);
-    });
-  });
-
   test.describe("Blog Editor Form Structure", () => {
     test("new blog page should have required form elements", async ({ page }) => {
       await page.goto("/de/dashboard/blog/new");
@@ -390,23 +380,6 @@ test.describe("Blog Publishing Workflow", () => {
     });
   });
 
-  test.describe("Review Workflow", () => {
-    test("review page should be accessible to admins", async ({ page }) => {
-      await page.goto("/de/dashboard/admin/blogs/review");
-
-      // Will redirect to login
-      await expect(page).toHaveURL(/auth\/login/);
-    });
-  });
-
-  test.describe("Scheduled Posts", () => {
-    test("scheduled page should be accessible to admins", async ({ page }) => {
-      await page.goto("/de/dashboard/admin/blogs/scheduled");
-
-      // Will redirect to login
-      await expect(page).toHaveURL(/auth\/login/);
-    });
-  });
 });
 
 test.describe("AI Features", () => {

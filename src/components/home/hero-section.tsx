@@ -202,7 +202,7 @@ export function HeroSection() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <p className="text-sm text-white/60 mt-3">
+            <p className="text-sm text-white/80 mt-3">
               {t("ctaHint")}
             </p>
           </div>
@@ -211,7 +211,7 @@ export function HeroSection() {
         {/* Topics Section */}
         <div className="max-w-6xl mx-auto w-full">
           <h2
-            className="text-center text-lg font-medium text-white/70 mb-8 opacity-0 animate-hero-text-reveal"
+            className="text-center text-lg font-medium text-white/85 mb-8 opacity-0 animate-hero-text-reveal"
             style={{ animationDelay: "0.5s" }}
           >
             {t("topicsTitle")}
