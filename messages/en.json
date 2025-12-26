@@ -458,7 +458,8 @@
           "description": "What therapy approaches do you offer?"
         },
         "languages": {
-          "description": "In which languages do you offer therapy?"
+          "description": "In which languages do you offer therapy?",
+          "placeholder": "Select languages..."
         },
         "pricing": {
           "title": "Pricing & Insurance",
@@ -837,10 +838,7 @@
       "language": {
         "title": "Languages",
         "label": "Language",
-        "de": "German",
-        "en": "English",
-        "tr": "Turkish",
-        "ar": "Arabic"
+        "placeholder": "Select languages..."
       },
       "priceRange": {
         "label": "Price per Session",
@@ -921,7 +919,24 @@
       "de": "German",
       "en": "English",
       "tr": "Turkish",
-      "ar": "Arabic"
+      "ar": "Arabic",
+      "ru": "Russian",
+      "es": "Spanish",
+      "fr": "French",
+      "it": "Italian",
+      "pl": "Polish",
+      "uk": "Ukrainian",
+      "fa": "Persian",
+      "pt": "Portuguese",
+      "nl": "Dutch",
+      "ro": "Romanian",
+      "el": "Greek",
+      "sr": "Serbian",
+      "hr": "Croatian",
+      "bs": "Bosnian",
+      "ku": "Kurdish",
+      "vi": "Vietnamese",
+      "zh": "Chinese"
     },
     "availability": {
       "immediately": "Immediately",
@@ -1434,6 +1449,7 @@
       },
       "insurance": "Insurance",
       "language": "Language",
+      "selectLanguages": "Select languages...",
       "therapyType": "Therapy Approach",
       "availability": "Availability",
       "anyAvailability": "Any",

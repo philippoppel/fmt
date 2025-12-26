@@ -15,7 +15,6 @@ import { updateSpecializationRanks } from "@/lib/actions/profile-update";
 import {
   SPECIALTIES,
   THERAPY_TYPES,
-  LANGUAGES,
   INSURANCE_TYPES,
   SESSION_TYPES,
   AVAILABILITY_OPTIONS,
@@ -25,6 +24,7 @@ import {
   type Gender,
   type AccountType,
 } from "@/types/therapist";
+import { LanguageMultiSelect } from "@/components/ui/language-multi-select";
 import { useProfilePermissions } from "@/hooks/use-profile-permissions";
 import { TierBadge } from "@/components/dashboard/tier-badge";
 import { UpgradeBanner, GratisBlocker } from "@/components/dashboard/upgrade-banner";
@@ -499,20 +499,11 @@ export function ProfileForm({ initialData, accountType }: Props) {
         </CardHeader>
         {openSections.languages && (
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {LANGUAGES.map((lang) => (
-                <div key={lang} className="flex items-center space-x-2 min-h-[44px]">
-                  <Checkbox
-                    id={`lang-${lang}`}
-                    checked={languages.includes(lang)}
-                    onCheckedChange={() => toggleArrayValue(languages, lang, setLanguages)}
-                  />
-                  <Label htmlFor={`lang-${lang}`} className="font-normal cursor-pointer flex-1">
-                    {tFilters(`language.${lang}`)}
-                  </Label>
-                </div>
-              ))}
-            </div>
+            <LanguageMultiSelect
+              selected={languages}
+              onChange={setLanguages}
+              placeholder={t("sections.languages.placeholder")}
+            />
           </CardContent>
         )}
       </Card>

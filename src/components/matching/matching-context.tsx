@@ -126,6 +126,7 @@ type MatchingAction =
   | { type: "SET_SESSION_TYPE"; sessionType: SessionType | null }
   | { type: "TOGGLE_INSURANCE"; insurance: Insurance }
   | { type: "TOGGLE_LANGUAGE"; language: Language }
+  | { type: "SET_LANGUAGES"; languages: Language[] }
   | { type: "TOGGLE_THERAPY_TYPE"; therapyType: TherapyType }
   | { type: "TOGGLE_THERAPY_SETTING"; therapySetting: TherapySetting }
   | { type: "SET_AVAILABILITY"; availability: Availability | null }
@@ -427,6 +428,16 @@ function matchingReducer(
       };
     }
 
+    case "SET_LANGUAGES": {
+      return {
+        ...state,
+        criteria: {
+          ...state.criteria,
+          languages: action.languages,
+        },
+      };
+    }
+
     case "TOGGLE_THERAPY_TYPE": {
       const isSelected = state.criteria.therapyTypes.includes(action.therapyType);
       return {
@@ -569,6 +580,7 @@ interface MatchingContextValue {
     setSessionType: (sessionType: SessionType | null) => void;
     toggleInsurance: (insurance: Insurance) => void;
     toggleLanguage: (language: Language) => void;
+    setLanguages: (languages: Language[]) => void;
     toggleTherapyType: (therapyType: TherapyType) => void;
     toggleTherapySetting: (therapySetting: TherapySetting) => void;
     setAvailability: (availability: Availability | null) => void;
@@ -705,6 +717,10 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
 
   const toggleLanguage = useCallback((language: Language) => {
     dispatch({ type: "TOGGLE_LANGUAGE", language });
+  }, []);
+
+  const setLanguages = useCallback((languages: Language[]) => {
+    dispatch({ type: "SET_LANGUAGES", languages });
   }, []);
 
   const toggleTherapyType = useCallback((therapyType: TherapyType) => {
@@ -950,6 +966,7 @@ export function MatchingProvider({ children, initialTopic, resumeState }: Matchi
       setSessionType,
       toggleInsurance,
       toggleLanguage,
+      setLanguages,
       toggleTherapyType,
       toggleTherapySetting,
       setAvailability,

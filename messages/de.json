@@ -428,7 +428,8 @@
           "description": "Welche Therapieformen bietest du an?"
         },
         "languages": {
-          "description": "In welchen Sprachen bietest du Therapie an?"
+          "description": "In welchen Sprachen bietest du Therapie an?",
+          "placeholder": "Sprachen auswählen..."
         },
         "pricing": {
           "title": "Preis & Versicherung",
@@ -837,10 +838,7 @@
       "language": {
         "title": "Sprachen",
         "label": "Sprache",
-        "de": "Deutsch",
-        "en": "Englisch",
-        "tr": "Türkisch",
-        "ar": "Arabisch"
+        "placeholder": "Sprachen auswählen..."
       },
       "priceRange": {
         "label": "Preis pro Sitzung",
@@ -921,7 +919,24 @@
       "de": "Deutsch",
       "en": "Englisch",
       "tr": "Türkisch",
-      "ar": "Arabisch"
+      "ar": "Arabisch",
+      "ru": "Russisch",
+      "es": "Spanisch",
+      "fr": "Französisch",
+      "it": "Italienisch",
+      "pl": "Polnisch",
+      "uk": "Ukrainisch",
+      "fa": "Persisch",
+      "pt": "Portugiesisch",
+      "nl": "Niederländisch",
+      "ro": "Rumänisch",
+      "el": "Griechisch",
+      "sr": "Serbisch",
+      "hr": "Kroatisch",
+      "bs": "Bosnisch",
+      "ku": "Kurdisch",
+      "vi": "Vietnamesisch",
+      "zh": "Chinesisch"
     },
     "availability": {
       "immediately": "Sofort verfügbar",
@@ -1434,6 +1449,7 @@
       },
       "insurance": "Versicherung",
       "language": "Sprache",
+      "selectLanguages": "Sprachen auswählen...",
       "therapyType": "Therapieform",
       "availability": "Verfügbarkeit",
       "anyAvailability": "Egal",

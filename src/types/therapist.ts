@@ -102,8 +102,9 @@ export type TherapyType =
   | "gestalt"
   | "humanistic";
 
-// Languages offered
-export type Language = "de" | "en" | "tr" | "ar";
+// Languages offered (ISO 639-1 codes)
+// Using string type to allow all ISO 639-1 language codes
+export type Language = string;
 
 // Session delivery methods
 export type SessionType = "online" | "in_person" | "both";
@@ -324,7 +325,9 @@ export const THERAPY_TYPES: TherapyType[] = [
   "humanistic",
 ];
 
-export const LANGUAGES: Language[] = ["de", "en", "tr", "ar"];
+// Re-export common languages from the languages utility
+// For full list, use getLanguageOptions() from @/lib/languages
+export { COMMON_LANGUAGES as LANGUAGES } from "@/lib/languages";
 
 export const SESSION_TYPES: SessionType[] = ["online", "in_person", "both"];
 

@@ -29,11 +29,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { Gender, SessionType, Insurance, Language, TherapyType, TherapySetting, Availability } from "@/types/therapist";
-import { LANGUAGES, THERAPY_TYPES, THERAPY_SETTINGS, AVAILABILITY_OPTIONS } from "@/types/therapist";
+import type { Gender, SessionType, Insurance, TherapyType, TherapySetting, Availability } from "@/types/therapist";
+import { THERAPY_TYPES, THERAPY_SETTINGS, AVAILABILITY_OPTIONS } from "@/types/therapist";
 import { useMatching, type WizardStep } from "../matching-context";
 import { LocationHero } from "./location-hero";
 import { MATCHING_TOPICS, getSubTopicsForTopics } from "@/lib/matching/topics";
+import { LanguageMultiSelect } from "@/components/ui/language-multi-select";
 
 interface CriteriaSelectionProps {
   onNavigateToStep?: (step: WizardStep) => void;
@@ -273,17 +274,11 @@ export function CriteriaSelection({ onNavigateToStep }: CriteriaSelectionProps) 
             </div>
             {t("matching.criteria.language")}
           </Label>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {LANGUAGES.map((language) => (
-              <LanguageCard
-                key={language}
-                language={language}
-                isSelected={state.criteria.languages.includes(language)}
-                onClick={() => actions.toggleLanguage(language)}
-                label={t(`therapists.languages.${language}`)}
-              />
-            ))}
-          </div>
+          <LanguageMultiSelect
+            selected={state.criteria.languages}
+            onChange={actions.setLanguages}
+            placeholder={t("matching.criteria.selectLanguages")}
+          />
         </div>
 
         {/* Therapy Type */}
@@ -558,55 +553,6 @@ function InsuranceCard({
               strokeLinejoin="round"
             />
           </svg>
-        </div>
-      )}
-    </button>
-  );
-}
-
-interface LanguageCardProps {
-  language: Language;
-  isSelected: boolean;
-  onClick: () => void;
-  label: string;
-}
-
-function LanguageCard({
-  language,
-  isSelected,
-  onClick,
-  label,
-}: LanguageCardProps) {
-  // Language flag emojis
-  const flagEmoji: Record<Language, string> = {
-    de: "🇩🇪",
-    en: "🇬🇧",
-    tr: "🇹🇷",
-    ar: "🇸🇦",
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "relative flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 p-3 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-        isSelected
-          ? "border-accent-violet bg-accent-violet-muted shadow-md"
-          : "border-input bg-background hover:border-accent-violet/50 hover:bg-muted/50"
-      )}
-      aria-pressed={isSelected}
-    >
-      <span className="text-2xl">{flagEmoji[language]}</span>
-      <span className={cn(
-        "text-sm font-medium",
-        isSelected ? "text-accent-violet-foreground" : "text-foreground"
-      )}>
-        {label}
-      </span>
-      {isSelected && (
-        <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent-violet text-white">
-          <Check className="h-3 w-3" />
         </div>
       )}
     </button>
