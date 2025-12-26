@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { GlassCard } from "@/components/ui/glass-card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useMatchingCriteria } from "@/hooks/use-matching-criteria";
 import { cn } from "@/lib/utils";
 import { submitContactInquiry } from "@/lib/actions/contact-inquiry";
 
@@ -44,6 +45,7 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { ref: contactRef, isVisible: contactVisible } = useScrollAnimation();
+  const { selectedTopics, selectedSubTopics } = useMatchingCriteria();
 
   const t = {
     de: {
@@ -185,8 +187,8 @@ export function ProfileContact({ profile, locale }: ProfileContactProps) {
         email: formData.email,
         phone: formData.phone || undefined,
         message: formData.message,
-        selectedTopics: [],
-        selectedSubTopics: [],
+        selectedTopics,
+        selectedSubTopics,
       });
 
       if (result.success) {

@@ -12,6 +12,7 @@ import { MapPin, Euro, Video, Building2, UserCircle, ExternalLink, MessageCircle
 import type { Therapist } from "@/types/therapist";
 import { MatchScoreBadge } from "./match-score-badge";
 import { ContactDialog } from "@/components/matching/contact-dialog";
+import { useMatchingCriteria } from "@/hooks/use-matching-criteria";
 
 // Generate URL-friendly slug from therapist name (fallback if slug not available)
 function generateSlug(name: string): string {
@@ -41,6 +42,7 @@ export function TherapistCard({ therapist, matchScore }: TherapistCardProps) {
   const tFilters = useTranslations("therapists.filters");
   const tSpec = useTranslations("therapists.specialties");
   const [showContact, setShowContact] = useState(false);
+  const { selectedTopics, selectedSubTopics } = useMatchingCriteria();
 
   return (
     <Card className="overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/10 border-l-4 border-l-primary">
@@ -166,8 +168,8 @@ export function TherapistCard({ therapist, matchScore }: TherapistCardProps) {
         therapistId={therapist.id}
         therapistName={therapist.name}
         matchScore={matchScore}
-        selectedTopics={[]}
-        selectedSubTopics={[]}
+        selectedTopics={selectedTopics}
+        selectedSubTopics={selectedSubTopics}
       />
     </Card>
   );
