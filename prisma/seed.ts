@@ -418,6 +418,11 @@ const blogPosts = [
 
 // Use correct enum values for specializations that match the Specialty type
 // Extended with new matching algorithm fields - ALL AUSTRIAN CITIES
+// Wizard fields mapping:
+// - wizardCategories: Maps from specializations to wizard category IDs
+// - wizardSubcategories: Specific subcategories for more precise matching
+// - primaryStyleStructure: structured | open | mixed (based on usesHomework)
+// - primaryStyleEngagement: active | receptive | situational (based on communicationStyle)
 const therapists = [
   {
     userId: 'seed-user-1',
@@ -447,6 +452,12 @@ const therapists = [
     therapyFocus: 'present' as const,
     clientTalkRatio: 60,
     therapyDepth: 'deep_change' as const,
+    therapeuticStance: ['explaining', 'holding'],
+    // Wizard V2 fields
+    wizardCategories: ['anxiety_panic', 'depression_emptiness', 'stress_burnout'],
+    wizardSubcategories: ['generalized_anxiety', 'panic', 'feeling_down', 'burnout'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'receptive' as const,
   },
   {
     userId: 'seed-user-2',
@@ -476,6 +487,12 @@ const therapists = [
     therapyFocus: 'holistic' as const,
     clientTalkRatio: 50,
     therapyDepth: 'deep_change' as const,
+    therapeuticStance: ['challenging', 'structuring'],
+    // Wizard V2 fields
+    wizardCategories: ['family_relationships'],
+    wizardSubcategories: ['relationship', 'parents'],
+    primaryStyleStructure: 'open' as const,
+    primaryStyleEngagement: 'active' as const,
   },
   {
     userId: 'seed-user-3',
@@ -505,6 +522,12 @@ const therapists = [
     therapyFocus: 'future' as const,
     clientTalkRatio: 40,
     therapyDepth: 'symptom_relief' as const,
+    therapeuticStance: ['explaining', 'structuring'],
+    // Wizard V2 fields
+    wizardCategories: ['attention', 'anxiety_panic', 'school_learning'],
+    wizardSubcategories: ['concentration', 'generalized_anxiety', 'school_stress'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'situational' as const,
   },
   {
     userId: 'seed-user-4',
@@ -534,6 +557,12 @@ const therapists = [
     therapyFocus: 'present' as const,
     clientTalkRatio: 30,
     therapyDepth: 'flexible' as const,
+    therapeuticStance: ['structuring', 'challenging'],
+    // Wizard V2 fields
+    wizardCategories: ['stress_burnout', 'depression_emptiness', 'work_career'],
+    wizardSubcategories: ['burnout', 'emotional_exhaustion', 'feeling_down', 'stress_overwhelm'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'active' as const,
   },
   {
     userId: 'seed-user-5',
@@ -563,6 +592,12 @@ const therapists = [
     therapyFocus: 'past' as const,
     clientTalkRatio: 70,
     therapyDepth: 'deep_change' as const,
+    therapeuticStance: ['holding', 'validating'],
+    // Wizard V2 fields
+    wizardCategories: ['trauma_ptsd', 'anxiety_panic'],
+    wizardSubcategories: ['ptsd', 'acute_trauma', 'relationship_trauma', 'generalized_anxiety'],
+    primaryStyleStructure: 'open' as const,
+    primaryStyleEngagement: 'receptive' as const,
   },
   {
     userId: 'seed-user-6',
@@ -592,6 +627,12 @@ const therapists = [
     therapyFocus: 'present' as const,
     clientTalkRatio: 55,
     therapyDepth: 'deep_change' as const,
+    therapeuticStance: ['holding', 'validating'],
+    // Wizard V2 fields
+    wizardCategories: ['eating_disorders', 'depression_emptiness', 'selfworth_personality'],
+    wizardSubcategories: ['restrictive', 'binge_eating', 'body_image', 'selfworth'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'receptive' as const,
   },
   {
     userId: 'seed-user-7',
@@ -621,6 +662,12 @@ const therapists = [
     therapyFocus: 'present' as const,
     clientTalkRatio: 40,
     therapyDepth: 'symptom_relief' as const,
+    therapeuticStance: ['structuring', 'challenging'],
+    // Wizard V2 fields
+    wizardCategories: ['addiction', 'depression_emptiness', 'trauma_ptsd'],
+    wizardSubcategories: ['substance_alcohol', 'behavioral_addiction', 'feeling_down'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'active' as const,
   },
   {
     userId: 'seed-user-8',
@@ -650,6 +697,12 @@ const therapists = [
     therapyFocus: 'holistic' as const,
     clientTalkRatio: 60,
     therapyDepth: 'flexible' as const,
+    therapeuticStance: ['validating', 'explaining'],
+    // Wizard V2 fields
+    wizardCategories: ['family_relationships', 'depression_emptiness'],
+    wizardSubcategories: ['child', 'relationship', 'parents', 'feeling_down'],
+    primaryStyleStructure: 'open' as const,
+    primaryStyleEngagement: 'situational' as const,
   },
   {
     userId: 'seed-user-9',
@@ -679,6 +732,12 @@ const therapists = [
     therapyFocus: 'future' as const,
     clientTalkRatio: 35,
     therapyDepth: 'symptom_relief' as const,
+    therapeuticStance: ['structuring', 'explaining'],
+    // Wizard V2 fields
+    wizardCategories: ['attention', 'stress_burnout', 'anxiety_panic'],
+    wizardSubcategories: ['concentration', 'hyperactivity', 'burnout', 'generalized_anxiety'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'active' as const,
   },
   {
     userId: 'seed-user-10',
@@ -708,6 +767,12 @@ const therapists = [
     therapyFocus: 'present' as const,
     clientTalkRatio: 65,
     therapyDepth: 'flexible' as const,
+    therapeuticStance: ['holding', 'validating'],
+    // Wizard V2 fields
+    wizardCategories: ['anxiety_panic', 'trauma_ptsd'],
+    wizardSubcategories: ['panic', 'phobias', 'generalized_anxiety', 'acute_trauma'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'receptive' as const,
   },
   {
     userId: 'seed-user-11',
@@ -737,6 +802,12 @@ const therapists = [
     therapyFocus: 'future' as const,
     clientTalkRatio: 30,
     therapyDepth: 'symptom_relief' as const,
+    therapeuticStance: ['structuring', 'challenging'],
+    // Wizard V2 fields
+    wizardCategories: ['stress_burnout', 'work_career', 'anxiety_panic'],
+    wizardSubcategories: ['burnout', 'emotional_exhaustion', 'stress_overwhelm', 'workload_pressure'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'active' as const,
   },
   {
     userId: 'seed-user-12',
@@ -766,6 +837,12 @@ const therapists = [
     therapyFocus: 'past' as const,
     clientTalkRatio: 75,
     therapyDepth: 'deep_change' as const,
+    therapeuticStance: ['holding', 'validating'],
+    // Wizard V2 fields
+    wizardCategories: ['trauma_ptsd', 'migration_culture', 'depression_emptiness'],
+    wizardSubcategories: ['ptsd', 'cumulative_trauma', 'cultural_identity', 'feeling_down'],
+    primaryStyleStructure: 'open' as const,
+    primaryStyleEngagement: 'receptive' as const,
   },
   // Additional test therapists for edge cases
   {
@@ -797,6 +874,12 @@ const therapists = [
     therapyFocus: null,
     clientTalkRatio: null,
     therapyDepth: null,
+    therapeuticStance: [],
+    // Wizard V2 fields - minimal for gratis account
+    wizardCategories: ['depression_emptiness'],
+    wizardSubcategories: ['feeling_down'],
+    primaryStyleStructure: 'mixed' as const,
+    primaryStyleEngagement: 'situational' as const,
   },
   {
     userId: 'seed-user-14',
@@ -826,6 +909,12 @@ const therapists = [
     therapyFocus: 'holistic' as const,
     clientTalkRatio: 50,
     therapyDepth: 'flexible' as const,
+    therapeuticStance: ['explaining', 'validating'],
+    // Wizard V2 fields
+    wizardCategories: ['anxiety_panic', 'depression_emptiness', 'family_relationships', 'migration_culture'],
+    wizardSubcategories: ['generalized_anxiety', 'feeling_down', 'relationship', 'cultural_identity'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'situational' as const,
   },
   {
     userId: 'seed-user-15',
@@ -855,6 +944,12 @@ const therapists = [
     therapyFocus: 'past' as const,
     clientTalkRatio: 70,
     therapyDepth: 'deep_change' as const,
+    therapeuticStance: ['holding', 'validating'],
+    // Wizard V2 fields
+    wizardCategories: ['trauma_ptsd', 'depression_emptiness', 'migration_culture'],
+    wizardSubcategories: ['ptsd', 'cumulative_trauma', 'feeling_down', 'cultural_identity', 'discrimination'],
+    primaryStyleStructure: 'open' as const,
+    primaryStyleEngagement: 'receptive' as const,
   },
   // Austrian therapists
   {
@@ -885,6 +980,12 @@ const therapists = [
     therapyFocus: 'present' as const,
     clientTalkRatio: 60,
     therapyDepth: 'deep_change' as const,
+    therapeuticStance: ['holding', 'explaining'],
+    // Wizard V2 fields
+    wizardCategories: ['anxiety_panic', 'depression_emptiness', 'stress_burnout'],
+    wizardSubcategories: ['panic', 'generalized_anxiety', 'phobias', 'feeling_down', 'burnout'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'receptive' as const,
   },
   {
     userId: 'seed-user-17',
@@ -914,6 +1015,12 @@ const therapists = [
     therapyFocus: 'future' as const,
     clientTalkRatio: 40,
     therapyDepth: 'symptom_relief' as const,
+    therapeuticStance: ['structuring', 'challenging'],
+    // Wizard V2 fields
+    wizardCategories: ['stress_burnout', 'work_career', 'anxiety_panic'],
+    wizardSubcategories: ['burnout', 'stress', 'emotional_exhaustion', 'workload_pressure'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'active' as const,
   },
   {
     userId: 'seed-user-18',
@@ -943,6 +1050,12 @@ const therapists = [
     therapyFocus: 'past' as const,
     clientTalkRatio: 70,
     therapyDepth: 'deep_change' as const,
+    therapeuticStance: ['holding', 'validating'],
+    // Wizard V2 fields
+    wizardCategories: ['trauma_ptsd', 'anxiety_panic', 'depression_emptiness'],
+    wizardSubcategories: ['ptsd', 'acute_trauma', 'relationship_trauma', 'generalized_anxiety'],
+    primaryStyleStructure: 'open' as const,
+    primaryStyleEngagement: 'receptive' as const,
   },
   {
     userId: 'seed-user-19',
@@ -972,6 +1085,12 @@ const therapists = [
     therapyFocus: 'holistic' as const,
     clientTalkRatio: 55,
     therapyDepth: 'flexible' as const,
+    therapeuticStance: ['explaining', 'validating'],
+    // Wizard V2 fields
+    wizardCategories: ['family_relationships', 'depression_emptiness'],
+    wizardSubcategories: ['relationship', 'child', 'parents', 'siblings', 'feeling_down'],
+    primaryStyleStructure: 'open' as const,
+    primaryStyleEngagement: 'situational' as const,
   },
   {
     userId: 'seed-user-20',
@@ -1001,6 +1120,12 @@ const therapists = [
     therapyFocus: 'present' as const,
     clientTalkRatio: 50,
     therapyDepth: 'flexible' as const,
+    therapeuticStance: ['validating', 'holding'],
+    // Wizard V2 fields
+    wizardCategories: ['depression_emptiness', 'anxiety_panic', 'stress_burnout'],
+    wizardSubcategories: ['feeling_down', 'lack_of_drive', 'generalized_anxiety', 'burnout'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'receptive' as const,
   },
   {
     userId: 'seed-user-21',
@@ -1030,6 +1155,12 @@ const therapists = [
     therapyFocus: 'future' as const,
     clientTalkRatio: 35,
     therapyDepth: 'symptom_relief' as const,
+    therapeuticStance: ['structuring', 'explaining'],
+    // Wizard V2 fields
+    wizardCategories: ['attention', 'anxiety_panic', 'school_learning'],
+    wizardSubcategories: ['concentration', 'hyperactivity', 'impulsivity', 'generalized_anxiety'],
+    primaryStyleStructure: 'structured' as const,
+    primaryStyleEngagement: 'active' as const,
   },
 ]
 

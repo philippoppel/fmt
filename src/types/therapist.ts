@@ -358,6 +358,21 @@ export interface TopicIntensityInfo {
   aiDescription?: string;
 }
 
+// Wizard V2 style preferences
+export type WizardStyleStructure = "structured" | "open" | "mixed" | "unsure" | null;
+export type WizardStyleEngagement = "active" | "receptive" | "situational" | "unsure" | null;
+export type WizardRelationshipVsMethod = "relationship" | "method" | "both" | null;
+export type WizardTempo = "fast" | "slow" | "flexible" | null;
+export type WizardSafetyVsChallenge = "safety" | "challenge" | "balanced" | null;
+
+// Wizard V2 symptom answers
+export interface WizardSymptomAnswers {
+  q1: number | null; // 0-3
+  q2: number | null;
+  q3: number | null;
+  q4: number | null;
+}
+
 // Matching-specific types
 export interface MatchingCriteria {
   selectedTopics: string[];
@@ -381,6 +396,33 @@ export interface MatchingCriteria {
   verifiedOnly?: boolean;
   // Therapy Style preferences from Quiz
   therapyStyle?: TherapyStylePreferences;
+
+  // ============================================
+  // WIZARD V2 FIELDS
+  // ============================================
+
+  // Category & Subcategory (wizard categories)
+  wizardCategoryId?: string | null;
+  wizardSubcategoryId?: string | null;
+
+  // Symptom assessment
+  wizardSymptomAnswers?: WizardSymptomAnswers;
+  wizardSeverityScore?: number; // 0-12
+
+  // Style preferences
+  wizardStyleStructure?: WizardStyleStructure;
+  wizardStyleEngagement?: WizardStyleEngagement;
+
+  // Optional style preferences
+  wizardRelationshipVsMethod?: WizardRelationshipVsMethod;
+  wizardTempo?: WizardTempo;
+  wizardSafetyVsChallenge?: WizardSafetyVsChallenge;
+
+  // Logistics preferences
+  wizardGenderPreference?: Gender | null;
+  wizardLocation?: string | null;
+  wizardSearchRadius?: number | null;
+  wizardLanguages?: Language[];
 }
 
 export interface MatchedTherapist extends Therapist {

@@ -9,6 +9,14 @@ import { getOrCreateMatchingSession } from "./tracking";
  * Submits a contact inquiry from the matching wizard to a therapist
  */
 
+// Wizard V2 symptom answers schema
+const symptomAnswersSchema = z.object({
+  q1: z.number().min(0).max(3).nullable(),
+  q2: z.number().min(0).max(3).nullable(),
+  q3: z.number().min(0).max(3).nullable(),
+  q4: z.number().min(0).max(3).nullable(),
+}).nullable().optional();
+
 const contactInquirySchema = z.object({
   therapistId: z.string().min(1, "Therapist ID is required"),
   name: z.string().min(1, "Name is required").max(100, "Name too long"),
@@ -26,6 +34,33 @@ const contactInquirySchema = z.object({
   gender: z.enum(["male", "female", "diverse"]).nullable().optional(),
   sessionType: z.enum(["online", "in_person", "both"]).nullable().optional(),
   insurance: z.array(z.enum(["public", "private", "self_pay"])).optional(),
+
+  // ============================================
+  // WIZARD V2 FIELDS
+  // ============================================
+
+  // Category & Subcategory
+  wizardCategoryId: z.string().nullable().optional(),
+  wizardSubcategoryId: z.string().nullable().optional(),
+
+  // Symptom assessment
+  wizardSymptomAnswers: symptomAnswersSchema,
+  wizardSeverityScore: z.number().min(0).max(12).nullable().optional(),
+
+  // Style preferences
+  wizardStyleStructure: z.enum(["structured", "open", "mixed", "unsure"]).nullable().optional(),
+  wizardStyleEngagement: z.enum(["active", "receptive", "situational", "unsure"]).nullable().optional(),
+
+  // Optional style preferences
+  wizardRelationshipVsMethod: z.enum(["relationship", "method", "both"]).nullable().optional(),
+  wizardTempo: z.enum(["fast", "slow", "flexible"]).nullable().optional(),
+  wizardSafetyVsChallenge: z.enum(["safety", "challenge", "balanced"]).nullable().optional(),
+
+  // Logistics preferences
+  wizardGenderPreference: z.enum(["male", "female", "diverse"]).nullable().optional(),
+  wizardLocation: z.string().nullable().optional(),
+  wizardSearchRadius: z.number().nullable().optional(),
+  wizardLanguages: z.array(z.string()).optional(),
 });
 
 export type ContactInquiryInput = z.infer<typeof contactInquirySchema>;
@@ -47,12 +82,30 @@ export async function submitContactInquiry(
       return { success: false, error: "Therapist not found" };
     }
 
-    // Build matching criteria JSON
+    // Build matching criteria JSON (including wizard V2 data)
     const matchingCriteria = {
+      // Legacy fields
       location: validated.location ?? null,
       gender: validated.gender ?? null,
       sessionType: validated.sessionType ?? null,
       insurance: validated.insurance ?? [],
+
+      // Wizard V2 fields
+      wizardCategoryId: validated.wizardCategoryId ?? null,
+      wizardSubcategoryId: validated.wizardSubcategoryId ?? null,
+      wizardSymptomAnswers: validated.wizardSymptomAnswers ?? null,
+      wizardSeverityScore: validated.wizardSeverityScore ?? null,
+      wizardStyleStructure: validated.wizardStyleStructure ?? null,
+      wizardStyleEngagement: validated.wizardStyleEngagement ?? null,
+      wizardRelationshipVsMethod: validated.wizardRelationshipVsMethod ?? null,
+      wizardTempo: validated.wizardTempo ?? null,
+      wizardSafetyVsChallenge: validated.wizardSafetyVsChallenge ?? null,
+
+      // Wizard V2 logistics fields
+      wizardGenderPreference: validated.wizardGenderPreference ?? null,
+      wizardLocation: validated.wizardLocation ?? null,
+      wizardSearchRadius: validated.wizardSearchRadius ?? null,
+      wizardLanguages: validated.wizardLanguages ?? [],
     };
 
     // Create contact inquiry

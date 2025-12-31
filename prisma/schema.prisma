@@ -317,6 +317,13 @@ model TherapistProfile {
   clientTalkRatio     Int?                 @default(50)  // 0-100: wie viel % redet Patient
   therapyDepth        TherapyDepth?        @default(flexible)
 
+  // Therapeutic Stance (T3 from evidence-based spec)
+  // Values: "explaining", "confronting", "holding", "goal_oriented"
+  therapeuticStance   String[]             @default([])
+
+  // Exclusion criteria - topics therapist does NOT work with
+  excludedTopics      String[]             @default([])
+
   // Account & Verification
   accountType         AccountType          @default(gratis)
   isVerified          Boolean              @default(false)
@@ -339,6 +346,23 @@ model TherapistProfile {
   // Sub-Spezialisierungen für präziseres Matching
   subSpecializations      String[]
   subSpecializationRanks  Json?            @default("{}")
+
+  // ============================================
+  // WIZARD V2 MATCHING FIELDS
+  // ============================================
+
+  // Wizard categories from kategorien.docx (Oberkategorien)
+  wizardCategories        String[]         // ["anxiety_panic", "depression_emptiness", ...]
+
+  // Wizard subcategories (Unterkategorien)
+  wizardSubcategories     String[]         // ["generalized_anxiety", "panic", ...]
+
+  // Style tags for preference matching
+  styleTags               String[]         // ["structured", "active"] or ["open", "receptive"]
+
+  // Primary style dimensions (for quick matching)
+  primaryStyleStructure   String?          // "structured" | "open" | null
+  primaryStyleEngagement  String?          // "active" | "receptive" | null
 
   // Profil-Vollständigkeit für Qualitäts-Bonus (0-100)
   profileCompleteness Int                  @default(0)
@@ -1088,4 +1112,54 @@ model ModelRun {
   @@index([status])
   @@index([method])
   @@map("model_runs")
+}
+
+// ============================================
+// WIZARD V2 SESSION TRACKING
+// ============================================
+
+// Anonymous wizard session for analytics
+model WizardSession {
+  id                    String    @id @default(cuid())
+  sessionId             String    @unique // Anonymous browser session ID
+
+  // Wizard progress
+  startedAt             DateTime  @default(now())
+  completedAt           DateTime?
+  currentStep           Int       @default(0) // 0-6
+
+  // Selections (Step 1-2)
+  selectedCategory      String?   // Oberkategorie ID
+  selectedSubcategory   String?   // Unterkategorie ID
+
+  // Symptoms (Step 3)
+  symptomAnswers        Json?     // {q1: 0-3, q2?: 0-3, q3?: 0-3, q4: 0-3}
+  severityScore         Int?      // 0-12 calculated
+  adaptiveMode          String?   // "short" | "full"
+
+  // Preferences (Step 4)
+  stylePreferences      Json?     // {structure: "structured"|"open", engagement: "active"|"receptive"}
+  optionalPreferences   Json?     // {relationship_vs_method, tempo, safety_vs_challenge}
+
+  // Logistics (Step 5)
+  sessionTypeFilter     String?   // "online" | "in_person"
+  insuranceFilter       String?   // "public" | "private"
+
+  // Results (Step 6)
+  topMatchIds           String[]  // Top 3 therapist IDs
+  clickedMatchId        String?   // Which match was clicked (if any)
+  clickedMatchRank      Int?      // Position of clicked match (1-3)
+
+  // Crisis tracking
+  crisisTriggered       Boolean   @default(false)
+  crisisAcknowledged    Boolean   @default(false)
+
+  // Abandonment tracking
+  abandonedAt           DateTime?
+  abandonedStep         Int?
+
+  @@index([sessionId])
+  @@index([startedAt])
+  @@index([crisisTriggered])
+  @@map("wizard_sessions")
 }

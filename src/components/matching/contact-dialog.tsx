@@ -26,9 +26,17 @@ import {
   Video,
   Building2,
   CreditCard,
+  Heart,
+  Gauge,
+  Settings2,
 } from "lucide-react";
 import { submitContactInquiry } from "@/lib/actions/contact-inquiry";
 import { useMatchingCriteria } from "@/hooks/use-matching-criteria";
+import {
+  getCategoryLabel,
+  getSubcategoryLabel,
+} from "@/lib/matching/wizard-categories";
+import { getLanguageName, getLanguageFlag } from "@/lib/languages";
 
 interface ContactDialogProps {
   open: boolean;
@@ -48,17 +56,32 @@ export function ContactDialog({
   const t = useTranslations("matching.contact");
   const tTopics = useTranslations("matching.topics");
   const tSubTopics = useTranslations("matching.subTopics");
-  const tFilters = useTranslations("therapists.filters");
 
   // Get matching data from sessionStorage
   const {
     hasMatchingData,
+    hasWizardV2Data,
     selectedTopics,
     selectedSubTopics,
     location,
     gender,
     sessionType,
     insurance,
+    // Wizard V2 fields
+    wizardCategoryId,
+    wizardSubcategoryId,
+    wizardSymptomAnswers,
+    wizardSeverityScore,
+    wizardStyleStructure,
+    wizardStyleEngagement,
+    wizardRelationshipVsMethod,
+    wizardTempo,
+    wizardSafetyVsChallenge,
+    // Wizard V2 logistics fields
+    wizardGenderPreference,
+    wizardLocation,
+    wizardSearchRadius,
+    wizardLanguages,
   } = useMatchingCriteria();
 
   const [formData, setFormData] = useState({
@@ -90,6 +113,21 @@ export function ContactDialog({
         gender: includeMatchingData ? gender : null,
         sessionType: includeMatchingData ? sessionType : null,
         insurance: includeMatchingData ? insurance : [],
+        // Wizard V2 fields
+        wizardCategoryId: includeMatchingData ? wizardCategoryId : null,
+        wizardSubcategoryId: includeMatchingData ? wizardSubcategoryId : null,
+        wizardSymptomAnswers: includeMatchingData ? wizardSymptomAnswers : null,
+        wizardSeverityScore: includeMatchingData ? wizardSeverityScore : null,
+        wizardStyleStructure: includeMatchingData ? wizardStyleStructure : null,
+        wizardStyleEngagement: includeMatchingData ? wizardStyleEngagement : null,
+        wizardRelationshipVsMethod: includeMatchingData ? wizardRelationshipVsMethod : null,
+        wizardTempo: includeMatchingData ? wizardTempo : null,
+        wizardSafetyVsChallenge: includeMatchingData ? wizardSafetyVsChallenge : null,
+        // Wizard V2 logistics fields
+        wizardGenderPreference: includeMatchingData ? wizardGenderPreference : null,
+        wizardLocation: includeMatchingData ? wizardLocation : null,
+        wizardSearchRadius: includeMatchingData ? wizardSearchRadius : null,
+        wizardLanguages: includeMatchingData ? wizardLanguages : [],
       });
 
       if (result.success) {
@@ -112,8 +150,13 @@ export function ContactDialog({
     onOpenChange(false);
   };
 
-  // Helper to get translated topic name
+  // Helper to get translated topic name (wizard categories)
   const getTopicLabel = (topicId: string): string => {
+    // First try wizard categories
+    const wizardLabel = getCategoryLabel(topicId);
+    if (wizardLabel !== topicId) return wizardLabel;
+
+    // Fallback to translation
     const label = tTopics(topicId);
     if (label === topicId || label.includes(".")) {
       return topicId;
@@ -121,8 +164,13 @@ export function ContactDialog({
     return label;
   };
 
-  // Helper to get translated subtopic name
+  // Helper to get translated subtopic name (wizard subcategories)
   const getSubTopicLabel = (subTopicId: string): string => {
+    // First try wizard subcategories
+    const wizardLabel = getSubcategoryLabel(subTopicId);
+    if (wizardLabel !== subTopicId) return wizardLabel;
+
+    // Fallback to translation
     const label = tSubTopics(subTopicId);
     if (label === subTopicId || label.includes(".")) {
       return subTopicId;
@@ -133,9 +181,9 @@ export function ContactDialog({
   // Helper to get gender label
   const getGenderLabel = (g: string): string => {
     const labels: Record<string, string> = {
-      male: tFilters("male"),
-      female: tFilters("female"),
-      diverse: tFilters("diverse"),
+      male: "Männlich",
+      female: "Weiblich",
+      diverse: "Divers",
     };
     return labels[g] || g;
   };
@@ -143,9 +191,9 @@ export function ContactDialog({
   // Helper to get session type label
   const getSessionTypeLabel = (st: string): string => {
     const labels: Record<string, string> = {
-      online: tFilters("online"),
-      in_person: tFilters("inPerson"),
-      both: tFilters("both"),
+      online: "Online",
+      in_person: "Vor Ort",
+      both: "Online & Vor Ort",
     };
     return labels[st] || st;
   };
@@ -153,11 +201,86 @@ export function ContactDialog({
   // Helper to get insurance label
   const getInsuranceLabel = (ins: string): string => {
     const labels: Record<string, string> = {
-      public: tFilters("publicInsurance"),
-      private: tFilters("privateInsurance"),
-      self_pay: tFilters("selfPay"),
+      public: "Gesetzlich",
+      private: "Privat",
+      self_pay: "Selbstzahler",
     };
     return labels[ins] || ins;
+  };
+
+  // Helper to get style structure label
+  const getStyleStructureLabel = (style: string | null): string => {
+    if (!style) return "";
+    const labels: Record<string, string> = {
+      structured: "Strukturiert mit Übungen",
+      open: "Freies Erzählen",
+      mixed: "Mischung aus beidem",
+      unsure: "Noch unsicher",
+    };
+    return labels[style] || style;
+  };
+
+  // Helper to get style engagement label
+  const getStyleEngagementLabel = (style: string | null): string => {
+    if (!style) return "";
+    const labels: Record<string, string> = {
+      active: "Aktiv mit Rückmeldung",
+      receptive: "Eher zuhörend",
+      situational: "Situationsabhängig",
+      unsure: "Noch unsicher",
+    };
+    return labels[style] || style;
+  };
+
+  // Helper to get severity level label
+  const getSeverityLabel = (score: number | null): string => {
+    if (score === null) return "";
+    if (score <= 3) return "Leicht";
+    if (score <= 6) return "Mittel";
+    if (score <= 9) return "Erhöht";
+    return "Stark";
+  };
+
+  // Helper to get optional preference labels
+  const getRelationshipVsMethodLabel = (pref: string | null): string => {
+    if (!pref) return "";
+    const labels: Record<string, string> = {
+      relationship: "Beziehung wichtiger",
+      method: "Methode wichtiger",
+      both: "Beides gleich wichtig",
+    };
+    return labels[pref] || pref;
+  };
+
+  const getTempoLabel = (tempo: string | null): string => {
+    if (!tempo) return "";
+    const labels: Record<string, string> = {
+      fast: "Schnelle Ergebnisse",
+      slow: "Langsam & gründlich",
+      flexible: "Flexibel",
+    };
+    return labels[tempo] || tempo;
+  };
+
+  const getSafetyVsChallengeLabel = (pref: string | null): string => {
+    if (!pref) return "";
+    const labels: Record<string, string> = {
+      safety: "Sicherheit",
+      challenge: "Herausforderung",
+      balanced: "Ausgewogen",
+    };
+    return labels[pref] || pref;
+  };
+
+  // Helper to get gender preference label
+  const getGenderPreferenceLabel = (genderPref: string | null): string => {
+    if (!genderPref) return "";
+    const labels: Record<string, string> = {
+      female: "Weibliche Therapeutin",
+      male: "Männlicher Therapeut",
+      diverse: "Diverse:r Therapeut:in",
+    };
+    return labels[genderPref] || genderPref;
   };
 
   // Success State
@@ -272,8 +395,115 @@ export function ContactDialog({
               {/* Show matching data preview when checkbox is checked */}
               {includeMatchingData && (
                 <div className="pt-3 border-t border-border/50 space-y-2.5">
-                  {/* Topics */}
-                  {selectedTopics.length > 0 && (
+                  {/* Wizard V2: Category & Subcategory */}
+                  {hasWizardV2Data && wizardCategoryId && (
+                    <div className="flex items-start gap-2">
+                      <Heart className="h-3.5 w-3.5 text-muted-foreground mt-0.5" />
+                      <span className="text-xs text-muted-foreground w-16 shrink-0">Thema:</span>
+                      <div className="flex flex-wrap gap-1">
+                        <Badge variant="secondary" className="text-xs">
+                          {getCategoryLabel(wizardCategoryId)}
+                        </Badge>
+                        {wizardSubcategoryId && (
+                          <Badge variant="outline" className="text-xs">
+                            {getSubcategoryLabel(wizardSubcategoryId)}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Wizard V2: Severity Score */}
+                  {hasWizardV2Data && wizardSeverityScore !== null && wizardSeverityScore > 0 && (
+                    <div className="flex items-center gap-2 text-xs">
+                      <Gauge className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-muted-foreground w-16 shrink-0">Belastung:</span>
+                      <span>{getSeverityLabel(wizardSeverityScore)} ({wizardSeverityScore}/12)</span>
+                    </div>
+                  )}
+
+                  {/* Wizard V2: Style Preferences */}
+                  {hasWizardV2Data && (wizardStyleStructure || wizardStyleEngagement) && (
+                    <div className="flex items-start gap-2">
+                      <Settings2 className="h-3.5 w-3.5 text-muted-foreground mt-0.5" />
+                      <span className="text-xs text-muted-foreground w-16 shrink-0">Stil:</span>
+                      <div className="flex flex-wrap gap-1">
+                        {wizardStyleStructure && wizardStyleStructure !== "unsure" && (
+                          <Badge variant="outline" className="text-xs">
+                            {getStyleStructureLabel(wizardStyleStructure)}
+                          </Badge>
+                        )}
+                        {wizardStyleEngagement && wizardStyleEngagement !== "unsure" && (
+                          <Badge variant="outline" className="text-xs">
+                            {getStyleEngagementLabel(wizardStyleEngagement)}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Wizard V2: Optional Preferences */}
+                  {hasWizardV2Data && (wizardRelationshipVsMethod || wizardTempo || wizardSafetyVsChallenge) && (
+                    <div className="flex items-start gap-2">
+                      <Sparkles className="h-3.5 w-3.5 text-muted-foreground mt-0.5" />
+                      <span className="text-xs text-muted-foreground w-16 shrink-0">Extras:</span>
+                      <div className="flex flex-wrap gap-1">
+                        {wizardRelationshipVsMethod && (
+                          <Badge variant="outline" className="text-xs">
+                            {getRelationshipVsMethodLabel(wizardRelationshipVsMethod)}
+                          </Badge>
+                        )}
+                        {wizardTempo && (
+                          <Badge variant="outline" className="text-xs">
+                            {getTempoLabel(wizardTempo)}
+                          </Badge>
+                        )}
+                        {wizardSafetyVsChallenge && (
+                          <Badge variant="outline" className="text-xs">
+                            {getSafetyVsChallengeLabel(wizardSafetyVsChallenge)}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Wizard V2: Gender Preference */}
+                  {hasWizardV2Data && wizardGenderPreference && (
+                    <div className="flex items-center gap-2 text-xs">
+                      <User className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-muted-foreground w-16 shrink-0">Geschlecht:</span>
+                      <span>{getGenderPreferenceLabel(wizardGenderPreference)}</span>
+                    </div>
+                  )}
+
+                  {/* Wizard V2: Location */}
+                  {hasWizardV2Data && wizardLocation && (
+                    <div className="flex items-center gap-2 text-xs">
+                      <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-muted-foreground w-16 shrink-0">Standort:</span>
+                      <span>
+                        {wizardLocation}
+                        {wizardSearchRadius && ` (${wizardSearchRadius} km Umkreis)`}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Wizard V2: Languages */}
+                  {hasWizardV2Data && wizardLanguages && wizardLanguages.length > 0 && (
+                    <div className="flex items-start gap-2">
+                      <span className="text-xs text-muted-foreground w-16 shrink-0 pt-0.5">Sprachen:</span>
+                      <div className="flex flex-wrap gap-1">
+                        {wizardLanguages.map((lang) => (
+                          <Badge key={lang} variant="outline" className="text-xs">
+                            {getLanguageFlag(lang)} {getLanguageName(lang)}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Legacy: Topics (only if no wizard V2 data) */}
+                  {!hasWizardV2Data && selectedTopics.length > 0 && (
                     <div className="flex items-start gap-2">
                       <span className="text-xs text-muted-foreground w-20 shrink-0 pt-0.5">
                         {t("topics")}:
@@ -288,8 +518,8 @@ export function ContactDialog({
                     </div>
                   )}
 
-                  {/* SubTopics */}
-                  {selectedSubTopics.length > 0 && (
+                  {/* Legacy: SubTopics (only if no wizard V2 data) */}
+                  {!hasWizardV2Data && selectedSubTopics.length > 0 && (
                     <div className="flex items-start gap-2">
                       <span className="text-xs text-muted-foreground w-20 shrink-0 pt-0.5">
                         {t("details")}:
