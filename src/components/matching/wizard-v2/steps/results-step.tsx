@@ -123,7 +123,7 @@ function MatchCard({
 
           {/* Name and location */}
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 truncate">
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100 truncate">
               {match.name}
             </h3>
             <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -346,10 +346,10 @@ export function ResultsStep() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
           Deine Top-Empfehlungen
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           {state.isLoadingResults
             ? "Wir suchen die passenden Therapeut:innen..."
             : state.topMatches.length > 0

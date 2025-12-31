@@ -114,7 +114,7 @@ function CategoryCard({
               ? "text-primary"
               : isCrisis
                 ? "text-red-700 dark:text-red-300"
-                : "text-gray-900"
+                : "text-gray-900 dark:text-gray-100"
           )}
           lang="de"
         >
@@ -145,10 +145,10 @@ export function CategorySelection() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
           Was beschäftigt dich?
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Wähle das Thema, das dich am meisten belastet
         </p>
       </div>

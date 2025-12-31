@@ -50,13 +50,13 @@ export function SymptomQuestions() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           {selectedCategory.labelDE} &middot; {selectedSubcategory.labelDE}
         </p>
-        <h2 className="text-2xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
           Wie stark belastet dich das?
         </h2>
-        <p className="text-gray-600 text-sm">
+        <p className="text-gray-600 dark:text-gray-400 text-sm">
           Bewerte auf einer Skala von 0 (gar nicht) bis 3 (sehr stark)
         </p>
       </div>
@@ -82,7 +82,7 @@ export function SymptomQuestions() {
                     <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">
                       {index + 1}
                     </span>
-                    <p className="text-gray-900 leading-relaxed pt-1">
+                    <p className="text-gray-900 dark:text-gray-100 leading-relaxed pt-1">
                       {question.textDE}
                     </p>
                   </div>
@@ -108,13 +108,6 @@ export function SymptomQuestions() {
           <span>
             Basierend auf deiner ersten Antwort haben wir die Fragen angepasst.
           </span>
-        </div>
-      )}
-
-      {/* Severity Score (for debugging - can be removed in production) */}
-      {state.severityScore > 0 && (
-        <div className="text-center text-sm text-gray-500">
-          Belastungsgrad: {state.severityScore}/12
         </div>
       )}
 

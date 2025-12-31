@@ -205,17 +205,17 @@ export function LogisticsStep() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
           Praktische Details
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Diese Angaben helfen uns, die besten Therapeut:innen für dich zu finden
         </p>
       </div>
 
       {/* Session Type */}
       <div className="space-y-3">
-        <h3 className="font-medium text-gray-900">Wo soll die Therapie stattfinden?</h3>
+        <h3 className="font-medium text-gray-900 dark:text-gray-100">Wo soll die Therapie stattfinden?</h3>
         <div className="space-y-2">
           {sessionTypeOptions.map((option) => (
             <OptionCard
@@ -298,7 +298,7 @@ export function LogisticsStep() {
 
       {/* Insurance */}
       <div className="space-y-3">
-        <h3 className="font-medium text-gray-900">Wie bist du versichert?</h3>
+        <h3 className="font-medium text-gray-900 dark:text-gray-100">Wie bist du versichert?</h3>
         <div className="space-y-2">
           {insuranceOptions.map((option) => (
             <OptionCard

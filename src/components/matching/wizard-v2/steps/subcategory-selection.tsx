@@ -39,7 +39,7 @@ function SubcategoryCard({
       <span
         className={cn(
           "text-sm font-medium",
-          isSelected ? "text-primary" : "text-gray-900"
+          isSelected ? "text-primary" : "text-gray-900 dark:text-gray-100"
         )}
       >
         {subcategory.labelDE}
@@ -74,13 +74,13 @@ export function SubcategorySelection() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           {selectedCategory.labelDE}
         </p>
-        <h2 className="text-2xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
           Genauer gesagt...
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Welcher Bereich trifft am besten zu?
         </p>
       </div>

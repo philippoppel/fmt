@@ -34,7 +34,7 @@ function OptionButton({ label, isSelected, onClick }: OptionButtonProps) {
         "hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
         isSelected
           ? "border-primary bg-primary text-primary-foreground"
-          : "border-gray-200 bg-white text-gray-900 hover:bg-gray-50"
+          : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
       )}
     >
       {label}
@@ -52,7 +52,7 @@ function QuestionCard({ question, children }: QuestionCardProps) {
   return (
     <Card>
       <CardContent className="pt-5 pb-5 space-y-4">
-        <p className="text-gray-900 font-medium">{question}</p>
+        <p className="text-gray-900 dark:text-gray-100 font-medium">{question}</p>
         <div className="space-y-2">{children}</div>
       </CardContent>
     </Card>
@@ -135,10 +135,10 @@ export function StylePreferences() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
           Dein Therapie-Stil
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Was ist dir bei der Therapie wichtig?
         </p>
       </div>

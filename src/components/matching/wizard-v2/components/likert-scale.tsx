@@ -18,7 +18,7 @@ const LIKERT_OPTIONS: { value: SeverityLevel; label: string }[] = [
 
 export function LikertScale({ value, onChange, disabled = false }: LikertScaleProps) {
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
       {LIKERT_OPTIONS.map((option) => (
         <button
           key={option.value}
@@ -31,7 +31,7 @@ export function LikertScale({ value, onChange, disabled = false }: LikertScalePr
             "disabled:opacity-50 disabled:cursor-not-allowed",
             value === option.value
               ? "border-primary bg-primary text-primary-foreground"
-              : "border-gray-200 bg-white text-gray-900 hover:bg-gray-50"
+              : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
           )}
         >
           <span className="block text-lg mb-1">{option.value}</span>

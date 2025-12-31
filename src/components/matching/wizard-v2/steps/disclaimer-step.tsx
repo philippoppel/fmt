@@ -16,23 +16,23 @@ export function DisclaimerStep() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
           Bevor wir starten
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Ein paar wichtige Hinweise zu diesem Matching-Tool
         </p>
       </div>
 
       {/* Info Card */}
-      <div className="rounded-xl border-2 border-gray-200 bg-white p-5">
+      <div className="rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5">
         <div className="flex gap-4">
-          <AlertTriangle className="h-6 w-6 text-gray-600 shrink-0 mt-0.5" />
+          <AlertTriangle className="h-6 w-6 text-gray-600 dark:text-gray-400 shrink-0 mt-0.5" />
           <div className="space-y-3">
-            <h3 className="font-semibold text-gray-900">
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100">
               Wichtiger Hinweis
             </h3>
-            <ul className="space-y-2 text-sm text-gray-700">
+            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <li className="flex items-start gap-2">
                 <span className="text-gray-400 mt-0.5">•</span>
                 <span>
@@ -63,10 +63,10 @@ export function DisclaimerStep() {
       <Card>
         <CardContent className="pt-6">
           <div className="space-y-4">
-            <h3 className="font-medium text-gray-900">
+            <h3 className="font-medium text-gray-900 dark:text-gray-100">
               Was dich erwartet
             </h3>
-            <ul className="space-y-3 text-sm text-gray-600">
+            <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
               <li className="flex items-start gap-3">
                 <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
                 <span>
@@ -94,7 +94,7 @@ export function DisclaimerStep() {
       </Card>
 
       {/* Checkbox Confirmation */}
-      <div className="flex items-start gap-3 p-4 rounded-lg bg-gray-100 border border-gray-200">
+      <div className="flex items-start gap-3 p-4 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         <Checkbox
           id="disclaimer-check"
           checked={checked}
@@ -102,7 +102,7 @@ export function DisclaimerStep() {
         />
         <Label
           htmlFor="disclaimer-check"
-          className="text-sm text-gray-700 cursor-pointer leading-relaxed"
+          className="text-sm text-gray-700 dark:text-gray-300 cursor-pointer leading-relaxed"
         >
           Ich verstehe, dass dieses Tool keine Diagnose oder Behandlung ersetzt
           und wende mich bei akuten Krisen an professionelle Hilfe.
